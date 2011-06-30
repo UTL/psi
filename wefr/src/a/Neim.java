@@ -46,6 +46,7 @@ public class Neim extends ApplicationWindow {
 	 * Create contents of the application window.
 	 * @param parent
 	 */
+	//bah!
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
