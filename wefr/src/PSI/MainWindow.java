@@ -69,6 +69,7 @@ public class MainWindow extends JFrame {
 		mnFile.add(mntmExit);
 		
 		JMenu mnEdit = new JMenu("Edit");
+		mnEdit.setEnabled(false);
 		menuBar.add(mnEdit);
 		
 		JMenuItem mntmUndo = new JMenuItem("Undo");
@@ -99,5 +100,4 @@ public class MainWindow extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 	}
-
 }
