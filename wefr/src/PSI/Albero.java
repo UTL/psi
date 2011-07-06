@@ -3,7 +3,11 @@ package PSI;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JTree;
+import javax.swing.UIManager;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -11,46 +15,47 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Albero extends JTree {
 
+	
 	public Albero() {
 		super();
 		init();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Albero(Object[] value) {
 		super(value);
-		// TODO Auto-generated constructor stub
+		init();
 	}
 
 	public Albero(Vector<?> value) {
 		super(value);
-		// TODO Auto-generated constructor stub
+		init();
 	}
 
 	public Albero(Hashtable<?, ?> value) {
 		super(value);
-		// TODO Auto-generated constructor stub
+		init();
 	}
 
 	public Albero(TreeNode root) {
 		super(root);
-		// TODO Auto-generated constructor stub
+		init();
 	}
 
 	public Albero(TreeModel newModel) {
 		super(newModel);
-		// TODO Auto-generated constructor stub
+		init();
 	}
 
 	public Albero(TreeNode root, boolean asksAllowsChildren) {
 		super(root, asksAllowsChildren);
-		// TODO Auto-generated constructor stub
+		init();
 	}
 	
 	private void init(){
 		this.setModel(new DefaultTreeModel(
 				new DefaultMutableTreeNode("JTree") {
 					{
+						//TODO rimuovere cose inutili qua sotto
 						DefaultMutableTreeNode node_1;
 						node_1 = new DefaultMutableTreeNode("colors");
 							node_1.add(new DefaultMutableTreeNode("blue"));
@@ -74,6 +79,30 @@ public class Albero extends JTree {
 				}
 			));
 			this.setBounds(5, 49, 216, 281);
+	}
+	
+	private void setIcon(){
+		// Retrieve the three icons
+		Icon leafIcon = new ImageIcon("leaf.gif");
+		Icon openIcon = new ImageIcon("open.gif");
+		Icon closedIcon = new ImageIcon("closed.gif");
+
+		// Update only one tree instance
+		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer)this.getCellRenderer();
+		renderer.setLeafIcon(leafIcon);
+		renderer.setClosedIcon(closedIcon);
+		renderer.setOpenIcon(openIcon);
+		
+		// Remove the icons
+		renderer.setLeafIcon(null);
+		renderer.setClosedIcon(null);
+		renderer.setOpenIcon(null);
+
+		// Change defaults so that all new tree components will have new icons
+		UIManager.put("Tree.leafIcon", leafIcon);
+		UIManager.put("Tree.openIcon", openIcon);
+		UIManager.put("Tree.closedIcon", closedIcon);
+
 	}
 
 }
