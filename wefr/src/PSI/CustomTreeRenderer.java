@@ -37,9 +37,9 @@ public class CustomTreeRenderer extends DefaultTreeCellRenderer {
 		        Object nodeObj = ((DefaultMutableTreeNode)value).getUserObject();
 		        // check whatever you need to on the node user object
 		        if (true) { //TODO verificare il tipo dell'oggetto // ((WhateverNodeObjectClass)nodeObj).someProperty
-		            setIcon(specialIcon);
+		            setIcon(rootIcon);
 		        } else {
-		            setIcon(defaultIcon);
+		            setIcon(linkIcon);
 		        } 
 		        return this;
 		    }
