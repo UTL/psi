@@ -2,6 +2,7 @@ package PSI;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Font;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -129,19 +130,19 @@ public class MainWindow extends JFrame {
 						node_1.add(new DefaultMutableTreeNode("violet"));
 						node_1.add(new DefaultMutableTreeNode("red"));
 						node_1.add(new DefaultMutableTreeNode("yellow"));
-					add(node_1);
+					getContentPane().add(node_1);
 					node_1 = new DefaultMutableTreeNode("sports");
 						node_1.add(new DefaultMutableTreeNode("basketball"));
 						node_1.add(new DefaultMutableTreeNode("soccer"));
 						node_1.add(new DefaultMutableTreeNode("football"));
 						node_1.add(new DefaultMutableTreeNode("hockey"));
-					add(node_1);
+					getContentPane().add(node_1);
 					node_1 = new DefaultMutableTreeNode("food");
 						node_1.add(new DefaultMutableTreeNode("hot dogs"));
 						node_1.add(new DefaultMutableTreeNode("pizza"));
 						node_1.add(new DefaultMutableTreeNode("ravioli"));
 						node_1.add(new DefaultMutableTreeNode("bananas"));
-					add(node_1);
+					getContentPane().add(node_1);
 				}
 			}
 		));
@@ -154,24 +155,74 @@ public class MainWindow extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel.setBounds(5, 0, 175, 37);
+		panel.setBounds(5, 0, 545, 37);
 		contentPane.add(panel);
+		panel.setLayout(null);
 		
 		JButton button = new JButton("");
+		button.setBounds(12, 4, 30, 30);
+		panel.add(button);
 		button.setToolTipText("Open");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		button.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/motif/icons/TreeOpen.gif")));
-		panel.add(button);
+		
+		JButton button_3 = new JButton("");
+		button_3.setToolTipText("Open");
+		button_3.setBounds(45, 4, 30, 30);
+		panel.add(button_3);
+		
+		JButton button_4 = new JButton("");
+		button_4.setToolTipText("Open");
+		button_4.setBounds(78, 4, 30, 30);
+		panel.add(button_4);
 		
 		JButton button_1 = new JButton("");
+		button_1.setToolTipText("Open");
+		button_1.setBounds(120, 4, 30, 30);
 		panel.add(button_1);
 		
 		JButton button_2 = new JButton("");
+		button_2.setToolTipText("Open");
+		button_2.setBounds(153, 4, 30, 30);
 		panel.add(button_2);
+		
+		JButton button_5 = new JButton("");
+		button_5.setToolTipText("Open");
+		button_5.setBounds(195, 4, 30, 30);
+		panel.add(button_5);
+		
+		JButton button_6 = new JButton("");
+		button_6.setToolTipText("Open");
+		button_6.setBounds(228, 4, 30, 30);
+		panel.add(button_6);
+		
+		JButton button_7 = new JButton("");
+		button_7.setToolTipText("Open");
+		button_7.setBounds(277, 4, 30, 30);
+		panel.add(button_7);
+		
+		JButton button_8 = new JButton("");
+		button_8.setToolTipText("Open");
+		button_8.setBounds(310, 4, 30, 30);
+		panel.add(button_8);
+		
+		JButton btnGenerateWebsite = new JButton("GENERATE WEBSITE");
+		btnGenerateWebsite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnGenerateWebsite.setToolTipText("Open");
+		btnGenerateWebsite.setBounds(365, 4, 168, 30);
+		panel.add(btnGenerateWebsite);
 		internalFrame.setVisible(true);
 	}
+	
+	private void boldify(JButton button){
+		Font newButtonFont=new Font(button.getFont().getName(),Font.ITALIC+Font.BOLD,button.getFont().getSize());
+		button.setFont(newButtonFont);
+	}
+	
 }
