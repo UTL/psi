@@ -11,11 +11,19 @@ import java.awt.Choice;
 import java.awt.List;
 import javax.swing.JMenuItem;
 import javax.swing.JButton;
+import javax.swing.Box;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import java.awt.Panel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Wizard extends JFrame {
 
 	private JPanel contentPane;
-
+	private TextField textField;
+	private Choice choice;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -36,6 +44,9 @@ public class Wizard extends JFrame {
 	 * Create the frame.
 	 */
 	public Wizard() {
+		
+		//TODO mettere input da history (magari con un metodo)
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -43,11 +54,13 @@ public class Wizard extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		TextField textField = new TextField();
+		textField = new TextField();
 		textField.setBounds(102, 107, 147, 19);
 		contentPane.add(textField);
+		textField.setText("TODO Default"); //TODO mettere default incrementale
+		textField.getText();
 		
-		Choice choice = new Choice();
+		choice = new Choice();
 		choice.setBounds(102, 160, 147, 21);
 		contentPane.add(choice);
 		choice.add("Text");
@@ -56,8 +69,26 @@ public class Wizard extends JFrame {
 		choice.add("Alternative");
 		choice.add("Composite");
 		
+		//TODO implementare la lettura della scelta:
+		//	void Select (int Selection) 
+		//		Sets the index of the selected item.
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_1.setBounds(12, 217, 424, 41);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
+		
 		JButton btnNext = new JButton("Next");
-		btnNext.setBounds(319, 234, 117, 25);
-		contentPane.add(btnNext);
+		btnNext.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("Next");
+				System.out.println("textField: "+ textField.getText());
+			 	System.out.println("choice: "+ choice.getSelectedItem());
+			}
+		});
+		btnNext.setBounds(346, 0, 66, 25);
+		panel_1.add(btnNext);
 	}
 }
