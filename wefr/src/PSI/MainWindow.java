@@ -119,7 +119,7 @@ public class MainWindow extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		Albero tree = new Albero();/*
+		JTree tree = new JTree();
 		tree.setModel(new DefaultTreeModel(
 			new DefaultMutableTreeNode("JTree") {
 				{
@@ -130,7 +130,7 @@ public class MainWindow extends JFrame {
 						node_1.add(new DefaultMutableTreeNode("red"));
 						node_1.add(new DefaultMutableTreeNode("yellow"));
 					add(node_1);
-					tree			node_1 = new DefaultMutableTreeNode("sports");
+					node_1 = new DefaultMutableTreeNode("sports");
 						node_1.add(new DefaultMutableTreeNode("basketball"));
 						node_1.add(new DefaultMutableTreeNode("soccer"));
 						node_1.add(new DefaultMutableTreeNode("football"));
@@ -145,7 +145,7 @@ public class MainWindow extends JFrame {
 				}
 			}
 		));
-		tree.setBounds(5, 49, 216, 281);*/
+		tree.setBounds(5, 49, 216, 281);
 		contentPane.add(tree);
 		
 		JInternalFrame internalFrame = new JInternalFrame("Properties");
