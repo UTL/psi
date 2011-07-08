@@ -22,6 +22,10 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 
 public class Neim extends ApplicationWindow {
 	private Text text;
@@ -46,10 +50,22 @@ public class Neim extends ApplicationWindow {
 	 * Create contents of the application window.
 	 * @param parent
 	 */
-	//bah!
+	// TODO ciao
+
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
+		container.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		container.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				System.out.println("ciaociao");
+			}
+		});
 		container.setLayout(new FormLayout());
 		
 		Composite composite = new Composite(container, SWT.NONE);
@@ -61,6 +77,7 @@ public class Neim extends ApplicationWindow {
 		composite.setLayoutData(fd_composite);
 		
 		Spinner spinner = new Spinner(composite, SWT.BORDER);
+		spinner.setToolTipText("CIAO");
 		spinner.setBounds(10, 10, 54, 27);
 		
 		SashForm sashForm = new SashForm(container, SWT.NONE);

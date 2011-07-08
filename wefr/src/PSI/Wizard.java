@@ -24,6 +24,7 @@ public class Wizard extends JFrame {
 	private TextField textField;
 	private Choice choice;
 	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -45,7 +46,9 @@ public class Wizard extends JFrame {
 	 */
 	public Wizard() {
 		
+		//commento inutile
 		//TODO mettere input da history (magari con un metodo)
+		
 		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
