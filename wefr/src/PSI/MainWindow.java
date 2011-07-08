@@ -131,19 +131,19 @@ public class MainWindow extends JFrame {
 						node_1.add(new DefaultMutableTreeNode("violet"));
 						node_1.add(new DefaultMutableTreeNode("red"));
 						node_1.add(new DefaultMutableTreeNode("yellow"));
-					getContentPane().add(node_1);
+					add(node_1);
 					node_1 = new DefaultMutableTreeNode("sports");
 						node_1.add(new DefaultMutableTreeNode("basketball"));
 						node_1.add(new DefaultMutableTreeNode("soccer"));
 						node_1.add(new DefaultMutableTreeNode("football"));
 						node_1.add(new DefaultMutableTreeNode("hockey"));
-					getContentPane().add(node_1);
+					add(node_1);
 					node_1 = new DefaultMutableTreeNode("food");
 						node_1.add(new DefaultMutableTreeNode("hot dogs"));
 						node_1.add(new DefaultMutableTreeNode("pizza"));
 						node_1.add(new DefaultMutableTreeNode("ravioli"));
 						node_1.add(new DefaultMutableTreeNode("bananas"));
-					getContentPane().add(node_1);
+					add(node_1);
 				}
 			}
 		));
