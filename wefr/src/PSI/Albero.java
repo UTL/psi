@@ -7,7 +7,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.UIManager;
-import javax.swing.tree.DefaultTreeCellRenderer;
+//import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -15,6 +15,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Albero extends JTree {
 
+	
 	
 	public Albero() {
 		super();
@@ -79,16 +80,17 @@ public class Albero extends JTree {
 				}
 			));
 			this.setBounds(5, 49, 216, 281);
+			this.setCellRenderer(new CustomTreeRenderer());
 	}
 	
 	private void setIcon(){
 		// Retrieve the three icons
-		Icon leafIcon = new ImageIcon("leaf.gif");
+		/*Icon leafIcon = new ImageIcon("leaf.gif");
 		Icon openIcon = new ImageIcon("open.gif");
 		Icon closedIcon = new ImageIcon("closed.gif");
 
 		// Update only one tree instance
-		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer)this.getCellRenderer();
+		CustomTreeRenderer renderer = (CustomTreeRenderer)this.getCellRenderer();
 		renderer.setLeafIcon(leafIcon);
 		renderer.setClosedIcon(closedIcon);
 		renderer.setOpenIcon(openIcon);
@@ -101,7 +103,7 @@ public class Albero extends JTree {
 		// Change defaults so that all new tree components will have new icons
 		UIManager.put("Tree.leafIcon", leafIcon);
 		UIManager.put("Tree.openIcon", openIcon);
-		UIManager.put("Tree.closedIcon", closedIcon);
+		UIManager.put("Tree.closedIcon", closedIcon);*/
 
 	}
 

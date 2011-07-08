@@ -47,6 +47,7 @@ public class Wizard extends JFrame {
 		
 		//TODO mettere input da history (magari con un metodo)
 		
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
