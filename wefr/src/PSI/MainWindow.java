@@ -27,11 +27,22 @@ import javax.swing.Box;
 import java.awt.FlowLayout;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.GridLayout;
+import javax.swing.JTextPane;
+import javax.swing.JCheckBox;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.JFormattedTextField;
+import java.awt.Panel;
+import javax.swing.border.TitledBorder;
+import javax.swing.JTextField;
 
 public class MainWindow extends JFrame {
 
 	
 	private JPanel contentPane;
+	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -55,7 +66,7 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setTitle("EUD-MAMBA");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 564, 386);
+		setBounds(100, 100, 796, 386);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -121,42 +132,9 @@ public class MainWindow extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JTree tree = new JTree();
-		tree.setModel(new DefaultTreeModel(
-			new DefaultMutableTreeNode("JTree") {
-				{
-					DefaultMutableTreeNode node_1;
-					node_1 = new DefaultMutableTreeNode("colors");
-						node_1.add(new DefaultMutableTreeNode("blue"));
-						node_1.add(new DefaultMutableTreeNode("violet"));
-						node_1.add(new DefaultMutableTreeNode("red"));
-						node_1.add(new DefaultMutableTreeNode("yellow"));
-					add(node_1);
-					node_1 = new DefaultMutableTreeNode("sports");
-						node_1.add(new DefaultMutableTreeNode("basketball"));
-						node_1.add(new DefaultMutableTreeNode("soccer"));
-						node_1.add(new DefaultMutableTreeNode("football"));
-						node_1.add(new DefaultMutableTreeNode("hockey"));
-					add(node_1);
-					node_1 = new DefaultMutableTreeNode("food");
-						node_1.add(new DefaultMutableTreeNode("hot dogs"));
-						node_1.add(new DefaultMutableTreeNode("pizza"));
-						node_1.add(new DefaultMutableTreeNode("ravioli"));
-						node_1.add(new DefaultMutableTreeNode("bananas"));
-					add(node_1);
-				}
-			}
-		));
-		tree.setBounds(5, 49, 216, 281);
-		contentPane.add(tree);
-		
-		JInternalFrame internalFrame = new JInternalFrame("Properties");
-		internalFrame.setBounds(230, 49, 320, 274);
-		contentPane.add(internalFrame);
-		
 		JPanel panel = new JPanel();
+		panel.setBounds(5, 0, 623, 37);
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel.setBounds(5, 0, 545, 37);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -218,12 +196,37 @@ public class MainWindow extends JFrame {
 		btnGenerateWebsite.setToolTipText("Open");
 		btnGenerateWebsite.setBounds(365, 4, 168, 30);
 		panel.add(btnGenerateWebsite);
-		internalFrame.setVisible(true);
+		
+		JPanel properties = new JPanel();
+		properties.setBorder(new TitledBorder(null, "Properties", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		properties.setLayout(null);
+		properties.setBounds(249, 49, 482, 274);
+		contentPane.add(properties);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(12, 18, 193, 125);
+		properties.add(panel_1);
+		panel_1.setBorder(new TitledBorder(null, "ID", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setLayout(null);
+		
+		JLabel lblName = new JLabel("Name:");
+		lblName.setBounds(12, 25, 51, 15);
+		panel_1.add(lblName);
+		
+		textField = new JTextField();
+		textField.setBounds(67, 23, 114, 19);
+		panel_1.add(textField);
+		textField.setColumns(10);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new TitledBorder(null, "Presentation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_2.setLayout(null);
+		panel_2.setBounds(217, 18, 210, 125);
+		properties.add(panel_2);
 	}
 	
 	private void boldify(JButton button){
 		Font newButtonFont=new Font(button.getFont().getName(),Font.ITALIC+Font.BOLD,button.getFont().getSize());
 		button.setFont(newButtonFont);
 	}
-	
 }
