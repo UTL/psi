@@ -37,12 +37,17 @@ import javax.swing.JFormattedTextField;
 import java.awt.Panel;
 import javax.swing.border.TitledBorder;
 import javax.swing.JTextField;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.JComboBox;
 
 public class MainWindow extends JFrame {
 
 	
 	private JPanel contentPane;
 	private JTextField textField;
+	private JTextField textField_1;
 
 	/**
 	 * Launch the application.
@@ -218,11 +223,45 @@ public class MainWindow extends JFrame {
 		panel_1.add(textField);
 		textField.setColumns(10);
 		
+		JLabel lblType = new JLabel("Type:");
+		lblType.setBounds(12, 64, 51, 15);
+		panel_1.add(lblType);
+		
+		textField_1 = new JTextField();
+		textField_1.setEditable(false);
+		textField_1.setColumns(10);
+		textField_1.setBounds(67, 62, 114, 19);
+		panel_1.add(textField_1);
+		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Presentation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setLayout(null);
-		panel_2.setBounds(217, 18, 210, 125);
+		panel_2.setBounds(217, 18, 235, 125);
 		properties.add(panel_2);
+		panel_2.setLayout(null);
+		
+		JLabel lblCategory = new JLabel("Category:");
+		lblCategory.setBounds(12, 24, 81, 15);
+		panel_2.add(lblCategory);
+		
+		JLabel lblEmphasize = new JLabel("Emphasize:");
+		lblEmphasize.setBounds(12, 86, 81, 14);
+		panel_2.add(lblEmphasize);
+		
+		JLabel lblImportance = new JLabel("Importance:");
+		lblImportance.setBounds(12, 54, 97, 15);
+		panel_2.add(lblImportance);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(111, 19, 112, 24);
+		panel_2.add(comboBox);
+		
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setBounds(111, 49, 112, 24);
+		panel_2.add(comboBox_1);
+		
+		JComboBox comboBox_2 = new JComboBox();
+		comboBox_2.setBounds(111, 81, 112, 24);
+		panel_2.add(comboBox_2);
 	}
 	
 	private void boldify(JButton button){
