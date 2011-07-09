@@ -41,14 +41,20 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JComboBox;
+import java.awt.TextArea;
+import javax.swing.JEditorPane;
 
 public class MainWindow extends JFrame {
 
 	
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField textField_Name;
+	private JTextField textField_Type;
+	private JTextField textField_Category;
 
+	private static final String[] categorie = { "Necessary", "Indifferent", "Expandable"}; //FIXME Andrebbero rese globali per tutte le classi??
+	private static final String[] importanze = { "Greatly", "TODO", "TODO"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
+	
 	/**
 	 * Launch the application.
 	 */
@@ -71,7 +77,7 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setTitle("EUD-MAMBA");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 796, 386);
+		setBounds(100, 100, 728, 465);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -138,7 +144,7 @@ public class MainWindow extends JFrame {
 		contentPane.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(5, 0, 623, 37);
+		panel.setBounds(5, 0, 710, 37);
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		contentPane.add(panel);
 		panel.setLayout(null);
@@ -203,65 +209,83 @@ public class MainWindow extends JFrame {
 		panel.add(btnGenerateWebsite);
 		
 		JPanel properties = new JPanel();
-		properties.setBorder(new TitledBorder(null, "Properties", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		properties.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		properties.setLayout(null);
-		properties.setBounds(249, 49, 482, 274);
+		properties.setBounds(249, 49, 466, 353);
 		contentPane.add(properties);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(12, 18, 193, 125);
-		properties.add(panel_1);
-		panel_1.setBorder(new TitledBorder(null, "ID", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setLayout(null);
+		JPanel id_panel = new JPanel();
+		id_panel.setBounds(12, 18, 193, 125);
+		properties.add(id_panel);
+		id_panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " ID ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		id_panel.setLayout(null);
 		
 		JLabel lblName = new JLabel("Name:");
-		lblName.setBounds(12, 25, 51, 15);
-		panel_1.add(lblName);
+		lblName.setBounds(12, 40, 51, 15);
+		id_panel.add(lblName);
 		
-		textField = new JTextField();
-		textField.setBounds(67, 23, 114, 19);
-		panel_1.add(textField);
-		textField.setColumns(10);
+		textField_Name = new JTextField();
+		textField_Name.setBounds(67, 40, 114, 19);
+		id_panel.add(textField_Name);
+		textField_Name.setColumns(10);
 		
 		JLabel lblType = new JLabel("Type:");
-		lblType.setBounds(12, 64, 51, 15);
-		panel_1.add(lblType);
+		lblType.setBounds(12, 70, 51, 15);
+		id_panel.add(lblType);
 		
-		textField_1 = new JTextField();
-		textField_1.setEditable(false);
-		textField_1.setColumns(10);
-		textField_1.setBounds(67, 62, 114, 19);
-		panel_1.add(textField_1);
+		textField_Type = new JTextField();
+		textField_Type.setEditable(false);
+		textField_Type.setColumns(10);
+		textField_Type.setBounds(67, 70, 114, 19);
+		id_panel.add(textField_Type);
 		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new TitledBorder(null, "Presentation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(217, 18, 235, 125);
-		properties.add(panel_2);
-		panel_2.setLayout(null);
+		JPanel presentation_panel = new JPanel();
+		presentation_panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Presentation ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		presentation_panel.setBounds(217, 18, 237, 125);
+		properties.add(presentation_panel);
+		presentation_panel.setLayout(null);
 		
 		JLabel lblCategory = new JLabel("Category:");
 		lblCategory.setBounds(12, 24, 81, 15);
-		panel_2.add(lblCategory);
+		presentation_panel.add(lblCategory);
 		
 		JLabel lblEmphasize = new JLabel("Emphasize:");
-		lblEmphasize.setBounds(12, 86, 81, 14);
-		panel_2.add(lblEmphasize);
+		lblEmphasize.setBounds(12, 54, 81, 14);
+		presentation_panel.add(lblEmphasize);
+		
+		
+		JComboBox comboBox_Importance = new JComboBox(importanze);
+		comboBox_Importance.setBounds(111, 49, 112, 24);
+		presentation_panel.add(comboBox_Importance);
+		
+		textField_Category = new JTextField();
+		textField_Category.setColumns(10);
+		textField_Category.setBounds(109, 22, 114, 19);
+		presentation_panel.add(textField_Category);
 		
 		JLabel lblImportance = new JLabel("Importance:");
-		lblImportance.setBounds(12, 54, 97, 15);
-		panel_2.add(lblImportance);
+		lblImportance.setBounds(12, 86, 97, 15);
+		presentation_panel.add(lblImportance);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(111, 19, 112, 24);
-		panel_2.add(comboBox);
+				
+		JComboBox comboBox_Emphasize = new JComboBox(categorie);
+		comboBox_Emphasize.setBounds(111, 85, 112, 24);
+		presentation_panel.add(comboBox_Emphasize);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(111, 49, 112, 24);
-		panel_2.add(comboBox_1);
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Content ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		panel_1.setLayout(null);
+		panel_1.setBounds(12, 155, 442, 186);
+		properties.add(panel_1);
 		
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.setBounds(111, 81, 112, 24);
-		panel_2.add(comboBox_2);
+		JLabel label = new JLabel("Name:");
+		label.setBounds(12, 23, 51, 15);
+		panel_1.add(label);
+		
+		JEditorPane editorPane = new JEditorPane();		//TODO mancano le scrollbar all'editorpane
+		editorPane.setBounds(22, 50, 408, 124);
+		panel_1.add(editorPane);
+
 	}
 	
 	private void boldify(JButton button){
