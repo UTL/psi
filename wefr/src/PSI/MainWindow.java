@@ -30,6 +30,7 @@ import javax.swing.JList;
 import java.awt.event.KeyAdapter;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import javax.swing.JTree;
 
 public class MainWindow extends JFrame {
 
@@ -66,6 +67,7 @@ public class MainWindow extends JFrame {
 		setTitle("EUD-MAMBA");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 728, 502);
+		setResizable(false);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -349,6 +351,10 @@ public class MainWindow extends JFrame {
 		JEditorPane editorPane = new JEditorPane();
 		editorPane.setBounds(12, 32, 408, 156);
 		panel_composite.add(editorPane);
+		
+		JTree tree = new JTree();
+		tree.setBounds(15, 60, 222, 381);
+		contentPane.add(tree);
 
 	}
 	
