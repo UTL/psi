@@ -266,6 +266,7 @@ public class MainWindow extends JFrame {
 			//TODO mettere check che il nome non esista gia', serve anche questo nel caso venga incollato del testo...
 			@Override
 			public void focusLost(FocusEvent arg0) {
+				setFocusedName();
 			}
 		});
 		textField_Name.addKeyListener(new KeyAdapter() {
@@ -519,6 +520,11 @@ public class MainWindow extends JFrame {
 	//TODO agganciare il metodo al click nelle foglie sull'albero...
 	private void setFocus(Componente comp){
 		focused = comp;
+	}
+	
+	//TODO verificare se va
+	private void setFocusedName(){
+		focused.setNome(textField_Name.getText());
 	}
 	
 	private void boldify(JButton button){
