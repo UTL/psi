@@ -425,9 +425,12 @@ public class MainWindow extends JFrame {
 	private void setGenerici(Componente selected){
 		textField_Name.setText(selected.getNome());
 		
+		textField_Category.setText(selected.getCategoria());
+		
 		//TODO verificare che l'ordine sia giusto (che il numero restituito dal getenfasi corrisp a quello del menu a tendina)
 		comboBox_Emphasize.setSelectedIndex(selected.getEnfasi());
 		comboBox_Importance.setSelectedIndex(selected.getVisibilita());
+		
 	}
 	
 	private void popolaProperties(Testo selected){
@@ -438,7 +441,16 @@ public class MainWindow extends JFrame {
 	
 	private void popolaProperties(Immagine selected){
 		setGenerici(selected);
+		textField_Type.setText("Image");
 		textField_imagepath.setText(selected.getPath());
+		
+	}
+	
+	private void popolaProperties(Link selected){
+		setGenerici(selected);
+		textField_Type.setText("Link");
+		textField_URL.setText(selected.getUri());
+		textField_linktext.setText(selected.getTesto());
 		
 	}
 	
