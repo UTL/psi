@@ -25,6 +25,8 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JTabbedPane;
+import java.awt.CardLayout;
+import javax.swing.JList;
 
 public class MainWindow extends JFrame {
 
@@ -60,7 +62,7 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setTitle("EUD-MAMBA");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 728, 465);
+		setBounds(100, 100, 728, 502);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -194,7 +196,7 @@ public class MainWindow extends JFrame {
 		JPanel properties = new JPanel();
 		properties.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		properties.setLayout(null);
-		properties.setBounds(249, 49, 466, 353);
+		properties.setBounds(249, 49, 466, 392);
 		contentPane.add(properties);
 		
 		JPanel id_panel = new JPanel();
@@ -256,29 +258,82 @@ public class MainWindow extends JFrame {
 		presentation_panel.add(comboBox_Emphasize);
 		
 		//TODO Gestire i diversi contenuti per i vari tipi di oggetto (soprattutto i composite e alternative)
+		//TODO mettere immagine priorità per alternative
 		JPanel content_panel = new JPanel();
 		content_panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Content ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		content_panel.setLayout(null);
-		content_panel.setBounds(12, 155, 442, 186);
+		content_panel.setBounds(12, 155, 442, 225);
 		properties.add(content_panel);
-		
-		JLabel label = new JLabel("Name:");
-		label.setBounds(12, 23, 51, 15);
-		content_panel.add(label);
-		
-		JEditorPane editorPane = new JEditorPane();		//TODO mancano le scrollbar all'editorpane
-		editorPane.setBounds(22, 50, 408, 124);
-		content_panel.add(editorPane);
-		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(36, 113, 144, 123);
-		contentPane.add(tabbedPane);
+		content_panel.setLayout(new CardLayout(0, 0));
 		
 		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("New tab", null, panel_1, null);
+		content_panel.add(panel_1, "name_12754721965515");
+		panel_1.setLayout(null);
 		
-		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("New tab", null, panel_2, null);
+		JLabel label_1 = new JLabel("Elements:");
+		label_1.setBounds(12, 0, 91, 13);
+		panel_1.add(label_1);
+		
+		JList list_1 = new JList();
+		list_1.setBounds(12, 25, 408, 132);
+		panel_1.add(list_1);
+		
+		JButton button_14 = new JButton("Delete");
+		button_14.setBounds(12, 162, 91, 27);
+		panel_1.add(button_14);
+		
+		JButton button_15 = new JButton("Add existing");
+		button_15.setBounds(195, 162, 121, 27);
+		panel_1.add(button_15);
+		
+		JButton button_16 = new JButton("Add new");
+		button_16.setBounds(320, 162, 100, 27);
+		panel_1.add(button_16);
+		
+		JPanel panel_alternative = new JPanel();
+		content_panel.add(panel_alternative, "name_12480751815494");
+		panel_alternative.setLayout(null);
+		
+		JButton button_9 = new JButton("^");
+		button_9.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		button_9.setToolTipText("Click here to increase the priority of selected element");
+		button_9.setBounds(12, 0, 46, 53);
+		panel_alternative.add(button_9);
+		
+		JList list = new JList();
+		list.setBounds(65, 0, 355, 149);
+		panel_alternative.add(list);
+		
+		JButton button_10 = new JButton("v");
+		button_10.setToolTipText("Click here to decrease the priority of selected element");
+		button_10.setBounds(12, 96, 46, 53);
+		panel_alternative.add(button_10);
+		
+		JButton button_11 = new JButton("Delete");
+		button_11.setBounds(65, 161, 90, 27);
+		panel_alternative.add(button_11);
+		
+		JButton button_12 = new JButton("Add existing");
+		button_12.setBounds(198, 161, 121, 27);
+		panel_alternative.add(button_12);
+		
+		JButton button_13 = new JButton("Add new");
+		button_13.setBounds(322, 161, 98, 27);
+		panel_alternative.add(button_13);
+		
+		JPanel panel_composite = new JPanel();
+		content_panel.add(panel_composite, "name_12457058301316");
+		panel_composite.setLayout(null);
+		
+		JLabel label = new JLabel("Name:");
+		label.setBounds(12, 5, 45, 15);
+		panel_composite.add(label);
+		
+		JEditorPane editorPane = new JEditorPane();
+		editorPane.setBounds(12, 32, 408, 156);
+		panel_composite.add(editorPane);
 
 	}
 	
