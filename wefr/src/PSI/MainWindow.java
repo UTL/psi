@@ -1,6 +1,5 @@
 package PSI;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Font;
 
@@ -14,35 +13,18 @@ import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
 import javax.swing.JSeparator;
-import javax.swing.JTree;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
-import javax.swing.JInternalFrame;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Component;
-import javax.swing.Box;
-import java.awt.FlowLayout;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.GridLayout;
-import javax.swing.JTextPane;
-import javax.swing.JCheckBox;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.JFormattedTextField;
-import java.awt.Panel;
 import javax.swing.border.TitledBorder;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import javax.swing.JComboBox;
-import java.awt.TextArea;
 import javax.swing.JEditorPane;
+import javax.swing.JTabbedPane;
 
 public class MainWindow extends JFrame {
 
@@ -54,6 +36,7 @@ public class MainWindow extends JFrame {
 
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expandable"}; //FIXME Andrebbero rese globali per tutte le classi??
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
+	//TODO le due stringhe andrebbero esportate da qualche altra parte
 	
 	/**
 	 * Launch the application.
@@ -286,6 +269,16 @@ public class MainWindow extends JFrame {
 		JEditorPane editorPane = new JEditorPane();		//TODO mancano le scrollbar all'editorpane
 		editorPane.setBounds(22, 50, 408, 124);
 		content_panel.add(editorPane);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(36, 113, 144, 123);
+		contentPane.add(tabbedPane);
+		
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("New tab", null, panel_1, null);
+		
+		JPanel panel_2 = new JPanel();
+		tabbedPane.addTab("New tab", null, panel_2, null);
 
 	}
 	

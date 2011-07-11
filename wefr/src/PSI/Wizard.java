@@ -4,36 +4,22 @@
                                              
 package PSI;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import java.awt.TextField;
-import java.awt.Choice;
-import java.awt.List;
-
 import javax.swing.JComboBox;
-import javax.swing.JMenuItem;
 import javax.swing.JButton;
-import javax.swing.Box;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
-import java.awt.Panel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JLabel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JTextField;
 import java.awt.Font;
-import javax.swing.SwingConstants;
 import javax.swing.JList;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.TextArea;
 import java.awt.event.TextListener;
 import java.awt.event.TextEvent;

@@ -3,10 +3,7 @@ package PSI;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JTree;
-import javax.swing.UIManager;
 //import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
