@@ -38,6 +38,7 @@ import webApplication.business.ComponenteComposto;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
+import java.awt.TextField;
 
 
 public class MainWindow extends JFrame {
@@ -47,6 +48,10 @@ public class MainWindow extends JFrame {
 	private JTextField textField_Name;
 	private JTextField textField_Type;
 	private JTextField textField_Category;
+	private JComboBox comboBox_Importance;
+	private JComboBox comboBox_Emphasize;
+	private JEditorPane editorPane_text;
+	private TextField textField_imagepath;
 
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
@@ -58,8 +63,8 @@ public class MainWindow extends JFrame {
 	
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField textField_linktext;
+	private JTextField textField_URL;
 	//TODO le due stringhe andrebbero esportate da qualche altra parte
 	
 	/**
@@ -275,7 +280,7 @@ public class MainWindow extends JFrame {
 		presentation_panel.add(lblEmphasize);
 		
 		
-		JComboBox comboBox_Importance = new JComboBox(importanze);
+		comboBox_Importance = new JComboBox(importanze);
 		comboBox_Importance.setBounds(111, 49, 112, 24);
 		presentation_panel.add(comboBox_Importance);
 
@@ -289,7 +294,7 @@ public class MainWindow extends JFrame {
 		presentation_panel.add(lblImportance);
 		
 				
-		JComboBox comboBox_Emphasize = new JComboBox(categorie);
+		comboBox_Emphasize = new JComboBox(categorie);
 		comboBox_Emphasize.setBounds(111, 85, 112, 24);
 		presentation_panel.add(comboBox_Emphasize);
 		
@@ -301,29 +306,45 @@ public class MainWindow extends JFrame {
 		properties.add(content_panel);
 		content_panel.setLayout(new CardLayout(0, 0));
 		
-		JPanel panel_1 = new JPanel();
-		content_panel.add(panel_1, "name_12754721965515");
-		panel_1.setLayout(null);
+		JPanel panel_image = new JPanel();
+		content_panel.add(panel_image, "name_18489019544785");
+		panel_image.setLayout(null);
+		
+		JLabel label_2 = new JLabel("File path:");
+		label_2.setBounds(0, 12, 91, 14);
+		panel_image.add(label_2);
+		
+		textField_imagepath = new TextField();
+		textField_imagepath.setBounds(0, 32, 292, 22);
+		panel_image.add(textField_imagepath);
+		
+		JButton button_17 = new JButton("Browse\r\n");
+		button_17.setBounds(298, 25, 89, 29);
+		panel_image.add(button_17);
+		
+		JPanel panel_composite = new JPanel();
+		content_panel.add(panel_composite, "name_12754721965515");
+		panel_composite.setLayout(null);
 		
 		JLabel label_1 = new JLabel("Elements:");
 		label_1.setBounds(12, 0, 91, 13);
-		panel_1.add(label_1);
+		panel_composite.add(label_1);
 		
 		JList list_composite = new JList();
 		list_composite.setBounds(12, 25, 408, 132);
-		panel_1.add(list_composite);
+		panel_composite.add(list_composite);
 		
 		JButton button_14 = new JButton("Delete");
 		button_14.setBounds(12, 162, 91, 27);
-		panel_1.add(button_14);
+		panel_composite.add(button_14);
 		
 		JButton button_15 = new JButton("Add existing");
 		button_15.setBounds(195, 162, 121, 27);
-		panel_1.add(button_15);
+		panel_composite.add(button_15);
 		
 		JButton button_16 = new JButton("Add new");
 		button_16.setBounds(320, 162, 100, 27);
-		panel_1.add(button_16);
+		panel_composite.add(button_16);
 		
 		JPanel panel_alternative = new JPanel();
 		content_panel.add(panel_alternative, "name_12480751815494");
@@ -359,39 +380,40 @@ public class MainWindow extends JFrame {
 		button_13.setBounds(322, 161, 98, 27);
 		panel_alternative.add(button_13);
 		
-		JPanel panel_2 = new JPanel();
-		content_panel.add(panel_2, "name_17817594173923");
-		panel_2.setLayout(null);
+		JPanel panel_link = new JPanel();
+		content_panel.add(panel_link, "name_17817594173923");
+		panel_link.setLayout(null);
 		
 		JLabel lbl_linktxt = new JLabel("Link text:");
 		lbl_linktxt.setBounds(13, 14, 78, 15);
-		panel_2.add(lbl_linktxt);
+		panel_link.add(lbl_linktxt);
 		
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(93, 12, 313, 19);
-		panel_2.add(textField);
+		
+		textField_linktext = new JTextField();
+		textField_linktext.setColumns(10);
+		textField_linktext.setBounds(93, 12, 313, 19);
+		panel_link.add(textField_linktext);
 		
 		JLabel lbl_url = new JLabel("URL:");
 		lbl_url.setBounds(12, 47, 78, 15);
-		panel_2.add(lbl_url);
+		panel_link.add(lbl_url);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(93, 45, 313, 19);
-		panel_2.add(textField_1);
+		textField_URL = new JTextField();
+		textField_URL.setColumns(10);
+		textField_URL.setBounds(93, 45, 313, 19);
+		panel_link.add(textField_URL);
 		
-		JPanel panel_composite = new JPanel();
-		content_panel.add(panel_composite, "name_12457058301316");
-		panel_composite.setLayout(null);
+		JPanel panel_text = new JPanel();
+		content_panel.add(panel_text, "name_12457058301316");
+		panel_text.setLayout(null);
 		
-		JLabel label = new JLabel("Name:");
-		label.setBounds(12, 5, 45, 15);
-		panel_composite.add(label);
+		JLabel label_namecontent = new JLabel("Name:");
+		label_namecontent.setBounds(12, 5, 45, 15);
+		panel_text.add(label_namecontent);
 		
-		JEditorPane editorPane_text = new JEditorPane();
+		editorPane_text = new JEditorPane();
 		editorPane_text.setBounds(12, 32, 408, 156);
-		panel_composite.add(editorPane_text);
+		panel_text.add(editorPane_text);
 		
 		JTree tree = new JTree();
 		tree.setBounds(15, 63, 222, 378);
@@ -399,8 +421,24 @@ public class MainWindow extends JFrame {
 		
 	}
 	
-	private void popolaProperties(Componente selected){
+	
+	private void setGenerici(Componente selected){
 		textField_Name.setText(selected.getNome());
+		
+		//TODO verificare che l'ordine sia giusto (che il numero restituito dal getenfasi corrisp a quello del menu a tendina)
+		comboBox_Emphasize.setSelectedIndex(selected.getEnfasi());
+		comboBox_Importance.setSelectedIndex(selected.getVisibilita());
+	}
+	
+	private void popolaProperties(Testo selected){
+		setGenerici(selected);
+		textField_Type.setText("Text");
+		editorPane_text.setText(selected.getTesto());
+	}
+	
+	private void popolaProperties(Immagine selected){
+		setGenerici(selected);
+		textField_imagepath.setText(selected.getPath());
 		
 	}
 	
