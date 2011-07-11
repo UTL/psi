@@ -13,6 +13,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.TextField;
 import java.awt.Choice;
 import java.awt.List;
+
+import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
 import javax.swing.JButton;
 import javax.swing.Box;
@@ -40,7 +42,7 @@ public class Wizard extends JFrame {
 
 	private JPanel contentPane;
 	private TextField textField;
-	private Choice choice;
+	private JComboBox choice;
 	private JTabbedPane tabbedPane;
 	private JButton btnDone;
 	private TextArea textArea;
@@ -53,6 +55,8 @@ public class Wizard extends JFrame {
 	private Choice choice_2;
 	private TextField textField_3;
 	private TextField textField_4;
+	private final static String[] tipi= {"Text","Image","Link","Alternative","Composite"};
+
 	
 	/**
 	 * Launch the application.
@@ -96,14 +100,9 @@ public class Wizard extends JFrame {
 		tabbedPane.addTab("Step1", null, panel, null);
 		panel.setLayout(null);
 		
-		choice = new Choice();
+		choice = new JComboBox(tipi);
 		choice.setBounds(181, 165, 174, 20);
 		panel.add(choice);
-		choice.add("Text");
-		choice.add("Image");
-		choice.add("Link");
-		choice.add("Alternative");
-		choice.add("Composite");
 		
 		textField = new TextField();
 		textField.addTextListener(new TextListener() {
@@ -195,15 +194,15 @@ public class Wizard extends JFrame {
 		button_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (choice.getSelectedItem().equalsIgnoreCase("text"))
+				if (choice.getSelectedItem().equals(tipi[0]))
 					tabbedPane.setSelectedIndex(2);
-				else if (choice.getSelectedItem().equalsIgnoreCase("link"))
+				else if (choice.getSelectedItem().equals(tipi[2]))
 					tabbedPane.setSelectedIndex(3);
-				else if (choice.getSelectedItem().equalsIgnoreCase("image"))
+				else if (choice.getSelectedItem().equals(tipi[1]))
 				    tabbedPane.setSelectedIndex(4);
-				else if (choice.getSelectedItem().equalsIgnoreCase("composite"))
+				else if (choice.getSelectedItem().equals(tipi[4]))
 					tabbedPane.setSelectedIndex(5);
-				else if (choice.getSelectedItem().equalsIgnoreCase("alternative"))
+				else if (choice.getSelectedItem().equals(tipi[3]))
 					tabbedPane.setSelectedIndex(6);
 			}
 		});

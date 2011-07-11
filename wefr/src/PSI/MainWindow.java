@@ -257,7 +257,7 @@ public class MainWindow extends JFrame {
 		JComboBox comboBox_Importance = new JComboBox(importanze);
 		comboBox_Importance.setBounds(111, 49, 112, 24);
 		presentation_panel.add(comboBox_Importance);
-		
+
 		textField_Category = new JTextField();
 		textField_Category.setColumns(10);
 		textField_Category.setBounds(109, 22, 114, 19);
