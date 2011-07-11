@@ -295,6 +295,7 @@ public class Wizard extends JFrame {
 		tabbedPane.addTab("Step3-l", null, panel_6, null);
 		panel_6.setLayout(null);
 		
+		
 		JLabel lblLinkTarget = new JLabel("URL:");
 		lblLinkTarget.setBounds(132, 121, 66, 14);
 		panel_6.add(lblLinkTarget);
