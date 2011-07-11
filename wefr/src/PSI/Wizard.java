@@ -452,7 +452,7 @@ public class Wizard extends JFrame {
 		panel_10.add(separator_5);
 		
 		JLabel lblElements = new JLabel("Elements:");
-		lblElements.setBounds(28, 64, 66, 14);
+		lblElements.setBounds(28, 64, 91, 13);
 		panel_10.add(lblElements);
 		
 		JList list = new JList();
@@ -461,11 +461,11 @@ public class Wizard extends JFrame {
 		panel_10.add(list);
 		
 		JButton button_16 = new JButton("Delete");
-		button_16.setBounds(28, 226, 76, 27);
+		button_16.setBounds(28, 226, 91, 27);
 		panel_10.add(button_16);
 		
 		JButton button_17 = new JButton("Add existing");
-		button_17.setBounds(226, 226, 106, 27);
+		button_17.setBounds(211, 226, 121, 27);
 		panel_10.add(button_17);
 		
 		JButton button_18 = new JButton("Add new");
