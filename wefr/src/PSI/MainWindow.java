@@ -53,7 +53,7 @@ public class MainWindow extends JFrame {
 	private JTextField textField_Category;
 
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expandable"}; //FIXME Andrebbero rese globali per tutte le classi??
-	private static final String[] importanze = { "Greatly", "TODO", "TODO"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
+	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
 	
 	/**
 	 * Launch the application.
