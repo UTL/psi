@@ -27,6 +27,9 @@ import javax.swing.JEditorPane;
 import javax.swing.JTabbedPane;
 import java.awt.CardLayout;
 import javax.swing.JList;
+import java.awt.event.KeyAdapter;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class MainWindow extends JFrame {
 
@@ -130,7 +133,7 @@ public class MainWindow extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(5, 0, 710, 37);
-		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -210,6 +213,18 @@ public class MainWindow extends JFrame {
 		id_panel.add(lblName);
 		
 		textField_Name = new JTextField();
+		textField_Name.addFocusListener(new FocusAdapter() {
+			//TODO mettere check che il nome non esista gia', serve anche questo nel caso venga incollato del testo...
+			@Override
+			public void focusLost(FocusEvent arg0) {
+			}
+		});
+		textField_Name.addKeyListener(new KeyAdapter() {
+			//TODO mettere check che il nome non sia gia' esistente
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+		});
 		textField_Name.setBounds(67, 40, 114, 19);
 		id_panel.add(textField_Name);
 		textField_Name.setColumns(10);
@@ -258,7 +273,7 @@ public class MainWindow extends JFrame {
 		presentation_panel.add(comboBox_Emphasize);
 		
 		//TODO Gestire i diversi contenuti per i vari tipi di oggetto (soprattutto i composite e alternative)
-		//TODO mettere immagine priorità per alternative
+		//TODO mettere immagine priorità per alternative, up e down
 		JPanel content_panel = new JPanel();
 		content_panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Content ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		content_panel.setBounds(12, 155, 442, 225);
