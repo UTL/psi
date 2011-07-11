@@ -272,19 +272,20 @@ public class MainWindow extends JFrame {
 		comboBox_Emphasize.setBounds(111, 85, 112, 24);
 		presentation_panel.add(comboBox_Emphasize);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Content ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		panel_1.setLayout(null);
-		panel_1.setBounds(12, 155, 442, 186);
-		properties.add(panel_1);
+		//TODO Gestire i diversi contenuti per i vari tipi di oggetto (soprattutto i composite e alternative)
+		JPanel content_panel = new JPanel();
+		content_panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Content ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		content_panel.setLayout(null);
+		content_panel.setBounds(12, 155, 442, 186);
+		properties.add(content_panel);
 		
 		JLabel label = new JLabel("Name:");
 		label.setBounds(12, 23, 51, 15);
-		panel_1.add(label);
+		content_panel.add(label);
 		
 		JEditorPane editorPane = new JEditorPane();		//TODO mancano le scrollbar all'editorpane
 		editorPane.setBounds(22, 50, 408, 124);
-		panel_1.add(editorPane);
+		content_panel.add(editorPane);
 
 	}
 	
