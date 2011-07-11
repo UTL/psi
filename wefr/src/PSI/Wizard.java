@@ -51,11 +51,15 @@ public class Wizard extends JFrame {
 	private TextField textField_5;
 	private JButton btnDone_2;
 	private TextField textField_1;
-	private Choice choice_1;
-	private Choice choice_2;
+	private JComboBox choice_1;
+	private JComboBox choice_2;
 	private TextField textField_3;
 	private TextField textField_4;
+	
+	//TODO come nel MainWindow, le tre stringhe tipi categorie e importanze andrebbero estratte
 	private final static String[] tipi= {"Text","Image","Link","Alternative","Composite"};
+	private static final String[] categorie = { "Necessary", "Indifferent", "Expandable"}; //FIXME Andrebbero rese globali per tutte le classi??
+	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
 
 	
 	/**
@@ -170,19 +174,15 @@ public class Wizard extends JFrame {
 		textField_1.setText("Category0");
 		panel_2.add(textField_1);
 		
-		choice_1 = new Choice();
+		choice_1 = new JComboBox(categorie);
 		choice_1.setBounds(180, 192, 174, 20);
 		panel_2.add(choice_1);
-		choice_1.add("Indifferent");
-		choice_1.add("Necessary");
-		choice_1.add("Expandable");
+		choice_1.setSelectedIndex(1);
 		
-		choice_2 = new Choice();
+		choice_2 = new JComboBox(importanze);
 		choice_2.setBounds(180, 143, 174, 20);
 		panel_2.add(choice_2);
-		choice_2.add("Normally");
-		choice_2.add("Greatly");
-		choice_2.add("Not at all");
+		choice_2.setSelectedIndex(1);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
