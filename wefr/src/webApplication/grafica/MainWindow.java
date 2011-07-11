@@ -24,7 +24,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
-import javax.swing.JTabbedPane;
 import java.awt.CardLayout;
 import javax.swing.JList;
 import java.awt.event.KeyAdapter;
@@ -38,12 +37,20 @@ import webApplication.business.ComponenteComposto;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
+
+
 import java.awt.TextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class MainWindow extends JFrame {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField_Name;
 	private JTextField textField_Type;
@@ -52,14 +59,15 @@ public class MainWindow extends JFrame {
 	private JComboBox comboBox_Emphasize;
 	private JEditorPane editorPane_text;
 	private TextField textField_imagepath;
+	private JPanel content_panel;
 
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
-	private Immagine img;
-	private Link lnk;
-	private Testo txt;
-	private ComponenteAlternative alt;
-	private ComponenteComposto cmp;
+	public Immagine img;
+	public Link lnk;
+	public Testo txt;
+	public ComponenteAlternative alt;
+	public ComponenteComposto cmp;
 	
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
@@ -163,21 +171,35 @@ public class MainWindow extends JFrame {
 		panel.setLayout(null);
 		
 		JButton button = new JButton("");
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				popolaProperties(txt);
+			}
+		});
 		button.setBounds(12, 4, 30, 30);
 		panel.add(button);
 		button.setToolTipText("Open");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 		button.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/motif/icons/TreeOpen.gif")));
 		
 		JButton button_3 = new JButton("");
+		button_3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				popolaProperties(img);
+			}
+		});
 		button_3.setToolTipText("Open");
 		button_3.setBounds(45, 4, 30, 30);
 		panel.add(button_3);
 		
 		JButton button_4 = new JButton("");
+		button_4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				popolaProperties(lnk);
+			}
+		});
 		button_4.setToolTipText("Open");
 		button_4.setBounds(78, 4, 30, 30);
 		panel.add(button_4);
@@ -300,14 +322,14 @@ public class MainWindow extends JFrame {
 		
 		//TODO Gestire i diversi contenuti per i vari tipi di oggetto (soprattutto i composite e alternative)
 		//TODO mettere immagine priorità per alternative, up e down
-		JPanel content_panel = new JPanel();
+		content_panel = new JPanel();
 		content_panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Content ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		content_panel.setBounds(12, 155, 442, 225);
 		properties.add(content_panel);
 		content_panel.setLayout(new CardLayout(0, 0));
 		
 		JPanel panel_image = new JPanel();
-		content_panel.add(panel_image, "name_18489019544785");
+		content_panel.add(panel_image, "panel_image");
 		panel_image.setLayout(null);
 		
 		JLabel label_2 = new JLabel("File path:");
@@ -323,7 +345,7 @@ public class MainWindow extends JFrame {
 		panel_image.add(button_17);
 		
 		JPanel panel_composite = new JPanel();
-		content_panel.add(panel_composite, "name_12754721965515");
+		content_panel.add(panel_composite, "panel_composite");
 		panel_composite.setLayout(null);
 		
 		JLabel label_1 = new JLabel("Elements:");
@@ -347,7 +369,7 @@ public class MainWindow extends JFrame {
 		panel_composite.add(button_16);
 		
 		JPanel panel_alternative = new JPanel();
-		content_panel.add(panel_alternative, "name_12480751815494");
+		content_panel.add(panel_alternative, "panel_alternative");
 		panel_alternative.setLayout(null);
 		
 		JButton button_9 = new JButton("^");
@@ -381,7 +403,7 @@ public class MainWindow extends JFrame {
 		panel_alternative.add(button_13);
 		
 		JPanel panel_link = new JPanel();
-		content_panel.add(panel_link, "name_17817594173923");
+		content_panel.add(panel_link, "panel_link");
 		panel_link.setLayout(null);
 		
 		JLabel lbl_linktxt = new JLabel("Link text:");
@@ -404,7 +426,7 @@ public class MainWindow extends JFrame {
 		panel_link.add(textField_URL);
 		
 		JPanel panel_text = new JPanel();
-		content_panel.add(panel_text, "name_12457058301316");
+		content_panel.add(panel_text, "panel_text");
 		panel_text.setLayout(null);
 		
 		JLabel label_namecontent = new JLabel("Name:");
@@ -418,6 +440,9 @@ public class MainWindow extends JFrame {
 		JTree tree = new JTree();
 		tree.setBounds(15, 63, 222, 378);
 		contentPane.add(tree);
+		
+		//TODO rimuovere invocazione a testing concluso
+		popolaOggetti();
 		
 	}
 	
@@ -437,12 +462,18 @@ public class MainWindow extends JFrame {
 		setGenerici(selected);
 		textField_Type.setText("Text");
 		editorPane_text.setText(selected.getTesto());
-	}
+		
+		CardLayout cl = (CardLayout)(content_panel.getLayout());
+        cl.show(content_panel, "panel_text");	
+        }
 	
 	private void popolaProperties(Immagine selected){
 		setGenerici(selected);
 		textField_Type.setText("Image");
 		textField_imagepath.setText(selected.getPath());
+		
+		CardLayout cl = (CardLayout)(content_panel.getLayout());
+        cl.show(content_panel, "panel_image");
 		
 	}
 	
@@ -452,23 +483,30 @@ public class MainWindow extends JFrame {
 		textField_URL.setText(selected.getUri());
 		textField_linktext.setText(selected.getTesto());
 		
+		CardLayout cl = (CardLayout)(content_panel.getLayout());
+        cl.show(content_panel, "panel_link");
+		
+		
 	}
 	
 	//metodo per popolare oggetti per farci prove
 	private void popolaOggetti(){
+		img= new Immagine("immagineeee", "immagini!", 1,0,"/questo/e/un/path");
 		img.setNome("immagineeee");
 		img.setCategoria("immagini!");
 		img.setPath("/questo/e/un/path");
 		img.setVisibilita(1);
 		img.setEnfasi(0);
 		
-		lnk.setNome("immagineeee");
+		lnk= new Link("", "!", 0,0,"", "");
+		lnk.setNome("linkozzo");
 		lnk.setCategoria("altra");
 		lnk.setVisibilita(1);
 		lnk.setUri("www.url.it");
 		lnk.setTesto("clicca qui");
 		lnk.setEnfasi(2);
 		
+		txt= new Testo("", "", 0, 0, "");
 		txt.setNome("testo");
 		txt.setCategoria("immagini!");
 		txt.setVisibilita(1);
@@ -481,4 +519,7 @@ public class MainWindow extends JFrame {
 		Font newButtonFont=new Font(button.getFont().getName(),Font.ITALIC+Font.BOLD,button.getFont().getSize()+1);
 		button.setFont(newButtonFont);
 	}
+	
+
+	
 }
