@@ -63,11 +63,12 @@ public class MainWindow extends JFrame {
 
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
-	public Immagine img;
-	public Link lnk;
-	public Testo txt;
-	public ComponenteAlternative alt;
-	public ComponenteComposto cmp;
+	private Immagine img;
+	private Link lnk;
+	private Testo txt;
+	private ComponenteAlternative alt;
+	private ComponenteComposto cmp;
+	private Componente focused;
 	
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
@@ -495,7 +496,7 @@ public class MainWindow extends JFrame {
 		img.setNome("immagineeee");
 		img.setCategoria("immagini!");
 		img.setPath("/questo/e/un/path");
-		img.setVisibilita(1);
+		img.setVisibilita(2);
 		img.setEnfasi(0);
 		
 		lnk= new Link("", "!", 0,0,"", "");
@@ -509,10 +510,15 @@ public class MainWindow extends JFrame {
 		txt= new Testo("", "", 0, 0, "");
 		txt.setNome("testo");
 		txt.setCategoria("immagini!");
-		txt.setVisibilita(1);
+		txt.setVisibilita(0);
 		txt.setEnfasi(1);
 		txt.setTesto("scriviamoci tanta roba");
 
+	}
+	
+	//TODO agganciare il metodo al click nelle foglie sull'albero...
+	private void setFocus(Componente comp){
+		focused = comp;
 	}
 	
 	private void boldify(JButton button){
