@@ -69,6 +69,13 @@ public class MainWindow extends JFrame {
 	private ComponenteAlternative alt;
 	private ComponenteComposto cmp;
 	private Componente focused;
+	private Testo focusedTxt;
+	private Immagine focusedImg;
+	private Link focusedLnk;
+	private ComponenteComposto focusedCmp;
+	private ComponenteAlternative focusedAlt;
+
+	
 	
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
@@ -454,6 +461,12 @@ public class MainWindow extends JFrame {
 		panel_text.add(label_namecontent);
 		
 		editorPane_text = new JEditorPane();
+		editorPane_text.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				updateContent(focused);
+			}
+		});
 		editorPane_text.setBounds(12, 32, 408, 156);
 		panel_text.add(editorPane_text);
 		
@@ -540,8 +553,36 @@ public class MainWindow extends JFrame {
 
 	}
 	
+	;
+
+	private void setFocus(Immagine selected){
+		focusedImg = selected;
+		setFocusGeneric(selected);
+
+	}
+	
+	private void setFocus(Testo selected){
+		focusedTxt=selected;
+		setFocusGeneric(selected);
+
+	}
+	private void setFocus(Link selected){
+		focusedLnk=selected;
+		setFocusGeneric(selected);
+
+	}
+	private void setFocus(ComponenteComposto selected){
+		focusedCmp=selected;
+		setFocusGeneric(selected);
+
+	}
+	private void setFocus(ComponenteAlternative selected){
+		focusedAlt=selected;
+		setFocusGeneric(selected);
+	}
+	
 	//TODO agganciare il metodo al click nelle foglie sull'albero...
-	private void setFocus(Componente comp){
+	private void setFocusGeneric(Componente comp){
 		focused = comp;
 	}
 	
@@ -560,6 +601,17 @@ public class MainWindow extends JFrame {
 	
 	private void setFocusedImpo(){
 		focused.setVisibilita(comboBox_Importance.getSelectedIndex());//focused.setVisibilita
+	}
+	
+	private void updateContent(Componente selected){
+		if(selected.getCategoria()==txt.getCategoria())
+			focusedTxt.setTesto(editorPane_text.getText());
+		else if(selected.getCategoria()==img.getCategoria())
+			System.out.println("Immagine");
+		else 
+			System.out.println("Altro");
+		//TODO finire updatecontent per i vari tipi di oggetto
+			
 	}
 	
 	private void boldify(JButton button){
