@@ -305,10 +305,22 @@ public class MainWindow extends JFrame {
 		
 		
 		comboBox_Importance = new JComboBox(importanze);
+		comboBox_Importance.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				setFocusedImpo();
+			}
+		});
 		comboBox_Importance.setBounds(111, 49, 112, 24);
 		presentation_panel.add(comboBox_Importance);
 
 		textField_Category = new JTextField();
+		textField_Category.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				setFocusedCategory();
+			}
+		});
 		textField_Category.setColumns(10);
 		textField_Category.setBounds(109, 22, 114, 19);
 		presentation_panel.add(textField_Category);
@@ -319,6 +331,12 @@ public class MainWindow extends JFrame {
 		
 				
 		comboBox_Emphasize = new JComboBox(categorie);
+		comboBox_Emphasize.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				setFocusedEmph();
+			}
+		});
 		comboBox_Emphasize.setBounds(111, 85, 112, 24);
 		presentation_panel.add(comboBox_Emphasize);
 		
@@ -467,6 +485,7 @@ public class MainWindow extends JFrame {
 		
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, "panel_text");	
+        setFocus(selected);
         }
 	
 	private void popolaProperties(Immagine selected){
@@ -476,6 +495,8 @@ public class MainWindow extends JFrame {
 		
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, "panel_image");
+        setFocus(selected);
+
 		
 	}
 	
@@ -487,6 +508,8 @@ public class MainWindow extends JFrame {
 		
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, "panel_link");
+        setFocus(selected);
+
 		
 		
 	}
@@ -510,7 +533,7 @@ public class MainWindow extends JFrame {
 		
 		txt= new Testo("", "", 0, 0, "");
 		txt.setNome("testo");
-		txt.setCategoria("immagini!");
+		txt.setCategoria("testi!");
 		txt.setVisibilita(0);
 		txt.setEnfasi(1);
 		txt.setTesto("scriviamoci tanta roba");
@@ -525,6 +548,18 @@ public class MainWindow extends JFrame {
 	//TODO verificare se va
 	private void setFocusedName(){
 		focused.setNome(textField_Name.getText());
+	}
+	
+	private void setFocusedCategory(){
+		focused.setCategoria(textField_Category.getText());
+	}
+	
+	private void setFocusedEmph(){
+		focused.setEnfasi(comboBox_Emphasize.getSelectedIndex());//
+	}
+	
+	private void setFocusedImpo(){
+		focused.setVisibilita(comboBox_Importance.getSelectedIndex());//focused.setVisibilita
 	}
 	
 	private void boldify(JButton button){
