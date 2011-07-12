@@ -485,7 +485,7 @@ public class MainWindow extends JFrame {
 		editorPane_text.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				updateContent(focused);
+				updateTextContent();
 			}
 		});
 		editorPane_text.setBounds(12, 32, 408, 156);
@@ -628,13 +628,8 @@ public class MainWindow extends JFrame {
 			focused.setVisibilita(comboBox_Importance.getSelectedIndex());//focused.setVisibilita
 	}
 	
-	private void updateContent(Componente selected){
-		if(selected.getCategoria()==txt.getCategoria())
-			focusedTxt.setTesto(editorPane_text.getText());
-		else if(selected.getCategoria()==img.getCategoria())
-			System.out.println("Immagine");
-		else 
-			System.out.println("Altro");
+	private void updateTextContent(){
+		focusedTxt.setTesto(editorPane_text.getText());
 		//TODO finire updatecontent per i vari tipi di oggetto
 			
 	}
