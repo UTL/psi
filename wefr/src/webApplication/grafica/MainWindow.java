@@ -629,22 +629,26 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void updateTextContent(){
-		focusedTxt.setTesto(editorPane_text.getText());
+		if(focusedTxt!= null)
+			focusedTxt.setTesto(editorPane_text.getText());
 		//TODO finire updatecontent per i vari tipi di oggetto
 			
 	}
 	
 	private void updateLinkText(){
-		focusedLnk.setTesto(textField_linktext.getText());
+		if(focusedLnk!= null)
+			focusedLnk.setTesto(textField_linktext.getText());
 	}
 	
 	private void updateLinkUrl(){
-		focusedLnk.setUri(textField_URL.getText());
+		if(focusedLnk!= null)
+			focusedLnk.setUri(textField_URL.getText());
 	}
 	
 	private void updateImagePath() {
 		// TODO Controllare che il path sia valido
-		focusedImg.setPath(textField_imagepath.getText());		
+		if(focusedImg!= null)
+			focusedImg.setPath(textField_imagepath.getText());		
 	}
 	
 	private void boldify(JButton button){
