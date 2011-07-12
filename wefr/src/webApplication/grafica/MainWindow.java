@@ -69,6 +69,7 @@ public class MainWindow extends JFrame {
 	private ComponenteAlternative alt;
 	private ComponenteComposto cmp;
 	private Componente focused;
+	
 	private Testo focusedTxt;
 	private Immagine focusedImg;
 	private Link focusedLnk;
@@ -364,6 +365,14 @@ public class MainWindow extends JFrame {
 		panel_image.add(label_2);
 		
 		textField_imagepath = new TextField();
+		textField_imagepath.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				updateImagePath();
+			}
+
+			
+		});
 		textField_imagepath.setBounds(0, 32, 292, 22);
 		panel_image.add(textField_imagepath);
 		
@@ -439,6 +448,12 @@ public class MainWindow extends JFrame {
 		
 		
 		textField_linktext = new JTextField();
+		textField_linktext.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				updateLinkText();
+			}
+		});
 		textField_linktext.setColumns(10);
 		textField_linktext.setBounds(93, 12, 313, 19);
 		panel_link.add(textField_linktext);
@@ -448,6 +463,12 @@ public class MainWindow extends JFrame {
 		panel_link.add(lbl_url);
 		
 		textField_URL = new JTextField();
+		textField_URL.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				updateLinkUrl();
+			}
+		});
 		textField_URL.setColumns(10);
 		textField_URL.setBounds(93, 45, 313, 19);
 		panel_link.add(textField_URL);
@@ -588,19 +609,23 @@ public class MainWindow extends JFrame {
 	
 	//TODO verificare se va
 	private void setFocusedName(){
-		focused.setNome(textField_Name.getText());
+		if(focused!= null)
+			focused.setNome(textField_Name.getText());
 	}
 	
 	private void setFocusedCategory(){
-		focused.setCategoria(textField_Category.getText());
+		if(focused!= null)
+			focused.setCategoria(textField_Category.getText());
 	}
 	
 	private void setFocusedEmph(){
-		focused.setEnfasi(comboBox_Emphasize.getSelectedIndex());//
+		if(focused!= null)
+			focused.setEnfasi(comboBox_Emphasize.getSelectedIndex());//
 	}
 	
 	private void setFocusedImpo(){
-		focused.setVisibilita(comboBox_Importance.getSelectedIndex());//focused.setVisibilita
+		if(focused!= null)
+			focused.setVisibilita(comboBox_Importance.getSelectedIndex());//focused.setVisibilita
 	}
 	
 	private void updateContent(Componente selected){
@@ -612,6 +637,19 @@ public class MainWindow extends JFrame {
 			System.out.println("Altro");
 		//TODO finire updatecontent per i vari tipi di oggetto
 			
+	}
+	
+	private void updateLinkText(){
+		focusedLnk.setTesto(textField_linktext.getText());
+	}
+	
+	private void updateLinkUrl(){
+		focusedLnk.setUri(textField_URL.getText());
+	}
+	
+	private void updateImagePath() {
+		// TODO Controllare che il path sia valido
+		focusedImg.setPath(textField_imagepath.getText());		
 	}
 	
 	private void boldify(JButton button){
