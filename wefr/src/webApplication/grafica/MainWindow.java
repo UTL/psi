@@ -11,6 +11,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.ListModel;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
 import javax.swing.JSeparator;
@@ -65,6 +67,10 @@ public class MainWindow extends JFrame {
 	private JPanel content_panel;
 	private JList list_composite;
 	private JScrollPane scrollPane_composite;
+	private JPanel panel_composite;
+	private JButton button_deleteFromComp;
+	private JButton button_addExistComp;
+	private JButton button_addNewComp;
 
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
@@ -398,7 +404,7 @@ public class MainWindow extends JFrame {
 		button_17.setBounds(298, 25, 89, 29);
 		panel_image.add(button_17);
 		
-		JPanel panel_composite = new JPanel();
+		panel_composite = new JPanel();
 		content_panel.add(panel_composite, "panel_composite");
 		panel_composite.setLayout(null);
 		
@@ -407,22 +413,24 @@ public class MainWindow extends JFrame {
 		panel_composite.add(label_1);
 		
 		list_composite = new JList();
+		
 		list_composite.setBounds(12, 25, 408, 132);
 		panel_composite.add(list_composite);
+		
 		//Aggiunta la scroll bar
 		//scrollPane_composite = new JScrollPane(list_composite);
 		
-		JButton button_14 = new JButton("Delete");
-		button_14.setBounds(12, 162, 91, 27);
-		panel_composite.add(button_14);
+		button_deleteFromComp = new JButton("Delete");
+		button_deleteFromComp.setBounds(12, 162, 91, 27);
+		panel_composite.add(button_deleteFromComp);
 		
-		JButton button_15 = new JButton("Add existing");
-		button_15.setBounds(195, 162, 121, 27);
-		panel_composite.add(button_15);
+		button_addExistComp = new JButton("Add existing");
+		button_addExistComp.setBounds(195, 162, 121, 27);
+		panel_composite.add(button_addExistComp);
 		
-		JButton button_16 = new JButton("Add new");
-		button_16.setBounds(320, 162, 100, 27);
-		panel_composite.add(button_16);
+		button_addNewComp = new JButton("Add new");
+		button_addNewComp.setBounds(320, 162, 100, 27);
+		panel_composite.add(button_addNewComp);
 		
 		JPanel panel_alternative = new JPanel();
 		content_panel.add(panel_alternative, "panel_alternative");
@@ -565,9 +573,14 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void popolaProperties(ComponenteComposto selected){
+		
+		if(list_composite != null && panel_composite!=null)
+			panel_composite.remove(list_composite);
+
 		setGenerici(selected,"Composite");
 		
 		setContentLayout("panel_composite");
+		
 		Vector<ComponenteSemplice> componenti = selected.getComponenti();
 		
 		String[] nomiComponenti= new String[componenti.size()];
@@ -575,8 +588,28 @@ public class MainWindow extends JFrame {
 		for(i=0; i < componenti.size();i++){
 			nomiComponenti[i]=componenti.get(i).getNome();
 		}
+		
+		//list_composite = null;
+		list_composite = new JList();//nomiComponenti);
+		list_composite.setBounds(12, 25, 408, 132);
+				
+		
+		list_composite = new JList(nomiComponenti);
+		list_composite.setBounds(12, 25, 408, 132);
+		panel_composite.add(list_composite);
+	
+		button_deleteFromComp.setEnabled(false);
+
+		list_composite.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				button_deleteFromComp.setEnabled(true);
+			}
+		});
+		
 		//TODO settare il listmodel http://download.oracle.com/javase/6/docs/api/javax/swing/JList.html
 		
+			 
 		//list_composite.add
 		
 		//scrollPane_composite.
