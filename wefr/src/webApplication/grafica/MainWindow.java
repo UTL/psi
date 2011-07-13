@@ -514,10 +514,13 @@ public class MainWindow extends JFrame {
 	}
 	
 	
-	private void setGenerici(Componente selected){
+	private void setGenerici(Componente selected, String type){
 		textField_Name.setText(selected.getNome());
 		
 		textField_Category.setText(selected.getCategoria());
+		
+		textField_Type.setText(type);
+
 		
 		//TODO verificare che l'ordine sia giusto (che il numero restituito dal getenfasi corrisp a quello del menu a tendina)
 		comboBox_Emphasize.setSelectedIndex(selected.getEnfasi());
@@ -526,16 +529,14 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void popolaProperties(Testo selected){
-		setGenerici(selected);
-		textField_Type.setText("Text");
+		setGenerici(selected, "Text");
 		editorPane_text.setText(selected.getTesto());
 		
 		setContentLayout("panel_text");
         }
 	
 	private void popolaProperties(Immagine selected){
-		setGenerici(selected);
-		textField_Type.setText("Image");
+		setGenerici(selected,"Image");
 		textField_imagepath.setText(selected.getPath());
 		
 		setContentLayout("panel_image");
@@ -543,8 +544,7 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void popolaProperties(Link selected){
-		setGenerici(selected);
-		textField_Type.setText("Link");
+		setGenerici(selected,"Link");
 		textField_URL.setText(selected.getUri());
 		textField_linktext.setText(selected.getTesto());
 		
@@ -552,15 +552,13 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void popolaProperties(ComponenteAlternative selected){
-		setGenerici(selected);
-		textField_Type.setText("Alternative");
+		setGenerici(selected, "Alternative");
 		
 		setContentLayout("panel_alternative");
 	}
 	
 	private void popolaProperties(ComponenteComposto selected){
-		setGenerici(selected);
-		textField_Type.setText("Composite");
+		setGenerici(selected,"Composite");
 		
 		setContentLayout("panel_composite");
 	}
@@ -596,6 +594,10 @@ public class MainWindow extends JFrame {
 		
 		alt= new ComponenteAlternative("alternativa", "alterniamoci", 2, 0);
 		cmp= new ComponenteComposto("Compostato", "compi", 1, 1);
+		cmp.aggiungiComponenteS(img);
+		cmp.aggiungiComponenteS(lnk);
+		cmp.aggiungiComponenteS(txt);
+		
 
 	}
 	
