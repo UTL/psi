@@ -184,7 +184,7 @@ public class MainWindow extends JFrame {
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				popolaProperties(txt);
+				setFocus(txt);
 			}
 		});
 		button.setBounds(12, 4, 30, 30);
@@ -196,7 +196,7 @@ public class MainWindow extends JFrame {
 		button_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				popolaProperties(img);
+				setFocus(img);
 			}
 		});
 		button_3.setToolTipText("Open");
@@ -207,7 +207,7 @@ public class MainWindow extends JFrame {
 		button_4.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				popolaProperties(lnk);
+				setFocus(lnk);
 			}
 		});
 		button_4.setToolTipText("Open");
@@ -215,11 +215,23 @@ public class MainWindow extends JFrame {
 		panel.add(button_4);
 		
 		JButton button_1 = new JButton("");
+		button_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				setFocus(alt);
+			}
+		});
 		button_1.setToolTipText("Open");
 		button_1.setBounds(120, 4, 30, 30);
 		panel.add(button_1);
 		
 		JButton button_2 = new JButton("");
+		button_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setFocus(cmp);
+			}
+		});
 		button_2.setToolTipText("Open");
 		button_2.setBounds(153, 4, 30, 30);
 		panel.add(button_2);
@@ -520,7 +532,6 @@ public class MainWindow extends JFrame {
 		
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, "panel_text");	
-        setFocus(selected);
         }
 	
 	private void popolaProperties(Immagine selected){
@@ -530,9 +541,7 @@ public class MainWindow extends JFrame {
 		
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, "panel_image");
-        setFocus(selected);
 
-		
 	}
 	
 	private void popolaProperties(Link selected){
@@ -543,10 +552,6 @@ public class MainWindow extends JFrame {
 		
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, "panel_link");
-        setFocus(selected);
-
-		
-		
 	}
 	
 	//metodo per popolare oggetti per farci prove
@@ -573,7 +578,8 @@ public class MainWindow extends JFrame {
 		txt.setEnfasi(1);
 		txt.setTesto("scriviamoci tanta roba");
 		
-		//alt= new 
+		alt= new ComponenteAlternative("alternativa", "alterniamoci", 2, 0);
+		cmp= new ComponenteComposto("Compostato", "compi", 1, 1);
 
 	}
 	
@@ -593,6 +599,7 @@ public class MainWindow extends JFrame {
 		unFocus();
 		focusedImg = selected;
 		setFocusGeneric(selected);
+		popolaProperties(selected);
 
 	}
 	
@@ -600,12 +607,14 @@ public class MainWindow extends JFrame {
 		unFocus();
 		focusedTxt=selected;
 		setFocusGeneric(selected);
+		popolaProperties(selected);
 
 	}
 	private void setFocus(Link selected){
 		unFocus();
 		focusedLnk=selected;
 		setFocusGeneric(selected);
+		popolaProperties(selected);
 
 	}
 	private void setFocus(ComponenteComposto selected){
