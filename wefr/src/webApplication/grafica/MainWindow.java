@@ -68,6 +68,7 @@ public class MainWindow extends JFrame {
 	private Testo txt;
 	private ComponenteAlternative alt;
 	private ComponenteComposto cmp;
+	
 	private Componente focused;
 	
 	private Testo focusedTxt;
@@ -571,38 +572,58 @@ public class MainWindow extends JFrame {
 		txt.setVisibilita(0);
 		txt.setEnfasi(1);
 		txt.setTesto("scriviamoci tanta roba");
+		
+		//alt= new 
 
 	}
 	
-	;
+	//TODO agganciare i metodi setfocus al click nelle foglie sull'albero...
 
+	//metodo per togliere il focus all'oggetto precedente
+	private void unFocus(){
+		focused = null; 
+		focusedTxt = null;
+		focusedImg = null;
+		focusedLnk = null;
+		focusedCmp = null;
+		focusedAlt = null;
+	}
+	
 	private void setFocus(Immagine selected){
+		unFocus();
 		focusedImg = selected;
 		setFocusGeneric(selected);
 
 	}
 	
 	private void setFocus(Testo selected){
+		unFocus();
 		focusedTxt=selected;
 		setFocusGeneric(selected);
 
 	}
 	private void setFocus(Link selected){
+		unFocus();
 		focusedLnk=selected;
 		setFocusGeneric(selected);
 
 	}
 	private void setFocus(ComponenteComposto selected){
+		unFocus();
 		focusedCmp=selected;
 		setFocusGeneric(selected);
+		//TODO implementare parte specifica
 
 	}
 	private void setFocus(ComponenteAlternative selected){
+		unFocus();
 		focusedAlt=selected;
 		setFocusGeneric(selected);
+		//TODO implementare parte specifica
+
 	}
 	
-	//TODO agganciare il metodo al click nelle foglie sull'albero...
+	
 	private void setFocusGeneric(Componente comp){
 		focused = comp;
 	}
@@ -638,7 +659,8 @@ public class MainWindow extends JFrame {
 	private void updateLinkText(){
 		if(focusedLnk!= null)
 			focusedLnk.setTesto(textField_linktext.getText());
-	}
+			//TODO sarebbe bello sollevare un'eccezione ogni volta che questo if non si verifica (e anche per tutti gli altri metodi di update)
+		}
 	
 	private void updateLinkUrl(){
 		if(focusedLnk!= null)
@@ -648,7 +670,8 @@ public class MainWindow extends JFrame {
 	private void updateImagePath() {
 		// TODO Controllare che il path sia valido
 		if(focusedImg!= null)
-			focusedImg.setPath(textField_imagepath.getText());		
+			focusedImg.setPath(textField_imagepath.getText());
+		
 	}
 	
 	private void boldify(JButton button){
