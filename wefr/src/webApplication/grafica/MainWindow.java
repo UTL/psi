@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
@@ -34,6 +35,7 @@ import javax.swing.JTree;
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
+import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
@@ -42,6 +44,7 @@ import webApplication.business.Testo;
 import java.awt.TextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Vector;
 
 
 public class MainWindow extends JFrame {
@@ -60,6 +63,8 @@ public class MainWindow extends JFrame {
 	private JEditorPane editorPane_text;
 	private TextField textField_imagepath;
 	private JPanel content_panel;
+	private JList list_composite;
+	private JScrollPane scrollPane_composite;
 
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
@@ -401,9 +406,11 @@ public class MainWindow extends JFrame {
 		label_1.setBounds(12, 0, 91, 13);
 		panel_composite.add(label_1);
 		
-		JList list_composite = new JList();
+		list_composite = new JList();
 		list_composite.setBounds(12, 25, 408, 132);
 		panel_composite.add(list_composite);
+		//Aggiunta la scroll bar
+		//scrollPane_composite = new JScrollPane(list_composite);
 		
 		JButton button_14 = new JButton("Delete");
 		button_14.setBounds(12, 162, 91, 27);
@@ -561,6 +568,20 @@ public class MainWindow extends JFrame {
 		setGenerici(selected,"Composite");
 		
 		setContentLayout("panel_composite");
+		Vector<ComponenteSemplice> componenti = selected.getComponenti();
+		
+		String[] nomiComponenti= new String[componenti.size()];
+		int i;
+		for(i=0; i < componenti.size();i++){
+			nomiComponenti[i]=componenti.get(i).getNome();
+		}
+		//TODO settare il listmodel http://download.oracle.com/javase/6/docs/api/javax/swing/JList.html
+		
+		//list_composite.add
+		
+		//scrollPane_composite.
+		
+		
 	}
 	
 	private void setContentLayout(String panel){
