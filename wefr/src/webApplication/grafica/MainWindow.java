@@ -531,8 +531,6 @@ public class MainWindow extends JFrame {
 		editorPane_text.setText(selected.getTesto());
 		
 		setContentLayout("panel_text");
-		//CardLayout cl = (CardLayout)(content_panel.getLayout());
-        //cl.show(content_panel, "panel_text");	
         }
 	
 	private void popolaProperties(Immagine selected){
@@ -541,8 +539,6 @@ public class MainWindow extends JFrame {
 		textField_imagepath.setText(selected.getPath());
 		
 		setContentLayout("panel_image");
-		//CardLayout cl = (CardLayout)(content_panel.getLayout());
-        //cl.show(content_panel, "panel_image");
 
 	}
 	
@@ -553,8 +549,6 @@ public class MainWindow extends JFrame {
 		textField_linktext.setText(selected.getTesto());
 		
 		setContentLayout("panel_link");
-		//CardLayout cl = (CardLayout)(content_panel.getLayout());
-        //cl.show(content_panel, "panel_link");
 	}
 	
 	private void popolaProperties(ComponenteAlternative selected){
@@ -562,9 +556,6 @@ public class MainWindow extends JFrame {
 		textField_Type.setText("Alternative");
 		
 		setContentLayout("panel_alternative");
-
-		CardLayout cl = (CardLayout)(content_panel.getLayout());
-        cl.show(content_panel, "panel_link");
 	}
 	
 	private void popolaProperties(ComponenteComposto selected){
@@ -572,8 +563,6 @@ public class MainWindow extends JFrame {
 		textField_Type.setText("Composite");
 		
 		setContentLayout("panel_composite");
-		//CardLayout cl = (CardLayout)(content_panel.getLayout());
-        //cl.show(content_panel, "panel_link");
 	}
 	
 	private void setContentLayout(String panel){
@@ -648,6 +637,7 @@ public class MainWindow extends JFrame {
 		unFocus();
 		focusedCmp=selected;
 		setFocusGeneric(selected);
+		popolaProperties(selected);
 		//TODO implementare parte specifica
 
 	}
@@ -655,6 +645,7 @@ public class MainWindow extends JFrame {
 		unFocus();
 		focusedAlt=selected;
 		setFocusGeneric(selected);
+		popolaProperties(selected);
 		//TODO implementare parte specifica
 
 	}
