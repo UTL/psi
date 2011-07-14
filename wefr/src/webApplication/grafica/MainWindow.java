@@ -48,6 +48,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Vector;
+import java.awt.event.TextListener;
+import java.awt.event.TextEvent;
 
 
 public class MainWindow extends JFrame {
@@ -391,10 +393,16 @@ public class MainWindow extends JFrame {
 		panel_image.add(label_2);
 		
 		textField_imagepath = new TextField();
+		textField_imagepath.addTextListener(new TextListener() {
+			public void textValueChanged(TextEvent arg0) {
+				checkImagePath();
+			}
+		});
 		textField_imagepath.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				updateImagePath();
+				//FIXME se si salva collo shortcut da tastiera c'è il rischio che questo cambiamento vada perso! controllare!
 			}
 
 			
@@ -770,12 +778,23 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void updateImagePath() {
-		// TODO Ma va salvato anche se il path e' errato?
+		// TODO Ma va salvato anche se il path e' errato? Se si sostituire il metodo con il commento qua sotto
+		/* if(focusedImg!= null && checkImagePath())
+		 *	 focusedImg.setPath(textField_imagepath.getText());
+		 */
 		if(focusedImg!= null)
 			focusedImg.setPath(textField_imagepath.getText());
-		if(isPathCorrect(textField_imagepath.getText()))
+		checkImagePath();
+	}
+
+	//TODO questo metodo andrà invocato anche quando si incolla qualcosa nel campo (non so che diavolo di evento possa essere)
+	private boolean checkImagePath() {
+		if(isPathCorrect(textField_imagepath.getText())){
 			errorePath.setEnabled(false);
+			return true;
+		}
 		else errorePath.setEnabled(true);
+		return false;
 	}
 	
 	private boolean isPathCorrect(String path){
