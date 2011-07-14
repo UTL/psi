@@ -421,6 +421,12 @@ public class MainWindow extends JFrame {
 		//scrollPane_composite = new JScrollPane(list_composite);
 		
 		button_deleteFromComp = new JButton("Delete");
+		button_deleteFromComp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				removeElementFromComposite(list_composite.getSelectedIndices());
+			}
+		});
 		button_deleteFromComp.setBounds(12, 162, 91, 27);
 		panel_composite.add(button_deleteFromComp);
 		
@@ -573,6 +579,8 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void popolaProperties(ComponenteComposto selected){
+		//FIXME questo metodo fa schifo
+		//TODO verificare se il list_composite ha le scrollbar (non credo)
 		
 		if(list_composite != null && panel_composite!=null)
 			panel_composite.remove(list_composite);
@@ -589,11 +597,6 @@ public class MainWindow extends JFrame {
 			nomiComponenti[i]=componenti.get(i).getNome();
 		}
 		
-		//list_composite = null;
-		list_composite = new JList();//nomiComponenti);
-		list_composite.setBounds(12, 25, 408, 132);
-				
-		
 		list_composite = new JList(nomiComponenti);
 		list_composite.setBounds(12, 25, 408, 132);
 		panel_composite.add(list_composite);
@@ -603,23 +606,27 @@ public class MainWindow extends JFrame {
 		list_composite.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
-				button_deleteFromComp.setEnabled(true);
+				if(list_composite.getSelectedIndex()>-1) //esiste almeno un elemento
+					button_deleteFromComp.setEnabled(true);
 			}
 		});
 		
-		//TODO settare il listmodel http://download.oracle.com/javase/6/docs/api/javax/swing/JList.html
+		panel_composite.repaint();
 		
-			 
-		//list_composite.add
-		
-		//scrollPane_composite.
-		
+		//TODO disabilitare l'add existing quando non esistono elementi da aggiungere
 		
 	}
 	
 	private void setContentLayout(String panel){
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, panel);
+	}
+	
+	private void removeElementFromComposite(int[] daRimuovere){
+		int i;
+		for(i=0;i< daRimuovere.length; i++)
+			focusedCmp.cancellaComponenteS(daRimuovere[i]);
+		popolaProperties(focusedCmp);
 	}
 	
 	//metodo per popolare oggetti per farci prove
