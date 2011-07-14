@@ -46,6 +46,7 @@ import webApplication.business.Testo;
 import java.awt.TextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.Vector;
 
 
@@ -71,6 +72,7 @@ public class MainWindow extends JFrame {
 	private JButton button_deleteFromComp;
 	private JButton button_addExistComp;
 	private JButton button_addNewComp;
+	private JPanel errorePath;
 
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
@@ -385,7 +387,7 @@ public class MainWindow extends JFrame {
 		panel_image.setLayout(null);
 		
 		JLabel label_2 = new JLabel("File path:");
-		label_2.setBounds(0, 12, 91, 14);
+		label_2.setBounds(22, 12, 91, 14);
 		panel_image.add(label_2);
 		
 		textField_imagepath = new TextField();
@@ -397,12 +399,18 @@ public class MainWindow extends JFrame {
 
 			
 		});
-		textField_imagepath.setBounds(0, 32, 292, 22);
+		textField_imagepath.setBounds(22, 42, 292, 22);
 		panel_image.add(textField_imagepath);
 		
 		JButton button_17 = new JButton("Browse\r\n");
-		button_17.setBounds(298, 25, 89, 29);
+		button_17.setBounds(331, 39, 89, 29);
 		panel_image.add(button_17);
+		
+		errorePath = new JPanel();
+		errorePath.setToolTipText("The path of the image is wrong");
+		errorePath.setBorder(new LineBorder(Color.RED));
+		errorePath.setBounds(19, 38, 300, 30);
+		panel_image.add(errorePath);
 		
 		panel_composite = new JPanel();
 		content_panel.add(panel_composite, "panel_composite");
@@ -581,6 +589,8 @@ public class MainWindow extends JFrame {
 	private void popolaProperties(ComponenteComposto selected){
 		//FIXME questo metodo fa schifo
 		//TODO verificare se il list_composite ha le scrollbar (non credo)
+		//TODO aggiungere le iconcine in parte ai nomi
+		//TODO disabilitare l'add existing quando non esistono elementi da aggiungere
 		
 		if(list_composite != null && panel_composite!=null)
 			panel_composite.remove(list_composite);
@@ -613,7 +623,7 @@ public class MainWindow extends JFrame {
 		
 		panel_composite.repaint();
 		
-		//TODO disabilitare l'add existing quando non esistono elementi da aggiungere
+		
 		
 	}
 	
@@ -627,6 +637,8 @@ public class MainWindow extends JFrame {
 		for(i=0;i< daRimuovere.length; i++)
 			focusedCmp.cancellaComponenteS(daRimuovere[i]);
 		popolaProperties(focusedCmp);
+		//FIXME sarebbe meglio fare anche un controllo sul nome e non solo sul numero di indice
+		//TODO tenere traccia della rimorzione
 	}
 	
 	//metodo per popolare oggetti per farci prove
@@ -758,17 +770,24 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void updateImagePath() {
-		// TODO Controllare che il path sia valido
+		// TODO Ma va salvato anche se il path e' errato?
 		if(focusedImg!= null)
 			focusedImg.setPath(textField_imagepath.getText());
-		
+		if(isPathCorrect(textField_imagepath.getText()))
+			errorePath.setEnabled(false);
+		else errorePath.setEnabled(true);
+	}
+	
+	private boolean isPathCorrect(String path){
+		//TODO fare prove con files e dir verificare che funzioni
+		File daControllare = new File(path);
+		if(daControllare.isFile() && daControllare.canRead())
+			return true;
+		return false;
 	}
 	
 	private void boldify(JButton button){
 		Font newButtonFont=new Font(button.getFont().getName(),Font.ITALIC+Font.BOLD,button.getFont().getSize()+1);
 		button.setFont(newButtonFont);
 	}
-	
-
-	
 }
