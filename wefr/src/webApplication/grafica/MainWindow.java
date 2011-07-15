@@ -49,7 +49,10 @@ import webApplication.business.Testo;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Vector;
+import java.util.regex.Pattern;
 import java.awt.event.TextListener;
 import java.awt.event.TextEvent;
 import java.beans.PropertyChangeListener;
@@ -80,6 +83,8 @@ public class MainWindow extends JFrame {
 	private JButton button_addNewComp;
 	private JPanel errorePath;
 	private JPanel erroreTestoLink;
+	private JPanel erroreUrl;
+
 
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
@@ -102,7 +107,7 @@ public class MainWindow extends JFrame {
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
 	private JTextField textField_linktext;
-	private JTextField textField_URL;
+	private JTextField textField_url;
 	//TODO le due stringhe andrebbero esportate da qualche altra parte
 	
 	/**
@@ -549,22 +554,43 @@ public class MainWindow extends JFrame {
 		lbl_url.setBounds(12, 47, 78, 15);
 		panel_link.add(lbl_url);
 		
-		textField_URL = new JTextField();
-		textField_URL.addFocusListener(new FocusAdapter() {
+		textField_url = new JTextField();
+		textField_url.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
 				updateLinkUrl();
 			}
 		});
-		textField_URL.setColumns(10);
-		textField_URL.setBounds(93, 45, 313, 19);
-		panel_link.add(textField_URL);
+		textField_url.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+
+				updateLinkUrl();
+			}
+			public void removeUpdate(DocumentEvent e) {
+				updateLinkUrl();
+				// text was deleted
+			}
+			public void insertUpdate(DocumentEvent e) {
+				updateLinkUrl();
+
+				// text was inserted
+			}
+		});
+		textField_url.setColumns(10);
+		textField_url.setBounds(93, 45, 313, 19);
+		panel_link.add(textField_url);
 		
 		erroreTestoLink = new JPanel();
 		erroreTestoLink.setBorder(new LineBorder(Color.RED));
 		erroreTestoLink.setToolTipText("");
 		erroreTestoLink.setBounds(90, 9, 319, 24);
 		panel_link.add(erroreTestoLink);
+		
+		erroreUrl = new JPanel();
+		erroreUrl.setBorder(new LineBorder(Color.RED));
+		erroreUrl.setToolTipText("");
+		erroreUrl.setBounds(90, 42, 319, 24);
+		panel_link.add(erroreUrl);
 		
 		JPanel panel_text = new JPanel();
 		content_panel.add(panel_text, "panel_text");
@@ -625,7 +651,7 @@ public class MainWindow extends JFrame {
 	
 	private void popolaProperties(Link selected){
 		setGenerici(selected,"Link");
-		textField_URL.setText(selected.getUri());
+		textField_url.setText(selected.getUri());
 		textField_linktext.setText(selected.getTesto());
 		
 		setContentLayout("panel_link");
@@ -832,9 +858,28 @@ public class MainWindow extends JFrame {
 	
 	private void updateLinkUrl(){
 		if(focusedLnk!= null)
-			focusedLnk.setUri(textField_URL.getText());
+			focusedLnk.setUri(textField_url.getText());
+		checkLinkUrl();
 	}
 	
+	private boolean checkLinkUrl(){
+		if(isUrlCorrect(textField_url.getText())){
+			erroreUrl.setVisible(false);
+			textField_url.setToolTipText("URL of the link");
+			return true;
+		}
+		else {
+			erroreUrl.setVisible(true);
+			textField_url.setToolTipText("The URL is not correct");
+		}
+		return false;
+	}
+	
+	private boolean isUrlCorrect(String text) {
+		//TODO serve una regex per controllare le url!
+		return true;
+	}
+
 	private void updateImagePath() {
 		// TODO Evitare di salvare se il path e' errato? Se si sostituire il metodo con il commento qua sotto
 		/* if(focusedImg!= null && checkImagePath())
