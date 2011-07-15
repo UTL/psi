@@ -402,14 +402,14 @@ public class MainWindow extends JFrame {
 		textField_imagepath.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				
-				checkImagePath();
+				updateImagePath();
 			}
 			public void removeUpdate(DocumentEvent e) {
-				checkImagePath();
+				updateImagePath();
 			// text was deleted
 			}
 			public void insertUpdate(DocumentEvent e) {
-				checkImagePath();
+				updateImagePath();
 
 			// text was inserted
 			}
@@ -478,6 +478,7 @@ public class MainWindow extends JFrame {
 		content_panel.add(panel_alternative, "panel_alternative");
 		panel_alternative.setLayout(null);
 		
+		//TODO cambiare le icone terribili dei bottoni up e down
 		JButton button_9 = new JButton("^");
 		button_9.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -518,10 +519,25 @@ public class MainWindow extends JFrame {
 		
 		
 		textField_linktext = new JTextField();
+		textField_linktext.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+
+				checkLinkText();
+			}
+			public void removeUpdate(DocumentEvent e) {
+				checkLinkText();
+				// text was deleted
+			}
+			public void insertUpdate(DocumentEvent e) {
+				checkLinkText();
+
+				// text was inserted
+			}
+		});
 		textField_linktext.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				updateLinkText();
+				checkLinkText();
 			}
 		});
 		textField_linktext.setColumns(10);
@@ -784,6 +800,10 @@ public class MainWindow extends JFrame {
 			focusedTxt.setTesto(editorPane_text.getText());
 		//TODO finire updatecontent per i vari tipi di oggetto
 			
+	}
+	
+	private void checkLinkText(){
+		
 	}
 	
 	private void updateLinkText(){
