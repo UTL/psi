@@ -79,6 +79,7 @@ public class MainWindow extends JFrame {
 	private JButton button_addExistComp;
 	private JButton button_addNewComp;
 	private JPanel errorePath;
+	private JPanel erroreTestoLink;
 
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
@@ -522,14 +523,14 @@ public class MainWindow extends JFrame {
 		textField_linktext.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 
-				checkLinkText();
+				updateLinkText();
 			}
 			public void removeUpdate(DocumentEvent e) {
-				checkLinkText();
+				updateLinkText();
 				// text was deleted
 			}
 			public void insertUpdate(DocumentEvent e) {
-				checkLinkText();
+				updateLinkText();
 
 				// text was inserted
 			}
@@ -537,7 +538,7 @@ public class MainWindow extends JFrame {
 		textField_linktext.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				checkLinkText();
+				updateLinkText();
 			}
 		});
 		textField_linktext.setColumns(10);
@@ -558,6 +559,12 @@ public class MainWindow extends JFrame {
 		textField_URL.setColumns(10);
 		textField_URL.setBounds(93, 45, 313, 19);
 		panel_link.add(textField_URL);
+		
+		erroreTestoLink = new JPanel();
+		erroreTestoLink.setBorder(new LineBorder(Color.RED));
+		erroreTestoLink.setToolTipText("");
+		erroreTestoLink.setBounds(90, 9, 319, 24);
+		panel_link.add(erroreTestoLink);
 		
 		JPanel panel_text = new JPanel();
 		content_panel.add(panel_text, "panel_text");
@@ -802,13 +809,24 @@ public class MainWindow extends JFrame {
 			
 	}
 	
-	private void checkLinkText(){
-		
+	private boolean checkLinkText(){
+		//TODO bisognerebbe controllare i caratteri da escapare
+		if(textField_linktext.getText().length() != 0){
+			textField_linktext.setToolTipText("Text of the link"); //TODO tooltip inutile al 100%
+			erroreTestoLink.setVisible(false);
+			return true;
+		}
+		else {
+			erroreTestoLink.setVisible(true); 
+			textField_linktext.setToolTipText("Link text can't be empty");
+		}
+		return false;
 	}
 	
 	private void updateLinkText(){
 		if(focusedLnk!= null)
 			focusedLnk.setTesto(textField_linktext.getText());
+		checkLinkText();
 			//TODO sarebbe bello sollevare un'eccezione ogni volta che questo if non si verifica (e anche per tutti gli altri metodi di update)
 		}
 	
@@ -818,7 +836,7 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void updateImagePath() {
-		// TODO Ma va salvato anche se il path e' errato? Se si sostituire il metodo con il commento qua sotto
+		// TODO Evitare di salvare se il path e' errato? Se si sostituire il metodo con il commento qua sotto
 		/* if(focusedImg!= null && checkImagePath())
 		 *	 focusedImg.setPath(textField_imagepath.getText());
 		 */
@@ -827,7 +845,6 @@ public class MainWindow extends JFrame {
 		checkImagePath();
 	}
 
-	//TODO questo metodo andrà invocato anche quando si incolla qualcosa nel campo (non so che diavolo di evento possa essere)
 	private boolean checkImagePath() {
 		if(isPathCorrect(textField_imagepath.getText())){
 			errorePath.setEnabled(false);
