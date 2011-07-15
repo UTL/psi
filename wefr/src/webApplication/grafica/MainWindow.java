@@ -7,6 +7,7 @@ import java.awt.TextComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -84,6 +85,7 @@ public class MainWindow extends JFrame {
 	private JPanel errorePath;
 	private JPanel erroreTestoLink;
 	private JPanel erroreUrl;
+	private JFileChooser fileChooser;
 
 
 	//oggetti che per fare prove con l'interfaccia
@@ -437,6 +439,13 @@ public class MainWindow extends JFrame {
 		panel_image.add(textField_imagepath);
 		
 		JButton button_17 = new JButton("Browse\r\n");
+		button_17.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				JFileChooser fileChooser = new JFileChooser();
+				chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, textField_imagepath);
+			}
+		});
 		button_17.setBounds(331, 39, 89, 29);
 		panel_image.add(button_17);
 		
@@ -610,9 +619,11 @@ public class MainWindow extends JFrame {
 		editorPane_text.setBounds(12, 32, 408, 156);
 		panel_text.add(editorPane_text);
 		
-		JTree tree = new JTree();
-		tree.setBounds(15, 63, 222, 378);
-		contentPane.add(tree);
+//		JTree tree = new JTree();
+//		tree.setBounds(15, 63, 222, 378);
+//		contentPane.add(tree);
+		
+
 		
 		//TODO rimuovere invocazione a testing concluso
 		popolaOggetti();
@@ -712,7 +723,7 @@ public class MainWindow extends JFrame {
 	private void removeElementFromComposite(int[] daRimuovere){
 		int i;
 		for(i=0;i< daRimuovere.length; i++)
-			focusedCmp.cancellaComponenteS(daRimuovere[i]);
+			((ComponenteComposto)focused).cancellaComponenteS(daRimuovere[i]);
 		popolaProperties(focusedCmp);
 		//FIXME sarebbe meglio fare anche un controllo sul nome e non solo sul numero di indice
 		//TODO tenere traccia della rimorzione
@@ -837,7 +848,7 @@ public class MainWindow extends JFrame {
 	
 	private boolean checkLinkText(){
 		//TODO bisognerebbe controllare i caratteri da escapare
-		if(textField_linktext.getText().length() != 0){
+		if(textField_linktext.getText().trim().length()!=0){
 			textField_linktext.setToolTipText("Text of the link"); //TODO tooltip inutile al 100%
 			erroreTestoLink.setVisible(false);
 			return true;
@@ -903,6 +914,14 @@ public class MainWindow extends JFrame {
 		return false;
 	}
 	
+	private void chooseFile(int chooserValue, JFileChooser fc, JTextField target){
+		//TODO settare le cartelle di default
+		if (chooserValue == JFileChooser.APPROVE_OPTION) {
+            target.setText(fc.getSelectedFile().getAbsolutePath());
+        } 
+
+	}
+	
 	private boolean isPathCorrect(String path){
 		//TODO fare prove con files e dir verificare che funzioni
 		File daControllare = new File(path);
@@ -910,6 +929,24 @@ public class MainWindow extends JFrame {
 			return true;
 		return false;
 	}
+	
+	/* public void FileChooserTest() {
+		 	JButton open = new JButton("Open"), save = new JButton("Save");
+		    JPanel p = new JPanel();
+		    open.addActionListener(new OpenL());
+		    p.add(open);
+		    save.addActionListener(new SaveL());
+		    p.add(save);
+		    Container cp = getContentPane();
+		    cp.add(p, BorderLayout.SOUTH);
+		    dir.setEditable(false);
+		    filename.setEditable(false);
+		    p = new JPanel();
+		    p.setLayout(new GridLayout(2, 1));
+		    p.add(filename);
+		    p.add(dir);
+		    cp.add(p, BorderLayout.NORTH);
+		  }*/
 	
 	private void boldify(JButton button){
 		Font newButtonFont=new Font(button.getFont().getName(),Font.ITALIC+Font.BOLD,button.getFont().getSize()+1);
