@@ -2,6 +2,7 @@ package webApplication.grafica;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.TextComponent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,6 +25,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
@@ -43,13 +46,14 @@ import webApplication.business.Link;
 import webApplication.business.Testo;
 
 
-import java.awt.TextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Vector;
 import java.awt.event.TextListener;
 import java.awt.event.TextEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 
 public class MainWindow extends JFrame {
@@ -66,7 +70,7 @@ public class MainWindow extends JFrame {
 	private JComboBox comboBox_Importance;
 	private JComboBox comboBox_Emphasize;
 	private JEditorPane editorPane_text;
-	private TextField textField_imagepath;
+	private JTextField textField_imagepath;
 	private JPanel content_panel;
 	private JList list_composite;
 	private JScrollPane scrollPane_composite;
@@ -298,6 +302,7 @@ public class MainWindow extends JFrame {
 		id_panel.add(lblName);
 		
 		textField_Name = new JTextField();
+		textField_Name.setToolTipText("name");
 		textField_Name.addFocusListener(new FocusAdapter() {
 			//TODO mettere check che il nome non esista gia', serve anche questo nel caso venga incollato del testo...
 			@Override
@@ -391,18 +396,33 @@ public class MainWindow extends JFrame {
 		JLabel label_2 = new JLabel("File path:");
 		label_2.setBounds(22, 12, 91, 14);
 		panel_image.add(label_2);
-		
-		textField_imagepath = new TextField();
-		textField_imagepath.addTextListener(new TextListener() {
+				
+		textField_imagepath = new JTextField();
+		textField_imagepath.setToolTipText("Path of the image file");
+		textField_imagepath.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				
+				checkImagePath();
+			}
+			public void removeUpdate(DocumentEvent e) {
+				checkImagePath();
+			// text was deleted
+			}
+			public void insertUpdate(DocumentEvent e) {
+				checkImagePath();
+
+			// text was inserted
+			}
+			});
+		/*addTextListener(new TextListener() {
 			public void textValueChanged(TextEvent arg0) {
 				checkImagePath();
 			}
-		});
+		});*/
 		textField_imagepath.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				updateImagePath();
-				//FIXME se si salva collo shortcut da tastiera c'è il rischio che questo cambiamento vada perso! controllare!
 			}
 
 			
@@ -415,7 +435,7 @@ public class MainWindow extends JFrame {
 		panel_image.add(button_17);
 		
 		errorePath = new JPanel();
-		errorePath.setToolTipText("The path of the image is wrong");
+		errorePath.setToolTipText("The file doesn't exist or is not readable");
 		errorePath.setBorder(new LineBorder(Color.RED));
 		errorePath.setBounds(19, 38, 300, 30);
 		panel_image.add(errorePath);
@@ -791,9 +811,13 @@ public class MainWindow extends JFrame {
 	private boolean checkImagePath() {
 		if(isPathCorrect(textField_imagepath.getText())){
 			errorePath.setEnabled(false);
+			textField_imagepath.setToolTipText("Path of the image file");
 			return true;
 		}
-		else errorePath.setEnabled(true);
+		else {
+			errorePath.setEnabled(true);
+			textField_imagepath.setToolTipText("The file doesn't exist or is not readable");
+		}
 		return false;
 	}
 	
