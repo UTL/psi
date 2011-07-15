@@ -847,12 +847,12 @@ public class MainWindow extends JFrame {
 
 	private boolean checkImagePath() {
 		if(isPathCorrect(textField_imagepath.getText())){
-			errorePath.setEnabled(false);
+			errorePath.setVisible(false);
 			textField_imagepath.setToolTipText("Path of the image file");
 			return true;
 		}
 		else {
-			errorePath.setEnabled(true);
+			errorePath.setVisible(true);
 			textField_imagepath.setToolTipText("The file doesn't exist or is not readable");
 		}
 		return false;
