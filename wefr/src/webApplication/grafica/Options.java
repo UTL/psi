@@ -16,13 +16,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class options extends JFrame {
+public class Options extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField_defImgDir;
 	private JTextField textField_defTxtDir;
 	private JTextField textField_defSaveLoadDir;
-	private String[] defaultDirectories= {"","",""};
+	//private String[] defaultDirectories= {"","",""};
+	private String defDirImage;
+	private String defDirText;
+	private String defDirLoadSave;
 	
 	/**
 	 * Launch the application.
@@ -31,7 +34,7 @@ public class options extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					options frame = new options();
+					Options frame = new Options();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -43,9 +46,11 @@ public class options extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public String[] menu() {
+	public Options() {
+		setResizable(false);
+		setAlwaysOnTop(true);
 		setTitle("Options");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -128,19 +133,37 @@ public class options extends JFrame {
 		btnDone.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+				setVisible(false);
+				dispose();
 			}
 		});
 		
 		btnDone.setBounds(347, 230, 89, 29);
 		contentPane.add(btnDone);
-		return defaultDirectories;
+		
+		
 	}
+	
+	public String getDefDirImage(){
+		return defDirImage;
+	}
+	public String getDefDirText(){
+		return defDirText;
+	}
+	public String getDefDirLoadSave(){
+		return defDirLoadSave;
+	}
+	
 	
 	private void chooseFile(int chooserValue, JFileChooser fc, JTextField target, int dir){
 		MainWindow.chooseFile(chooserValue,  fc, target);
-		if (chooserValue == JFileChooser.APPROVE_OPTION && dir > -1 && dir < defaultDirectories.length) //TODO controllare che il length ritorni il n di stringhe del vettore e non dei caratteri contenuti
-			defaultDirectories[dir]=fc.getSelectedFile().getAbsolutePath();
-	}
-	
+		if (chooserValue == JFileChooser.APPROVE_OPTION){ //TODO controllare che il length ritorni il n di stringhe del vettore e non dei caratteri contenuti
+			if (dir == 0)
+				defDirImage =fc.getSelectedFile().getAbsolutePath();
+			else if (dir == 1)
+				defDirText =fc.getSelectedFile().getAbsolutePath();
+			else
+				defDirLoadSave = fc.getSelectedFile().getAbsolutePath();
+		}
+	}	
 }
