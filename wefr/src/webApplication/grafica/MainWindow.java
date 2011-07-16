@@ -146,6 +146,13 @@ public class MainWindow extends JFrame {
 		mnFile.add(separator);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				//TODO controllare che non ci sia qualcosa da salvare prima di chiudere
+				 System.exit(0);
+			}
+		});
 		mnFile.add(mntmExit);
 		
 		JMenu mnEdit = new JMenu("Edit");
