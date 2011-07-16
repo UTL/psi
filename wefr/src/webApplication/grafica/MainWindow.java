@@ -2,7 +2,6 @@ package webApplication.grafica;
 
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.TextComponent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,10 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-import javax.swing.ListModel;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
 import javax.swing.JSeparator;
@@ -38,6 +34,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JTree;
 
+//import org.apache.commons.validator.UrlValidator;
+
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
@@ -50,14 +48,7 @@ import webApplication.business.Testo;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Vector;
-import java.util.regex.Pattern;
-import java.awt.event.TextListener;
-import java.awt.event.TextEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
 
 public class MainWindow extends JFrame {
@@ -77,7 +68,6 @@ public class MainWindow extends JFrame {
 	private JTextField textField_imagepath;
 	private JPanel content_panel;
 	private JList list_composite;
-	private JScrollPane scrollPane_composite;
 	private JPanel panel_composite;
 	private JButton button_deleteFromComp;
 	private JButton button_addExistComp;
@@ -85,8 +75,6 @@ public class MainWindow extends JFrame {
 	private JPanel errorePath;
 	private JPanel erroreTestoLink;
 	private JPanel erroreUrl;
-	private JFileChooser fileChooser;
-
 
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
@@ -195,6 +183,19 @@ public class MainWindow extends JFrame {
 		menuBar.add(mnOptions);
 		
 		JMenuItem mntmOptions = new JMenuItem("Image directory");
+		
+		mntmOptions.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+						try {
+							Options frameOptions = new Options();
+							frameOptions.setVisible(true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+				//options.menu();
+			}
+		});
 		mnOptions.add(mntmOptions);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
