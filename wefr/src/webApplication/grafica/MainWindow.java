@@ -286,6 +286,11 @@ public class MainWindow extends JFrame {
 		JButton btnGenerateWebsite = new JButton("GENERATE WEBSITE");
 		btnGenerateWebsite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				JFrame newFrame = new JFrame("New Window");
+				newFrame.pack();
+				newFrame.setVisible(true);
+//				   newFrame.revalidate();
+
 			}
 		});
 		btnGenerateWebsite.setToolTipText("Open");
@@ -619,10 +624,11 @@ public class MainWindow extends JFrame {
 		editorPane_text.setBounds(12, 32, 408, 156);
 		panel_text.add(editorPane_text);
 		
-//		JTree tree = new JTree();
-//		tree.setBounds(15, 63, 222, 378);
-//		contentPane.add(tree);
+		JTree tree = new JTree();
+		tree.setBounds(15, 63, 222, 378);
+		contentPane.add(tree);
 		
+	
 
 		
 		//TODO rimuovere invocazione a testing concluso
@@ -914,7 +920,7 @@ public class MainWindow extends JFrame {
 		return false;
 	}
 	
-	private void chooseFile(int chooserValue, JFileChooser fc, JTextField target){
+	static void chooseFile(int chooserValue, JFileChooser fc, JTextField target){
 		//TODO settare le cartelle di default
 		if (chooserValue == JFileChooser.APPROVE_OPTION) {
             target.setText(fc.getSelectedFile().getAbsolutePath());
@@ -929,24 +935,6 @@ public class MainWindow extends JFrame {
 			return true;
 		return false;
 	}
-	
-	/* public void FileChooserTest() {
-		 	JButton open = new JButton("Open"), save = new JButton("Save");
-		    JPanel p = new JPanel();
-		    open.addActionListener(new OpenL());
-		    p.add(open);
-		    save.addActionListener(new SaveL());
-		    p.add(save);
-		    Container cp = getContentPane();
-		    cp.add(p, BorderLayout.SOUTH);
-		    dir.setEditable(false);
-		    filename.setEditable(false);
-		    p = new JPanel();
-		    p.setLayout(new GridLayout(2, 1));
-		    p.add(filename);
-		    p.add(dir);
-		    cp.add(p, BorderLayout.NORTH);
-		  }*/
 	
 	private void boldify(JButton button){
 		Font newButtonFont=new Font(button.getFont().getName(),Font.ITALIC+Font.BOLD,button.getFont().getSize()+1);
