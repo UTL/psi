@@ -8,41 +8,46 @@ package webApplication.business;
 import java.io.Serializable;
 
 /**
- *
+ * 
  * @author Landi Jessica & Miglioranzi Marco
  */
 public class Testo extends ComponenteSemplice implements Serializable {
 
-    private String testo;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4128305818045516427L;
+	private String testo;
+	public static String TEXTTYPE = "Testo";
 
-    /**
-     * Costruttore del componente semplice di tipo Testo
-     */
-     public Testo(String n, String c, int v, int e, String t ){
+	/**
+	 * Costruttore del componente semplice di tipo Testo
+	 */
+	public Testo(String n, String c, int v, int e, String t) {
 
-            super(n,c,v,e);
-            testo=t;
-     }
+		super(n, c, v, e, TEXTTYPE);
+		testo = t;
+	}
 
-     /**
-      * Metodo che permette la modifica del contenuto del testo
-      * @param t
-      */
-    public void setTesto(String t){
-        
-        testo=t;
+	/**
+	 * Metodo che permette la modifica del contenuto del testo
+	 * 
+	 * @param t
+	 */
+	public void setTesto(String t) {
 
-    }
+		testo = t;
 
-    /**
-     *
-     * @return il contenuto del testo
-     */
-    public String getTesto(){
+	}
 
-        return testo;
+	/**
+	 * 
+	 * @return il contenuto del testo
+	 */
+	public String getTesto() {
 
-    }
+		return testo;
 
+	}
 
 }

@@ -11,19 +11,19 @@ package webApplication.business;
  */
 import java.io.Serializable;
 
+public class ComponenteSemplice extends Componente implements Serializable {
 
-public class ComponenteSemplice extends Componente implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1310689558595301355L;
 
+	/**
+	 * Costruttore del componente semplice
+	 */
+	public ComponenteSemplice(String n, String c, int v, int e, String tp) {
+		super(n, c, v, e, tp);
 
-    /**
-     * Costruttore del componente semplice
-     */
-    public ComponenteSemplice(String n,String c,int v,int e){
-        super(n,c,v,e);
+	}
 
-
-    }
-
-  
-   
 }
