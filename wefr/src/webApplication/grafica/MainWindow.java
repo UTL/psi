@@ -76,6 +76,8 @@ public class MainWindow extends JFrame {
 	private JPanel erroreTestoLink;
 	private JPanel erroreUrl;
 	
+	private String currentProject;
+	
 	public MainWindow thisWindow;
 	
 	private Options frameOptions;
@@ -143,9 +145,43 @@ public class MainWindow extends JFrame {
 		
 		JMenuItem mntmNew = new JMenuItem("New");
 		mntmNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
+		mntmNew.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JFileChooser fileChooser=null;
+				if(frameOptions != null && frameOptions.getDefDirLoadSave()!= null && frameOptions.getDefDirLoadSave().length()>0){
+					fileChooser = new JFileChooser(frameOptions.getDefDirLoadSave()); 
+				}
+				else
+					fileChooser = new JFileChooser();
+				String newPath = chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); 
+				
+				if (newPath.length()>0)
+					//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
+					currentProject = newPath;
+					//TODO creare nuovo JTree
+				}
+		});
 		mnFile.add(mntmNew);
 		
 		JMenuItem mntmOpen = new JMenuItem("Open");
+		mntmOpen.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JFileChooser fileChooser=null;
+				if(frameOptions != null && frameOptions.getDefDirLoadSave()!= null && frameOptions.getDefDirLoadSave().length()>0){
+					fileChooser = new JFileChooser(frameOptions.getDefDirLoadSave()); 
+				}
+				else
+					fileChooser = new JFileChooser();
+				String newPath = chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); 
+				
+				if (newPath.length()>0)
+					//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
+					//TODO controllare che il nuovo file esista, e sia corretto
+					currentProject = newPath;
+				}
+		});
 		mnFile.add(mntmOpen);
 		
 		JMenuItem mntmSave = new JMenuItem("Save");
@@ -441,11 +477,7 @@ public class MainWindow extends JFrame {
 			// text was inserted
 			}
 			});
-		/*addTextListener(new TextListener() {
-			public void textValueChanged(TextEvent arg0) {
-				checkImagePath();
-			}
-		});*/
+		
 		textField_imagepath.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
@@ -463,7 +495,6 @@ public class MainWindow extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				JFileChooser fileChooser=null;
 				if(frameOptions != null && frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0){
-					System.out.println("content"+ frameOptions.getDefDirImage());
 					fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
 				}
 				else
@@ -950,7 +981,15 @@ public class MainWindow extends JFrame {
 		if (chooserValue == JFileChooser.APPROVE_OPTION) {
             target.setText(fc.getSelectedFile().getAbsolutePath());
         } 
-
+	}
+	
+	static String chooseFile(int chooserValue, JFileChooser fc){
+		//TODO settare le cartelle di default
+		String output = "";
+		if (chooserValue == JFileChooser.APPROVE_OPTION) {
+			output = fc.getSelectedFile().getAbsolutePath();
+        } 
+		return output;
 	}
 	
 	private boolean isPathCorrect(String path){
