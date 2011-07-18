@@ -13,6 +13,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import webApplication.business.Componente;
+
 public class TreeTransferHandler extends TransferHandler {
 
 	/**
@@ -34,23 +36,22 @@ public class TreeTransferHandler extends TransferHandler {
      */
     public TreeTransferHandler() {
         try {
-        	String mimeType1 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Componente.class.getName()+"\"";
-        	System.out.println(mimeType1);
+        	String mimeType1 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Componente[].class.getName()+"\"";
         	componenteFlavor = new DataFlavor(mimeType1);
         	flavors[0] = componenteFlavor;
-        	String mimeType2 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.ComponenteAlternative.class.getName()+"\"";
+        	String mimeType2 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.ComponenteAlternative[].class.getName()+"\"";
         	nodesFlavor = new DataFlavor(mimeType2);
         	flavors[1] = alternativeFlavor;
-        	String mimeType3 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.ComponenteComposto.class.getName()+"\"";
+        	String mimeType3 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.ComponenteComposto[].class.getName()+"\"";
         	nodesFlavor = new DataFlavor(mimeType3);
         	flavors[2] = compositeFlavor;
-        	String mimeType4 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Immagine.class.getName()+"\"";
+        	String mimeType4 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Immagine[].class.getName()+"\"";
         	nodesFlavor = new DataFlavor(mimeType4);
         	flavors[3] = imageFlavor;
-        	String mimeType5 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Link.class.getName()+"\"";
+        	String mimeType5 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Link[].class.getName()+"\"";
         	nodesFlavor = new DataFlavor(mimeType5);
         	flavors[4] = linkFlavor;
-        	String mimeType6 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Testo.class.getName()+"\"";
+        	String mimeType6 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Testo[].class.getName()+"\"";
         	nodesFlavor = new DataFlavor(mimeType6);
         	flavors[5] = textFlavor;
         	String mimeType8 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + javax.swing.tree.DefaultMutableTreeNode[].class.getName() + "\"";
@@ -70,12 +71,14 @@ public class TreeTransferHandler extends TransferHandler {
     	//controlli per verificare se il drop è valido
     	//1. se l'operazione non è di drop allora ritorna false
     	if (!support.isDrop())	{
+    		System.out.println("Non puoi droppare qui");
     		return false;
     	}
     	//indica visivamente dove sta avvenendo l'operazione di drop
     	support.setShowDropLocation(true);
     	//3. se il data flavor non è supportato allora ritorna false
         if (!support.isDataFlavorSupported(nodesFlavor)) {
+        	System.out.println("Tipo non supportato");
             return false;
         }
         //4. se la DropLocation è la stessa della DragLocation ritorna false
@@ -110,36 +113,36 @@ public class TreeTransferHandler extends TransferHandler {
     	TreePath path = tree.getSelectionPath();
     	if (path!=null)	{
     		DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-    		List<DefaultMutableTreeNode> copies = new ArrayList<DefaultMutableTreeNode>(); //lista della copia degli elementi
-    		List<DefaultMutableTreeNode> toRemove = new ArrayList<DefaultMutableTreeNode>(); //lista degli elementi da rimuovere
-    		DefaultMutableTreeNode nodeCopy = copy(node); //faccio una copia dell'elemento selezionato
-    		copies.add(nodeCopy); //aggiungo la copia agli elementi da copiare
-    		toRemove.add(node); //aggiungo il nodo originale agli elementi da eliminare
+    		Componente comp = (Componente) node.getUserObject();
+    		List<Componente> compCopies = new ArrayList<Componente>();
+    		List<Componente> compToRemove = new ArrayList<Componente>();
+    		Componente compCopy = copy(comp);
+    		compCopies.add(compCopy);
+    		compToRemove.add(comp);
+    		List<DefaultMutableTreeNode> toRemove = new ArrayList<DefaultMutableTreeNode>(); //lista dei nodi da rimuovere->NOTA: memorizzo i nodi tanto mi serve sapere se erano Componente!
+    		toRemove.add(node); //aggiungo il nodo originale agli elementi da eliminare*/
     		// se il nodo corrente può avere dei figli devo copiare anche quelli
     		if (node.getAllowsChildren())	{
     			for (int i=0; i<node.getChildCount(); i++)	{
     				DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
-    				DefaultMutableTreeNode childNodeCopy = copy(childNode);
-    				copies.add(childNodeCopy);
+    				Componente childComp = (Componente) childNode.getUserObject();
+    				Componente childCompCopy = copy(childComp);
     				toRemove.add(childNode);
+    				compCopies.add(childCompCopy);
+    				compToRemove.add(childComp);
     			}
     		}
-    		DefaultMutableTreeNode[] nodesToCopy = copies.toArray(new DefaultMutableTreeNode[copies.size()]);
+    		Componente[] compsToCopy = compCopies.toArray(new Componente[compCopies.size()]);
     		nodesToRemove = toRemove.toArray(new DefaultMutableTreeNode[toRemove.size()]);
-    		return new NodeTransferable(nodesToCopy);
-    		
+    		return new ComponenteTransferable(compsToCopy);
     	}
     	//non ho nulla selezionato
         return null;
     }
     
-    /**
-     * Esegue una copia dell'elemento dell'albero
-     * @param node
-     * @return
-     */
-    private DefaultMutableTreeNode copy(DefaultMutableTreeNode node) {
-        return new DefaultMutableTreeNode(node);
+    private Componente copy(Componente comp) {
+    	Componente compCopy = comp.clone();
+        return compCopy;
     }
     
     /* (non-Javadoc)
@@ -175,18 +178,17 @@ public class TreeTransferHandler extends TransferHandler {
      */
     @Override
     public boolean importData(TransferHandler.TransferSupport support) {
-    	/**
-    	 * TODO genera errore nel cast del cellrenderer...forse devo rendere transferable ogni singolo elemento???
-    	 */
         System.out.println("Inizio ad importare i dati");
         if (!canImport(support)) {
             return false;
         }
         // Estraggo i dati
-        DefaultMutableTreeNode[] nodes = null;
+        Componente[] comps = null;
         try {
             Transferable t = support.getTransferable();
-            nodes = (DefaultMutableTreeNode[]) t.getTransferData(nodesFlavor);
+            //nodes = (DefaultMutableTreeNode[]) t.getTransferData(nodesFlavor);
+            //System.out.println("Ho creato il nodo[]...");
+            comps = (Componente[]) t.getTransferData(componenteFlavor); //non funziona
         } catch (UnsupportedFlavorException ufe) {
             System.out.println("UnsupportedFlavor: " + ufe.getMessage());
         } catch (java.io.IOException ioe) {
@@ -205,9 +207,9 @@ public class TreeTransferHandler extends TransferHandler {
             index = parent.getChildCount();
         }
         // Aggiungo i dati al modello
-        for (int i = 0; i < nodes.length; i++) {
+        for (int i = 0; i < comps.length; i++) {
         //    if (JOptionPane.showConfirmDialog(null, "Confirm drop of " + nodes[i].toString(), "Confirm Drop", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-        	model.insertNodeInto(nodes[i], parent, index++);
+        	model.insertNodeInto(new DefaultMutableTreeNode(comps[i]), parent, index++);
         //    }
         }
         /**
@@ -228,9 +230,11 @@ public class TreeTransferHandler extends TransferHandler {
     
     class NodeTransferable implements Transferable	{
     	DefaultMutableTreeNode[] nodes;
+    	//Componente[] comps;
     	
     	NodeTransferable(DefaultMutableTreeNode[] n)	{
     		nodes=n;
+    		//comps=(Componente[])n;
     	}
 
 		@Override
@@ -248,8 +252,37 @@ public class TreeTransferHandler extends TransferHandler {
 
 		@Override
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
-			System.out.println("Classe rappresentante: "+flavor.getRepresentationClass());
-			if (nodesFlavor.equals(flavor) || componenteFlavor.equals(flavor) || alternativeFlavor.equals(flavor) || textFlavor.equals(flavor) || imageFlavor.equals(flavor) || linkFlavor.equals(flavor) || compositeFlavor.equals(flavor))	{
+			if (nodesFlavor.equals(flavor))	{
+				return true;
+			}
+			return false;
+		}
+    	
+    }
+    
+    class ComponenteTransferable implements Transferable	{
+    	Componente[] comps;
+    	
+    	ComponenteTransferable(Componente[] n)	{
+    		comps=n;
+    	}
+
+		@Override
+		public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException	{
+			if (!isDataFlavorSupported(flavor))	{
+				throw new UnsupportedFlavorException(flavor);
+			}
+			return comps;
+		}
+
+		@Override
+		public DataFlavor[] getTransferDataFlavors() {
+			return flavors;
+		}
+
+		@Override
+		public boolean isDataFlavorSupported(DataFlavor flavor) {
+			if (componenteFlavor.equals(flavor))	{
 				return true;
 			}
 			return false;

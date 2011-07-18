@@ -52,6 +52,8 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		rootNode = new DefaultMutableTreeNode(ROOT);
 		model = new DefaultTreeModel(rootNode);
 		tree =  new JTree(model);
+		System.out.println(tree.toString());
+		System.out.println(model.toString());
 		tree.setEditable(false); // fa in modo che l'albero sia editabile
 		tree.setShowsRootHandles(true); // rende visibile il nodo root
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); //solo un nodo alla volta è selezionabile
@@ -59,8 +61,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(new TreeTransferHandler());
-		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento
-		//dndListener = new DNDTreeListener(tree);
+		//tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elementp
 		JScrollPane scrollPane = new JScrollPane(tree);
 		add(scrollPane);
 		
@@ -132,6 +133,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		if (parent == null) {
 			parent = rootNode;
 		}
+		System.out.println("Dentro addNode il parent si chiama: "+parent);
 		//Verifico che il nodo genitore possa avere nodi figli
 		if (parent.getAllowsChildren()==false)	{
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),parent.toString()+ADDCHILDRENNOTALLOWED,"Error!",JOptionPane.ERROR_MESSAGE);

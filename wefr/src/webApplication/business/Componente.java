@@ -12,7 +12,7 @@ import java.io.*;
  * @author Landi Jessica & Miglioranzi Marco
  */
 
-public abstract class Componente implements Serializable {
+public abstract class Componente implements Serializable, Cloneable {
 
 	/**
 	 * 
@@ -136,6 +136,16 @@ public abstract class Componente implements Serializable {
 	
 	public void setType(String t)	{
 		type = t;
+	}
+	
+	public Componente clone()	{
+		try {
+			return (Componente) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
 	}
 	
 }
