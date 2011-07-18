@@ -1,40 +1,46 @@
 package webApplication.grafica;
 
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JFileChooser;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
-import java.awt.event.KeyEvent;
-import java.awt.event.InputEvent;
-import javax.swing.JSeparator;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import javax.swing.JButton;
-import javax.swing.ImageIcon;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.KeyStroke;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
-import java.awt.CardLayout;
-import javax.swing.JList;
-import java.awt.event.KeyAdapter;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import javax.swing.JTree;
-
-//import org.apache.commons.validator.UrlValidator;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
@@ -43,12 +49,6 @@ import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
-
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.util.Vector;
 
 
 public class MainWindow extends JFrame {
@@ -75,7 +75,11 @@ public class MainWindow extends JFrame {
 	private JPanel errorePath;
 	private JPanel erroreTestoLink;
 	private JPanel erroreUrl;
-
+	
+	public MainWindow thisWindow;
+	
+	private Options frameOptions;
+	
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
 	private Immagine img;
@@ -92,6 +96,9 @@ public class MainWindow extends JFrame {
 	private ComponenteComposto focusedCmp;
 	private ComponenteAlternative focusedAlt;
 
+	private static final String URL_REGEX =
+            "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
+    private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
 	
 	
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
@@ -99,6 +106,8 @@ public class MainWindow extends JFrame {
 	private JTextField textField_linktext;
 	private JTextField textField_url;
 	//TODO le due stringhe andrebbero esportate da qualche altra parte
+	
+	private JRootPane root;
 	
 	/**
 	 * Launch the application.
@@ -124,6 +133,7 @@ public class MainWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 728, 502);
 		setResizable(false);
+		thisWindow = this;
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -194,8 +204,12 @@ public class MainWindow extends JFrame {
 		mntmOptions.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
+							
 						try {
-							Options frameOptions = new Options();
+							//TODO non so come riabilitare il JFrame una volta disabilitato
+							//setEnabled(false);
+							if (frameOptions== null)
+								frameOptions = new Options();
 							frameOptions.setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -292,15 +306,7 @@ public class MainWindow extends JFrame {
 		panel.add(button_8);
 		
 		JButton btnGenerateWebsite = new JButton("GENERATE WEBSITE");
-		btnGenerateWebsite.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JFrame newFrame = new JFrame("New Window");
-				newFrame.pack();
-				newFrame.setVisible(true);
-//				   newFrame.revalidate();
-
-			}
-		});
+		
 		btnGenerateWebsite.setToolTipText("Open");
 		btnGenerateWebsite.setBounds(365, 4, 187, 30);
 		boldify(btnGenerateWebsite);
@@ -451,16 +457,22 @@ public class MainWindow extends JFrame {
 		textField_imagepath.setBounds(22, 42, 292, 22);
 		panel_image.add(textField_imagepath);
 		
-		JButton button_17 = new JButton("Browse\r\n");
-		button_17.addMouseListener(new MouseAdapter() {
+		JButton button_browseImg = new JButton("Browse\r\n");
+		button_browseImg.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser();
+				JFileChooser fileChooser=null;
+				if(frameOptions != null && frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0){
+					System.out.println("content"+ frameOptions.getDefDirImage());
+					fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
+				}
+				else
+					fileChooser = new JFileChooser();
 				chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, textField_imagepath);
 			}
 		});
-		button_17.setBounds(331, 39, 89, 29);
-		panel_image.add(button_17);
+		button_browseImg.setBounds(331, 39, 89, 29);
+		panel_image.add(button_browseImg);
 		
 		errorePath = new JPanel();
 		errorePath.setToolTipText("The file doesn't exist or is not readable");
@@ -902,6 +914,11 @@ public class MainWindow extends JFrame {
 	
 	private boolean isUrlCorrect(String text) {
 		//TODO serve una regex per controllare le url!
+		Matcher urlMatcher = URL_PATTERN.matcher(text);
+        if (!urlMatcher.matches()){
+        	System.out.println("false");
+            return false;}
+        System.out.println("true");
 		return true;
 	}
 
@@ -948,4 +965,8 @@ public class MainWindow extends JFrame {
 		Font newButtonFont=new Font(button.getFont().getName(),Font.ITALIC+Font.BOLD,button.getFont().getSize()+1);
 		button.setFont(newButtonFont);
 	}
+	
+	
+	
+
 }
