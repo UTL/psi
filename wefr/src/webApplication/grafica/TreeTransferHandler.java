@@ -14,6 +14,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import webApplication.business.Componente;
+import webApplication.business.Immagine;
+import webApplication.business.Link;
+import webApplication.business.Testo;
 
 public class TreeTransferHandler extends TransferHandler {
 
@@ -22,13 +25,8 @@ public class TreeTransferHandler extends TransferHandler {
 	 */
 	private static final long serialVersionUID = 1326376733326817767L;
 	private DataFlavor componenteFlavor;
-	private DataFlavor alternativeFlavor;
-	private DataFlavor compositeFlavor;
-	private DataFlavor textFlavor;
-	private DataFlavor imageFlavor;
-	private DataFlavor linkFlavor;
     private DataFlavor nodesFlavor;
-    private DataFlavor[] flavors = new DataFlavor[7];
+    private DataFlavor[] flavors = new DataFlavor[2];
     private DefaultMutableTreeNode[] nodesToRemove;
     
     /**
@@ -39,24 +37,9 @@ public class TreeTransferHandler extends TransferHandler {
         	String mimeType1 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Componente[].class.getName()+"\"";
         	componenteFlavor = new DataFlavor(mimeType1);
         	flavors[0] = componenteFlavor;
-        	String mimeType2 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.ComponenteAlternative[].class.getName()+"\"";
-        	nodesFlavor = new DataFlavor(mimeType2);
-        	flavors[1] = alternativeFlavor;
-        	String mimeType3 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.ComponenteComposto[].class.getName()+"\"";
-        	nodesFlavor = new DataFlavor(mimeType3);
-        	flavors[2] = compositeFlavor;
-        	String mimeType4 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Immagine[].class.getName()+"\"";
-        	nodesFlavor = new DataFlavor(mimeType4);
-        	flavors[3] = imageFlavor;
-        	String mimeType5 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Link[].class.getName()+"\"";
-        	nodesFlavor = new DataFlavor(mimeType5);
-        	flavors[4] = linkFlavor;
-        	String mimeType6 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Testo[].class.getName()+"\"";
-        	nodesFlavor = new DataFlavor(mimeType6);
-        	flavors[5] = textFlavor;
         	String mimeType8 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + javax.swing.tree.DefaultMutableTreeNode[].class.getName() + "\"";
         	nodesFlavor = new DataFlavor(mimeType8);
-        	flavors[6] = nodesFlavor;
+        	flavors[1] = nodesFlavor;
         } catch (ClassNotFoundException e) {
             System.out.println("ClassNotFound: " + e.getMessage());
         }
@@ -81,23 +64,34 @@ public class TreeTransferHandler extends TransferHandler {
         	System.out.println("Tipo non supportato");
             return false;
         }
-        //4. se la DropLocation è la stessa della DragLocation ritorna false
+        //4a. se la DropLocation è la stessa della DragLocation ritorna false
+        //4b. se la DropLocation e la DragLocation sono entrambi elementi composti
+        //4c. se la DragLocation è la root
         JTree.DropLocation dl = (JTree.DropLocation) support.getDropLocation();
         JTree tree = (JTree) support.getComponent();
         TreePath path = dl.getPath();
         int dropRow = tree.getRowForPath(path);
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
         int[] selRows = tree.getSelectionRows();
         for (int i = 0; i < selRows.length; i++) {
-            if (selRows[i] == dropRow) {
+        	TreePath sourcePath = tree.getPathForRow(selRows[i]);
+        	DefaultMutableTreeNode source = (DefaultMutableTreeNode) sourcePath.getLastPathComponent();
+        	System.out.println("Drop è la root: "+node.isRoot());
+        	System.out.println("Source "+source.toString()+" permette child: "+source.getAllowsChildren());
+        	System.out.println("Drop "+node.toString()+" permette child: "+node.getAllowsChildren());
+        	System.out.println("Risultato"+((!node.isRoot()) && source.getAllowsChildren() && node.getAllowsChildren()));
+            if ((selRows[i] == dropRow) || (!node.isRoot() && source.getAllowsChildren() && node.getAllowsChildren()))	{
                 return false;
+            }
+            if (source.isRoot())	{
+            	return false;
             }
         }
         //5. se la DropLocation è un componente che non permette figli
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
         if (!node.getAllowsChildren())	{
         	return false;
         }
-        //6. altre???
+        //6. altri???
     	return true;
     }
     
@@ -150,7 +144,6 @@ public class TreeTransferHandler extends TransferHandler {
      */
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
-        System.out.println("Inizio ad esportare");
         if ((action & MOVE) == MOVE) {
             JTree tree = (JTree) source;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
@@ -159,10 +152,6 @@ public class TreeTransferHandler extends TransferHandler {
                 model.removeNodeFromParent(nodesToRemove[i]);
             }
         }
-        /**
-         * TODO aggiungere gestione del copy
-         */
-        System.out.println("Ho finito di esportare");
     }
     
     /* (non-Javadoc)
@@ -178,7 +167,6 @@ public class TreeTransferHandler extends TransferHandler {
      */
     @Override
     public boolean importData(TransferHandler.TransferSupport support) {
-        System.out.println("Inizio ad importare i dati");
         if (!canImport(support)) {
             return false;
         }
@@ -208,14 +196,15 @@ public class TreeTransferHandler extends TransferHandler {
         }
         // Aggiungo i dati al modello
         for (int i = 0; i < comps.length; i++) {
-        //    if (JOptionPane.showConfirmDialog(null, "Confirm drop of " + nodes[i].toString(), "Confirm Drop", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-        	model.insertNodeInto(new DefaultMutableTreeNode(comps[i]), parent, index++);
-        //    }
+        	if ((support.getUserDropAction() & COPY) == COPY)	{
+        		comps[i].setNome("Copy of "+comps[i].getNome());
+        	}
+        	DefaultMutableTreeNode nodeToInsert = new DefaultMutableTreeNode(comps[i]);
+        	if (comps[i].getType()==Testo.TEXTTYPE || comps[i].getType()==Immagine.IMAGETYPE || comps[i].getType()==Link.LINKTYPE)	{
+        		nodeToInsert.setAllowsChildren(false);
+        	}
+        	model.insertNodeInto(nodeToInsert, parent, index++);
         }
-        /**
-         * TODO e se l'azione è un copy???
-         */
-        System.out.println("Import terminato");
         return true;
     }
     

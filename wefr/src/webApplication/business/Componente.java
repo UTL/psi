@@ -126,9 +126,9 @@ public abstract class Componente implements Serializable, Cloneable {
 
 	}
 	
-	/*public String toString()	{
+	public String toString()	{
 		return nome;
-	}*/
+	}
 	
 	public String getType()	{
 		return type;

@@ -52,8 +52,6 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		rootNode = new DefaultMutableTreeNode(ROOT);
 		model = new DefaultTreeModel(rootNode);
 		tree =  new JTree(model);
-		System.out.println(tree.toString());
-		System.out.println(model.toString());
 		tree.setEditable(false); // fa in modo che l'albero sia editabile
 		tree.setShowsRootHandles(true); // rende visibile il nodo root
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); //solo un nodo alla volta è selezionabile
@@ -61,7 +59,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(new TreeTransferHandler());
-		//tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elementp
+		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elementp
 		JScrollPane scrollPane = new JScrollPane(tree);
 		add(scrollPane);
 		
@@ -180,7 +178,8 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-		if (node == null || node.getParent()==null)	{
+		if (node == null || node.isRoot())	{
+			tree.clearSelection();
 			//non è stato selezionato nulla o è stata selezionata la radice;
 			return;
 		}
@@ -191,5 +190,9 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		System.out.println(comp.getVisibilita());
 		System.out.println(comp.getEnfasi());
 		System.out.println(comp.getType());
+		if (comp.getType() == Testo.TEXTTYPE)	{
+			String testo = ((Testo)comp).getTesto();
+			System.out.println(testo);
+		}
 	}
 }
