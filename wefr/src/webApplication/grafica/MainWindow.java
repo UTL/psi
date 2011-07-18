@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.EventObject;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -196,6 +197,7 @@ public class MainWindow extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				//TODO controllare che non ci sia qualcosa da salvare prima di chiudere
+				dispose();
 				 System.exit(0);
 			}
 		});
@@ -243,10 +245,20 @@ public class MainWindow extends JFrame {
 							
 						try {
 							//TODO non so come riabilitare il JFrame una volta disabilitato
-							//setEnabled(false);
+							setEnabled(false);
+							//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
 							if (frameOptions== null)
 								frameOptions = new Options();
 							frameOptions.setVisible(true);
+							frameOptions.addEventListener(new MyEventClassListener(){
+
+								@Override
+								public void handleMyEventClassEvent(
+										EventObject e) {
+											setEnabled(true);
+									// TODO Auto-generated method stub
+									
+								}});
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -947,9 +959,7 @@ public class MainWindow extends JFrame {
 		//TODO serve una regex per controllare le url!
 		Matcher urlMatcher = URL_PATTERN.matcher(text);
         if (!urlMatcher.matches()){
-        	System.out.println("false");
             return false;}
-        System.out.println("true");
 		return true;
 	}
 

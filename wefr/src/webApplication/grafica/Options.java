@@ -15,6 +15,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Options extends JFrame {
 
@@ -27,6 +30,15 @@ public class Options extends JFrame {
 	private String defDirText;
 	private String defDirLoadSave;
 	
+	 private ArrayList _listeners = new ArrayList();
+	
+	 public synchronized void addEventListener(MyEventClassListener listener)  {
+		 _listeners.add(listener);
+	 }
+	 public synchronized void removeEventListener(MyEventClassListener listener)   {
+		 _listeners.remove(listener);
+	 }
+
 	/**
 	 * Launch the application.
 	 */
@@ -133,6 +145,7 @@ public class Options extends JFrame {
 		btnDone.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				fireEvent();
 				setVisible(false);
 				dispose();
 			}
@@ -166,4 +179,12 @@ public class Options extends JFrame {
 				defDirLoadSave = fc.getSelectedFile().getAbsolutePath();
 		}
 	}	
+	private synchronized void fireEvent() {	
+		MyEventClass event = new MyEventClass(this);
+		Iterator i = _listeners.iterator();
+		while(i.hasNext())  {
+			((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
+		}
+	}
+	
 }
