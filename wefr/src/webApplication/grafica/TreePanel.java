@@ -52,14 +52,15 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		rootNode = new DefaultMutableTreeNode(ROOT);
 		model = new DefaultTreeModel(rootNode);
 		tree =  new JTree(model);
-		tree.setEditable(false); // fa in modo che l'albero sia editabile
+		tree.setEditable(true); // fa in modo che l'albero sia editabile
 		tree.setShowsRootHandles(true); // rende visibile il nodo root
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); //solo un nodo alla volta è selezionabile
 		tree.setCellRenderer(new CustomCellRenderer());
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(new TreeTransferHandler());
-		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elementp
+		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento
+		//editor delle celle
 		JScrollPane scrollPane = new JScrollPane(tree);
 		add(scrollPane);
 		
