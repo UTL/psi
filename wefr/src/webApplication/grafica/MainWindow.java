@@ -33,7 +33,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
@@ -65,7 +67,7 @@ public class MainWindow extends JFrame {
 	private JTextField textField_Category;
 	private JComboBox comboBox_Importance;
 	private JComboBox comboBox_Emphasize;
-	private JEditorPane editorPane_text;
+	private JTextArea editorPane_text;
 	private JTextField textField_imagepath;
 	private JPanel content_panel;
 	private JList list_composite;
@@ -76,6 +78,8 @@ public class MainWindow extends JFrame {
 	private JPanel errorePath;
 	private JPanel erroreTestoLink;
 	private JPanel erroreUrl;
+	
+	private Wizard myWizard;
 	
 	private String currentProject;
 	
@@ -333,7 +337,28 @@ public class MainWindow extends JFrame {
 		button_2.setBounds(153, 4, 30, 30);
 		panel.add(button_2);
 		
+		
 		JButton button_5 = new JButton("");
+		button_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setEnabled(false);
+				//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
+				if (myWizard== null)
+					myWizard = new Wizard();
+				myWizard.setVisible(true);
+				myWizard.addEventListener(new MyEventClassListener(){
+
+					@Override
+					public void handleMyEventClassEvent(
+							EventObject e) {
+								setEnabled(true);
+								myWizard=null;
+						// TODO Auto-generated method stub
+						
+					}});
+			}
+		});
+		button_5.setIcon(new ImageIcon("/home/enrico/Documenti/PSI/icons/list-add-md.png"));
 		button_5.setToolTipText("Open");
 		button_5.setBounds(195, 4, 30, 30);
 		panel.add(button_5);
@@ -361,7 +386,7 @@ public class MainWindow extends JFrame {
 		panel.add(btnGenerateWebsite);
 		
 		JPanel properties = new JPanel();
-		properties.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		properties.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		properties.setLayout(null);
 		properties.setBounds(249, 49, 466, 392);
 		contentPane.add(properties);
@@ -532,6 +557,7 @@ public class MainWindow extends JFrame {
 		panel_composite.add(label_1);
 		
 		list_composite = new JList();
+		//TODO aggiungere un bottone o un menu contestuale per vedere i dettagli degli elementi
 		
 		list_composite.setBounds(12, 25, 408, 132);
 		panel_composite.add(list_composite);
@@ -540,10 +566,13 @@ public class MainWindow extends JFrame {
 		//scrollPane_composite = new JScrollPane(list_composite);
 		
 		button_deleteFromComp = new JButton("Delete");
-		button_deleteFromComp.addMouseListener(new MouseAdapter() {
+		button_deleteFromComp.addActionListener(new java.awt.event.ActionListener() {
+
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO fare un controllo sul nome dell'oggetto
 				removeElementFromComposite(list_composite.getSelectedIndices());
+				
 			}
 		});
 		button_deleteFromComp.setBounds(12, 162, 91, 27);
@@ -677,15 +706,17 @@ public class MainWindow extends JFrame {
 		label_namecontent.setBounds(12, 5, 45, 15);
 		panel_text.add(label_namecontent);
 		
-		editorPane_text = new JEditorPane();
+		editorPane_text = new JTextArea();
+		JScrollPane scrollingArea = new JScrollPane(editorPane_text);
+		scrollingArea.setBounds(12, 32, 408, 156);
 		editorPane_text.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
 				updateTextContent();
 			}
 		});
-		editorPane_text.setBounds(12, 32, 408, 156);
-		panel_text.add(editorPane_text);
+		//editorPane_text.setBounds(12, 32, 408, 156);
+		panel_text.add(scrollingArea);
 		
 		JTree tree = new JTree();
 		tree.setBounds(15, 63, 222, 378);
@@ -759,6 +790,8 @@ public class MainWindow extends JFrame {
 		Vector<ComponenteSemplice> componenti = selected.getComponenti();
 		
 		String[] nomiComponenti= new String[componenti.size()];
+		
+		//TODO mettere icone per il tipo degli oggetti
 		int i;
 		for(i=0; i < componenti.size();i++){
 			nomiComponenti[i]=componenti.get(i).getNome();
@@ -791,8 +824,10 @@ public class MainWindow extends JFrame {
 	
 	private void removeElementFromComposite(int[] daRimuovere){
 		int i;
-		for(i=0;i< daRimuovere.length; i++)
+		//ciclo for al contrario: rimuovere gli elementi dall'ultimo a scendere altrimenti va in crash
+		for(i=daRimuovere.length-1; i>=0; i--){
 			((ComponenteComposto)focused).cancellaComponenteS(daRimuovere[i]);
+		}
 		popolaProperties(focusedCmp);
 		//FIXME sarebbe meglio fare anche un controllo sul nome e non solo sul numero di indice
 		//TODO tenere traccia della rimorzione
@@ -1011,7 +1046,7 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void boldify(JButton button){
-		Font newButtonFont=new Font(button.getFont().getName(),Font.ITALIC+Font.BOLD,button.getFont().getSize()+1);
+		Font newButtonFont=new Font(button.getFont().getName(),Font.ITALIC+Font.BOLD,button.getFont().getSize()+2);
 		button.setFont(newButtonFont);
 	}
 	
