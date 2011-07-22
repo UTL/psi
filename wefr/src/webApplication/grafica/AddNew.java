@@ -234,6 +234,7 @@ public class AddNew extends JFrame {
 		setChangeListener(textField_linkText);
 		setChangeListener(textField_name);
 		setChangeListener(textField_url);
+		setChangeListener(textArea);
 		
 		enabler(panel_text);
 		
@@ -262,14 +263,14 @@ public class AddNew extends JFrame {
 	private void updateComponent(Component figlio, boolean enable){
 		figlio.setEnabled(enable);
 		if(figlio == scrollingArea)
-			manageScrollArea(enable);
-		if (figlio instanceof javax.swing.JTextField){
+			//manageScrollArea(enable);
+			updateComponent(textArea,enable);
+		if (figlio instanceof javax.swing.JTextField || figlio instanceof javax.swing.JTextArea){
 			if(enable)
-				redify((JTextComponent) figlio,isBlank((JTextField) figlio));
+				redify((JTextComponent) figlio,isBlank((JTextComponent) figlio));
 			else
 				redify((JTextComponent) figlio, false);
 		}
-			
 	}
 	
 	private void setBordi(JPanel toDisable, boolean enable) {
@@ -293,13 +294,13 @@ public class AddNew extends JFrame {
 		
 	}
 
-	private void manageScrollArea(boolean enable){
+	/*private void manageScrollArea(boolean enable){
 		if(enable)
 			scrollingArea.setBorder(new LineBorder(new Color(150, 150, 150), 1, true));
 		else
 			scrollingArea.setBorder(new LineBorder(new Color(204, 204, 204), 1, true));
 		textArea.setEnabled(enable);
-	}
+	}*/
 	
 	private void redify(JTextComponent toRed, boolean b){
 		if(b)
@@ -309,24 +310,24 @@ public class AddNew extends JFrame {
 			
 	}
 	
-	private void setChangeListener (JTextField toAttachListener){
-		JTextField textField_imagepath=toAttachListener;
-		textField_imagepath.getDocument().addDocumentListener(new DocumentListener() {
+	private void setChangeListener (JTextComponent toAttachListener){
+		JTextComponent textComponent_imagepath=toAttachListener;
+		textComponent_imagepath.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
-				redify(fromDocToJText(e.getDocument()),isBlank((fromDocToJText(e.getDocument()))));
+				redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
 			}
 			public void removeUpdate(DocumentEvent e) {
-				redify(fromDocToJText(e.getDocument()),isBlank((fromDocToJText(e.getDocument()))));
+				redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
 			}
 			public void insertUpdate(DocumentEvent e) {
-				redify(fromDocToJText(e.getDocument()),isBlank((fromDocToJText(e.getDocument()))));
+				redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
 			}
 			});
 		
 	}
 
 	
-	private JTextField fromDocToJText(Document doc){
+	private JTextComponent fromDocToJComp(Document doc){
 		if(doc== textField_category.getDocument())
 			return textField_category;
 		else if(doc== textField_imagePath.getDocument())
@@ -335,11 +336,13 @@ public class AddNew extends JFrame {
 			return textField_linkText;
 		else if(doc== textField_name.getDocument())
 			return textField_name;
-		else
+		else if(doc== textField_name.getDocument())
 			return textField_url;
+		else 
+			return textArea;
 	}
 	
-	private boolean isBlank(JTextField toCheck){
+	private boolean isBlank(JTextComponent toCheck){
 		if (toCheck.getText().trim().length()>0)
 			return false;
 		return true;
@@ -365,10 +368,12 @@ public class AddNew extends JFrame {
 		return result;	
 	}
 	
+	/*
 	private boolean isBlank(JTextArea toCheck) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		if (toCheck.getText().trim().length()>0)
+			return false;
+		return true;
+	}*/
 
 	private boolean errorUrl() {
 		// TODO Auto-generated method stub
