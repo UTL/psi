@@ -85,6 +85,7 @@ public class AddNew extends JFrame {
 	 * Create the frame.
 	 */
 	public AddNew() {
+		//TODO bug found: un campo errato (rosso) resta rosso anche quando si cambia tipo di oggetto
 		setTitle("Add new to Alternative");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 532, 542);
@@ -252,11 +253,23 @@ public class AddNew extends JFrame {
 		int i;
 		for(i=0; i < figli.length;i++)
 		{
-			figli[i].setEnabled(enable);
-			if(figli[i] == scrollingArea)
-				manageScrollArea(enable);
+			updateComponent(figli[i], enable);
+
 		}
 		
+	}
+	
+	private void updateComponent(Component figlio, boolean enable){
+		figlio.setEnabled(enable);
+		if(figlio == scrollingArea)
+			manageScrollArea(enable);
+		if (figlio instanceof javax.swing.JTextField){
+			if(enable)
+				redify((JTextComponent) figlio,isBlank((JTextField) figlio));
+			else
+				redify((JTextComponent) figlio, false);
+		}
+			
 	}
 	
 	private void setBordi(JPanel toDisable, boolean enable) {
@@ -375,15 +388,6 @@ public class AddNew extends JFrame {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
 
 
 
