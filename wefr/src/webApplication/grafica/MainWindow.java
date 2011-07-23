@@ -246,15 +246,13 @@ public class MainWindow extends JFrame {
 			public void mousePressed(MouseEvent arg0) {
 							
 						try {
-							//TODO non so come riabilitare il JFrame una volta disabilitato
 							setEnabled(false);
 							//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
 							if (frameOptions== null)
 								frameOptions = new Options();
-							frameOptions.addWindowListener(new WindowAdapter(){
+								frameOptions.addWindowListener(new WindowAdapter(){
 								@Override
 								public void windowClosing(WindowEvent e) {
-									// TODO Auto-generated method stub
 									setEnabled(true);
 								}
 							});
@@ -584,6 +582,20 @@ public class MainWindow extends JFrame {
 		panel_composite.add(button_addExistComp);
 		
 		button_addNewComp = new JButton("Add new");
+		button_addNewComp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setEnabled(false);
+					AddNew nuovo = new AddNew();
+					nuovo.addWindowListener(new WindowAdapter(){
+					@Override
+					public void windowClosing(WindowEvent e) {
+						setEnabled(true);
+					}
+				});
+						
+				nuovo.setVisible(true);
+			}
+		});
 		button_addNewComp.setBounds(320, 162, 100, 27);
 		panel_composite.add(button_addNewComp);
 		
@@ -619,6 +631,20 @@ public class MainWindow extends JFrame {
 		panel_alternative.add(button_12);
 		
 		JButton button_13 = new JButton("Add new");
+		button_13.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setEnabled(false);
+					AddNew nuovo = new AddNew();
+					nuovo.addWindowListener(new WindowAdapter(){
+					@Override
+					public void windowClosing(WindowEvent e) {
+						setEnabled(true);
+					}
+				});
+						
+				nuovo.setVisible(true);
+			}
+		});
 		button_13.setBounds(322, 161, 98, 27);
 		panel_alternative.add(button_13);
 		
