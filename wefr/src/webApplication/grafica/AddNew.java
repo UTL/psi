@@ -18,6 +18,7 @@ import javax.swing.text.JTextComponent;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -403,6 +404,13 @@ public class AddNew extends JFrame {
 			// TODO Auto-generated catch block
 		}
 	}
+	
+	public void windowLostFocus(WindowEvent evt) {
+		requestFocusInWindow();
+		
+
+		}
+	
 }
 
 
