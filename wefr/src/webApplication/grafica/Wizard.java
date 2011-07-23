@@ -1109,11 +1109,13 @@ public class Wizard extends JFrame {
 			File file = fc.getSelectedFile();
 			String letta = readFile(file);
             target.setText(letta);
+            
         } 
 
 	}
 	
-	private String readFile (File file) throws IOException{
+	public static String readFile (File file) throws IOException{
+		//FIXME se si prova a leggere il file /dev/zero va in loop infinito (la console continua a leggere e scrollare...)
 		 String letto = "";
 	     FileReader reader = new FileReader(file);
 	     while(true)
