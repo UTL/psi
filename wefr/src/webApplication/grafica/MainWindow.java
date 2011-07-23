@@ -61,7 +61,7 @@ public class MainWindow extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private static JPanel contentPane;
 	private JTextField textField_Name;
 	private JTextField textField_Type;
 	private JTextField textField_Category;
@@ -89,7 +89,7 @@ public class MainWindow extends JFrame {
 	
 	public MainWindow thisWindow;
 	
-	private Options frameOptions;
+	private static Options frameOptions;
 	
 	//oggetti che per fare prove con l'interfaccia
 	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
@@ -1060,7 +1060,25 @@ public class MainWindow extends JFrame {
 		button.setFont(newButtonFont);
 	}
 	
-	public String fileChooser(int i){
+	public static String fileChooser(int i){
+		/*JFileChooser fileChooser=null;
+		if(frameOptions != null){
+			if(i== LOADSAVE && frameOptions.getDefDirLoadSave()!= null && frameOptions.getDefDirLoadSave().length()>0)
+				fileChooser = new JFileChooser(frameOptions.getDefDirLoadSave()); 
+			else if (i == TEXT && frameOptions.getDefDirText()!= null && frameOptions.getDefDirText().length()>0)
+				fileChooser = new JFileChooser(frameOptions.getDefDirText()); 
+			else if (i == IMAGE && frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0)
+				fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
+			else 
+				return null;
+		}
+		else
+			fileChooser = new JFileChooser();
+		return chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); */
+		return buildFileChooser(i).getSelectedFile().getAbsolutePath();
+	}
+	
+	private static JFileChooser buildFileChooser (int i){
 		JFileChooser fileChooser=null;
 		if(frameOptions != null){
 			if(i== LOADSAVE && frameOptions.getDefDirLoadSave()!= null && frameOptions.getDefDirLoadSave().length()>0)
@@ -1074,7 +1092,13 @@ public class MainWindow extends JFrame {
 		}
 		else
 			fileChooser = new JFileChooser();
-		return chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); 
+		chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); 
+		return fileChooser;
+
+	}
+	
+	public static File getFileFromChooser(int i){
+		return buildFileChooser(i).getSelectedFile();
 	}
 	
 	private void fileChooser(int i, JTextField target){
