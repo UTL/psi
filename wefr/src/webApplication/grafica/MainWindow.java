@@ -14,8 +14,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -159,14 +163,7 @@ public class MainWindow extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				String newPath = fileChooser(LOADSAVE);
 				
-				/*JFileChooser fileChooser=null;
-				if(frameOptions != null && frameOptions.getDefDirLoadSave()!= null && frameOptions.getDefDirLoadSave().length()>0){
-					fileChooser = new JFileChooser(frameOptions.getDefDirLoadSave()); 
-				}
-				else
-					fileChooser = new JFileChooser();
-				String newPath = chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); 
-				*/
+				
 				if (newPath.length()>0)
 					//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
 					currentProject = newPath;
@@ -181,14 +178,7 @@ public class MainWindow extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				String newPath = fileChooser(LOADSAVE);
 
-				/*JFileChooser fileChooser=null;
-				if(frameOptions != null && frameOptions.getDefDirLoadSave()!= null && frameOptions.getDefDirLoadSave().length()>0){
-					fileChooser = new JFileChooser(frameOptions.getDefDirLoadSave()); 
-				}
-				else
-					fileChooser = new JFileChooser();
-				String newPath = chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); 
-				*/
+				
 				if (newPath.length()>0)
 					//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
 					//TODO controllare che il nuovo file esista, e sia corretto
@@ -261,6 +251,14 @@ public class MainWindow extends JFrame {
 							//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
 							if (frameOptions== null)
 								frameOptions = new Options();
+							frameOptions.addWindowListener(new WindowAdapter(){
+								@Override
+								public void windowClosing(WindowEvent e) {
+									// TODO Auto-generated method stub
+									setEnabled(true);
+								}
+							});
+									
 							frameOptions.setVisible(true);
 							frameOptions.addEventListener(new MyEventClassListener(){
 
@@ -1108,4 +1106,31 @@ public class MainWindow extends JFrame {
 			target.setText(path);
 	}
 
+}
+
+class FrameListener extends WindowAdapter
+{
+	 /*private ArrayList _listeners = new ArrayList();
+		
+	 public synchronized void addEventListener(MyEventClassListener listener)  {
+		 _listeners.add(listener);
+	 }
+	 public synchronized void removeEventListener(MyEventClassListener listener)   {
+		 _listeners.remove(listener);
+	 }
+	 
+	 private synchronized void fireEvent() {	
+			MyEventClass event = new MyEventClass(this);
+			Iterator i = _listeners.iterator();
+			while(i.hasNext())  {
+				((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
+			}
+			System.out.println("FIRE");
+		}*/
+	 
+   public void windowClosing(WindowEvent e)
+  {
+	// fireEvent();
+   // System.out.println("Esco");
+  }
 }

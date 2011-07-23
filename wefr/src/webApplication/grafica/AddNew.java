@@ -395,6 +395,7 @@ public class AddNew extends JFrame {
 	
 	private static void readFile(){
 		try {
+			//TODO escapare caratteri speciali
 			String letto = Wizard.readFile(MainWindow.getFileFromChooser(MainWindow.TEXT));
 			if ( letto!= null && letto.length()>0)
 				textArea.setText(letto);
