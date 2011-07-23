@@ -1,6 +1,5 @@
 package webApplication.grafica;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.EventQueue;
 
@@ -18,24 +17,22 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
 import java.awt.Color;
-import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.util.ArrayList;
 
-import javax.swing.JSeparator;
-
 public class AddNew extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3236559861349447627L;
 	private JPanel contentPane;
 	private JTextField textField_category;
 	private JTextField textField_name;
