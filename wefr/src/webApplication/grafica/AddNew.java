@@ -21,10 +21,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AddNew extends JFrame {
@@ -44,7 +47,7 @@ public class AddNew extends JFrame {
 	private JPanel panel_text;
 	private JPanel panel_image; 
 	
-	private JTextArea textArea;
+	private static JTextArea textArea;
 	private JScrollPane scrollingArea;
 	private JButton button_2;
 	private JButton button_3;
@@ -82,6 +85,7 @@ public class AddNew extends JFrame {
 	 * Create the frame.
 	 */
 	public AddNew() {
+		setResizable(false);
 		setTitle("Add new to Alternative");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 532, 542);
@@ -154,6 +158,13 @@ public class AddNew extends JFrame {
 		contentPane.add(panel_text);
 		
 		JButton button = new JButton("Import from file");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				readFile();//MainWindow.fileChooser(MainWindow.TEXT), textArea);
+			}
+
+			
+		});
 		button.setFont(new Font("Dialog", Font.PLAIN, 12));
 		button.setBounds(12, 152, 142, 19);
 		panel_text.add(button);
@@ -187,6 +198,11 @@ public class AddNew extends JFrame {
 		panel_image.add(textField_imagePath);
 		
 		JButton button_1 = new JButton("Browse");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}
+		});
 		button_1.setFont(new Font("Dialog", Font.PLAIN, 12));
 		button_1.setBounds(325, 51, 89, 19);
 		panel_image.add(button_1);
@@ -375,6 +391,17 @@ public class AddNew extends JFrame {
 		_listeners.add(listener);
 	}
 	
+	
+	
+	private static void readFile(){
+		try {
+			String letto = Wizard.readFile(MainWindow.getFileFromChooser(MainWindow.TEXT));
+			if ( letto!= null && letto.length()>0)
+				textArea.setText(letto);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
+	}
 }
 
 
