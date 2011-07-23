@@ -537,14 +537,7 @@ public class MainWindow extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				fileChooser(IMAGE, textField_imagepath);
-				/*
-				JFileChooser fileChooser=null;
-				if(frameOptions != null && frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0){
-					fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
-				}
-				else
-					fileChooser = new JFileChooser();
-				chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, textField_imagepath);*/
+				
 			}
 		});
 		button_browseImg.setBounds(331, 39, 89, 29);
@@ -1059,20 +1052,6 @@ public class MainWindow extends JFrame {
 	}
 	
 	public static String fileChooser(int i){
-		/*JFileChooser fileChooser=null;
-		if(frameOptions != null){
-			if(i== LOADSAVE && frameOptions.getDefDirLoadSave()!= null && frameOptions.getDefDirLoadSave().length()>0)
-				fileChooser = new JFileChooser(frameOptions.getDefDirLoadSave()); 
-			else if (i == TEXT && frameOptions.getDefDirText()!= null && frameOptions.getDefDirText().length()>0)
-				fileChooser = new JFileChooser(frameOptions.getDefDirText()); 
-			else if (i == IMAGE && frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0)
-				fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
-			else 
-				return null;
-		}
-		else
-			fileChooser = new JFileChooser();
-		return chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); */
 		return buildFileChooser(i).getSelectedFile().getAbsolutePath();
 	}
 	
@@ -1106,31 +1085,4 @@ public class MainWindow extends JFrame {
 			target.setText(path);
 	}
 
-}
-
-class FrameListener extends WindowAdapter
-{
-	 /*private ArrayList _listeners = new ArrayList();
-		
-	 public synchronized void addEventListener(MyEventClassListener listener)  {
-		 _listeners.add(listener);
-	 }
-	 public synchronized void removeEventListener(MyEventClassListener listener)   {
-		 _listeners.remove(listener);
-	 }
-	 
-	 private synchronized void fireEvent() {	
-			MyEventClass event = new MyEventClass(this);
-			Iterator i = _listeners.iterator();
-			while(i.hasNext())  {
-				((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
-			}
-			System.out.println("FIRE");
-		}*/
-	 
-   public void windowClosing(WindowEvent e)
-  {
-	// fireEvent();
-   // System.out.println("Esco");
-  }
 }
