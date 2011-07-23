@@ -263,7 +263,6 @@ public class AddNew extends JFrame {
 	private void updateComponent(Component figlio, boolean enable){
 		figlio.setEnabled(enable);
 		if(figlio == scrollingArea)
-			//manageScrollArea(enable);
 			updateComponent(textArea,enable);
 		if (figlio instanceof javax.swing.JTextField || figlio instanceof javax.swing.JTextArea){
 			if(enable)
@@ -293,14 +292,6 @@ public class AddNew extends JFrame {
 		}
 		
 	}
-
-	/*private void manageScrollArea(boolean enable){
-		if(enable)
-			scrollingArea.setBorder(new LineBorder(new Color(150, 150, 150), 1, true));
-		else
-			scrollingArea.setBorder(new LineBorder(new Color(204, 204, 204), 1, true));
-		textArea.setEnabled(enable);
-	}*/
 	
 	private void redify(JTextComponent toRed, boolean b){
 		if(b)
@@ -336,10 +327,11 @@ public class AddNew extends JFrame {
 			return textField_linkText;
 		else if(doc== textField_name.getDocument())
 			return textField_name;
-		else if(doc== textField_name.getDocument())
+		else if(doc== textField_url.getDocument())
 			return textField_url;
-		else 
+		else if (doc== textArea.getDocument())
 			return textArea;
+		return null;
 	}
 	
 	private boolean isBlank(JTextComponent toCheck){
@@ -367,13 +359,6 @@ public class AddNew extends JFrame {
 
 		return result;	
 	}
-	
-	/*
-	private boolean isBlank(JTextArea toCheck) {
-		if (toCheck.getText().trim().length()>0)
-			return false;
-		return true;
-	}*/
 
 	private boolean errorUrl() {
 		// TODO Auto-generated method stub
