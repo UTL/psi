@@ -85,7 +85,6 @@ public class AddNew extends JFrame {
 	 * Create the frame.
 	 */
 	public AddNew() {
-		//TODO bug found: un campo errato (rosso) resta rosso anche quando si cambia tipo di oggetto
 		setTitle("Add new to Alternative");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 532, 542);
