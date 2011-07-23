@@ -271,9 +271,9 @@ public class AddNew extends JFrame {
 	private void setBordi(JPanel toDisable, boolean enable) {
 		if(enable){
 			if(toDisable== panel_image)				
-				panel_image.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+				panel_image.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 			else if (toDisable == panel_link)
-				panel_link.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+				panel_link.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 			else
 				panel_text.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 
@@ -335,6 +335,8 @@ public class AddNew extends JFrame {
 			return false;
 		return true;
 	}
+	
+	//FIXME errore nei titoli da disable a enable...
 	
 	private boolean nameExists(){
 		//TODO scrivere la funzione
