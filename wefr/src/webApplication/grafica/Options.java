@@ -188,10 +188,11 @@ public class Options extends JFrame {
 		}
 	}
 	
-	public void windowLostFocus(WindowEvent evt) {
+	/*public void windowLostFocus(WindowEvent evt) {
+		System.out.println("focus lost options");
 		requestFocusInWindow();
 		
 
-		}
+		}*/
 	
 }

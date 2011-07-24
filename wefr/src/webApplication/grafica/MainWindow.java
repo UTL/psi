@@ -244,32 +244,32 @@ public class MainWindow extends JFrame {
 		mntmOptions.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-							
-						try {
-							setEnabled(false);
-							//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
-							if (frameOptions== null)
-								frameOptions = new Options();
-								frameOptions.addWindowListener(new WindowAdapter(){
-								@Override
-								public void windowClosing(WindowEvent e) {
-									setEnabled(true);
-								}
-							});
-									
-							frameOptions.setVisible(true);
-							frameOptions.addEventListener(new MyEventClassListener(){
 
-								@Override
-								public void handleMyEventClassEvent(
-										EventObject e) {
-											setEnabled(true);
-									// TODO Auto-generated method stub
-									
-								}});
-						} catch (Exception e) {
-							e.printStackTrace();
+				try {
+					setEnabled(false);
+					//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
+					if (frameOptions== null)
+						frameOptions = new Options();
+					frameOptions.addWindowListener(new WindowAdapter(){
+						@Override
+						public void windowClosing(WindowEvent e) {
+							frameOptions.dispose();
+							setEnabled(true);
 						}
+					});
+
+					frameOptions.setVisible(true);
+					frameOptions.addEventListener(new MyEventClassListener(){
+
+						@Override
+						public void handleMyEventClassEvent(
+								EventObject e) {
+							setEnabled(true);
+
+						}});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				//options.menu();
 			}
 		});
@@ -1078,7 +1078,13 @@ public class MainWindow extends JFrame {
 	}
 	
 	public static String fileChooser(int i){
-		return buildFileChooser(i).getSelectedFile().getAbsolutePath();
+		JFileChooser filec=buildFileChooser(i);
+		if(filec==null)
+			return "";
+		if (filec.getSelectedFile()==null){
+			return "";
+		}
+		return filec.getSelectedFile().getAbsolutePath();
 	}
 	
 	private static JFileChooser buildFileChooser (int i){
@@ -1090,8 +1096,9 @@ public class MainWindow extends JFrame {
 				fileChooser = new JFileChooser(frameOptions.getDefDirText()); 
 			else if (i == IMAGE && frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0)
 				fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
-			else 
+			else {
 				return null;
+			}
 		}
 		else
 			fileChooser = new JFileChooser();

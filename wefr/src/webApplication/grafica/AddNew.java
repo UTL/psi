@@ -86,6 +86,8 @@ public class AddNew extends JFrame {
 	 * Create the frame.
 	 */
 	public AddNew() {
+		setAlwaysOnTop(true);
+
 		setResizable(false);
 		setTitle("Add new to Alternative");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -407,8 +409,7 @@ public class AddNew extends JFrame {
 	
 	public void windowLostFocus(WindowEvent evt) {
 		requestFocusInWindow();
-		
-
+		System.out.println("focus");
 		}
 	
 }
