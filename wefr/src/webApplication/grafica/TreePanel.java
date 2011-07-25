@@ -52,7 +52,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		rootNode = new DefaultMutableTreeNode(ROOT);
 		model = new DefaultTreeModel(rootNode);
 		tree =  new JTree(model);
-		tree.setEditable(true); // fa in modo che l'albero sia editabile
+		tree.setEditable(false); // fa in modo che l'albero non sia editabile
 		tree.setShowsRootHandles(true); // rende visibile il nodo root
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); //solo un nodo alla volta è selezionabile
 		tree.setCellRenderer(new CustomCellRenderer());
@@ -131,9 +131,17 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
 		if (parent == null) {
 			parent = rootNode;
+		}	else	{
+			Componente compElem = (Componente)parent.getUserObject();
+			String type = compElem.getType();
+			if (type==ComponenteComposto.COMPOSTOTYPE)	{
+				((ComponenteComposto)compElem).aggiungiComponenteS((ComponenteSemplice) node);
+			}
+			else if (type==ComponenteAlternative.ALTERNATIVETYPE)	{
+				((ComponenteAlternative)compElem).aggiungiAlternativa((ComponenteSemplice)node);
+			}
 		}
-		System.out.println("Dentro addNode il parent si chiama: "+parent);
-		//Verifico che il nodo genitore possa avere nodi figli
+		//Verifico che il nodo genitore possa avere nodi figli anche se con il drag&drop è già esclusa come destinazione possibile (vedi canImport)
 		if (parent.getAllowsChildren()==false)	{
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),parent.toString()+ADDCHILDRENNOTALLOWED,"Error!",JOptionPane.ERROR_MESSAGE);
 			return;
@@ -194,6 +202,12 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		if (comp.getType() == Testo.TEXTTYPE)	{
 			String testo = ((Testo)comp).getTesto();
 			System.out.println(testo);
+		}
+		if (comp.getType() == ComponenteComposto.COMPOSTOTYPE)	{
+			System.out.println(((ComponenteComposto)comp).getComponenti());
+		}
+		if (comp.getType() == ComponenteAlternative.ALTERNATIVETYPE)	{
+			System.out.println(((ComponenteAlternative)comp).getAlternative());
 		}
 	}
 }

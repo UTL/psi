@@ -26,7 +26,6 @@ public class ComponenteAlternative extends Componente implements Serializable {
 	public ComponenteAlternative(String n, String c, int v, int e) {
 		super(n, c, v, e, ALTERNATIVETYPE);
 		alternative = new Vector<ComponenteSemplice>();
-
 	}
 
 	/**

@@ -14,6 +14,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import webApplication.business.Componente;
+import webApplication.business.ComponenteAlternative;
+import webApplication.business.ComponenteComposto;
+import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
@@ -76,10 +79,6 @@ public class TreeTransferHandler extends TransferHandler {
         for (int i = 0; i < selRows.length; i++) {
         	TreePath sourcePath = tree.getPathForRow(selRows[i]);
         	DefaultMutableTreeNode source = (DefaultMutableTreeNode) sourcePath.getLastPathComponent();
-        	System.out.println("Drop è la root: "+node.isRoot());
-        	System.out.println("Source "+source.toString()+" permette child: "+source.getAllowsChildren());
-        	System.out.println("Drop "+node.toString()+" permette child: "+node.getAllowsChildren());
-        	System.out.println("Risultato"+((!node.isRoot()) && source.getAllowsChildren() && node.getAllowsChildren()));
             if ((selRows[i] == dropRow) || (!node.isRoot() && source.getAllowsChildren() && node.getAllowsChildren()))	{
                 return false;
             }
@@ -109,12 +108,26 @@ public class TreeTransferHandler extends TransferHandler {
     		DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
     		Componente comp = (Componente) node.getUserObject();
     		List<Componente> compCopies = new ArrayList<Componente>();
-    		List<Componente> compToRemove = new ArrayList<Componente>();
+    		List<DefaultMutableTreeNode> toRemove = new ArrayList<DefaultMutableTreeNode>(); //lista dei nodi da rimuovere->NOTA: memorizzo i nodi tanto mi serve sapere se erano Componente!
+    		//Se il parent era un nodo composto o alternative elimino l'elemento dall'elenco
+    		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+    		if (!parent.isRoot())	{
+    			Componente parentComp = (Componente) parent.getUserObject();
+    			if (parentComp.getType()==ComponenteComposto.COMPOSTOTYPE)	{
+    				ComponenteComposto parentComposto = (ComponenteComposto)parentComp;
+    				int indiceComponenteS = parentComposto.cercaComponenteS(comp.getNome());
+    				parentComposto.cancellaComponenteS(indiceComponenteS);
+    			}	else if (parentComp.getType()==ComponenteAlternative.ALTERNATIVETYPE)	{
+    				ComponenteAlternative parentComposto = (ComponenteAlternative)parentComp;
+    				int indiceAlternativa = parentComposto.cercaAlternativa(comp.getNome());
+    				parentComposto.cancellaAlternativa(indiceAlternativa);
+    			}
+    		}
+    		toRemove.add(node); //aggiungo il nodo originale agli elementi da eliminare*/
+    		//List<Componente> compToRemove = new ArrayList<Componente>();
     		Componente compCopy = copy(comp);
     		compCopies.add(compCopy);
-    		compToRemove.add(comp);
-    		List<DefaultMutableTreeNode> toRemove = new ArrayList<DefaultMutableTreeNode>(); //lista dei nodi da rimuovere->NOTA: memorizzo i nodi tanto mi serve sapere se erano Componente!
-    		toRemove.add(node); //aggiungo il nodo originale agli elementi da eliminare*/
+    		//compToRemove.add(comp);
     		// se il nodo corrente può avere dei figli devo copiare anche quelli
     		if (node.getAllowsChildren())	{
     			for (int i=0; i<node.getChildCount(); i++)	{
@@ -123,7 +136,7 @@ public class TreeTransferHandler extends TransferHandler {
     				Componente childCompCopy = copy(childComp);
     				toRemove.add(childNode);
     				compCopies.add(childCompCopy);
-    				compToRemove.add(childComp);
+    				//compToRemove.add(childComp);
     			}
     		}
     		Componente[] compsToCopy = compCopies.toArray(new Componente[compCopies.size()]);
@@ -147,9 +160,10 @@ public class TreeTransferHandler extends TransferHandler {
         if ((action & MOVE) == MOVE) {
             JTree tree = (JTree) source;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+            
             // Rimuovo gli elementi indicati per la rimozione
             for (int i = 0; i < nodesToRemove.length; i++) {
-                model.removeNodeFromParent(nodesToRemove[i]);
+            	model.removeNodeFromParent(nodesToRemove[i]);
             }
         }
     }
@@ -176,7 +190,7 @@ public class TreeTransferHandler extends TransferHandler {
             Transferable t = support.getTransferable();
             //nodes = (DefaultMutableTreeNode[]) t.getTransferData(nodesFlavor);
             //System.out.println("Ho creato il nodo[]...");
-            comps = (Componente[]) t.getTransferData(componenteFlavor); //non funziona
+            comps = (Componente[]) t.getTransferData(componenteFlavor);
         } catch (UnsupportedFlavorException ufe) {
             System.out.println("UnsupportedFlavor: " + ufe.getMessage());
         } catch (java.io.IOException ioe) {
@@ -203,6 +217,14 @@ public class TreeTransferHandler extends TransferHandler {
         	if (comps[i].getType()==Testo.TEXTTYPE || comps[i].getType()==Immagine.IMAGETYPE || comps[i].getType()==Link.LINKTYPE)	{
         		nodeToInsert.setAllowsChildren(false);
         	}
+            if (!parent.isRoot())	{
+            	Componente parentComp = (Componente) parent.getUserObject();
+            	if (parentComp.getType()==ComponenteComposto.COMPOSTOTYPE)	{
+            		((ComponenteComposto)parentComp).aggiungiComponenteS((ComponenteSemplice) comps[i]);
+            	}	else if (parentComp.getType()==ComponenteAlternative.ALTERNATIVETYPE)	{
+            		((ComponenteAlternative)parentComp).aggiungiAlternativa((ComponenteSemplice) comps[i]);
+            	}
+            }
         	model.insertNodeInto(nodeToInsert, parent, index++);
         }
         return true;

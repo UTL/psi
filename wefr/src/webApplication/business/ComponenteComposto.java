@@ -89,5 +89,15 @@ public class ComponenteComposto extends Componente implements Serializable {
 		componenti.remove(i);
 
 	}
+	
+	public int cercaComponenteS(String nome)	{
+		int c = -1;
+		for (int i = 0; i < componenti.size(); i++) {
+			if ((componenti.get(i).getNome()).equals(nome)) {
+				c = i;
+			}
+		}
+		return c;
+	}
 
 }
