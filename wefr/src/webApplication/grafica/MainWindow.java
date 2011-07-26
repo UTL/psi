@@ -256,6 +256,8 @@ public class MainWindow extends JFrame {
 							frameOptions.dispose();
 							setEnabled(true);
 						}
+						
+						
 					});
 
 					frameOptions.setVisible(true);
@@ -1048,6 +1050,7 @@ public class MainWindow extends JFrame {
 		return false;
 	}
 	
+	
 	static void chooseFile(int chooserValue, JFileChooser fc, JTextField target){
 		//TODO settare le cartelle di default
 		if (chooserValue == JFileChooser.APPROVE_OPTION) {
@@ -1064,12 +1067,13 @@ public class MainWindow extends JFrame {
 		return output;
 	}
 	
-	private boolean isPathCorrect(String path){
+	public static boolean isPathCorrect(String path){
 		//TODO fare prove con files e dir verificare che funzioni
 		File daControllare = new File(path);
 		if(daControllare.isFile() && daControllare.canRead())
 			return true;
 		return false;
+		
 	}
 	
 	private void boldify(JButton button){
