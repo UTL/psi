@@ -58,13 +58,6 @@ public class AddNew extends JFrame {
 	private JButton button_2;
 	private JButton button_3;
 	
-	private boolean errorName=true;
-	private boolean errorCategory=true;
-	private boolean errorLinkName=true;
-	private boolean errorUrl=true;
-	private boolean errorImagePath=true;
-	private boolean errorText=true;
-	
 	private JRadioButton rdbtnLink;
 	private JRadioButton rdbtnText;
 	private JRadioButton rdbtnImage;
@@ -402,8 +395,7 @@ public class AddNew extends JFrame {
 	}
 
 	private boolean fileError(){
-		//TODO implementare il metodo per trovare gli errori (c'e' nel MainWindow)
-		return false;
+		return !MainWindow.isPathCorrect(textField_imagePath.getText());
 	}
 	
 	private ArrayList _listeners = new ArrayList();
