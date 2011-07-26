@@ -25,6 +25,11 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import webApplication.business.Componente;
+import webApplication.business.Immagine;
+import webApplication.business.Link;
+
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.io.File;
@@ -198,12 +203,27 @@ public class AddNew extends JFrame {
 		textField_imagePath.setToolTipText("name");
 		textField_imagePath.setColumns(10);
 		textField_imagePath.setBounds(12, 51, 301, 19);
+		textField_imagePath.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				
+				checkPath();
+			}
+			public void removeUpdate(DocumentEvent e) {
+				checkPath();
+			// text was deleted
+			}
+			public void insertUpdate(DocumentEvent e) {
+				checkPath();
+
+			// text was inserted
+			}
+			});
 		panel_image.add(textField_imagePath);
 		
 		JButton button_1 = new JButton("Browse");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO
+				setPath();
 			}
 		});
 		button_1.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -245,7 +265,6 @@ public class AddNew extends JFrame {
 		});
 		
 		setChangeListener(textField_category);
-		setChangeListener(textField_imagePath);
 		setChangeListener(textField_linkText);
 		setChangeListener(textField_name);
 		setChangeListener(textField_url);
@@ -310,9 +329,9 @@ public class AddNew extends JFrame {
 	
 	private void redify(JTextComponent toRed, boolean b){
 		if(b)
-			toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));
+			toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo rosso
 		else 
-			toRed.setBorder(new LineBorder(new Color(184, 207, 229), 1, true));
+			toRed.setBorder(new LineBorder(new Color(184, 207, 229), 1, true));//bordo normale
 			
 	}
 	
@@ -394,23 +413,46 @@ public class AddNew extends JFrame {
 		_listeners.add(listener);
 	}
 	
-	
+	private void checkPath(){
+		redify(textField_imagePath, !MainWindow.isPathCorrect(textField_imagePath.getText()));
+	}
 	
 	private static void readFile(){
 		try {
 			//TODO escapare caratteri speciali
-			String letto = Wizard.readFile(MainWindow.getFileFromChooser(MainWindow.TEXT));
+			File f = MainWindow.getFileFromChooser(MainWindow.TEXT);
+			
+			if (f != null){
+			String letto = Wizard.readFile(f);
 			if ( letto!= null && letto.length()>0)
-				textArea.setText(letto);
+				textArea.setText(letto);}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 		}
 	}
 	
-	public void windowLostFocus(WindowEvent evt) {
-		requestFocusInWindow();
-		System.out.println("focus");
+	public Componente getNuovoComp(){
+		//TODO escapare i vari campi
+		//TODO quando viene invocato il metodo bisogna passargli i valori di enfasi e importanza
+		Componente output = null;
+		if (!erroriPresenti()){
+			if (rdbtnImage.isSelected())
+				//FIXME non vanno fissati a zero i due parametri!
+				output = new Immagine(textField_name.getText(), textField_category.getText(), 0, 0, textField_imagePath.getText());
+
+			else if (rdbtnLink.isSelected())
+				output = new Link(textField_name.getText(), textField_category.getText(), 0,0, textField_url.getText(), textField_linkText.getText());
+			else 
+				output= new Immagine(textField_name.getText(), textField_category.getText(),0,0,textField_imagePath.getText());
 		}
+		return output;
+	}
+	
+	private void setPath(){
+		String path = MainWindow.fileChooser(MainWindow.IMAGE);
+		if (path!= null && path.length()>0)
+			textField_imagePath.setText(path);
+	}
+
 	
 }
 
