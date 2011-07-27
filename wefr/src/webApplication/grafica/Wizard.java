@@ -913,6 +913,12 @@ public class Wizard extends JFrame {
 						myAddNew=null;
 					}
 
+					@Override
+					public void handleMyEventClassEvent(MyEventClass e) {
+						// TODO Auto-generated method stub
+						
+					}
+
 					});
 			}
 		});
