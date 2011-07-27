@@ -55,8 +55,8 @@ public class AddNew extends JFrame {
 	
 	private static JTextArea textArea;
 	private JScrollPane scrollingArea;
-	private JButton button_2;
-	private JButton button_3;
+	private JButton button_back;
+	private JButton buttonAdd;
 	
 	private JRadioButton rdbtnLink;
 	private JRadioButton rdbtnText;
@@ -162,6 +162,8 @@ public class AddNew extends JFrame {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				readFile();//MainWindow.fileChooser(MainWindow.TEXT), textArea);
+				updateAddBtn();
+
 			}
 
 			
@@ -200,59 +202,77 @@ public class AddNew extends JFrame {
 			public void changedUpdate(DocumentEvent e) {
 				
 				checkPath();
+				updateAddBtn();
+
 			}
 			public void removeUpdate(DocumentEvent e) {
 				checkPath();
+				updateAddBtn();
+
 			// text was deleted
 			}
 			public void insertUpdate(DocumentEvent e) {
 				checkPath();
+				updateAddBtn();
+
 
 			// text was inserted
 			}
 			});
 		panel_image.add(textField_imagePath);
 		
-		JButton button_1 = new JButton("Browse");
-		button_1.addActionListener(new ActionListener() {
+		JButton button_browse = new JButton("Browse");
+		button_browse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setPath();
+				updateAddBtn();
+
 			}
 		});
-		button_1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		button_1.setBounds(325, 51, 89, 19);
-		panel_image.add(button_1);
+		button_browse.setFont(new Font("Dialog", Font.PLAIN, 12));
+		button_browse.setBounds(325, 51, 89, 19);
+		panel_image.add(button_browse);
 
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdbtnImage);
 		bg.add(rdbtnText);
 		bg.add(rdbtnLink);
 		
-		button_2 = new JButton("Back");
-		button_2.setFont(new Font("Dialog", Font.PLAIN, 12));
-		button_2.setBounds(341, 468, 82, 27);
-		contentPane.add(button_2);
+		button_back = new JButton("Back");
+		button_back.setFont(new Font("Dialog", Font.PLAIN, 12));
+		button_back.setBounds(341, 468, 82, 27);
+		contentPane.add(button_back);
 		
-		button_3 = new JButton("Add");
-		button_3.setFont(new Font("Dialog", Font.BOLD, 12));
-		button_3.setBounds(433, 468, 82, 27);
-		contentPane.add(button_3);
+		buttonAdd = new JButton("Add");
+		buttonAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		buttonAdd.setFont(new Font("Dialog", Font.BOLD, 12));
+		buttonAdd.setBounds(433, 468, 82, 27);
+		contentPane.add(buttonAdd);
 		
 		rdbtnImage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				enabler(panel_image);
+				updateAddBtn();
 			}
 		});
 		
 		rdbtnText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				enabler(panel_text);
+				updateAddBtn();
+
 			}
 		});
 		
 		rdbtnLink.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				enabler(panel_link);
+				updateAddBtn();
+
 
 			}
 		});
@@ -335,18 +355,23 @@ public class AddNew extends JFrame {
 	}
 	
 	private void setChangeListener (JTextComponent toAttachListener){
+		
 		JTextComponent textComponent_imagepath=toAttachListener;
 		textComponent_imagepath.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
+				updateAddBtn();
 			}
 			public void removeUpdate(DocumentEvent e) {
 				redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
+				updateAddBtn();
 			}
 			public void insertUpdate(DocumentEvent e) {
 				redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
+				updateAddBtn();
 			}
 			});
+		
 		
 	}
 
@@ -386,13 +411,14 @@ public class AddNew extends JFrame {
 		result= result || isBlank(textField_category);
 		if (rdbtnImage.isSelected())
 			result= result || isBlank(textField_imagePath) || fileError();
+		
 		else if
 			(rdbtnLink.isSelected())
 			result= result || isBlank(textField_linkText) || isBlank(textField_url) || errorUrl();
 		else 
 			result= result || isBlank(textArea);
-
 		return result;	
+		
 	}
 
 	private boolean errorUrl() {
@@ -449,6 +475,10 @@ public class AddNew extends JFrame {
 		String path = MainWindow.fileChooser(MainWindow.IMAGE);
 		if (path!= null && path.length()>0)
 			textField_imagePath.setText(path);
+	}
+	
+	private void updateAddBtn(){
+		updateComponent(buttonAdd, !erroriPresenti());
 	}
 
 	
