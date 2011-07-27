@@ -399,7 +399,6 @@ public class AddNew extends JFrame {
 		return true;
 	}
 	
-	//FIXME errore nei titoli da disable a enable...
 	
 	private boolean nameExists(){
 		//TODO scrivere la funzione
@@ -431,10 +430,9 @@ public class AddNew extends JFrame {
 		return !MainWindow.isPathCorrect(textField_imagePath.getText());
 	}
 	
-	private ArrayList _listeners = new ArrayList();
+	private ArrayList<MyEventClassListener> _listeners = new ArrayList<MyEventClassListener>();
 
 	public void addEventListener(MyEventClassListener listener) {
-		// TODO Auto-generated method stub
 		_listeners.add(listener);
 	}
 	
@@ -455,7 +453,7 @@ public class AddNew extends JFrame {
 		}
 	}
 	
-	public Componente getNuovoComp(){
+	private Componente getNuovoComp(){
 		//TODO escapare i vari campi
 		//TODO quando viene invocato il metodo bisogna passargli i valori di enfasi e importanza
 		Componente output = null;
@@ -483,8 +481,8 @@ public class AddNew extends JFrame {
 	}
 
 	private synchronized void fireEvent() {	
-		MyEventClass event = new MyEventClass(this);
-		Iterator i = _listeners.iterator();
+		MyEventClass event = new MyEventClass(this, getNuovoComp());
+		Iterator<MyEventClassListener> i = _listeners.iterator();
 		while(i.hasNext())  {
 			((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
 		}
