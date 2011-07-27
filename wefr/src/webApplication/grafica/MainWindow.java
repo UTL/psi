@@ -268,6 +268,12 @@ public class MainWindow extends JFrame {
 								EventObject e) {
 							setEnabled(true);
 
+						}
+
+						@Override
+						public void handleMyEventClassEvent(MyEventClass e) {
+							// TODO Auto-generated method stub
+							
 						}});
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -359,6 +365,12 @@ public class MainWindow extends JFrame {
 							EventObject e) {
 								setEnabled(true);
 								myWizard=null;
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void handleMyEventClassEvent(MyEventClass e) {
 						// TODO Auto-generated method stub
 						
 					}});
@@ -598,8 +610,15 @@ public class MainWindow extends JFrame {
 
 					@Override
 					public void handleMyEventClassEvent(
-							EventObject e) {
-								System.out.println("premuto add");						
+							MyEventClass e) {
+								System.out.println("nome del componente "+e.getComponente().getNome());
+								System.out.println("premuto add NUOVO");						
+					}
+
+					@Override
+					public void handleMyEventClassEvent(EventObject e) {
+						// TODO Auto-generated method stub
+						
 					}});
 
 				nuovo.setVisible(true);
@@ -658,6 +677,12 @@ public class MainWindow extends JFrame {
 					public void handleMyEventClassEvent(
 							EventObject e) {
 								System.out.println("premuto add");						
+					}
+
+					@Override
+					public void handleMyEventClassEvent(MyEventClass e) {
+						// TODO Auto-generated method stub
+						
 					}});
 
 				nuovo.setVisible(true);
