@@ -587,14 +587,21 @@ public class MainWindow extends JFrame {
 		button_addNewComp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setEnabled(false);
-					AddNew nuovo = new AddNew();
-					nuovo.addWindowListener(new WindowAdapter(){
+				AddNew nuovo = new AddNew();
+				nuovo.addWindowListener(new WindowAdapter(){
 					@Override
 					public void windowClosing(WindowEvent e) {
 						setEnabled(true);
 					}
 				});
-						
+				nuovo.addEventListener(new MyEventClassListener(){
+
+					@Override
+					public void handleMyEventClassEvent(
+							EventObject e) {
+								System.out.println("premuto add");						
+					}});
+
 				nuovo.setVisible(true);
 			}
 		});
@@ -631,29 +638,38 @@ public class MainWindow extends JFrame {
 		JButton button_12 = new JButton("Add existing");
 		button_12.setBounds(198, 161, 121, 27);
 		panel_alternative.add(button_12);
-		
+
 		JButton button_13 = new JButton("Add new");
 		button_13.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setEnabled(false);
-					AddNew nuovo = new AddNew();
-					nuovo.addWindowListener(new WindowAdapter(){
+				AddNew nuovo = new AddNew();
+				
+				nuovo.addWindowListener(new WindowAdapter(){
 					@Override
 					public void windowClosing(WindowEvent e) {
 						setEnabled(true);
 					}
 				});
-						
+				
+				nuovo.addEventListener(new MyEventClassListener(){
+
+					@Override
+					public void handleMyEventClassEvent(
+							EventObject e) {
+								System.out.println("premuto add");						
+					}});
+
 				nuovo.setVisible(true);
 			}
 		});
 		button_13.setBounds(322, 161, 98, 27);
 		panel_alternative.add(button_13);
-		
+
 		JPanel panel_link = new JPanel();
 		content_panel.add(panel_link, "panel_link");
 		panel_link.setLayout(null);
-		
+
 		JLabel lbl_linktxt = new JLabel("Link text:");
 		lbl_linktxt.setBounds(13, 14, 78, 15);
 		panel_link.add(lbl_linktxt);

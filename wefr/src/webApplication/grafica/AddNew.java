@@ -35,6 +35,7 @@ import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class AddNew extends JFrame {
 
@@ -246,7 +247,7 @@ public class AddNew extends JFrame {
 		buttonAdd = new JButton("Add");
 		buttonAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				fireEvent();
 			}
 		});
 		buttonAdd.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -481,6 +482,13 @@ public class AddNew extends JFrame {
 		updateComponent(buttonAdd, !erroriPresenti());
 	}
 
+	private synchronized void fireEvent() {	
+		MyEventClass event = new MyEventClass(this);
+		Iterator i = _listeners.iterator();
+		while(i.hasNext())  {
+			((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
+		}
+	}
 	
 }
 
