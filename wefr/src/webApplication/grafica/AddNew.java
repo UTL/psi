@@ -289,8 +289,14 @@ public class AddNew extends JFrame {
 	
 	private void updateComponent(Component figlio, boolean enable){
 		figlio.setEnabled(enable);
-		if(figlio == scrollingArea)
+		if(figlio == scrollingArea){
 			updateComponent(textArea,enable);
+			
+			//le tre righe qua sotto sono un workaround per un baco delle JScrollPane
+			scrollingArea.getHorizontalScrollBar().setEnabled(enable);
+			scrollingArea.getVerticalScrollBar().setEnabled(enable);
+			scrollingArea.getViewport().getView().setEnabled(enable);
+		}
 		if (figlio instanceof javax.swing.JTextField || figlio instanceof javax.swing.JTextArea){
 			if(enable)
 				redify((JTextComponent) figlio,isBlank((JTextComponent) figlio));
