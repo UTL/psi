@@ -1,6 +1,5 @@
 package webApplication.grafica;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -13,15 +12,17 @@ import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class Options extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4742226718972158722L;
+	
 	private JPanel contentPane;
 	private JTextField textField_defImgDir;
 	private JTextField textField_defTxtDir;
@@ -31,7 +32,7 @@ public class Options extends JFrame {
 	private String defDirText;
 	private String defDirLoadSave;
 	
-	 private ArrayList _listeners = new ArrayList();
+	 private ArrayList<MyEventClassListener> _listeners = new ArrayList<MyEventClassListener>();
 	
 	 public synchronized void addEventListener(MyEventClassListener listener)  {
 		 _listeners.add(listener);
@@ -61,7 +62,6 @@ public class Options extends JFrame {
 	 */
 	public Options() {
 		setResizable(false);
-		setAlwaysOnTop(true);
 		setTitle("Options");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -182,17 +182,17 @@ public class Options extends JFrame {
 	}	
 	private synchronized void fireEvent() {	
 		MyEventClass event = new MyEventClass(this);
-		Iterator i = _listeners.iterator();
+		Iterator<MyEventClassListener> i = _listeners.iterator();
 		while(i.hasNext())  {
 			((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
 		}
 	}
 	
-	/*public void windowLostFocus(WindowEvent evt) {
+	public void windowLostFocus(WindowEvent evt) {
 		System.out.println("focus lost options");
 		requestFocusInWindow();
 		
 
-		}*/
+		}
 	
 }
