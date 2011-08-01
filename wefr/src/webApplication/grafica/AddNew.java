@@ -240,6 +240,12 @@ public class AddNew extends JFrame {
 		bg.add(rdbtnLink);
 		
 		button_back = new JButton("Back");
+		button_back.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+				
+			}
+		});
 		button_back.setFont(new Font("Dialog", Font.PLAIN, 12));
 		button_back.setBounds(341, 468, 82, 27);
 		contentPane.add(button_back);
@@ -248,6 +254,7 @@ public class AddNew extends JFrame {
 		buttonAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fireEvent();
+				dispose();
 			}
 		});
 		buttonAdd.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -285,6 +292,10 @@ public class AddNew extends JFrame {
 		setChangeListener(textArea);
 		
 		enabler(panel_text);
+		
+		redify(textField_name,isBlank(textField_name));
+		redify(textField_category,isBlank(textField_category));
+		updateAddBtn();
 		
 	}
 	
