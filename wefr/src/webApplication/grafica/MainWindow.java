@@ -939,13 +939,13 @@ public class MainWindow extends JFrame {
 		list_composite.setBounds(12, 25, 408, 132);
 		panel_composite.add(list_composite);
 	
-		button_deleteFromComp.setEnabled(false);
+		buttonDeleteMgmt();
 
 		list_composite.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				if(list_composite.getSelectedIndex()>-1) //esiste almeno un elemento
-					button_deleteFromComp.setEnabled(true);
+					buttonDeleteMgmt();
 			}
 		});
 		
@@ -1195,11 +1195,23 @@ public class MainWindow extends JFrame {
 	}
 	
 	public static void addElementToComposite(ComponenteSemplice componente) {
+		
 		int[] selected = list_composite.getSelectedIndices();
 		((ComponenteComposto)focusedCmp).aggiungiComponenteS(componente);
 		popolaProperties(focusedCmp);
 		list_composite.setSelectedIndices(selected);
-		button_deleteFromComp.setEnabled(true);
+		buttonDeleteMgmt();
+		
+		
+	}
+	
+	private static void buttonDeleteMgmt(){
+		
+		if (list_composite.getSelectedIndices().length > 0)
+			button_deleteFromComp.setEnabled(true);
+		
+		else
+			button_deleteFromComp.setEnabled(false);
 		
 	}
 	
