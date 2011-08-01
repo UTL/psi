@@ -30,6 +30,7 @@ import webApplication.business.Componente;
 import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
+import webApplication.business.Testo;
 
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -481,7 +482,7 @@ public class AddNew extends JFrame {
 			else if (rdbtnLink.isSelected())
 				output = new Link(textField_name.getText(), textField_category.getText(), 0,0, textField_url.getText(), textField_linkText.getText());
 			else 
-				output= new Immagine(textField_name.getText(), textField_category.getText(),0,0,textField_imagePath.getText());
+				output= new Testo(textField_name.getText(), textField_category.getText(),0,0,textField_imagePath.getText());
 		}
 		return output;
 	}
