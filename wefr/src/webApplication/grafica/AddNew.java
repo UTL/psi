@@ -63,6 +63,9 @@ public class AddNew extends JFrame {
 	private JRadioButton rdbtnText;
 	private JRadioButton rdbtnImage;
 	
+	private static boolean ONLYDISPOSE = true;
+	private static boolean CREATENEWCOMP = false;
+	
 	private boolean anError=true;
 
 	/**
@@ -242,6 +245,7 @@ public class AddNew extends JFrame {
 		button_back = new JButton("Back");
 		button_back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				fireEvent(ONLYDISPOSE);
 				dispose();
 				
 			}
@@ -253,7 +257,7 @@ public class AddNew extends JFrame {
 		buttonAdd = new JButton("Add");
 		buttonAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				fireEvent();
+				fireEvent(CREATENEWCOMP);
 				dispose();
 			}
 		});
@@ -491,8 +495,10 @@ public class AddNew extends JFrame {
 		updateComponent(buttonAdd, !erroriPresenti());
 	}
 
-	private synchronized void fireEvent() {	
-		MyEventClass event = new MyEventClass(this, getNuovoComp());
+	private synchronized void fireEvent(boolean onlyDispose) {	
+		MyEventClass event = null;
+		if (onlyDispose == CREATENEWCOMP)
+			event = new MyEventClass(this, getNuovoComp());
 		Iterator<MyEventClassListener> i = _listeners.iterator();
 		while(i.hasNext())  {
 			((MyEventClassListener) i.next()).handleMyEventClassEvent(event);

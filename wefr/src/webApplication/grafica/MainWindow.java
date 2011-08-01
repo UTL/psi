@@ -645,7 +645,9 @@ public class MainWindow extends JFrame {
 					@Override
 					public void handleMyEventClassEvent(
 							MyEventClass e) {
-								System.out.println("nome del componente "+e.getComponente().getNome());
+								setEnabled(true);
+								if(e != null)
+									System.out.println("nome del componente "+e.getComponente().getNome());
 								System.out.println("premuto add NUOVO");						
 					}
 
@@ -661,23 +663,7 @@ public class MainWindow extends JFrame {
 		button_addNewComp.setBounds(320, 162, 100, 27);
 		panel_composite.add(button_addNewComp);
 		
-/*=======
-		// Aggiunta la scroll bar
-		// scrollPane_composite = new JScrollPane(list_composite);
 
-		JButton button_14 = new JButton("Delete");
-		button_14.setBounds(12, 162, 91, 27);
-		panel_composite.add(button_14);
-
-		JButton button_15 = new JButton("Add existing");
-		button_15.setBounds(195, 162, 121, 27);
-		panel_composite.add(button_15);
-
-		JButton button_16 = new JButton("Add new");
-		button_16.setBounds(320, 162, 100, 27);
-		panel_composite.add(button_16);
-
->>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@1aa9a7bb/testing*/
 		JPanel panel_alternative = new JPanel();
 		content_panel.add(panel_alternative, "panel_alternative");
 		panel_alternative.setLayout(null);
@@ -711,8 +697,8 @@ public class MainWindow extends JFrame {
 		button_12.setBounds(198, 161, 121, 27);
 		panel_alternative.add(button_12);
 
-		JButton button_13 = new JButton("Add new");
-		button_13.addActionListener(new ActionListener() {
+		JButton button_addNewAlter = new JButton("Add new");
+		button_addNewAlter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setEnabled(false);
 				AddNew nuovo = new AddNew();
@@ -726,14 +712,18 @@ public class MainWindow extends JFrame {
 				
 				nuovo.addEventListener(new MyEventClassListener(){
 
+					
 					@Override
 					public void handleMyEventClassEvent(
-							EventObject e) {
-								System.out.println("premuto add");						
+							MyEventClass e) {
+								setEnabled(true);
+								if(e != null)
+									System.out.println("nome del componente "+e.getComponente().getNome());
+								System.out.println("premuto add NUOVO");						
 					}
 
 					@Override
-					public void handleMyEventClassEvent(MyEventClass e) {
+					public void handleMyEventClassEvent(EventObject e) {
 						// TODO Auto-generated method stub
 						
 					}});
@@ -741,8 +731,8 @@ public class MainWindow extends JFrame {
 				nuovo.setVisible(true);
 			}
 		});
-		button_13.setBounds(322, 161, 98, 27);
-		panel_alternative.add(button_13);
+		button_addNewAlter.setBounds(322, 161, 98, 27);
+		panel_alternative.add(button_addNewAlter);
 
 		JPanel panel_link = new JPanel();
 		content_panel.add(panel_link, "panel_link");
