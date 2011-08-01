@@ -859,7 +859,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(albero);
 
 		// TODO rimuovere invocazione a testing concluso
-		//popolaOggetti();
+		popolaOggetti();
 
 //>>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@1aa9a7bb/testing
 	}
