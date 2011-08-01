@@ -138,7 +138,7 @@ public class MainWindow extends JFrame {
 	//TODO le due stringhe andrebbero esportate da qualche altra parte
 	
 	private JRootPane root;
-	
+	private static TreePanel albero;
 
 	/**
 	 * Launch the application.
@@ -860,7 +860,7 @@ public class MainWindow extends JFrame {
 		editorPane_text.setBounds(12, 32, 408, 156);
 		//panel_text.add(editorPane_text);
 
-		TreePanel albero = new TreePanel();
+		albero = new TreePanel();
 		albero.setBounds(15, 63, 222, 378);
 		contentPane.add(albero);
 		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
@@ -909,7 +909,7 @@ public class MainWindow extends JFrame {
 	protected void addElementToTree(ComponenteSemplice componente) {
 		// TODO Auto-generated method stub
 		if(focused == null || focused.getType()==Testo.TEXTTYPE || focused.getType() == Link.LINKTYPE || focused.getType()== Immagine.IMAGETYPE)
-			;
+			albero.addNode(null, componente);
 	}
 
 	private static void setGenerici(Componente selected, String type) {
