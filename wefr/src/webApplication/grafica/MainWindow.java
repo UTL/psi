@@ -646,10 +646,14 @@ public class MainWindow extends JFrame {
 					public void handleMyEventClassEvent(
 							MyEventClass e) {
 								setEnabled(true);
-								if(e != null)
+								if(e != null){
 									System.out.println("nome del componente "+e.getComponente().getNome());
+									addElementToComposite(e.getComponente());
+								}
 								System.out.println("premuto add NUOVO");						
 					}
+
+					
 
 					@Override
 					public void handleMyEventClassEvent(EventObject e) {
@@ -908,7 +912,7 @@ public class MainWindow extends JFrame {
 	
 	private static void popolaProperties(ComponenteComposto selected){
 		//FIXME questo metodo fa schifo
-		//TODO verificare se il list_composite ha le scrollbar (non credo)
+		//TODO il list_composite non ha le scrollbar
 		//TODO aggiungere le iconcine in parte ai nomi
 		//TODO disabilitare l'add existing quando non esistono elementi da aggiungere
 		
@@ -1188,6 +1192,15 @@ public class MainWindow extends JFrame {
 			return "";
 		}
 		return filec.getSelectedFile().getAbsolutePath();
+	}
+	
+	public static void addElementToComposite(ComponenteSemplice componente) {
+		int[] selected = list_composite.getSelectedIndices();
+		((ComponenteComposto)focusedCmp).aggiungiComponenteS(componente);
+		popolaProperties(focusedCmp);
+		list_composite.setSelectedIndices(selected);
+		button_deleteFromComp.setEnabled(true);
+		
 	}
 	
 	private static JFileChooser buildFileChooser (int i){

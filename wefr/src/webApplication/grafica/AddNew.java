@@ -27,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import webApplication.business.Componente;
+import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 
@@ -468,10 +469,10 @@ public class AddNew extends JFrame {
 		}
 	}
 	
-	private Componente getNuovoComp(){
+	private ComponenteSemplice getNuovoComp(){
 		//TODO escapare i vari campi
 		//TODO quando viene invocato il metodo bisogna passargli i valori di enfasi e importanza
-		Componente output = null;
+		ComponenteSemplice output = null;
 		if (!erroriPresenti()){
 			if (rdbtnImage.isSelected())
 				//FIXME non vanno fissati a zero i due parametri!
