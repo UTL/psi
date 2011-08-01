@@ -65,6 +65,9 @@ import java.awt.TextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
 
 public class MainWindow extends JFrame {
 
@@ -852,11 +855,14 @@ public class MainWindow extends JFrame {
 		
 =======*/
 		editorPane_text.setBounds(12, 32, 408, 156);
-		panel_text.add(editorPane_text);
+		//panel_text.add(editorPane_text);
 
 		TreePanel albero = new TreePanel();
-		// albero.setBounds(15, 63, 222, 378);
+		albero.setBounds(15, 63, 222, 378);
 		contentPane.add(albero);
+		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
+		
+		
 
 		// TODO rimuovere invocazione a testing concluso
 		popolaOggetti();
@@ -1001,7 +1007,7 @@ public class MainWindow extends JFrame {
 		focusedAlt = null;
 	}
 
-	private void setFocus(Immagine selected) {
+	public void setFocus(Immagine selected) {
 		unFocus();
 		focusedImg = selected;
 		setFocusGeneric(selected);
@@ -1009,7 +1015,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	private void setFocus(Testo selected) {
+	public void setFocus(Testo selected) {
 		unFocus();
 		focusedTxt = selected;
 		setFocusGeneric(selected);
@@ -1017,7 +1023,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	private void setFocus(Link selected) {
+	public void setFocus(Link selected) {
 		unFocus();
 		focusedLnk = selected;
 		setFocusGeneric(selected);
@@ -1025,7 +1031,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	private void setFocus(ComponenteComposto selected) {
+	public void setFocus(ComponenteComposto selected) {
 		unFocus();
 		focusedCmp = selected;
 		setFocusGeneric(selected);
@@ -1034,7 +1040,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	private void setFocus(ComponenteAlternative selected) {
+	public void setFocus(ComponenteAlternative selected) {
 		unFocus();
 		focusedAlt = selected;
 		setFocusGeneric(selected);
