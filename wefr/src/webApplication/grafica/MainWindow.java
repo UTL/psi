@@ -404,11 +404,13 @@ public class MainWindow extends JFrame {
 		panel.add(button_6);
 
 		JButton button_7 = new JButton("");
+		button_7.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
 		button_7.setToolTipText("Open");
 		button_7.setBounds(277, 4, 30, 30);
 		panel.add(button_7);
 
 		JButton button_8 = new JButton("");
+		button_8.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/gtk/resources/gtk-cancel-4.png")));
 		button_8.setToolTipText("Open");
 		button_8.setBounds(310, 4, 30, 30);
 		panel.add(button_8);
