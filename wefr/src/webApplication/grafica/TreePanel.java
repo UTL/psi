@@ -200,14 +200,29 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		System.out.println(comp.getEnfasi());
 		System.out.println(comp.getType());
 		if (comp.getType() == Testo.TEXTTYPE)	{
+			MainWindow.setFocus((Testo)comp);
 			String testo = ((Testo)comp).getTesto();
 			System.out.println(testo);
 		}
-		if (comp.getType() == ComponenteComposto.COMPOSTOTYPE)	{
+		else if (comp.getType() == ComponenteComposto.COMPOSTOTYPE)	{
+			MainWindow.setFocus((ComponenteComposto)comp);
 			System.out.println(((ComponenteComposto)comp).getComponenti());
 		}
-		if (comp.getType() == ComponenteAlternative.ALTERNATIVETYPE)	{
+		else if (comp.getType() == ComponenteAlternative.ALTERNATIVETYPE)	{
+			MainWindow.setFocus((ComponenteAlternative)comp);
+
 			System.out.println(((ComponenteAlternative)comp).getAlternative());
+		}
+		else if (comp.getType() == Immagine.IMAGETYPE)	{
+			MainWindow.setFocus((Immagine)comp);
+
+		}
+		else if(comp.getType() == Link.LINKTYPE){
+			MainWindow.setFocus((Link)comp);
+
+		}
+		else{
+			//TODO qui avrebbe senso che si schianti, lanciare un'eccezione
 		}
 	}
 }
