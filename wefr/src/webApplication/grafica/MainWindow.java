@@ -76,22 +76,22 @@ public class MainWindow extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static JPanel contentPane;
-	private JTextField textField_Name;
-	private JTextField textField_Type;
-	private JTextField textField_Category;
-	private JComboBox comboBox_Importance;
-	private JComboBox comboBox_Emphasize;
-	private JTextArea editorPane_text;
-	private JTextField textField_imagepath;
-	private JPanel content_panel;
-	private JList list_composite;
-	private JPanel panel_composite;
-	private JButton button_deleteFromComp;
-	private JButton button_addExistComp;
-	private JButton button_addNewComp;
-	private JPanel errorePath;
-	private JPanel erroreTestoLink;
-	private JPanel erroreUrl;
+	private static JTextField textField_Name;
+	private static JTextField textField_Type;
+	private static JTextField textField_Category;
+	private static JComboBox comboBox_Importance;
+	private static JComboBox comboBox_Emphasize;
+	private static JTextArea editorPane_text;
+	private static JTextField textField_imagepath;
+	private static JPanel content_panel;
+	private static JList list_composite;
+	private static JPanel panel_composite;
+	private static JButton button_deleteFromComp;
+	private static JButton button_addExistComp;
+	private static JButton button_addNewComp;
+	private static JPanel errorePath;
+	private static JPanel erroreTestoLink;
+	private static JPanel erroreUrl;
 	
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
@@ -117,13 +117,13 @@ public class MainWindow extends JFrame {
 	private ComponenteAlternative alt;
 	private ComponenteComposto cmp;
 
-	private Componente focused;
+	private static Componente focused;
 
-	private Testo focusedTxt;
-	private Immagine focusedImg;
-	private Link focusedLnk;
-	private ComponenteComposto focusedCmp;
-	private ComponenteAlternative focusedAlt;
+	private static Testo focusedTxt;
+	private static Immagine focusedImg;
+	private static Link focusedLnk;
+	private static ComponenteComposto focusedCmp;
+	private static ComponenteAlternative focusedAlt;
 
 	private static final String URL_REGEX =
             "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
@@ -870,7 +870,7 @@ public class MainWindow extends JFrame {
 //>>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@1aa9a7bb/testing
 	}
 
-	private void setGenerici(Componente selected, String type) {
+	private static void setGenerici(Componente selected, String type) {
 		textField_Name.setText(selected.getNome());
 
 		textField_Category.setText(selected.getCategoria());
@@ -891,7 +891,7 @@ public class MainWindow extends JFrame {
 		setContentLayout("panel_text");
 	}
 
-	private void popolaProperties(Immagine selected) {
+	private static void popolaProperties(Immagine selected) {
 		setGenerici(selected, "Image");
 		textField_imagepath.setText(selected.getPath());
 
@@ -959,7 +959,7 @@ public class MainWindow extends JFrame {
 		
 	}
 	
-	private void setContentLayout(String panel){
+	private static void setContentLayout(String panel){
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, panel);
 	}
@@ -998,7 +998,7 @@ public class MainWindow extends JFrame {
 	// TODO agganciare i metodi setfocus al click nelle foglie sull'albero...
 
 	// metodo per togliere il focus all'oggetto precedente
-	private void unFocus() {
+	private static void unFocus() {
 		focused = null;
 		focusedTxt = null;
 		focusedImg = null;
@@ -1007,7 +1007,7 @@ public class MainWindow extends JFrame {
 		focusedAlt = null;
 	}
 
-	public void setFocus(Immagine selected) {
+	public static void setFocus(Immagine selected) {
 		unFocus();
 		focusedImg = selected;
 		setFocusGeneric(selected);
@@ -1049,7 +1049,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	private void setFocusGeneric(Componente comp) {
+	private static void setFocusGeneric(Componente comp) {
 		focused = comp;
 	}
 
