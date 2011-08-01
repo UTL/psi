@@ -834,31 +834,14 @@ public class MainWindow extends JFrame {
 		editorPane_text = new JTextArea();
 		JScrollPane scrollingArea = new JScrollPane(editorPane_text);
 		scrollingArea.setBounds(12, 32, 408, 156);
-
-//		editorPane_text = new JEditorPane();
 		editorPane_text.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
 				updateTextContent();
 			}
 		});
-/*<<<<<<< HEAD
 		//editorPane_text.setBounds(12, 32, 408, 156);
 		panel_text.add(scrollingArea);
-		
-		JTree tree = new JTree();
-		tree.setBounds(15, 63, 222, 378);
-		contentPane.add(tree);
-		
-	
-
-		
-		//TODO rimuovere invocazione a testing concluso
-		popolaOggetti();
-		
-=======*/
-		editorPane_text.setBounds(12, 32, 408, 156);
-		//panel_text.add(editorPane_text);
 
 		albero = new TreePanel();
 		albero.setBounds(15, 63, 222, 378);
