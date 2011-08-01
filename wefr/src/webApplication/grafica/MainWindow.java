@@ -403,11 +403,16 @@ public class MainWindow extends JFrame {
 		button_6.setBounds(228, 4, 30, 30);
 		panel.add(button_6);
 
-		JButton button_7 = new JButton("");
-		button_7.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
-		button_7.setToolTipText("Open");
-		button_7.setBounds(277, 4, 30, 30);
-		panel.add(button_7);
+		JButton addButton = new JButton("");
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				addNewWizard();
+			}
+		});
+		addButton.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
+		addButton.setToolTipText("Open");
+		addButton.setBounds(277, 4, 30, 30);
+		panel.add(addButton);
 
 		JButton button_8 = new JButton("");
 		button_8.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/gtk/resources/gtk-cancel-4.png")));
@@ -653,13 +658,15 @@ public class MainWindow extends JFrame {
 								System.out.println("premuto add NUOVO");						
 					}
 
-					
-
 					@Override
 					public void handleMyEventClassEvent(EventObject e) {
 						// TODO Auto-generated method stub
 						
-					}});
+					}
+
+					
+
+					});
 
 				nuovo.setVisible(true);
 			}
@@ -864,6 +871,45 @@ public class MainWindow extends JFrame {
 		popolaOggetti();
 
 //>>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@1aa9a7bb/testing
+	}
+
+	private void addNewWizard() {
+		//TODO agganciarci il wizard e non l'addnew
+		//TODO andrebbe creata una classe e tolto il codice da qui
+
+		setEnabled(false);
+		AddNew nuovo = new AddNew();
+		nuovo.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent e) {
+				setEnabled(true);
+			}
+		});
+		nuovo.addEventListener(new MyEventClassListener(){
+
+			@Override
+			public void handleMyEventClassEvent(
+					MyEventClass e) {
+						setEnabled(true);
+						if(e != null){
+							addElementToTree(e.getComponente());
+							
+						}
+			}
+
+			@Override
+			public void handleMyEventClassEvent(EventObject e) {
+				// TODO Auto-generated method stub
+				
+			}});
+
+		nuovo.setVisible(true);
+	}
+
+	protected void addElementToTree(ComponenteSemplice componente) {
+		// TODO Auto-generated method stub
+		if(focused == null || focused.getType()==Testo.TEXTTYPE || focused.getType() == Link.LINKTYPE || focused.getType()== Immagine.IMAGETYPE)
+			;
 	}
 
 	private static void setGenerici(Componente selected, String type) {
@@ -1209,7 +1255,6 @@ public class MainWindow extends JFrame {
 		
 		if (list_composite.getSelectedIndices().length > 0)
 			button_deleteFromComp.setEnabled(true);
-		
 		else
 			button_deleteFromComp.setEnabled(false);
 		
