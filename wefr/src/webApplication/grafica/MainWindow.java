@@ -133,8 +133,8 @@ public class MainWindow extends JFrame {
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? E ne mancano 2 che non ricordo
 
-	private JTextField textField_linktext;
-	private JTextField textField_url;
+	private static JTextField textField_linktext;
+	private static JTextField textField_url;
 	//TODO le due stringhe andrebbero esportate da qualche altra parte
 	
 	private JRootPane root;
@@ -884,7 +884,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	private void popolaProperties(Testo selected) {
+	private static void popolaProperties(Testo selected) {
 		setGenerici(selected, "Text");
 		editorPane_text.setText(selected.getTesto());
 
@@ -899,7 +899,7 @@ public class MainWindow extends JFrame {
 
 	}
 	
-	private void popolaProperties(Link selected){
+	private static void popolaProperties(Link selected){
 		setGenerici(selected,"Link");
 		textField_url.setText(selected.getUri());
 
@@ -908,13 +908,13 @@ public class MainWindow extends JFrame {
 		setContentLayout("panel_link");
 	}
 
-	private void popolaProperties(ComponenteAlternative selected) {
+	private static void popolaProperties(ComponenteAlternative selected) {
 		setGenerici(selected, "Alternative");
 
 		setContentLayout("panel_alternative");
 	}
 	
-	private void popolaProperties(ComponenteComposto selected){
+	private static void popolaProperties(ComponenteComposto selected){
 		//FIXME questo metodo fa schifo
 		//TODO verificare se il list_composite ha le scrollbar (non credo)
 		//TODO aggiungere le iconcine in parte ai nomi
@@ -1015,7 +1015,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	public void setFocus(Testo selected) {
+	public static void setFocus(Testo selected) {
 		unFocus();
 		focusedTxt = selected;
 		setFocusGeneric(selected);
@@ -1023,7 +1023,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	public void setFocus(Link selected) {
+	public static void setFocus(Link selected) {
 		unFocus();
 		focusedLnk = selected;
 		setFocusGeneric(selected);
@@ -1031,7 +1031,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	public void setFocus(ComponenteComposto selected) {
+	public static void setFocus(ComponenteComposto selected) {
 		unFocus();
 		focusedCmp = selected;
 		setFocusGeneric(selected);
@@ -1040,7 +1040,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	public void setFocus(ComponenteAlternative selected) {
+	public static void setFocus(ComponenteAlternative selected) {
 		unFocus();
 		focusedAlt = selected;
 		setFocusGeneric(selected);
