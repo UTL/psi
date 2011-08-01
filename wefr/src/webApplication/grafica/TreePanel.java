@@ -127,7 +127,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	 * @param parent	The parent of the node
 	 * @param node		The node
 	 */
-	protected void addNode(DefaultMutableTreeNode parent, Componente node) {
+	public void addNode(DefaultMutableTreeNode parent, Componente node) {
 		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
 		if (parent == null) {
 			parent = rootNode;
