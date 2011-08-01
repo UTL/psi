@@ -15,7 +15,8 @@ import java.io.Serializable;
 
 public class Immagine extends ComponenteSemplice implements Serializable{
 
-    private String path;
+    public static final String IMAGETYPE = "Immagine";
+	private String path;
 
     /**
      * Costruttore del componente semplice di tipo Immagine

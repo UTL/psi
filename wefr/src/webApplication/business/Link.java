@@ -13,7 +13,8 @@ import java.io.*;
  */
 public class Link extends ComponenteSemplice implements Serializable {
     
-    private String uri;
+    public static final String LINKTYPE = "Link";
+	private String uri;
     private String testo;
 
     /**

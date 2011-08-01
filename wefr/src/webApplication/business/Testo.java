@@ -13,7 +13,8 @@ import java.io.Serializable;
  */
 public class Testo extends ComponenteSemplice implements Serializable {
 
-    private String testo;
+    public static final String TEXTTYPE = "Text";
+	private String testo;
 
     /**
      * Costruttore del componente semplice di tipo Testo

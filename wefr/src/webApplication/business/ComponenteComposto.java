@@ -14,7 +14,8 @@ import java.util.Vector;
 
 public class ComponenteComposto extends Componente implements Serializable {
 
-    private Vector<ComponenteSemplice> componenti;
+    public static final String COMPOSTOTYPE = "Composite";
+	private Vector<ComponenteSemplice> componenti;
 
     /**
      *  Creazione di un componente composto

@@ -13,7 +13,8 @@ import java.util.Vector;
  * @author Landi Jessica & Miglioranzi Marco
  */
 public class ComponenteAlternative extends Componente implements Serializable{
-       private Vector<ComponenteSemplice> alternative;
+       public static final String ALTERNATIVETYPE = "Alternative";
+	private Vector<ComponenteSemplice> alternative;
 
        /**
         *  Costruttore di un componenteAlternative
