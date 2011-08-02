@@ -947,7 +947,6 @@ public class MainWindow extends JFrame {
 	}
 	
 	private static void popolaProperties(ComponenteComposto selected){
-		//FIXME questo metodo fa schifo
 		//TODO il list_composite non ha le scrollbar
 		//TODO aggiungere le iconcine in parte ai nomi
 		//TODO disabilitare l'add existing quando non esistono elementi da aggiungere
@@ -957,11 +956,21 @@ public class MainWindow extends JFrame {
 
 		setGenerici(selected,"Composite");
 		
-
 		setContentLayout(PANEL_CMP);
+			
+		list_composite = new JList(extractNomiComponenti(selected.getComponenti()));
+		list_composite.setBounds(12, 25, 408, 132);
 		
-		Vector<ComponenteSemplice> componenti = selected.getComponenti();
+		panel_composite.add(list_composite);
+	
+		buttonDeleteMgmt();
+
+		list_compAddFocusList(list_composite);
 		
+		panel_composite.repaint();
+	}
+	
+	private static String[] extractNomiComponenti (Vector<ComponenteSemplice> componenti){
 		String[] nomiComponenti= new String[componenti.size()];
 		
 		//TODO mettere icone per il tipo degli oggetti
@@ -970,25 +979,16 @@ public class MainWindow extends JFrame {
 		for (i = 0; i < componenti.size(); i++) {
 			nomiComponenti[i] = componenti.get(i).getNome();
 		}
-		
-		list_composite = new JList(nomiComponenti);
-		list_composite.setBounds(12, 25, 408, 132);
-		panel_composite.add(list_composite);
+		return nomiComponenti;
+	}
 	
-		buttonDeleteMgmt();
-
-		list_composite.addFocusListener(new FocusAdapter() {
+	private static void list_compAddFocusList(JList list){
+		list.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
-				if(list_composite.getSelectedIndex()>-1) //esiste almeno un elemento
 					buttonDeleteMgmt();
 			}
 		});
-		
-		panel_composite.repaint();
-		
-		
-		
 	}
 	
 	private static void setContentLayout(String panel){
