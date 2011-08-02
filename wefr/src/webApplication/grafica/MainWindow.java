@@ -87,6 +87,7 @@ public class MainWindow extends JFrame {
 	private static JList list_composite;
 	private static JList list_alternative;
 	private static JPanel panel_composite;
+	private static JPanel panel_alternative;
 	private static JButton button_deleteFromComp;
 	private static JButton button_addExistComp;
 	private static JButton button_addNewComp;
@@ -680,7 +681,7 @@ public class MainWindow extends JFrame {
 		panel_composite.add(button_addNewComp);
 		
 
-		JPanel panel_alternative = new JPanel();
+		panel_alternative = new JPanel();
 		content_panel.add(panel_alternative, PANEL_ALT);
 		panel_alternative.setLayout(null);
 		
@@ -942,8 +943,21 @@ public class MainWindow extends JFrame {
 
 	private static void popolaProperties(ComponenteAlternative selected) {
 		setGenerici(selected, "Alternative");
-
+		
+		if(list_alternative != null && panel_alternative!=null)
+			panel_alternative.remove(list_alternative);
+		
 		setContentLayout(PANEL_ALT);
+		
+		list_alternative = new JList(extractNomiComponenti(selected.getAlternative()));
+		list_alternative.setBounds(65, 0, 355, 149);
+		
+		panel_alternative.add(list_alternative);
+		
+		list_addFocusList(list_alternative);
+
+		panel_alternative.repaint();
+
 	}
 	
 	private static void popolaProperties(ComponenteComposto selected){
@@ -965,7 +979,7 @@ public class MainWindow extends JFrame {
 	
 		buttonDeleteMgmt();
 
-		list_compAddFocusList(list_composite);
+		list_addFocusList(list_composite);
 		
 		panel_composite.repaint();
 	}
@@ -982,7 +996,7 @@ public class MainWindow extends JFrame {
 		return nomiComponenti;
 	}
 	
-	private static void list_compAddFocusList(JList list){
+	private static void list_addFocusList(JList list){
 		list.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
