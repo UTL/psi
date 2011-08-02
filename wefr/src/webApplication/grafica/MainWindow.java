@@ -85,6 +85,7 @@ public class MainWindow extends JFrame {
 	private static JTextField textField_imagepath;
 	private static JPanel content_panel;
 	private static JList list_composite;
+	private static JList list_alternative;
 	private static JPanel panel_composite;
 	private static JButton button_deleteFromComp;
 	private static JButton button_addExistComp;
@@ -136,6 +137,13 @@ public class MainWindow extends JFrame {
 	private static JTextField textField_linktext;
 	private static JTextField textField_url;
 	//TODO le due stringhe andrebbero esportate da qualche altra parte
+	
+	private static final String PANEL_TXT="panel_text";
+	private static final String PANEL_IMG="panel_image";
+	private static final String PANEL_LNK="panel_link";
+	private static final String PANEL_ALT="panel_alternative";
+	private static final String PANEL_CMP="panel_composite";
+	
 	
 	private JRootPane root;
 	private static TreePanel albero;
@@ -539,7 +547,7 @@ public class MainWindow extends JFrame {
 		content_panel.setLayout(new CardLayout(0, 0));
 
 		JPanel panel_image = new JPanel();
-		content_panel.add(panel_image, "panel_image");
+		content_panel.add(panel_image, PANEL_IMG);
 		panel_image.setLayout(null);
 
 		JLabel label_2 = new JLabel("File path:");
@@ -601,7 +609,7 @@ public class MainWindow extends JFrame {
 
 		JPanel panel_composite = new JPanel();
 >>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@1aa9a7bb/testing*/
-		content_panel.add(panel_composite, "panel_composite");
+		content_panel.add(panel_composite, PANEL_CMP);
 		panel_composite.setLayout(null);
 
 		JLabel label_1 = new JLabel("Elements:");
@@ -648,14 +656,11 @@ public class MainWindow extends JFrame {
 				nuovo.addEventListener(new MyEventClassListener(){
 
 					@Override
-					public void handleMyEventClassEvent(
-							MyEventClass e) {
+					public void handleMyEventClassEvent(MyEventClass e) {
 								setEnabled(true);
 								if(e != null){
-									System.out.println("nome del componente "+e.getComponente().getNome());
 									addElementToComposite(e.getComponente());
 								}
-								System.out.println("premuto add NUOVO");						
 					}
 
 					@Override
@@ -676,7 +681,7 @@ public class MainWindow extends JFrame {
 		
 
 		JPanel panel_alternative = new JPanel();
-		content_panel.add(panel_alternative, "panel_alternative");
+		content_panel.add(panel_alternative, PANEL_ALT);
 		panel_alternative.setLayout(null);
 		
 		//TODO cambiare le icone terribili dei bottoni up e down
@@ -690,23 +695,23 @@ public class MainWindow extends JFrame {
 		button_9.setBounds(12, 0, 46, 53);
 		panel_alternative.add(button_9);
 
-		JList list_alternative = new JList();
+		list_alternative = new JList();
 		list_alternative.setBounds(65, 0, 355, 149);
 		panel_alternative.add(list_alternative);
 
-		JButton button_10 = new JButton("v");
-		button_10
+		JButton button_up = new JButton("v");
+		button_up
 				.setToolTipText("Click here to decrease the priority of selected element");
-		button_10.setBounds(12, 96, 46, 53);
-		panel_alternative.add(button_10);
+		button_up.setBounds(12, 96, 46, 53);
+		panel_alternative.add(button_up);
 
-		JButton button_11 = new JButton("Delete");
-		button_11.setBounds(65, 161, 90, 27);
-		panel_alternative.add(button_11);
+		JButton button_DelFromAlt = new JButton("Delete");
+		button_DelFromAlt.setBounds(65, 161, 90, 27);
+		panel_alternative.add(button_DelFromAlt);
 
-		JButton button_12 = new JButton("Add existing");
-		button_12.setBounds(198, 161, 121, 27);
-		panel_alternative.add(button_12);
+		JButton button_AddExisAlt = new JButton("Add existing");
+		button_AddExisAlt.setBounds(198, 161, 121, 27);
+		panel_alternative.add(button_AddExisAlt);
 
 		JButton button_addNewAlter = new JButton("Add new");
 		button_addNewAlter.addActionListener(new ActionListener() {
@@ -728,16 +733,18 @@ public class MainWindow extends JFrame {
 					public void handleMyEventClassEvent(
 							MyEventClass e) {
 								setEnabled(true);
-								if(e != null)
+								if(e != null){
+									addElementToAlternative(e.getComponente());
 									System.out.println("nome del componente "+e.getComponente().getNome());
+									}
 								System.out.println("premuto add NUOVO");						
 					}
 
+					
+
 					@Override
-					public void handleMyEventClassEvent(EventObject e) {
-						// TODO Auto-generated method stub
-						
-					}});
+					public void handleMyEventClassEvent(EventObject e) {}
+					});
 
 				nuovo.setVisible(true);
 			}
@@ -746,7 +753,7 @@ public class MainWindow extends JFrame {
 		panel_alternative.add(button_addNewAlter);
 
 		JPanel panel_link = new JPanel();
-		content_panel.add(panel_link, "panel_link");
+		content_panel.add(panel_link, PANEL_LNK);
 		panel_link.setLayout(null);
 
 		JLabel lbl_linktxt = new JLabel("Link text:");
@@ -824,7 +831,7 @@ public class MainWindow extends JFrame {
 		
 
 		JPanel panel_text = new JPanel();
-		content_panel.add(panel_text, "panel_text");
+		content_panel.add(panel_text, PANEL_TXT);
 		panel_text.setLayout(null);
 
 		JLabel label_namecontent = new JLabel("Name:");
@@ -913,14 +920,14 @@ public class MainWindow extends JFrame {
 		setGenerici(selected, "Text");
 		editorPane_text.setText(selected.getTesto());
 
-		setContentLayout("panel_text");
+		setContentLayout(PANEL_TXT);
 	}
 
 	private static void popolaProperties(Immagine selected) {
 		setGenerici(selected, "Image");
 		textField_imagepath.setText(selected.getPath());
 
-		setContentLayout("panel_image");
+		setContentLayout(PANEL_IMG);
 
 	}
 	
@@ -930,13 +937,13 @@ public class MainWindow extends JFrame {
 
 		textField_linktext.setText(selected.getTesto());
 
-		setContentLayout("panel_link");
+		setContentLayout(PANEL_LNK);
 	}
 
 	private static void popolaProperties(ComponenteAlternative selected) {
 		setGenerici(selected, "Alternative");
 
-		setContentLayout("panel_alternative");
+		setContentLayout(PANEL_ALT);
 	}
 	
 	private static void popolaProperties(ComponenteComposto selected){
@@ -951,7 +958,7 @@ public class MainWindow extends JFrame {
 		setGenerici(selected,"Composite");
 		
 
-		setContentLayout("panel_composite");
+		setContentLayout(PANEL_CMP);
 		
 		Vector<ComponenteSemplice> componenti = selected.getComponenti();
 		
@@ -1223,7 +1230,7 @@ public class MainWindow extends JFrame {
 		return filec.getSelectedFile().getAbsolutePath();
 	}
 	
-	public static void addElementToComposite(ComponenteSemplice componente) {
+	private void addElementToComposite(ComponenteSemplice componente) {
 		
 		int[] selected = list_composite.getSelectedIndices();
 		((ComponenteComposto)focusedCmp).aggiungiComponenteS(componente);
@@ -1234,6 +1241,14 @@ public class MainWindow extends JFrame {
 		
 	}
 	
+	private void addElementToAlternative(ComponenteSemplice componente) {
+		int[] selected = list_alternative.getSelectedIndices();
+		((ComponenteAlternative)focusedAlt).aggiungiAlternativa(componente);
+		popolaProperties(focusedAlt);
+		list_alternative.setSelectedIndices(selected);
+		//buttonDeleteMgmt();
+	}
+	
 	private static void buttonDeleteMgmt(){
 		
 		if (list_composite.getSelectedIndices().length > 0)
@@ -1242,6 +1257,8 @@ public class MainWindow extends JFrame {
 			button_deleteFromComp.setEnabled(false);
 		
 	}
+	
+	
 	
 	private static JFileChooser buildFileChooser (int i){
 		JFileChooser fileChooser=null;
