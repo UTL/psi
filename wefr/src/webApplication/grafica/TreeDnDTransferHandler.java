@@ -1,6 +1,7 @@
 package webApplication.grafica;
 
 import java.util.List;
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -21,7 +22,7 @@ import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
 
-public class TreeTransferHandler extends TransferHandler {
+public class TreeDnDTransferHandler extends TransferHandler {
 
 	/**
 	 * 
@@ -31,11 +32,12 @@ public class TreeTransferHandler extends TransferHandler {
     private DataFlavor nodesFlavor;
     private DataFlavor[] flavors = new DataFlavor[2];
     private DefaultMutableTreeNode[] nodesToRemove;
+    private int cont = 1; 
     
     /**
      * 
      */
-    public TreeTransferHandler() {
+    public TreeDnDTransferHandler() {
         try {
         	String mimeType1 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Componente[].class.getName()+"\"";
         	componenteFlavor = new DataFlavor(mimeType1);
@@ -55,15 +57,18 @@ public class TreeTransferHandler extends TransferHandler {
     @Override
     public boolean canImport(TransferSupport support)	{
     	//controlli per verificare se il drop è valido
-    	//1. se l'operazione non è di drop allora ritorna false
-    	if (!support.isDrop())	{
+    	//1. se l'operazione non è di drop allora ritorna false->rimossa altrimenti non posso incollare
+    	/*if (!support.isDrop())	{
     		System.out.println("Non puoi droppare qui");
     		return false;
-    	}
+    	}*/
     	//indica visivamente dove sta avvenendo l'operazione di drop
-    	support.setShowDropLocation(true);
+    	if (support.isDrop())	{
+    		support.setShowDropLocation(true);
+    	}
+    	System.out.println("Tipo: "+(support.getClass()).toString());
     	//3. se il data flavor non è supportato allora ritorna false
-        if (!support.isDataFlavorSupported(nodesFlavor)) {
+        if (!support.isDataFlavorSupported(nodesFlavor) || !support.isDataFlavorSupported(componenteFlavor)) {
         	System.out.println("Tipo non supportato");
             return false;
         }
@@ -157,15 +162,26 @@ public class TreeTransferHandler extends TransferHandler {
      */
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
+    	System.out.println("Inizio ad esportare");
         if ((action & MOVE) == MOVE) {
             JTree tree = (JTree) source;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-            
             // Rimuovo gli elementi indicati per la rimozione
-            for (int i = 0; i < nodesToRemove.length; i++) {
+            for (int i = 0; i <nodesToRemove.length ; i++) {
             	model.removeNodeFromParent(nodesToRemove[i]);
             }
         }
+        System.out.println("Terminata esportazione");
+    }
+    
+    /* (non-Javadoc)
+     * @see javax.swing.TransferHandler#exportToClipboard(javax.swing.JComponent, java.awt.datatransfer.Clipboard, int)
+     */
+    public void exportToClipboard(JComponent source, Clipboard clip, int action)	{
+    	/**
+    	 * TODO implementare la copia nella clipboard per il taglia/copia
+    	 */
+    	System.out.println("Copio nella clipboard");
     }
     
     /* (non-Javadoc)
@@ -181,6 +197,7 @@ public class TreeTransferHandler extends TransferHandler {
      */
     @Override
     public boolean importData(TransferHandler.TransferSupport support) {
+    	System.out.println("Inizio ad importare...");
         if (!canImport(support)) {
             return false;
         }
@@ -196,37 +213,53 @@ public class TreeTransferHandler extends TransferHandler {
         } catch (java.io.IOException ioe) {
             System.out.println("I/O error: " + ioe.getMessage());
         }
-        // Recupero la location per il drop
-        JTree.DropLocation dl = (JTree.DropLocation) support.getDropLocation();
-        int childIndex = dl.getChildIndex();
-        TreePath dest = dl.getPath();
-        DefaultMutableTreeNode parent = (DefaultMutableTreeNode) dest.getLastPathComponent();
-        JTree tree = (JTree) support.getComponent();
-        DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-        // Configure for drop mode.
-        int index = childIndex; // DropMode.INSERT
-        if (childIndex == -1) { // DropMode.ON
-            index = parent.getChildCount();
-        }
-        // Aggiungo i dati al modello
-        for (int i = 0; i < comps.length; i++) {
-        	if ((support.getUserDropAction() & COPY) == COPY)	{
-        		comps[i].setNome("Copy of "+comps[i].getNome());
+        if (support.isDrop())	{
+        	// Recupero la location per il drop
+        	JTree.DropLocation dl = (JTree.DropLocation) support.getDropLocation();
+        	int childIndex = dl.getChildIndex();
+        	TreePath dest = dl.getPath();
+        	DefaultMutableTreeNode parent = (DefaultMutableTreeNode) dest.getLastPathComponent();
+        	JTree tree = (JTree) support.getComponent();
+        	DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+        	//Configure for drop mode.
+        	int index = childIndex; // DropMode.INSERT
+        	if (childIndex == -1) { // DropMode.ON
+        		index = parent.getChildCount();
         	}
-        	DefaultMutableTreeNode nodeToInsert = new DefaultMutableTreeNode(comps[i]);
-        	if (comps[i].getType()==Testo.TEXTTYPE || comps[i].getType()==Immagine.IMAGETYPE || comps[i].getType()==Link.LINKTYPE)	{
-        		nodeToInsert.setAllowsChildren(false);
+        	// Aggiungo i dati al modello
+        	for (int i = 0; i < comps.length; i++) {
+        		if ((support.getUserDropAction() & COPY) == COPY)	{
+        			comps[i].setNome("Copy of " + comps[i].getNome() + " ("+cont+")");
+        			cont++;
+        		}
+        		DefaultMutableTreeNode nodeToInsert = new DefaultMutableTreeNode(comps[i]);
+        		if (comps[i].getType()==Testo.TEXTTYPE || comps[i].getType()==Immagine.IMAGETYPE || comps[i].getType()==Link.LINKTYPE)	{
+        			nodeToInsert.setAllowsChildren(false);
+        		}
+        		if (!parent.isRoot() && (i==0))	{ //se entro ma i!=0 significa che è sto spostando un componente composto e non devo riaggiungere i suoi elementi semplici
+        			Componente parentComp = (Componente) parent.getUserObject();
+        			if (parentComp.getType()==ComponenteComposto.COMPOSTOTYPE)	{
+        				((ComponenteComposto)parentComp).aggiungiComponenteS((ComponenteSemplice) comps[i]);
+        			}	else if (parentComp.getType()==ComponenteAlternative.ALTERNATIVETYPE)	{
+        				((ComponenteAlternative)parentComp).aggiungiAlternativa((ComponenteSemplice) comps[i]);
+        			}
+        		}
+        		/*if (i==0)	{
+        			DefaultMutableTreeNode node0 = (DefaultMutableTreeNode) model.getChild(parent, index);
+        			System.out.println("Quale nodo ho recuperato? "+node0.toString());
+        		}*/
+        		System.out.println("Parent: " + parent.toString());
+        		model.insertNodeInto(nodeToInsert, parent, index++);
+        		if (i==0 && ((comps[i]).getType()==ComponenteComposto.COMPOSTOTYPE)||((comps[i]).getType()==ComponenteAlternative.ALTERNATIVETYPE))	{
+        			parent = nodeToInsert;
+        			index=0;
+        		}
         	}
-            if (!parent.isRoot())	{
-            	Componente parentComp = (Componente) parent.getUserObject();
-            	if (parentComp.getType()==ComponenteComposto.COMPOSTOTYPE)	{
-            		((ComponenteComposto)parentComp).aggiungiComponenteS((ComponenteSemplice) comps[i]);
-            	}	else if (parentComp.getType()==ComponenteAlternative.ALTERNATIVETYPE)	{
-            		((ComponenteAlternative)parentComp).aggiungiAlternativa((ComponenteSemplice) comps[i]);
-            	}
-            }
-        	model.insertNodeInto(nodeToInsert, parent, index++);
         }
+        else	{
+        	System.out.println("Operazione di paste");
+        }
+        System.out.println("Terminata importazione");
         return true;
     }
     
@@ -268,7 +301,6 @@ public class TreeTransferHandler extends TransferHandler {
 			}
 			return false;
 		}
-    	
     }
     
     class ComponenteTransferable implements Transferable	{

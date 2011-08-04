@@ -3,6 +3,8 @@ package webApplication.grafica;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.DropMode;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -39,7 +41,6 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	private DefaultMutableTreeNode rootNode;
 	private DefaultTreeModel model;
 	private JTree tree;
-	//private DNDTreeListener dndListener;
 	
 	public TreePanel() {
 		init();
@@ -52,21 +53,28 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		rootNode = new DefaultMutableTreeNode(ROOT);
 		model = new DefaultTreeModel(rootNode);
 		tree =  new JTree(model);
-		tree.setEditable(false); // fa in modo che l'albero non sia editabile
 		tree.setShowsRootHandles(true); // rende visibile il nodo root
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); //solo un nodo alla volta è selezionabile
 		tree.setCellRenderer(new CustomCellRenderer());
 		tree.setDragEnabled(true);
+		setMappings(tree);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
-		tree.setTransferHandler(new TreeTransferHandler());
+		tree.setTransferHandler(new TreeDnDTransferHandler());
 		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento
 		//editor delle celle
-		JScrollPane scrollPane = new JScrollPane(tree);
+		tree.setEditable(false); // fa in modo che l'albero non sia editabile
+		tree.setAutoscrolls(true);
+		//pannello contenente il tree
+		JScrollPane scrollPane = new JScrollPane(tree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
-		
 	}
 
 	
+	private void addActionListener(TreeActionListener treeActionListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * Reset the Tree
 	 */
@@ -127,7 +135,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	 * @param parent	The parent of the node
 	 * @param node		The node
 	 */
-	protected void addNode(DefaultMutableTreeNode parent, Componente node) {
+	private void addNode(DefaultMutableTreeNode parent, Componente node) {
 		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
 		if (parent == null) {
 			parent = rootNode;
@@ -156,6 +164,18 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		tree.scrollPathToVisible(new TreePath(childNode.getPath()));
 		//Seleziona l'elemtno appena creato
 		tree.setSelectionPath(new TreePath(childNode.getPath()));
+	}
+	
+	/**
+	 * Aggiunge le azioni di copia/taglia/incolla
+	 * @param tree
+	 */
+	private void setMappings(JTree tree)	{
+		ActionMap map = tree.getActionMap();
+	    map.put(TreeDnDTransferHandler.getCutAction().getValue(Action.NAME),TreeDnDTransferHandler.getCutAction());
+	    map.put(TreeDnDTransferHandler.getCopyAction().getValue(Action.NAME),TreeDnDTransferHandler.getCopyAction());
+	    map.put(TreeDnDTransferHandler.getPasteAction().getValue(Action.NAME),TreeDnDTransferHandler.getPasteAction());
+
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.BoxLayout;
 
 public class ProvaAlbero extends JFrame {
 
@@ -41,6 +42,7 @@ public class ProvaAlbero extends JFrame {
 		workspace = new JPanel(new BorderLayout());
 		setContentPane(workspace);
 		treePanel = new TreePanel();
+		treePanel.setBounds(100, 100, this.getWidth(),this.getHeight());
 		workspace.add(treePanel, BorderLayout.CENTER);
 		
 		JButton btnAdd = new JButton("Add");
@@ -57,6 +59,7 @@ public class ProvaAlbero extends JFrame {
 		workspace.add(btnClear, BorderLayout.SOUTH);
 		btnClear.setActionCommand(TreePanel.CLEAR_COMMAND);
 		btnClear.addActionListener(treePanel);
+		treePanel.setLayout(new BoxLayout(treePanel, BoxLayout.X_AXIS));
 
 	}
 }
