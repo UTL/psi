@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.TransferHandler;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -41,6 +42,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	private DefaultMutableTreeNode rootNode;
 	private DefaultTreeModel model;
 	private JTree tree;
+	private TreeTransferHandler th;
 	
 	public TreePanel() {
 		init();
@@ -50,6 +52,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	 * Initialize the Tree component
 	 */
 	private void init() {
+		th = new TreeTransferHandler();
 		rootNode = new DefaultMutableTreeNode(ROOT);
 		model = new DefaultTreeModel(rootNode);
 		tree =  new JTree(model);
@@ -59,20 +62,15 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		tree.setDragEnabled(true);
 		setMappings(tree);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
-		tree.setTransferHandler(new TreeDnDTransferHandler());
+		tree.setTransferHandler(th);
 		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento
 		//editor delle celle
 		tree.setEditable(false); // fa in modo che l'albero non sia editabile
 		tree.setAutoscrolls(true);
+		setMappings(tree);
 		//pannello contenente il tree
 		JScrollPane scrollPane = new JScrollPane(tree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
-	}
-
-	
-	private void addActionListener(TreeActionListener treeActionListener) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -135,7 +133,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	 * @param parent	The parent of the node
 	 * @param node		The node
 	 */
-	private void addNode(DefaultMutableTreeNode parent, Componente node) {
+	protected void addNode(DefaultMutableTreeNode parent, Componente node) {
 		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
 		if (parent == null) {
 			parent = rootNode;
@@ -172,10 +170,9 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	 */
 	private void setMappings(JTree tree)	{
 		ActionMap map = tree.getActionMap();
-	    map.put(TreeDnDTransferHandler.getCutAction().getValue(Action.NAME),TreeDnDTransferHandler.getCutAction());
-	    map.put(TreeDnDTransferHandler.getCopyAction().getValue(Action.NAME),TreeDnDTransferHandler.getCopyAction());
-	    map.put(TreeDnDTransferHandler.getPasteAction().getValue(Action.NAME),TreeDnDTransferHandler.getPasteAction());
-
+	    map.put(TransferHandler.getCutAction().getValue(Action.NAME),TransferHandler.getCutAction());
+	    map.put(TransferHandler.getCopyAction().getValue(Action.NAME),TransferHandler.getCopyAction());
+	    map.put(TransferHandler.getPasteAction().getValue(Action.NAME),TransferHandler.getPasteAction());
 	}
 
 	/**
