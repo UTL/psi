@@ -89,6 +89,7 @@ public class MainWindow extends JFrame {
 	private static JPanel panel_composite;
 	private static JPanel panel_alternative;
 	private static JButton button_deleteFromComp;
+	private static JButton button_delFromAlt;
 	private static JButton button_addExistComp;
 	private static JButton button_addNewComp;
 	private static JPanel errorePath;
@@ -706,9 +707,9 @@ public class MainWindow extends JFrame {
 		button_up.setBounds(12, 96, 46, 53);
 		panel_alternative.add(button_up);
 
-		JButton button_DelFromAlt = new JButton("Delete");
-		button_DelFromAlt.setBounds(65, 161, 90, 27);
-		panel_alternative.add(button_DelFromAlt);
+		button_delFromAlt = new JButton("Delete");
+		button_delFromAlt.setBounds(65, 161, 90, 27);
+		panel_alternative.add(button_delFromAlt);
 
 		JButton button_AddExisAlt = new JButton("Add existing");
 		button_AddExisAlt.setBounds(198, 161, 121, 27);
@@ -954,6 +955,8 @@ public class MainWindow extends JFrame {
 		
 		panel_alternative.add(list_alternative);
 		
+		buttonDeleteMgmt(list_alternative,button_delFromAlt);
+		
 		list_addFocusList(list_alternative);
 
 		panel_alternative.repaint();
@@ -977,7 +980,7 @@ public class MainWindow extends JFrame {
 		
 		panel_composite.add(list_composite);
 	
-		buttonDeleteMgmt();
+		buttonDeleteMgmt(list_composite,button_deleteFromComp);
 
 		list_addFocusList(list_composite);
 		
@@ -1000,7 +1003,10 @@ public class MainWindow extends JFrame {
 		list.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
-					buttonDeleteMgmt();
+					if(arg0.getSource()==list_composite)
+						buttonDeleteMgmt(list_composite,button_deleteFromComp);
+					else if (arg0.getSource()==list_alternative)
+						buttonDeleteMgmt(list_alternative,button_delFromAlt);
 			}
 		});
 	}
@@ -1250,7 +1256,7 @@ public class MainWindow extends JFrame {
 		((ComponenteComposto)focusedCmp).aggiungiComponenteS(componente);
 		popolaProperties(focusedCmp);
 		list_composite.setSelectedIndices(selected);
-		buttonDeleteMgmt();
+		buttonDeleteMgmt(list_composite,button_deleteFromComp);
 		
 		
 	}
@@ -1263,12 +1269,12 @@ public class MainWindow extends JFrame {
 		//buttonDeleteMgmt();
 	}
 	
-	private static void buttonDeleteMgmt(){
+	private static void buttonDeleteMgmt(JList lista, JButton bottone){
 		
-		if (list_composite.getSelectedIndices().length > 0)
-			button_deleteFromComp.setEnabled(true);
+		if (lista.getSelectedIndices().length > 0)
+			bottone.setEnabled(true);
 		else
-			button_deleteFromComp.setEnabled(false);
+			bottone.setEnabled(false);
 		
 	}
 	
