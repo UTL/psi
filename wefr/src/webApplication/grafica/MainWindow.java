@@ -633,7 +633,7 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO fare un controllo sul nome dell'oggetto
-				removeElementFromComposite(list_composite.getSelectedIndices());
+				removeElementFromComposto(list_composite.getSelectedIndices());
 				
 			}
 		});
@@ -686,6 +686,8 @@ public class MainWindow extends JFrame {
 		content_panel.add(panel_alternative, PANEL_ALT);
 		panel_alternative.setLayout(null);
 		
+		
+		
 		//TODO cambiare le icone terribili dei bottoni up e down
 
 		JButton button_9 = new JButton("^");
@@ -709,6 +711,15 @@ public class MainWindow extends JFrame {
 
 		button_delFromAlt = new JButton("Delete");
 		button_delFromAlt.setBounds(65, 161, 90, 27);
+		button_delFromAlt.addActionListener(new java.awt.event.ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO fare un controllo sul nome dell'oggetto
+				removeElementFromComposto(list_alternative.getSelectedIndices());
+				
+			}
+		});
 		panel_alternative.add(button_delFromAlt);
 
 		JButton button_AddExisAlt = new JButton("Add existing");
@@ -1016,17 +1027,26 @@ public class MainWindow extends JFrame {
         cl.show(content_panel, panel);
 	}
 	
-	private void removeElementFromComposite(int[] daRimuovere){
+	private void removeElementFromComposto(int[] daRimuovere){
 		int i;
 		//ciclo for al contrario: rimuovere gli elementi dall'ultimo a scendere altrimenti va in crash
-		for(i=daRimuovere.length-1; i>=0; i--){
-			((ComponenteComposto)focused).cancellaComponenteS(daRimuovere[i]);
+		if(focused.getType()== ComponenteComposto.COMPOSTOTYPE){
+			for(i=daRimuovere.length-1; i>=0; i--){
+				((ComponenteComposto)focused).cancellaComponenteS(daRimuovere[i]);
+			}
+			popolaProperties((ComponenteComposto)focused);
 		}
-		popolaProperties(focusedCmp);
+		else if (focused.getType()== ComponenteAlternative.ALTERNATIVETYPE){
+			for(i=daRimuovere.length-1; i>=0; i--){
+				((ComponenteAlternative)focused).cancellaAlternativa(daRimuovere[i]);
+			}
+			popolaProperties((ComponenteAlternative)focused);
+		}
+		
 		//FIXME sarebbe meglio fare anche un controllo sul nome e non solo sul numero di indice
 		//TODO tenere traccia della rimorzione
 	}
-	
+
 
 
 	 //metodo per popolare oggetti per farci prove
@@ -1266,7 +1286,7 @@ public class MainWindow extends JFrame {
 		((ComponenteAlternative)focusedAlt).aggiungiAlternativa(componente);
 		popolaProperties(focusedAlt);
 		list_alternative.setSelectedIndices(selected);
-		//buttonDeleteMgmt();
+		buttonDeleteMgmt(list_alternative,button_delFromAlt);
 	}
 	
 	private static void buttonDeleteMgmt(JList lista, JButton bottone){
