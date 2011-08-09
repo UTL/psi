@@ -92,6 +92,8 @@ public class MainWindow extends JFrame {
 	private static JButton button_delFromAlt;
 	private static JButton button_addExistComp;
 	private static JButton button_addNewComp;
+	private static JButton button_up;
+	private static JButton button_down;
 	private static JPanel errorePath;
 	private static JPanel erroreTestoLink;
 	private static JPanel erroreUrl;
@@ -690,24 +692,24 @@ public class MainWindow extends JFrame {
 		
 		//TODO cambiare le icone terribili dei bottoni up e down
 
-		JButton button_9 = new JButton("^");
-		button_9.addActionListener(new ActionListener() {
+		button_up = new JButton("^");
+		button_up.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		button_9.setToolTipText("Click here to increase the priority of selected element");
-		button_9.setBounds(12, 0, 46, 53);
-		panel_alternative.add(button_9);
+		button_up.setToolTipText("Click here to increase the priority of selected element");
+		button_up.setBounds(12, 0, 46, 53);
+		panel_alternative.add(button_up);
 
 		list_alternative = new JList();
 		list_alternative.setBounds(65, 0, 355, 149);
 		panel_alternative.add(list_alternative);
 
-		JButton button_up = new JButton("v");
-		button_up
+		button_down = new JButton("v");
+		button_down
 				.setToolTipText("Click here to decrease the priority of selected element");
-		button_up.setBounds(12, 96, 46, 53);
-		panel_alternative.add(button_up);
+		button_down.setBounds(12, 96, 46, 53);
+		panel_alternative.add(button_down);
 
 		button_delFromAlt = new JButton("Delete");
 		button_delFromAlt.setBounds(65, 161, 90, 27);
@@ -967,6 +969,8 @@ public class MainWindow extends JFrame {
 		panel_alternative.add(list_alternative);
 		
 		buttonDeleteMgmt(list_alternative,button_delFromAlt);
+		buttonDeleteMgmt(list_alternative,button_up);
+		buttonDeleteMgmt(list_alternative,button_down);
 		
 		list_addFocusList(list_alternative);
 
