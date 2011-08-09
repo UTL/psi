@@ -49,6 +49,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
@@ -750,9 +752,9 @@ public class MainWindow extends JFrame {
 								setEnabled(true);
 								if(e != null){
 									addElementToAlternative(e.getComponente());
-									System.out.println("nome del componente "+e.getComponente().getNome());
+									//System.out.println("nome del componente "+e.getComponente().getNome());
 									}
-								System.out.println("premuto add NUOVO");						
+								//System.out.println("premuto add NUOVO");						
 					}
 
 					
@@ -969,8 +971,7 @@ public class MainWindow extends JFrame {
 		panel_alternative.add(list_alternative);
 		
 		buttonDeleteMgmt(list_alternative,button_delFromAlt);
-		buttonDeleteMgmt(list_alternative,button_up);
-		buttonDeleteMgmt(list_alternative,button_down);
+		buttonUpDownMgmt();
 		
 		list_addFocusList(list_alternative);
 
@@ -978,6 +979,29 @@ public class MainWindow extends JFrame {
 
 	}
 	
+	private static void buttonUpDownMgmt() {
+		int num_elem = list_alternative.getModel().getSize();
+		int max_selected = list_alternative.getMaxSelectionIndex(); // -1 se nessun elemento selezionato
+		int min_selected = list_alternative.getMinSelectionIndex();
+		
+		if(num_elem < 2 || max_selected == -1 || (min_selected == 0 && max_selected == num_elem-1)){
+			button_down.setEnabled(false);
+			button_up.setEnabled(false);
+		}
+		else if(min_selected == 0){
+			button_down.setEnabled(true);
+			button_up.setEnabled(false);
+		}
+		else if(max_selected == num_elem-1){
+			button_down.setEnabled(false);
+			button_up.setEnabled(true);
+		}
+		else {
+			button_down.setEnabled(true);
+			button_up.setEnabled(true);
+		}
+	}
+
 	private static void popolaProperties(ComponenteComposto selected){
 		//TODO il list_composite non ha le scrollbar
 		//TODO aggiungere le iconcine in parte ai nomi
@@ -1015,16 +1039,24 @@ public class MainWindow extends JFrame {
 	}
 	
 	private static void list_addFocusList(JList list){
-		list.addFocusListener(new FocusAdapter() {
+		list.addListSelectionListener(new ListSelectionListener() {
+			
+
 			@Override
-			public void focusGained(FocusEvent arg0) {
-					if(arg0.getSource()==list_composite)
-						buttonDeleteMgmt(list_composite,button_deleteFromComp);
-					else if (arg0.getSource()==list_alternative)
-						buttonDeleteMgmt(list_alternative,button_delFromAlt);
+			public void valueChanged(ListSelectionEvent arg0) {
+				if(arg0.getSource()==list_composite)
+					buttonDeleteMgmt(list_composite,button_deleteFromComp);
+				else if (arg0.getSource()==list_alternative){
+					buttonDeleteMgmt(list_alternative,button_delFromAlt);
+					buttonUpDownMgmt();
+				}
+				
 			}
 		});
 	}
+	
+
+
 	
 	private static void setContentLayout(String panel){
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
@@ -1291,6 +1323,7 @@ public class MainWindow extends JFrame {
 		popolaProperties(focusedAlt);
 		list_alternative.setSelectedIndices(selected);
 		buttonDeleteMgmt(list_alternative,button_delFromAlt);
+		buttonUpDownMgmt();
 	}
 	
 	private static void buttonDeleteMgmt(JList lista, JButton bottone){
