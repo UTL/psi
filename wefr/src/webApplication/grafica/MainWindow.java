@@ -70,6 +70,7 @@ import java.util.Vector;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import javax.swing.BoxLayout;
+import java.util.Collections;
 
 public class MainWindow extends JFrame {
 
@@ -149,6 +150,10 @@ public class MainWindow extends JFrame {
 	private static final String PANEL_LNK="panel_link";
 	private static final String PANEL_ALT="panel_alternative";
 	private static final String PANEL_CMP="panel_composite";
+	
+	private static final int MOVE_UP = -1;
+	private static final int MOVE_DOWN = +1;
+
 	
 	
 	private JRootPane root;
@@ -697,7 +702,10 @@ public class MainWindow extends JFrame {
 		button_up = new JButton("^");
 		button_up.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				moveAlternativeElements(MOVE_UP);
 			}
+
+			
 		});
 		button_up.setToolTipText("Click here to increase the priority of selected element");
 		button_up.setBounds(12, 0, 46, 53);
@@ -708,6 +716,11 @@ public class MainWindow extends JFrame {
 		panel_alternative.add(list_alternative);
 
 		button_down = new JButton("v");
+		button_down.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				moveAlternativeElements(MOVE_DOWN);
+			}
+		});
 		button_down
 				.setToolTipText("Click here to decrease the priority of selected element");
 		button_down.setBounds(12, 96, 46, 53);
@@ -1000,6 +1013,38 @@ public class MainWindow extends JFrame {
 			button_down.setEnabled(true);
 			button_up.setEnabled(true);
 		}
+	}
+	
+	private void moveAlternativeElements(int upOrDown) {
+		int shift;
+		ComponenteAlternative comp = ((ComponenteAlternative)focused); 
+		Vector<ComponenteSemplice> listaAlternative = comp.getAlternative();
+		int i;
+		int[] toMove = list_alternative.getSelectedIndices();
+		
+		if(upOrDown == MOVE_UP){
+			shift=MOVE_UP;
+			for (i=0; i<toMove.length; i++){
+				Collections.swap(listaAlternative,toMove[i], toMove[i]+shift);
+				toMove[i]= toMove[i]+shift;
+			}
+		}
+		else if(upOrDown == MOVE_DOWN){
+			shift = MOVE_DOWN;
+			for (i=toMove.length-1; i>=0; i--){
+				Collections.swap(listaAlternative,toMove[i], toMove[i]+shift);
+				toMove[i]= toMove[i]+shift;
+			}
+		}
+		else 
+			return;
+		
+		//FIXME bisognerebbe controllare che l'elemento col focus sia davvero un alternativa e in caso di errore sollevare un eccezione
+		
+		
+		comp.setAlternative(listaAlternative);
+		popolaProperties((ComponenteAlternative)focused);
+		list_alternative.setSelectedIndices(toMove);
 	}
 
 	private static void popolaProperties(ComponenteComposto selected){
