@@ -93,7 +93,7 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     	}
     	else	{//se è un copia/taglia dalla clipboard devo estrarre i dati prima
     		Transferable trans = clipboard.getContents(null);
-            if ((!trans.isDataFlavorSupported(nodesFlavor)) && (!trans.isDataFlavorSupported(componenteFlavor)))	{
+            if ((trans==null) || (!trans.isDataFlavorSupported(nodesFlavor)) && (!trans.isDataFlavorSupported(componenteFlavor)))	{
                 return false;
             }
             //verifiche da fare se è un incolla?
@@ -178,7 +178,10 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     public void exportToClipboard(JComponent c, Clipboard clip, int action)	{
     	System.out.println("Inizio ad esportare nella clipboard...");
     	Transferable treeTransferable = createTransferable(c);
-    	if (action == MOVE)	{
+    	if (compsToCopy == null)	{
+    		return;
+    	}
+    	if ((action == MOVE) && (nodesToRemove!=null))	{
             JTree tree = (JTree) c;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
             // Rimuovo gli elementi indicati per la rimozione
@@ -186,13 +189,11 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
             	model.removeNodeFromParent(nodesToRemove[i]);
             }
     	}
-    	else if (action == COPY)	{
-    		for (int i=0; i<compsToCopy.length;i++)	{
-    			compsToCopy[i].setNome("Copy of " + compsToCopy[i].getNome() + " ("+cont+")");
-    			cont++;
-    		}
+    	else if ((action == COPY)&& (nodesToRemove!=null))	{
+    		renameSavedComps();
     	}
     	clipboard.setContents(treeTransferable, this);
+    	nodesToRemove = null;
     	System.out.println("Terminata esportazione nella clipboard...");
     }
     
@@ -210,8 +211,13 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     @Override
     public boolean importData(TransferHandler.TransferSupport support) {
     	System.out.println("Inizio ad importare...");
+    	if (compsToCopy==null)	{
+    		System.out.println("Niente da copiare");
+    		return false;
+    	}
     	Componente[] comps = null;
         if (!canImport(support)) {
+        	System.out.println("Non posso importare");
             return false;
         }
         JTree tree = (JTree) support.getComponent();
@@ -282,12 +288,19 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
             }
             DefaultMutableTreeNode parent = null;
             int index;
-            if (!node.getAllowsChildren())	{
-            	 parent = (DefaultMutableTreeNode) node.getParent();
-            	index = parent.getIndex(node)+1;
-            }	else	{
-            	index = node.getChildCount();
-            	parent = node;
+            //Se il nodo da spostare è composto, l'unico parent concesso è la root e come posizione sarà il successivo al target corrente
+            if ((comps[0].getType()==ComponenteComposto.COMPOSTOTYPE) || (comps[0].getType()==ComponenteAlternative.ALTERNATIVETYPE))	{
+            	parent = (DefaultMutableTreeNode) tree.getModel().getRoot();
+            	//index = node.getParent().getIndex(node)+1;
+            	index = parent.getChildCount();
+            }	else	{ //se non è composto allora è un nodo semplice
+            	if (!node.getAllowsChildren())	{ //se il target non permette figli, il parent del target corrente va bene
+            		parent = (DefaultMutableTreeNode) node.getParent();
+            		index=parent.getChildCount();
+            	}	else	{ //se il target corrente consente figli allora il target va bene e sarà messo in coda
+            		parent=node;
+            		index=node.getChildCount();
+            	}
             }
         	for (int i = 0; i < comps.length; i++) {
         		DefaultMutableTreeNode nodeToInsert = new DefaultMutableTreeNode(comps[i]);
@@ -319,6 +332,20 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     @Override
     public String toString() {
         return getClass().getName();
+    }
+    
+    private void renameSavedComps()	{
+		for (int i=0; i<compsToCopy.length;i++)	{
+			String name = compsToCopy[i].getNome();
+			int beginIndex = name.lastIndexOf('(');
+			if (beginIndex == -1)	{
+				beginIndex = compsToCopy[i].getNome().length();
+			}
+			String newName = name.substring(0,beginIndex);
+			newName = newName+'('+cont+')';
+			compsToCopy[i].setNome(newName);
+			cont++;
+		}
     }
 
     

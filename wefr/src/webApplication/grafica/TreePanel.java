@@ -43,6 +43,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	private DefaultTreeModel model;
 	private JTree tree;
 	private TreeTransferHandler th;
+	//private CustomTreeEditor te;
 	
 	public TreePanel() {
 		init();
@@ -63,11 +64,12 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		setMappings(tree);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(th);
-		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento
+		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento -> devo aggiungere anche il frame per abilitare/disabilitare i pulsanti?
 		//editor delle celle
 		tree.setEditable(false); // fa in modo che l'albero non sia editabile
 		tree.setAutoscrolls(true);
 		setMappings(tree);
+		add(tree);
 		//pannello contenente il tree
 		JScrollPane scrollPane = new JScrollPane(tree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
@@ -85,6 +87,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			}
 		}
 		rootNode.removeAllChildren();
+		model.nodeStructureChanged(rootNode);
 		model.reload();
 	}
 	
@@ -113,11 +116,12 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 							return;
 						}
 						model.removeNodeFromParent(currentNode);
+						tree.clearSelection();
 					}
 				}
 			}
         	else	{
-        		//è stata selezionata la radice perciò avviso l'utente che non può essere cancellata
+        		//è stata selezionata la radice perciò avviso l'utente che non può essere cancellata->risolto: la root non può essere selezionata
         		JOptionPane.showMessageDialog(this.getTopLevelAncestor(),ROOTDELETE,"Error!",JOptionPane.ERROR_MESSAGE);
         	}
 		}
@@ -152,7 +156,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),parent.toString()+ADDCHILDRENNOTALLOWED,"Error!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		parent.add(childNode);
+		model.insertNodeInto(childNode, parent, parent.getChildCount());
 		//NOTA: Java SE7 può fare switch su String ma Java SE6 no!
 		if (node.getType()==Testo.TEXTTYPE || node.getType()==Immagine.IMAGETYPE || node.getType()==Link.LINKTYPE)	{
 			childNode.setAllowsChildren(false);
@@ -208,23 +212,57 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			tree.clearSelection();
 			//non è stato selezionato nulla o è stata selezionata la radice;
 			return;
+		}	else	{
+			Componente comp = (Componente) node.getUserObject();
+			System.out.println("Componente: "+comp.getNome());
 		}
-		//qui si implementeranno le operazioni da fare sul nodo per ora visualizzo solo i dati
-		Componente comp = (Componente)node.getUserObject();
-		System.out.println(comp.getNome());
-		System.out.println(comp.getCategoria());
-		System.out.println(comp.getVisibilita());
-		System.out.println(comp.getEnfasi());
-		System.out.println(comp.getType());
-		if (comp.getType() == Testo.TEXTTYPE)	{
-			String testo = ((Testo)comp).getTesto();
-			System.out.println(testo);
+	}
+	
+	
+	/**
+	 * Check if the given element name is already taken
+	 * @param name
+	 * @return
+	 */
+	public boolean nameExists(String name)	{
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
+		for (int i=0; i<root.getChildCount(); i++)	{
+			if (nameExists(name, (DefaultMutableTreeNode) root.getChildAt(i)))	{
+				return true;
+			}
 		}
-		if (comp.getType() == ComponenteComposto.COMPOSTOTYPE)	{
-			System.out.println(((ComponenteComposto)comp).getComponenti());
+		return false;
+	}
+	
+	/**
+	 * Check if the given element name is already taken for the given node
+	 * @param name
+	 * @param node
+	 * @return
+	 */
+	private boolean nameExists(String name, DefaultMutableTreeNode node)	{
+		Componente comp = (Componente) node.getUserObject();
+		if (comp.getNome().equalsIgnoreCase(name))	{
+			return true;
 		}
-		if (comp.getType() == ComponenteAlternative.ALTERNATIVETYPE)	{
-			System.out.println(((ComponenteAlternative)comp).getAlternative());
+		if (node.getAllowsChildren())	{
+			for (int i=0; i<node.getChildCount(); i++)	{
+				if (nameExists(name, (DefaultMutableTreeNode) node.getChildAt(i)))	{
+					return true;
+				}
+			}
 		}
+		return false;
+	}
+	
+	public JTree getTree()	{
+		return tree;
+	}
+	
+	public boolean isEmpty()	{
+		if ((((DefaultMutableTreeNode) model.getRoot()).getChildCount())!=0)	{
+			return false;
+		}
+		return true;
 	}
 }

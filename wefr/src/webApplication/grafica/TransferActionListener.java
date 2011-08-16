@@ -20,6 +20,7 @@ public class TransferActionListener implements ActionListener, PropertyChangeLis
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		System.out.println("Property change");
 		Object o = evt.getNewValue();
 		if (o instanceof JComponent)	{
 			focusOwner = (JComponent)o;
@@ -31,6 +32,7 @@ public class TransferActionListener implements ActionListener, PropertyChangeLis
 
 	@Override
 	public void actionPerformed(ActionEvent evt) {
+		System.out.println("ActionPerformed");
 		if (focusOwner == null)	{
 			return;
 		}
