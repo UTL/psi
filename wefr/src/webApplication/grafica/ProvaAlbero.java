@@ -2,8 +2,9 @@ package webApplication.grafica;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -28,7 +29,7 @@ import java.awt.event.InputEvent;
  * @author Andrea
  *
  */
-public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeModelListener	{
+public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeModelListener, ActionListener	{
 /*
  * TODO aggiungere focuslistener per abilitare/disabilitare i bottoni!
  */
@@ -87,6 +88,7 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		mntmCut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
 		mntmCut.setMnemonic(KeyEvent.VK_X);
 		mntmCut.addActionListener(ccpListener);
+		mntmCut.addActionListener(this);
 		mnEdit.add(mntmCut);
 		
 		mntmCopy = new JMenuItem("Copy");
@@ -95,6 +97,7 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		mntmCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
 		mntmCopy.setMnemonic(KeyEvent.VK_C);
 		mntmCopy.addActionListener(ccpListener);
+		mntmCopy.addActionListener(this);
 		mnEdit.add(mntmCopy);
 		
 		mntmPaste = new JMenuItem("Paste");
@@ -103,6 +106,7 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		mntmPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK));
 		mntmPaste.setMnemonic(KeyEvent.VK_V);
 		mntmPaste.addActionListener(ccpListener);
+		//mntmPaste.addActionListener(this);
 		mnEdit.add(mntmPaste);
 		
 		
@@ -138,6 +142,7 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		
 		treePanel.getTree().addTreeSelectionListener(this);
 		treePanel.getTree().getModel().addTreeModelListener(this);
+		
 	}
 
 	/* (non-Javadoc)
@@ -194,6 +199,13 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 			btnClear.setEnabled(false);
 		}	else	{
 			btnClear.setEnabled(true);
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if ((e.getActionCommand().equalsIgnoreCase((String)TransferHandler.getCopyAction().getValue(Action.NAME))) || (e.getActionCommand().equalsIgnoreCase((String)TransferHandler.getCutAction().getValue(Action.NAME))))	{
+			mntmPaste.setEnabled(true);
 		}
 	}
 

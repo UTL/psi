@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.TransferHandler;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -61,7 +62,6 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); //solo un nodo alla volta è selezionabile
 		tree.setCellRenderer(new CustomCellRenderer());
 		tree.setDragEnabled(true);
-		setMappings(tree);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(th);
 		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento -> devo aggiungere anche il frame per abilitare/disabilitare i pulsanti?
@@ -73,6 +73,12 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		//pannello contenente il tree
 		JScrollPane scrollPane = new JScrollPane(tree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
+		
+		//disabilito le azioni di default di ctrl+x ctrl+c ctrl+v per avere un controllo migliore 
+		tree.getInputMap().put(KeyStroke.getKeyStroke("control C"), "none");
+		tree.getInputMap().put(KeyStroke.getKeyStroke("control X"), "none");
+		tree.getInputMap().put(KeyStroke.getKeyStroke("control V"), "none");
+		
 	}
 
 	/**
@@ -81,6 +87,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	protected void clear()	{
 		if (rootNode.getChildCount()!=0)	{
 			//chiedo conferma prima di resettare tutto
+			System.out.println("Ancestor: "+this.getTopLevelAncestor().getClass());
 			int choice = JOptionPane.showConfirmDialog(this.getTopLevelAncestor(), CLEARALL,"Warning!",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
 			if (choice == 1)	{
 				return;
@@ -216,43 +223,6 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			Componente comp = (Componente) node.getUserObject();
 			System.out.println("Componente: "+comp.getNome());
 		}
-	}
-	
-	
-	/**
-	 * Check if the given element name is already taken
-	 * @param name
-	 * @return
-	 */
-	public boolean nameExists(String name)	{
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
-		for (int i=0; i<root.getChildCount(); i++)	{
-			if (nameExists(name, (DefaultMutableTreeNode) root.getChildAt(i)))	{
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Check if the given element name is already taken for the given node
-	 * @param name
-	 * @param node
-	 * @return
-	 */
-	private boolean nameExists(String name, DefaultMutableTreeNode node)	{
-		Componente comp = (Componente) node.getUserObject();
-		if (comp.getNome().equalsIgnoreCase(name))	{
-			return true;
-		}
-		if (node.getAllowsChildren())	{
-			for (int i=0; i<node.getChildCount(); i++)	{
-				if (nameExists(name, (DefaultMutableTreeNode) node.getChildAt(i)))	{
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	
 	public JTree getTree()	{
