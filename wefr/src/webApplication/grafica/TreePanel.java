@@ -73,12 +73,6 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		//pannello contenente il tree
 		JScrollPane scrollPane = new JScrollPane(tree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
-		
-		//disabilito le azioni di default di ctrl+x ctrl+c ctrl+v per avere un controllo migliore 
-		tree.getInputMap().put(KeyStroke.getKeyStroke("control C"), "none");
-		tree.getInputMap().put(KeyStroke.getKeyStroke("control X"), "none");
-		tree.getInputMap().put(KeyStroke.getKeyStroke("control V"), "none");
-		
 	}
 
 	/**
@@ -184,6 +178,11 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	    map.put(TransferHandler.getCutAction().getValue(Action.NAME),TransferHandler.getCutAction());
 	    map.put(TransferHandler.getCopyAction().getValue(Action.NAME),TransferHandler.getCopyAction());
 	    map.put(TransferHandler.getPasteAction().getValue(Action.NAME),TransferHandler.getPasteAction());
+		
+		//disabilito le azioni di default di ctrl+x ctrl+c ctrl+v per avere un controllo migliore 
+		tree.getInputMap().put(KeyStroke.getKeyStroke("control C"), "none");
+		tree.getInputMap().put(KeyStroke.getKeyStroke("control X"), "none");
+		tree.getInputMap().put(KeyStroke.getKeyStroke("control V"), "none");
 	}
 
 	/**

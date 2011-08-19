@@ -15,7 +15,6 @@ public class TransferActionListener implements ActionListener, PropertyChangeLis
 	
 	public TransferActionListener()	{
 		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-		System.out.println("Manager: "+manager.toString());
 		manager.addPropertyChangeListener("permanentFocusOwner", this);
 	}
 
