@@ -3,11 +3,15 @@ package webApplication.grafica;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.DropMode;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
+import javax.swing.TransferHandler;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -39,7 +43,8 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	private DefaultMutableTreeNode rootNode;
 	private DefaultTreeModel model;
 	private JTree tree;
-	//private DNDTreeListener dndListener;
+	private TreeTransferHandler th;
+	//private CustomTreeEditor te;
 	
 	public TreePanel() {
 		init();
@@ -49,36 +54,41 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	 * Initialize the Tree component
 	 */
 	private void init() {
+		th = new TreeTransferHandler();
 		rootNode = new DefaultMutableTreeNode(ROOT);
 		model = new DefaultTreeModel(rootNode);
 		tree =  new JTree(model);
-		tree.setEditable(false); // fa in modo che l'albero non sia editabile
 		tree.setShowsRootHandles(true); // rende visibile il nodo root
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); //solo un nodo alla volta � selezionabile
 		tree.setCellRenderer(new CustomCellRenderer());
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
-		tree.setTransferHandler(new TreeTransferHandler());
-		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento
+		tree.setTransferHandler(th);
+		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento -> devo aggiungere anche il frame per abilitare/disabilitare i pulsanti?
 		//editor delle celle
-		JScrollPane scrollPane = new JScrollPane(tree);
+		tree.setEditable(false); // fa in modo che l'albero non sia editabile
+		tree.setAutoscrolls(true);
+		setMappings(tree);
+		add(tree);
+		//pannello contenente il tree
+		JScrollPane scrollPane = new JScrollPane(tree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
-		
 	}
 
-	
 	/**
 	 * Reset the Tree
 	 */
 	protected void clear()	{
 		if (rootNode.getChildCount()!=0)	{
 			//chiedo conferma prima di resettare tutto
+			System.out.println("Ancestor: "+this.getTopLevelAncestor().getClass());
 			int choice = JOptionPane.showConfirmDialog(this.getTopLevelAncestor(), CLEARALL,"Warning!",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
 			if (choice == 1)	{
 				return;
 			}
 		}
 		rootNode.removeAllChildren();
+		model.nodeStructureChanged(rootNode);
 		model.reload();
 	}
 	
@@ -107,11 +117,12 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 							return;
 						}
 						model.removeNodeFromParent(currentNode);
+						tree.clearSelection();
 					}
 				}
 			}
         	else	{
-        		//� stata selezionata la radice perci� avviso l'utente che non pu� essere cancellata
+        		//� stata selezionata la radice perci� avviso l'utente che non pu� essere cancellata->risolto: la root non pu� essere selezionata
         		JOptionPane.showMessageDialog(this.getTopLevelAncestor(),ROOTDELETE,"Error!",JOptionPane.ERROR_MESSAGE);
         	}
 		}
@@ -127,7 +138,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	 * @param parent	The parent of the node
 	 * @param node		The node
 	 */
-	public void addNode(DefaultMutableTreeNode parent, Componente node) {
+	protected void addNode(DefaultMutableTreeNode parent, Componente node) {
 		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
 		if (parent == null) {
 			parent = rootNode;
@@ -146,7 +157,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),parent.toString()+ADDCHILDRENNOTALLOWED,"Error!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		parent.add(childNode);
+		model.insertNodeInto(childNode, parent, parent.getChildCount());
 		//NOTA: Java SE7 pu� fare switch su String ma Java SE6 no!
 		if (node.getType()==Testo.TEXTTYPE || node.getType()==Immagine.IMAGETYPE || node.getType()==Link.LINKTYPE)	{
 			childNode.setAllowsChildren(false);
@@ -156,6 +167,22 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		tree.scrollPathToVisible(new TreePath(childNode.getPath()));
 		//Seleziona l'elemtno appena creato
 		tree.setSelectionPath(new TreePath(childNode.getPath()));
+	}
+	
+	/**
+	 * Aggiunge le azioni di copia/taglia/incolla
+	 * @param tree
+	 */
+	private void setMappings(JTree tree)	{
+		ActionMap map = tree.getActionMap();
+	    map.put(TransferHandler.getCutAction().getValue(Action.NAME),TransferHandler.getCutAction());
+	    map.put(TransferHandler.getCopyAction().getValue(Action.NAME),TransferHandler.getCopyAction());
+	    map.put(TransferHandler.getPasteAction().getValue(Action.NAME),TransferHandler.getPasteAction());
+		
+		//disabilito le azioni di default di ctrl+x ctrl+c ctrl+v per avere un controllo migliore 
+		tree.getInputMap().put(KeyStroke.getKeyStroke("control C"), "none");
+		tree.getInputMap().put(KeyStroke.getKeyStroke("control X"), "none");
+		tree.getInputMap().put(KeyStroke.getKeyStroke("control V"), "none");
 	}
 
 	/**
@@ -191,38 +218,20 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			tree.clearSelection();
 			//non � stato selezionato nulla o � stata selezionata la radice;
 			return;
+		}	else	{
+			Componente comp = (Componente) node.getUserObject();
+			System.out.println("Componente: "+comp.getNome());
 		}
-		//qui si implementeranno le operazioni da fare sul nodo per ora visualizzo solo i dati
-		Componente comp = (Componente)node.getUserObject();
-		System.out.println(comp.getNome());
-		System.out.println(comp.getCategoria());
-		System.out.println(comp.getVisibilita());
-		System.out.println(comp.getEnfasi());
-		System.out.println(comp.getType());
-		if (comp.getType() == Testo.TEXTTYPE)	{
-			MainWindow.setFocus((Testo)comp);
-			String testo = ((Testo)comp).getTesto();
-			System.out.println(testo);
+	}
+	
+	public JTree getTree()	{
+		return tree;
+	}
+	
+	public boolean isEmpty()	{
+		if ((((DefaultMutableTreeNode) model.getRoot()).getChildCount())!=0)	{
+			return false;
 		}
-		else if (comp.getType() == ComponenteComposto.COMPOSTOTYPE)	{
-			MainWindow.setFocus((ComponenteComposto)comp);
-			System.out.println(((ComponenteComposto)comp).getComponenti());
-		}
-		else if (comp.getType() == ComponenteAlternative.ALTERNATIVETYPE)	{
-			MainWindow.setFocus((ComponenteAlternative)comp);
-
-			System.out.println(((ComponenteAlternative)comp).getAlternative());
-		}
-		else if (comp.getType() == Immagine.IMAGETYPE)	{
-			MainWindow.setFocus((Immagine)comp);
-
-		}
-		else if(comp.getType() == Link.LINKTYPE){
-			MainWindow.setFocus((Link)comp);
-
-		}
-		else{
-			//TODO qui avrebbe senso che si schianti, lanciare un'eccezione
-		}
+		return true;
 	}
 }
