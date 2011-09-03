@@ -1,5 +1,6 @@
 package webApplication.grafica;
 
+
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
