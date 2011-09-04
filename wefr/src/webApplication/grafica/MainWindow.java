@@ -3,6 +3,7 @@ package webApplication.grafica;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -711,9 +712,12 @@ public class MainWindow extends JFrame {
 		button_up.setBounds(12, 0, 46, 53);
 		panel_alternative.add(button_up);
 
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setLocation(70, 0);
+		scrollPane.setSize(350, 149);
+		panel_alternative.add(scrollPane);
 		list_alternative = new JList();
-		list_alternative.setBounds(65, 0, 355, 149);
-		panel_alternative.add(list_alternative);
+		scrollPane.setViewportView(list_alternative);
 
 		button_down = new JButton("v");
 		button_down.addActionListener(new ActionListener() {
@@ -973,22 +977,25 @@ public class MainWindow extends JFrame {
 	private static void popolaProperties(ComponenteAlternative selected) {
 		setGenerici(selected, "Alternative");
 		
-		if(list_alternative != null && panel_alternative!=null)
-			panel_alternative.remove(list_alternative);
+		Container listContainer= list_alternative.getParent();
+		
+		if(list_alternative != null && listContainer!=null)
+			listContainer.remove(list_alternative);
+		
+		
 		
 		setContentLayout(PANEL_ALT);
 		
 		list_alternative = new JList(extractNomiComponenti(selected.getAlternative()));
-		list_alternative.setBounds(65, 0, 355, 149);
 		
-		panel_alternative.add(list_alternative);
+		listContainer.add(list_alternative);
 		
 		buttonDeleteMgmt(list_alternative,button_delFromAlt);
 		buttonUpDownMgmt();
 		
 		list_addFocusList(list_alternative);
 
-		panel_alternative.repaint();
+		listContainer.repaint();
 
 	}
 	
