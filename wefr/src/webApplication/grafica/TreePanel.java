@@ -39,6 +39,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	protected static String ADD_COMMAND = "add";
     protected static String REMOVE_COMMAND = "remove";
     protected static String CLEAR_COMMAND = "clear";
+    private static MainWindow mainWindow;
 	
 	private DefaultMutableTreeNode rootNode;
 	private DefaultTreeModel model;
@@ -46,7 +47,8 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	private TreeTransferHandler th;
 	//private CustomTreeEditor te;
 	
-	public TreePanel() {
+	public TreePanel(MainWindow mainW) {
+		mainWindow = mainW;
 		init();
 	}
 
@@ -64,7 +66,17 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(th);
-		tree.addTreeSelectionListener(this); //il listener per l'evento di selezione di un elemento -> devo aggiungere anche il frame per abilitare/disabilitare i pulsanti?
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+		      public void valueChanged(TreeSelectionEvent e) {
+		          DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
+		          System.out.println("You selected " + node);
+		          try{
+		        	  Componente comp = (Componente) node.getUserObject();
+		        	  MainWindow.setFocus(comp);
+		          }
+		          catch(ClassCastException exc){}
+		        }
+		      }); //il listener per l'evento di selezione di un elemento -> devo aggiungere anche il frame per abilitare/disabilitare i pulsanti?
 		//editor delle celle
 		tree.setEditable(false); // fa in modo che l'albero non sia editabile
 		tree.setAutoscrolls(true);

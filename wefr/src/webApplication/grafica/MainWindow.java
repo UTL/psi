@@ -884,7 +884,7 @@ public class MainWindow extends JFrame {
 		//editorPane_text.setBounds(12, 32, 408, 156);
 		panel_text.add(scrollingArea);
 
-		albero = new TreePanel();
+		albero = new TreePanel(this);
 		albero.setBounds(15, 63, 222, 378);
 		contentPane.add(albero);
 		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
@@ -1167,7 +1167,20 @@ public class MainWindow extends JFrame {
 		focusedAlt = null;
 	}
 
-	public static void setFocus(Immagine selected) {
+	public static void setFocus(Componente selected){
+		if (selected.getType()==Testo.TEXTTYPE)
+			setFocus((Testo)selected);
+		else if (selected.getType()==Immagine.IMAGETYPE)
+			setFocus((Immagine)selected);
+		else if (selected.getType()==ComponenteComposto.COMPOSTOTYPE)
+			setFocus((ComponenteComposto)selected);
+		else if (selected.getType()==ComponenteAlternative.ALTERNATIVETYPE)
+			setFocus((ComponenteAlternative)selected);
+		else if (selected.getType()==Link.LINKTYPE)
+			setFocus((Link)selected);
+	}
+	
+	private static void setFocus(Immagine selected) {
 		unFocus();
 		focusedImg = selected;
 		setFocusGeneric(selected);
@@ -1175,7 +1188,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	public static void setFocus(Testo selected) {
+	private static void setFocus(Testo selected) {
 		unFocus();
 		focusedTxt = selected;
 		setFocusGeneric(selected);
@@ -1183,7 +1196,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	public static void setFocus(Link selected) {
+	private static void setFocus(Link selected) {
 		unFocus();
 		focusedLnk = selected;
 		setFocusGeneric(selected);
@@ -1191,7 +1204,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	public static void setFocus(ComponenteComposto selected) {
+	private static void setFocus(ComponenteComposto selected) {
 		unFocus();
 		focusedCmp = selected;
 		setFocusGeneric(selected);
@@ -1200,7 +1213,7 @@ public class MainWindow extends JFrame {
 
 	}
 
-	public static void setFocus(ComponenteAlternative selected) {
+	private static void setFocus(ComponenteAlternative selected) {
 		unFocus();
 		focusedAlt = selected;
 		setFocusGeneric(selected);

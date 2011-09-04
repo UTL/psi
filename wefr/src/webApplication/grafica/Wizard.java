@@ -597,7 +597,7 @@ public class Wizard extends JFrame {
 				System.out.println("Importance:"+choice_1.getSelectedItem());
 				System.out.println("Value: link target:"+textField_3.getText()+"  link text:"+textField_4.getText());*/
 				lnk= new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(),textField_url.getText(), textField_linktext.getText());
-				fireEvent();
+				fireEvent(CREATENEWCOMP);
 				dispose();
 			}
 		});
@@ -696,7 +696,7 @@ public class Wizard extends JFrame {
 				System.out.println("Importance:"+choice_1.getSelectedItem());
 				System.out.println("File path:"+textField_5.getText());*/
 				img = new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(),emph.getSelectedIndex(), textField_imagepath.getText());
-				fireEvent();
+				fireEvent(CREATENEWCOMP);
 				dispose();
 			}
 		});
@@ -836,7 +836,7 @@ public class Wizard extends JFrame {
 				for(i=list_composite.getComponentCount()-1; i>=0; i-- ){
 	    		cmp.aggiungiComponenteS((ComponenteSemplice) list_composite.);	
 				}*/
-				fireEvent();
+				fireEvent(CREATENEWCOMP);
 				dispose();
 			}
 		});
@@ -997,7 +997,7 @@ public class Wizard extends JFrame {
 				for(i=list_alternative.getComponentCount()-1; i>=0; i-- ){
 					alt.aggiungiAlternativa((ComponenteSemplice)list_alternative.getSelectedValue());	
 				}*/
-				fireEvent();
+				fireEvent(CREATENEWCOMP);
 				dispose();
 			}
 		});
