@@ -670,7 +670,7 @@ public class MainWindow extends JFrame {
 					public void handleMyEventClassEvent(MyEventClass e) {
 								setEnabled(true);
 								if(e != null){
-									addElementToComposite(e.getComponente());
+									addElementToComposite((ComponenteSemplice) e.getComponente());
 								}
 					}
 
@@ -764,7 +764,7 @@ public class MainWindow extends JFrame {
 							MyEventClass e) {
 								setEnabled(true);
 								if(e != null){
-									addElementToAlternative(e.getComponente());
+									addElementToAlternative((ComponenteSemplice) e.getComponente());
 									//System.out.println("nome del componente "+e.getComponente().getNome());
 									}
 								//System.out.println("premuto add NUOVO");						
@@ -898,7 +898,7 @@ public class MainWindow extends JFrame {
 		//TODO andrebbe creata una classe e tolto il codice da qui
 
 		setEnabled(false);
-		AddNew nuovo = new AddNew();
+		Wizard nuovo = new Wizard();
 		nuovo.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -926,10 +926,10 @@ public class MainWindow extends JFrame {
 		nuovo.setVisible(true);
 	}
 
-	protected void addElementToTree(ComponenteSemplice componente) {
-		// TODO Auto-generated method stub
+	protected void addElementToTree(Componente componente) {
 		if(focused == null || focused.getType()==Testo.TEXTTYPE || focused.getType() == Link.LINKTYPE || focused.getType()== Immagine.IMAGETYPE)
 			albero.addNode(null, componente);
+		//TODO gestire l'inserimento in un componente composto
 	}
 
 	private static void setGenerici(Componente selected, String type) {

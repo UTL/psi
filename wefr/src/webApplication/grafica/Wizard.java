@@ -48,6 +48,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.SwingConstants;
 
+import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
 import webApplication.business.ComponenteSemplice;
@@ -61,22 +62,22 @@ import java.awt.event.ActionListener;
 public class Wizard extends JFrame {
 
 	private JPanel contentPane;
-	private TextField textField;
+	private TextField name;
 	private JComboBox choice;
 	private JTabbedPane tabbedPane;
 	private JButton btnDone_text;
-	private JTextArea textArea;
+	private JTextArea text;
 	private JButton button;
 	private JButton button_2;
 	private JButton button_doneComp;
 	private JButton btnDone_link;
 	private JTextField textField_imagepath;
 	private JButton btnDone_Image;
-	private TextField textField_1;
-	private JComboBox choice_1;
-	private JComboBox choice_2;
-	private TextField textField_3;
-	private TextField textField_4;
+	private TextField category;
+	private JComboBox impo;
+	private JComboBox emph;
+	private TextField textField_url;
+	private TextField textField_linktext;
 	private AddNew myAddNew;
 	
 	private JPanel panel_composite_s3;
@@ -97,9 +98,16 @@ public class Wizard extends JFrame {
 	private Vector<ComponenteSemplice> componentiAlternative;
 	
 	//TODO come nel MainWindow, le tre stringhe tipi categorie e importanze andrebbero estratte
-	private final static String[] tipi= {"Text","Image","Link","Alternative","Composite"};
+	private final static String TESTO = "Text";
+	private final static String IMAGE ="Image";
+	private final static String LINK ="Link";
+	private final static String ALT = "Alternative";
+	private final static String COMP = "Composite";
+	private final static String[] tipi= {TESTO,IMAGE,LINK,ALT,COMP};
+
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? 
+	private static final boolean CREATENEWCOMP = false;
 
 	
 	/**
@@ -149,19 +157,19 @@ public class Wizard extends JFrame {
 		choice.setBounds(181, 165, 174, 20);
 		panel.add(choice);
 		
-		textField = new TextField();
-		textField.addTextListener(new TextListener() {
+		name = new TextField();
+		name.addTextListener(new TextListener() {
 			public void textValueChanged(TextEvent e) {
-				if (textField.getText().equalsIgnoreCase(""))
+				if (name.getText().equalsIgnoreCase(""))
 					button.setEnabled(false);
-				else if (textField.getText().matches(" * "))
+				else if (name.getText().matches(" * "))
 					     button.setEnabled(false);
 				else button.setEnabled(true);
 			}
 		});
-		textField.setBounds(181, 106, 174, 22);
-		panel.add(textField);
-		textField.setText("Element0"); //TODO mettere default incrementale
+		name.setBounds(181, 106, 174, 22);
+		panel.add(name);
+		name.setText("Element0"); //TODO mettere default incrementale
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -247,35 +255,35 @@ public class Wizard extends JFrame {
 		label_8.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		label_8.setBounds(10, 0, 26, 43);
 		panel_16.add(label_8);
-		textField.getText();
+		name.getText();
 		
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("2", null, panel_2, null);
 		panel_2.setLayout(null);
 		
-		textField_1 = new TextField();
-		textField_1.addTextListener(new TextListener() {
+		category = new TextField();
+		category.addTextListener(new TextListener() {
 			public void textValueChanged(TextEvent e) {
-				if (textField_1.getText().equalsIgnoreCase(""))
+				if (category.getText().equalsIgnoreCase(""))
 					button_2.setEnabled(false);
-				else if (textField_1.getText().matches(" * "))
+				else if (category.getText().matches(" * "))
 					     button_2.setEnabled(false);
 				else button_2.setEnabled(true);
 			}
 		});
-		textField_1.setBounds(180, 92, 174, 22);
-		textField_1.setText("Category0");
-		panel_2.add(textField_1);
+		category.setBounds(180, 92, 174, 22);
+		category.setText("Category0");
+		panel_2.add(category);
 		
-		choice_1 = new JComboBox(categorie);
-		choice_1.setBounds(180, 192, 174, 20);
-		panel_2.add(choice_1);
-		choice_1.setSelectedIndex(1);
+		impo = new JComboBox(categorie);
+		impo.setBounds(180, 192, 174, 20);
+		panel_2.add(impo);
+		impo.setSelectedIndex(1);
 		
-		choice_2 = new JComboBox(importanze);
-		choice_2.setBounds(180, 143, 174, 20);
-		panel_2.add(choice_2);
-		choice_2.setSelectedIndex(1);
+		emph = new JComboBox(importanze);
+		emph.setBounds(180, 143, 174, 20);
+		panel_2.add(emph);
+		emph.setSelectedIndex(1);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -423,8 +431,8 @@ public class Wizard extends JFrame {
 				System.out.println("Emphasize:"+choice_2.getSelectedItem());
 				System.out.println("Importance:"+choice_1.getSelectedItem());
 				System.out.println("Text:"+textArea.getText());*/
-				txt= new Testo(textField.getText(), textField_1.getText(), choice_1.getSelectedIndex(), choice_2.getSelectedIndex(), textArea.getText());
-				fireEvent();
+				
+				fireEvent(CREATENEWCOMP);
 				dispose();
 			}
 
@@ -463,7 +471,7 @@ public class Wizard extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
 				try {
-					chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, textArea);
+					chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, text);
 				} catch (HeadlessException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -477,18 +485,18 @@ public class Wizard extends JFrame {
 		btnImportFromFile.setBounds(25, 223, 171, 27);
 		panel_4.add(btnImportFromFile);
 		
-		textArea = new JTextArea();
-		textArea.addKeyListener(new KeyAdapter() {
+		text = new JTextArea();
+		text.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (textArea.getText().equalsIgnoreCase(""))
+				if (text.getText().equalsIgnoreCase(""))
 					btnDone_text.setEnabled(false);
-				else if (textArea.getText().matches("[ \n]*"))
+				else if (text.getText().matches("[ \n]*"))
 				     btnDone_text.setEnabled(false);
 				else btnDone_text.setEnabled(true);
 			}
 		});
-		JScrollPane scrollingArea = new JScrollPane(textArea);
+		JScrollPane scrollingArea = new JScrollPane(text);
 		scrollingArea.setBounds(25, 89, 423, 124);
 		panel_4.add(scrollingArea);
 		
@@ -544,22 +552,22 @@ public class Wizard extends JFrame {
 		lblLinkTarget.setBounds(132, 121, 66, 14);
 		panel_6.add(lblLinkTarget);
 		
-		textField_3 = new TextField();
-		textField_3.setBounds(204, 113, 174, 22);
-		panel_6.add(textField_3);
+		textField_url = new TextField();
+		textField_url.setBounds(204, 113, 174, 22);
+		panel_6.add(textField_url);
 		
-		textField_4 = new TextField();
-		textField_4.addTextListener(new TextListener() {
+		textField_linktext = new TextField();
+		textField_linktext.addTextListener(new TextListener() {
 			public void textValueChanged(TextEvent arg0) {
-				if (textField_4.getText().equalsIgnoreCase(""))
+				if (textField_linktext.getText().equalsIgnoreCase(""))
 					btnDone_link.setEnabled(false);
-				else if (textField_4.getText().matches(" * "))
+				else if (textField_linktext.getText().matches(" * "))
 					     btnDone_link.setEnabled(false);
 				else btnDone_link.setEnabled(true);
 			}
 		});
-		textField_4.setBounds(204, 158, 174, 22);
-		panel_6.add(textField_4);
+		textField_linktext.setBounds(204, 158, 174, 22);
+		panel_6.add(textField_linktext);
 		
 		JLabel lblLinkText = new JLabel("Link text:");
 		lblLinkText.setBounds(132, 166, 66, 14);
@@ -588,7 +596,7 @@ public class Wizard extends JFrame {
 				System.out.println("Emphasize:"+choice_2.getSelectedItem());
 				System.out.println("Importance:"+choice_1.getSelectedItem());
 				System.out.println("Value: link target:"+textField_3.getText()+"  link text:"+textField_4.getText());*/
-				lnk= new Link(textField.getText(), textField_1.getText(), choice_1.getSelectedIndex(), choice_2.getSelectedIndex(),textField_3.getText(), textField_4.getText());
+				lnk= new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(),textField_url.getText(), textField_linktext.getText());
 				fireEvent();
 				dispose();
 			}
@@ -687,7 +695,7 @@ public class Wizard extends JFrame {
 				System.out.println("Emphasize:"+choice_2.getSelectedItem());
 				System.out.println("Importance:"+choice_1.getSelectedItem());
 				System.out.println("File path:"+textField_5.getText());*/
-				img = new Immagine(textField.getText(), textField_1.getText(), choice_1.getSelectedIndex(),choice_2.getSelectedIndex(), textField_imagepath.getText());
+				img = new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(),emph.getSelectedIndex(), textField_imagepath.getText());
 				fireEvent();
 				dispose();
 			}
@@ -1134,7 +1142,7 @@ public class Wizard extends JFrame {
 	     return letto;
 	}
 	
-	 private ArrayList _listeners = new ArrayList();
+	 private ArrayList<MyEventClassListener> _listeners = new ArrayList<MyEventClassListener>();
 		
 	 public synchronized void addEventListener(MyEventClassListener listener)  {
 		 _listeners.add(listener);
@@ -1145,7 +1153,7 @@ public class Wizard extends JFrame {
 	 
 	 private synchronized void fireEvent() {	
 			MyEventClass event = new MyEventClass(this);
-			Iterator i = _listeners.iterator();
+			Iterator<MyEventClassListener> i = _listeners.iterator();
 			while(i.hasNext())  {
 				((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
 			}
@@ -1196,38 +1204,6 @@ public class Wizard extends JFrame {
 			
 		}
 	 
-	 private void popolaOggetti(){
-			img= new Immagine("immagineeee", "immagini!", 1,0,"/questo/e/un/path");
-			img.setNome("immagineeee");
-			img.setCategoria("immagini!");
-			img.setPath("/questo/e/un/path");
-			img.setVisibilita(2);
-			img.setEnfasi(0);
-			
-			lnk= new Link("", "!", 0,0,"", "");
-			lnk.setNome("linkozzo");
-			lnk.setCategoria("altra");
-			lnk.setVisibilita(1);
-			lnk.setUri("www.url.it");
-			lnk.setTesto("clicca qui");
-			lnk.setEnfasi(2);
-			
-			txt= new Testo("", "", 0, 0, "");
-			txt.setNome("testo");
-			txt.setCategoria("testi!");
-			txt.setVisibilita(0);
-			txt.setEnfasi(1);
-			txt.setTesto("scriviamoci tanta roba");
-			
-			alt= new ComponenteAlternative("alternativa", "alterniamoci", 2, 0);
-			cmp= new ComponenteComposto("Compostato", "compi", 1, 1);
-			cmp.aggiungiComponenteS(img);
-			cmp.aggiungiComponenteS(lnk);
-			cmp.aggiungiComponenteS(txt);
-			
-
-		}
-	 
 	 private void removeElementFromComposite(int[] daRimuovere){
 			int i;
 			for(i=daRimuovere.length-1; i>=0; i--)
@@ -1270,5 +1246,48 @@ public class Wizard extends JFrame {
 			return false;
 		}
 		
-	
+		private synchronized void fireEvent(boolean onlyDispose) {	
+			MyEventClass event = null;
+			if (onlyDispose == CREATENEWCOMP)
+				event = new MyEventClass(this, buildNewComp());
+			Iterator<MyEventClassListener> i = _listeners.iterator();
+			while(i.hasNext())  {
+				((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
+			}
+		}
+
+		private Componente buildNewComp() {
+			System.out.println("builder");
+			if(choice.getSelectedItem()==TESTO)
+				return new Testo(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), text.getText());
+			else if(choice.getSelectedItem()==IMAGE)
+				return new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), textField_imagepath.getText());			
+			else if(choice.getSelectedItem()==LINK)
+				return new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), textField_url.getText(), textField_url.getText());
+			else if(choice.getSelectedItem()==ALT){
+				ComponenteAlternative newAlt =  new ComponenteAlternative(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
+				//TODO settare la lista delle alternative
+				//newAlt.setAlternative()
+				return newAlt;
+			}
+			else {
+				ComponenteComposto newComp = new ComponenteComposto(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
+				//TODO settare la lista delle alternative
+				//newComp.setComponenti(cs);
+				return newComp;
+				}
+		}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
