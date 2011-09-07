@@ -38,7 +38,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
@@ -98,6 +97,7 @@ public class MainWindow extends JFrame {
 	private static JButton button_delFromAlt;
 	private static JButton button_addExistComp;
 	private static JButton button_addNewComp;
+	private static JButton button_AddExisAlt;
 	private static JButton button_up;
 	private static JButton button_down;
 	private static JPanel errorePath;
@@ -108,26 +108,8 @@ public class MainWindow extends JFrame {
 	public static final int IMAGE = 1;
 	public static final int TEXT = 2;
 	
-	private Wizard myWizard;
-	
-	private String currentProject;
-	
-	public MainWindow thisWindow;
-	
 	private static Options frameOptions;
 	
-	//oggetti che per fare prove con l'interfaccia
-	//TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
-	private JScrollPane scrollPane_composite;
-
-	// oggetti che per fare prove con l'interfaccia
-	// TODO rimuovere questi oggetti dopo aver verificato che tutto funziona
-	private Immagine img;
-	private Link lnk;
-	private Testo txt;
-	private ComponenteAlternative alt;
-	private ComponenteComposto cmp;
-
 	private static Componente focused;
 
 	private static Testo focusedTxt;
@@ -154,12 +136,12 @@ public class MainWindow extends JFrame {
 	private static final String PANEL_ALT="panel_alternative";
 	private static final String PANEL_CMP="panel_composite";
 	
-	private static final int MOVE_UP = -1;
-	private static final int MOVE_DOWN = +1;
+	public static final int MOVE_UP = -1;
+	public static final int MOVE_DOWN = +1;
 
 	
 	
-	private JRootPane root;
+	public MainWindowData data = new MainWindowData();
 	private static TreePanel albero;
 
 	/**
@@ -186,7 +168,7 @@ public class MainWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 728, 502);
 		setResizable(false);
-		thisWindow = this;
+		data.setThisWindow(this);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -204,7 +186,7 @@ public class MainWindow extends JFrame {
 				
 				if (newPath.length()>0)
 					//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
-					currentProject = newPath;
+					data.setCurrentProject(newPath);
 					//TODO creare nuovo JTree
 				}
 		});
@@ -222,7 +204,7 @@ public class MainWindow extends JFrame {
 				if (newPath.length()>0)
 					//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
 					//TODO controllare che il nuovo file esista, e sia corretto
-					currentProject = newPath;
+					data.setCurrentProject(newPath);
 				}
 		});
 		mnFile.add(mntmOpen);
@@ -335,7 +317,7 @@ public class MainWindow extends JFrame {
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				setFocus(txt);
+				setFocus(data.getTxt());
 			}
 		});
 		button.setBounds(12, 4, 30, 30);
@@ -349,7 +331,7 @@ public class MainWindow extends JFrame {
 		button_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setFocus(img);
+				setFocus(data.getImg());
 			}
 		});
 		button_3.setToolTipText("Open");
@@ -360,7 +342,7 @@ public class MainWindow extends JFrame {
 		button_4.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setFocus(lnk);
+				setFocus(data.getLnk());
 			}
 		});
 		button_4.setToolTipText("Open");
@@ -371,7 +353,7 @@ public class MainWindow extends JFrame {
 		button_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				setFocus(alt);
+				setFocus(data.getAlt());
 			}
 		});
 		button_1.setToolTipText("Open");
@@ -382,7 +364,7 @@ public class MainWindow extends JFrame {
 		button_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setFocus(cmp);
+				setFocus(data.getCmp());
 			}
 		});
 		button_2.setToolTipText("Open");
@@ -394,16 +376,16 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				setEnabled(false);
 				//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
-				if (myWizard== null)
-					myWizard = new Wizard();
-				myWizard.setVisible(true);
-				myWizard.addEventListener(new MyEventClassListener(){
+				if (data.getMyWizard()== null)
+					data.setMyWizard(new Wizard());
+				data.getMyWizard().setVisible(true);
+				data.getMyWizard().addEventListener(new MyEventClassListener(){
 
 					@Override
 					public void handleMyEventClassEvent(
 							EventObject e) {
 								setEnabled(true);
-								myWizard=null;
+								data.setMyWizard(null);
 						// TODO Auto-generated method stub
 						
 					}
@@ -693,100 +675,14 @@ public class MainWindow extends JFrame {
 		button_addNewComp.setBounds(320, 162, 100, 27);
 		panel_composite.add(button_addNewComp);
 		
-
 		panel_alternative = new JPanel();
-		content_panel.add(panel_alternative, PANEL_ALT);
-		panel_alternative.setLayout(null);
-		
-		
-		
-		//TODO cambiare le icone terribili dei bottoni up e down
-
-		button_up = new JButton("^");
-		button_up.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				moveAlternativeElements(MOVE_UP);
-			}
-
-			
-		});
-		button_up.setToolTipText("Click here to increase the priority of selected element");
-		button_up.setBounds(12, 0, 46, 53);
-		panel_alternative.add(button_up);
-
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setLocation(70, 0);
-		scrollPane.setSize(350, 149);
-		panel_alternative.add(scrollPane);
 		list_alternative = new JList();
-		scrollPane.setViewportView(list_alternative);
-
 		button_down = new JButton("v");
-		button_down.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				moveAlternativeElements(MOVE_DOWN);
-			}
-		});
-		button_down
-				.setToolTipText("Click here to decrease the priority of selected element");
-		button_down.setBounds(12, 96, 46, 53);
-		panel_alternative.add(button_down);
-
+		button_up = new JButton("^");
 		button_delFromAlt = new JButton("Delete");
-		button_delFromAlt.setBounds(65, 161, 90, 27);
-		button_delFromAlt.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO fare un controllo sul nome dell'oggetto
-				removeElementFromComposto(list_alternative.getSelectedIndices());
-				
-			}
-		});
-		panel_alternative.add(button_delFromAlt);
-
-		JButton button_AddExisAlt = new JButton("Add existing");
-		button_AddExisAlt.setBounds(198, 161, 121, 27);
-		panel_alternative.add(button_AddExisAlt);
-
-		JButton button_addNewAlter = new JButton("Add new");
-		button_addNewAlter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setEnabled(false);
-				AddNew nuovo = new AddNew();
-				
-				nuovo.addWindowListener(new WindowAdapter(){
-					@Override
-					public void windowClosing(WindowEvent e) {
-						setEnabled(true);
-					}
-				});
-				
-				nuovo.addEventListener(new MyEventClassListener(){
-
-					
-					@Override
-					public void handleMyEventClassEvent(
-							MyEventClass e) {
-								setEnabled(true);
-								if(e != null){
-									addElementToAlternative((ComponenteSemplice) e.getComponente());
-									//System.out.println("nome del componente "+e.getComponente().getNome());
-									}
-								//System.out.println("premuto add NUOVO");						
-					}
-
-					
-
-					@Override
-					public void handleMyEventClassEvent(EventObject e) {}
-					});
-
-				nuovo.setVisible(true);
-			}
-		});
-		button_addNewAlter.setBounds(322, 161, 98, 27);
-		panel_alternative.add(button_addNewAlter);
+		button_AddExisAlt = new JButton("Add existing");
+		buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
+		content_panel.add(panel_alternative, PANEL_ALT);
 
 		JPanel panel_link = new JPanel();
 		content_panel.add(panel_link, PANEL_LNK);
@@ -883,6 +779,83 @@ public class MainWindow extends JFrame {
 		popolaOggetti();
 
 //>>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@1aa9a7bb/testing
+	}
+	//invocazione: panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative
+	private void buildPanelAlternative(JPanel panelAlt, JButton b_up, JButton b_down, JButton b_del, JButton b_addExist, JList l_alt) {
+
+		panelAlt.setLayout(null);
+		
+		//TODO cambiare le icone terribili dei bottoni up e down
+
+		
+		b_up.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				moveAlternativeElements(MainWindow.MOVE_UP);}});
+		b_up.setToolTipText("Click here to increase the priority of selected element");
+		b_up.setBounds(12, 0, 46, 53);
+		panelAlt.add(b_up);
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setLocation(70, 0);
+		scrollPane.setSize(350, 149);
+		panelAlt.add(scrollPane);
+		
+		scrollPane.setViewportView(l_alt);
+
+		b_down.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				moveAlternativeElements(MainWindow.MOVE_DOWN);
+		}});
+		b_down.setToolTipText("Click here to decrease the priority of selected element");
+		b_down.setBounds(12, 96, 46, 53);
+		panelAlt.add(b_down);
+
+		
+		b_del.setBounds(65, 161, 90, 27);
+		b_del.addActionListener(new java.awt.event.ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO fare un controllo sul nome dell'oggetto
+				removeElementFromComposto(list_alternative.getSelectedIndices());	
+		}});
+		panelAlt.add(b_del);
+
+		//TODO se non ne esistono di esistenti disabilitare
+		
+		b_addExist.setBounds(198, 161, 121, 27);
+		panelAlt.add(b_addExist);
+
+		JButton button_addNewAlter = new JButton("Add new");
+		button_addNewAlter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setEnabled(false);
+				AddNew nuovo = new AddNew();
+				
+				nuovo.addWindowListener(new WindowAdapter(){
+					@Override
+					public void windowClosing(WindowEvent e) {
+						setEnabled(true);
+				}});
+				
+				nuovo.addEventListener(new MyEventClassListener(){
+
+					@Override
+					public void handleMyEventClassEvent(
+							MyEventClass e) {
+								setEnabled(true);
+								if(e != null){
+									addElementToAlternative((ComponenteSemplice) e.getComponente());
+									}}
+
+					@Override
+					public void handleMyEventClassEvent(EventObject e) {}
+					});
+
+				nuovo.setVisible(true);
+		}});
+		button_addNewAlter.setBounds(322, 161, 98, 27);
+		panelAlt.add(button_addNewAlter);
 	}
 
 	private void addNewWizard() {
@@ -1126,20 +1099,20 @@ public class MainWindow extends JFrame {
 
 
 	 //metodo per popolare oggetti per farci prove
-	 private void popolaOggetti()	{ img= new Immagine("immagineeee", "immagini!",
-	 1,0,"/questo/e/un/path"); img.setNome("immagineeee");
-	 img.setCategoria("immagini!"); img.setPath("/questo/e/un/path");
-	 img.setVisibilita(2); img.setEnfasi(0);
-	 lnk= new Link("", "!", 0,0,"", ""); lnk.setNome("linkozzo");
-	 lnk.setCategoria("altra"); lnk.setVisibilita(1);
-	 lnk.setUri("www.url.it"); lnk.setTesto("clicca qui"); lnk.setEnfasi(2);
-	 txt= new Testo("", "", 0, 0, ""); txt.setNome("testo");
-	 txt.setCategoria("testi!"); txt.setVisibilita(0); txt.setEnfasi(1);
-	 txt.setTesto("scriviamoci tanta roba");
-	 alt= new ComponenteAlternative("alternativa", "alterniamoci", 2, 0);
-	 cmp=new ComponenteComposto("Compostato", "compi", 1, 1);
-	 cmp.aggiungiComponenteS(img); cmp.aggiungiComponenteS(lnk);
-	 cmp.aggiungiComponenteS(txt);
+	 private void popolaOggetti()	{ data.setImg(new Immagine("immagineeee", "immagini!",
+	 1,0,"/questo/e/un/path")); data.getImg().setNome("immagineeee");
+	 data.getImg().setCategoria("immagini!"); data.getImg().setPath("/questo/e/un/path");
+	 data.getImg().setVisibilita(2); data.getImg().setEnfasi(0);
+	 data.setLnk(new Link("", "!", 0,0,"", "")); data.getLnk().setNome("linkozzo");
+	 data.getLnk().setCategoria("altra"); data.getLnk().setVisibilita(1);
+	 data.getLnk().setUri("www.url.it"); data.getLnk().setTesto("clicca qui"); data.getLnk().setEnfasi(2);
+	 data.setTxt(new Testo("", "", 0, 0, "")); data.getTxt().setNome("testo");
+	 data.getTxt().setCategoria("testi!"); data.getTxt().setVisibilita(0); data.getTxt().setEnfasi(1);
+	 data.getTxt().setTesto("scriviamoci tanta roba");
+	 data.setAlt(new ComponenteAlternative("alternativa", "alterniamoci", 2, 0));
+	 data.setCmp(new ComponenteComposto("Compostato", "compi", 1, 1));
+	 data.getCmp().aggiungiComponenteS(data.getImg()); data.getCmp().aggiungiComponenteS(data.getLnk());
+	 data.getCmp().aggiungiComponenteS(data.getTxt());
 	 }
 	 
 
