@@ -52,6 +52,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
@@ -1432,5 +1434,24 @@ public class MainWindow extends JFrame {
 		if (path!= null && path.length()>0)
 			target.setText(path);
 	}
+	
+	private void setChangeListener (JTextComponent toAttachListener){
+		
+		JTextComponent textComponent_imagepath=toAttachListener;
+		textComponent_imagepath.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				
+			}
+			public void removeUpdate(DocumentEvent e) {
+				
+			}
+			public void insertUpdate(DocumentEvent e) {
+				
+			}
+			});
+		
+		
+	}
+
 
 }
