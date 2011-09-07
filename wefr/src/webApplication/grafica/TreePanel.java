@@ -225,6 +225,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			System.out.println("Componente: "+comp.getNome());
       	  	MainWindow.setFocus(comp);
 		}
+		tree.repaint();
 	}
 	
 	public JTree getTree()	{

@@ -470,20 +470,22 @@ public class MainWindow extends JFrame {
 
 		textField_Name = new JTextField();
 		textField_Name.setToolTipText("name");
-		textField_Name.addFocusListener(new FocusAdapter() {
-			// TODO mettere check che il nome non esista gia', serve anche
-			// questo nel caso venga incollato del testo...
-			@Override
-			public void focusLost(FocusEvent arg0) {
+		
+		// TODO mettere check che il nome non sia gia' esistente
+		textField_Name.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
 				setFocusedName();
+				albero.getTree().repaint();
 			}
-		});
-		textField_Name.addKeyListener(new KeyAdapter() {
-			// TODO mettere check che il nome non sia gia' esistente
-			@Override
-			public void keyTyped(KeyEvent e) {
+			public void removeUpdate(DocumentEvent e) {
+				setFocusedName();
+				albero.getTree().repaint();
 			}
-		});
+			public void insertUpdate(DocumentEvent e) {
+				setFocusedName();
+				albero.getTree().repaint();
+			}
+			});
 		textField_Name.setBounds(67, 40, 114, 19);
 		id_panel.add(textField_Name);
 		textField_Name.setColumns(10);
@@ -515,22 +517,28 @@ public class MainWindow extends JFrame {
 		presentation_panel.add(lblEmphasize);
 
 		comboBox_Importance = new JComboBox(importanze);
-		comboBox_Importance.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
+		comboBox_Importance.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				setFocusedImpo();
 			}
 		});
+		
 		comboBox_Importance.setBounds(111, 49, 112, 24);
 		presentation_panel.add(comboBox_Importance);
 
 		textField_Category = new JTextField();
-		textField_Category.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
+		textField_Category.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
 				setFocusedCategory();
 			}
-		});
+			public void removeUpdate(DocumentEvent e) {
+				setFocusedCategory();
+			}
+			public void insertUpdate(DocumentEvent e) {
+				setFocusedCategory();
+			}
+			});
+		
 		textField_Category.setColumns(10);
 		textField_Category.setBounds(109, 22, 114, 19);
 		presentation_panel.add(textField_Category);
@@ -540,12 +548,12 @@ public class MainWindow extends JFrame {
 		presentation_panel.add(lblImportance);
 
 		comboBox_Emphasize = new JComboBox(categorie);
-		comboBox_Emphasize.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
+		comboBox_Emphasize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				setFocusedEmph();
 			}
 		});
+		
 		comboBox_Emphasize.setBounds(111, 85, 112, 24);
 		presentation_panel.add(comboBox_Emphasize);
 
@@ -586,14 +594,6 @@ public class MainWindow extends JFrame {
 			}
 			});
 		
-
-		textField_imagepath.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				updateImagePath();
-			}
-
-		});
 		textField_imagepath.setBounds(22, 42, 292, 22);
 		panel_image.add(textField_imagepath);
 		
@@ -812,12 +812,7 @@ public class MainWindow extends JFrame {
 				// text was inserted
 			}
 		});
-		textField_linktext.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				updateLinkText();
-			}
-		});
+		
 		textField_linktext.setColumns(10);
 		textField_linktext.setBounds(93, 12, 313, 19);
 		panel_link.add(textField_linktext);
@@ -827,26 +822,17 @@ public class MainWindow extends JFrame {
 		panel_link.add(lbl_url);
 		
 		textField_url = new JTextField();
-		textField_url.addFocusListener(new FocusAdapter() {
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				updateLinkUrl();
-			}
-		});
+		
 		textField_url.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
-
 				updateLinkUrl();
 			}
 			public void removeUpdate(DocumentEvent e) {
 				updateLinkUrl();
-				// text was deleted
 			}
 			public void insertUpdate(DocumentEvent e) {
 				updateLinkUrl();
 
-				// text was inserted
 			}
 		});
 		textField_url.setColumns(10);
