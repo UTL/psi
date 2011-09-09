@@ -25,17 +25,18 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 	private AListenerRemoveFromAlt actionAlternative;
 	private JButton bott_up;
 	private JButton bott_down;
-	private JButton bott_del;
+	private ButtonRemover bott_del;
 	private JButton bott_addExist;
 	private JList list_alt;
 	private ComponenteAlternative alternativeComp;
+	private final static String DELETE = "Delete";
 	
 	public PannelloAlternative(){
 		bott_up= new JButton();
 		bott_up.setBounds(12, 12, 46, 53);
 		bott_down= new JButton();
 		bott_down.setBounds(12, 108, 46, 53);
-		bott_del= new JButton();
+		bott_del= new ButtonRemover(DELETE);
 		bott_del.setBounds(65, 173, 90, 27);
 		bott_addExist= new JButton();
 		bott_addExist.setBounds(197, 173, 121, 27);
@@ -44,7 +45,7 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		buildPanel();
 	}
 	
-	public PannelloAlternative(JButton b_up, JButton b_down, JButton b_del, JButton b_addExist, JList l_alt) {
+	public PannelloAlternative(JButton b_up, JButton b_down, ButtonRemover b_del, JButton b_addExist, JList l_alt) {
 		bott_up=b_up;
 		bott_down=b_down;
 		bott_del=b_del;
@@ -197,6 +198,14 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 			});
 
 		nuovo.setVisible(true);
+	}
+	
+	public void removeElements(){
+		int i; 
+		for(i=list_alt.getSelectedIndices().length-1; i>=0; i--){
+			alternativeComp.cancellaAlternativa(list_alt.getSelectedIndices()[i]);
+		}
+		popolaProperties();
 	}
 		
 }
