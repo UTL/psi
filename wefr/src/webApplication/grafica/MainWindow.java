@@ -93,6 +93,7 @@ public class MainWindow extends JFrame {
 	private static JList list_alternative;
 	private static JPanel panel_composite;
 	private static JPanel panel_alternative;
+	private static PannelloAlternative pannello_alterplus;
 	private static JButton button_deleteFromComp;
 	private static JButton button_delFromAlt;
 	private static JButton button_addExistComp;
@@ -103,7 +104,7 @@ public class MainWindow extends JFrame {
 	private static JPanel errorePath;
 	private static JPanel erroreTestoLink;
 	private static JPanel erroreUrl;
-	private ActionListenerAlt actionAlternative;
+	private AListenerRemoveFromAlt actionAlternative;
 	
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
@@ -676,14 +677,15 @@ public class MainWindow extends JFrame {
 		button_addNewComp.setBounds(320, 162, 100, 27);
 		panel_composite.add(button_addNewComp);
 		
-		panel_alternative = new JPanel();
+		/*panel_alternative = new JPanel();
 		list_alternative = new JList();
 		button_down = new JButton("v");
 		button_up = new JButton("^");
 		button_delFromAlt = new JButton("Delete");
-		button_AddExisAlt = new JButton("Add existing");
-		buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
-		content_panel.add(panel_alternative, PANEL_ALT);
+		button_AddExisAlt = new JButton("Add existing");*/
+		pannello_alterplus = new PannelloAlternative();
+		//buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
+		content_panel.add(pannello_alterplus, PANEL_ALT);
 
 		JPanel panel_link = new JPanel();
 		content_panel.add(panel_link, PANEL_LNK);
@@ -813,7 +815,7 @@ public class MainWindow extends JFrame {
 
 		
 		b_del.setBounds(65, 161, 90, 27);
-		actionAlternative = new ActionListenerAlt(l_alt);
+		actionAlternative = new AListenerRemoveFromAlt(l_alt);
 		b_del.addActionListener(actionAlternative);
 		panelAlt.add(b_del);
 		
@@ -934,6 +936,9 @@ public class MainWindow extends JFrame {
 	private static void popolaProperties(ComponenteAlternative selected) {
 		setGenerici(selected, "Alternative");
 		
+		pannello_alterplus.setAlternativeComponent(selected);
+		setContentLayout(PANEL_ALT);
+		/*
 		Container listContainer= list_alternative.getParent();
 		
 		if(list_alternative != null && listContainer!=null)
@@ -941,7 +946,6 @@ public class MainWindow extends JFrame {
 		
 		
 		
-		setContentLayout(PANEL_ALT);
 		
 		list_alternative = new JList(Utils.extractNomiComponenti(selected.getAlternative()));
 		
@@ -952,7 +956,7 @@ public class MainWindow extends JFrame {
 		
 		list_addFocusList(list_alternative);
 
-		listContainer.repaint();
+		listContainer.repaint();*/
 
 	}
 	
