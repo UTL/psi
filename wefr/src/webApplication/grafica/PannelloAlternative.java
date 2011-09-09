@@ -41,6 +41,7 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		bott_addExist= new JButton();
 		bott_addExist.setBounds(197, 173, 121, 27);
 		list_alt= new JList();
+		
 
 		buildPanel();
 	}
@@ -88,6 +89,7 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		button_addNewAlter.setBounds(322, 173, 98, 27);
 		button_addNewAlter.addActionListener(this);
 		this.add(button_addNewAlter);
+		
 		
 	}
 
@@ -157,6 +159,7 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 	public void valueChanged(ListSelectionEvent e) {
 		/*if(arg0.getSource()==list_composite)
 			Utils.buttonDeleteMgmt(list_composite,button_deleteFromComp);*/
+			Utils.buttonUpDownMgmt(list_alt, bott_up, bott_down);
 			Utils.buttonDeleteMgmt(list_alt,bott_del);
 		}
 		
