@@ -92,7 +92,6 @@ public class MainWindow extends JFrame {
 	private static JList list_composite;
 	private static JList list_alternative;
 	private static JPanel panel_composite;
-	private static JPanel panel_alternative;
 	private static PannelloAlternative pannello_alterplus;
 	private static JButton button_deleteFromComp;
 	private static JButton button_delFromAlt;
