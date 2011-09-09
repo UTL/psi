@@ -103,6 +103,7 @@ public class MainWindow extends JFrame {
 	private static JPanel errorePath;
 	private static JPanel erroreTestoLink;
 	private static JPanel erroreUrl;
+	private ActionListenerAlt actionAlternative;
 	
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
@@ -133,7 +134,7 @@ public class MainWindow extends JFrame {
 	private static final String PANEL_TXT="panel_text";
 	private static final String PANEL_IMG="panel_image";
 	private static final String PANEL_LNK="panel_link";
-	private static final String PANEL_ALT="panel_alternative";
+	public static final String PANEL_ALT="panel_alternative";
 	private static final String PANEL_CMP="panel_composite";
 	
 	public static final int MOVE_UP = -1;
@@ -812,15 +813,10 @@ public class MainWindow extends JFrame {
 
 		
 		b_del.setBounds(65, 161, 90, 27);
-		b_del.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO fare un controllo sul nome dell'oggetto
-				removeElementFromComposto(list_alternative.getSelectedIndices());	
-		}});
+		actionAlternative = new ActionListenerAlt(l_alt);
+		b_del.addActionListener(actionAlternative);
 		panelAlt.add(b_del);
-
+		
 		//TODO se non ne esistono di esistenti disabilitare
 		
 		b_addExist.setBounds(198, 161, 121, 27);
@@ -947,11 +943,11 @@ public class MainWindow extends JFrame {
 		
 		setContentLayout(PANEL_ALT);
 		
-		list_alternative = new JList(extractNomiComponenti(selected.getAlternative()));
+		list_alternative = new JList(Utils.extractNomiComponenti(selected.getAlternative()));
 		
 		listContainer.add(list_alternative);
 		
-		buttonDeleteMgmt(list_alternative,button_delFromAlt);
+		Utils.buttonDeleteMgmt(list_alternative,button_delFromAlt);
 		buttonUpDownMgmt();
 		
 		list_addFocusList(list_alternative);
@@ -1027,29 +1023,19 @@ public class MainWindow extends JFrame {
 		
 		setContentLayout(PANEL_CMP);
 			
-		list_composite = new JList(extractNomiComponenti(selected.getComponenti()));
+		list_composite = new JList(Utils.extractNomiComponenti(selected.getComponenti()));
 		list_composite.setBounds(12, 25, 408, 132);
 		
 		panel_composite.add(list_composite);
 	
-		buttonDeleteMgmt(list_composite,button_deleteFromComp);
+		Utils.buttonDeleteMgmt(list_composite,button_deleteFromComp);
 
 		list_addFocusList(list_composite);
 		
 		panel_composite.repaint();
 	}
 	
-	private static String[] extractNomiComponenti (Vector<ComponenteSemplice> componenti){
-		String[] nomiComponenti= new String[componenti.size()];
-		
-		//TODO mettere icone per il tipo degli oggetti
-
-		int i;
-		for (i = 0; i < componenti.size(); i++) {
-			nomiComponenti[i] = componenti.get(i).getNome();
-		}
-		return nomiComponenti;
-	}
+	
 	
 	private static void list_addFocusList(JList list){
 		list.addListSelectionListener(new ListSelectionListener() {
@@ -1058,9 +1044,9 @@ public class MainWindow extends JFrame {
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				if(arg0.getSource()==list_composite)
-					buttonDeleteMgmt(list_composite,button_deleteFromComp);
+					Utils.buttonDeleteMgmt(list_composite,button_deleteFromComp);
 				else if (arg0.getSource()==list_alternative){
-					buttonDeleteMgmt(list_alternative,button_delFromAlt);
+					Utils.buttonDeleteMgmt(list_alternative,button_delFromAlt);
 					buttonUpDownMgmt();
 				}
 				
@@ -1071,12 +1057,12 @@ public class MainWindow extends JFrame {
 
 
 	
-	private static void setContentLayout(String panel){
+	public static void setContentLayout(String panel){
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, panel);
 	}
 	
-	private void removeElementFromComposto(int[] daRimuovere){
+	public static void removeElementFromComposto(int[] daRimuovere){
 		int i;
 		//ciclo for al contrario: rimuovere gli elementi dall'ultimo a scendere altrimenti va in crash
 		if(focused.getType()== ComponenteComposto.COMPOSTOTYPE){
@@ -1338,7 +1324,7 @@ public class MainWindow extends JFrame {
 		((ComponenteComposto)focusedCmp).aggiungiComponenteS(componente);
 		popolaProperties(focusedCmp);
 		list_composite.setSelectedIndices(selected);
-		buttonDeleteMgmt(list_composite,button_deleteFromComp);
+		Utils.buttonDeleteMgmt(list_composite,button_deleteFromComp);
 		
 		
 	}
@@ -1348,18 +1334,11 @@ public class MainWindow extends JFrame {
 		((ComponenteAlternative)focusedAlt).aggiungiAlternativa(componente);
 		popolaProperties(focusedAlt);
 		list_alternative.setSelectedIndices(selected);
-		buttonDeleteMgmt(list_alternative,button_delFromAlt);
+		Utils.buttonDeleteMgmt(list_alternative,button_delFromAlt);
 		buttonUpDownMgmt();
 	}
 	
-	private static void buttonDeleteMgmt(JList lista, JButton bottone){
-		
-		if (lista.getSelectedIndices().length > 0)
-			bottone.setEnabled(true);
-		else
-			bottone.setEnabled(false);
-		
-	}
+	
 	
 	
 	
@@ -1411,6 +1390,7 @@ public class MainWindow extends JFrame {
 		
 		
 	}
+	
 
 
 }
