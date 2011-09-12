@@ -682,7 +682,7 @@ public class MainWindow extends JFrame {
 		button_up = new JButton("^");
 		button_delFromAlt = new JButton("Delete");
 		button_AddExisAlt = new JButton("Add existing");*/
-		pannello_alterplus = new PannelloAlternative();
+		pannello_alterplus = new PannelloAlternative(this);
 		//buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
 		content_panel.add(pannello_alterplus, PANEL_ALT);
 

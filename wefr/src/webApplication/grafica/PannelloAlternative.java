@@ -1,5 +1,6 @@
 package webApplication.grafica;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,18 +31,19 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 	private JList list_alt;
 	private ComponenteAlternative alternativeComp;
 	private final static String DELETE = "Delete";
+	private MainWindow mainW;
 	
-	public PannelloAlternative(){
+	public PannelloAlternative(MainWindow m){
 		bott_up= new JButton();
-		bott_up.setBounds(12, 12, 46, 53);
+		bott_up.setBounds(12, 4, 46, 53);
 		bott_down= new JButton();
-		bott_down.setBounds(12, 108, 46, 53);
+		bott_down.setBounds(12, 100, 46, 53);
 		bott_del= new ButtonRemover(DELETE);
-		bott_del.setBounds(65, 173, 90, 27);
+		bott_del.setBounds(65, 165, 90, 27);
 		bott_addExist= new JButton();
-		bott_addExist.setBounds(197, 173, 121, 27);
+		bott_addExist.setBounds(197, 165, 121, 27);
 		list_alt= new JList();
-		
+		mainW = m;
 
 		buildPanel();
 	}
@@ -69,7 +71,7 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		this.add(bott_up);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(70, 12, 350, 149);
+		scrollPane.setBounds(70, 4, 350, 149);
 		this.add(scrollPane);
 		
 		scrollPane.setViewportView(list_alt);
@@ -86,7 +88,7 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		this.add(bott_addExist);
 
 		JButton button_addNewAlter = new JButton("Add new");
-		button_addNewAlter.setBounds(322, 173, 98, 27);
+		button_addNewAlter.setBounds(322, 165, 98, 27);
 		button_addNewAlter.addActionListener(this);
 		this.add(button_addNewAlter);
 		
@@ -174,16 +176,18 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		Utils.buttonUpDownMgmt(list_alt, bott_up, bott_down);
 	}
 
+	
+	
 	//TODO probabilmente si disattivera' solo il pannello e non tutta la finestra
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		setEnabled(false);
+		mainW.setEnabled(false);
 		AddNew nuovo = new AddNew();
 		
 		nuovo.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent e) {
-				setEnabled(true);
+				mainW.setEnabled(true);
 		}});
 		
 		nuovo.addEventListener(new MyEventClassListener(){
@@ -191,7 +195,7 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 			@Override
 			public void handleMyEventClassEvent(
 					MyEventClass e) {
-						setEnabled(true);
+					mainW.setEnabled(true);
 						if(e != null){
 							addElementToAlternative((ComponenteSemplice) e.getComponente());
 							}}
