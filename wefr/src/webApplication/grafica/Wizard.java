@@ -836,10 +836,7 @@ public class Wizard extends JFrame {
 		panel_composite_s3.add(panel_12);
 		
 		button_doneComp = new JButton("Done");
-		button_doneComp.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		button_doneComp.setEnabled(false);
 		button_doneComp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -1193,11 +1190,17 @@ public class Wizard extends JFrame {
 				return new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), textField_imagepath.getText());			
 			else if(choice_type.getSelectedItem()==LINK)
 				return new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), textField_url.getText(), textField_url.getText());
-			else if(choice_type.getSelectedItem()==ALT){				
+			else if(choice_type.getSelectedItem()==ALT){
+				
+				//TODO settare la lista delle alternative
+				//newAlt.setAlternative()
 				return alt;
 			}
 			else {
-				return cmp;
+				ComponenteComposto newComp = new ComponenteComposto(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
+				//TODO settare la lista delle alternative
+				//newComp.setComponenti(cs);
+				return newComp;
 				}
 		}
 }

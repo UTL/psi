@@ -103,13 +103,4 @@ public class PannelloAlt extends PannelloGeneric {
 		alternativeComp.cancellaAlternativa(list_components.getSelectedIndices()[i]);
 	}
 
-	@Override
-	protected void createListComp() {
-		if(alternativeComp != null)
-			list_components = new JList(Utils.extractNomiComponenti(alternativeComp.getAlternative()));
-		else
-			list_components = new JList();
-		
-	}
-
 }
