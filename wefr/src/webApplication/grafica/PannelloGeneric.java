@@ -120,10 +120,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		if(list_components != null && listContainer!=null)
 			listContainer.remove(list_components);
 		
-		if(alternativeComp != null)
-			list_components = new JList(Utils.extractNomiComponenti(alternativeComp.getAlternative()));
-		else
-			list_components = new JList();
+		createListComp();
 		
 		listContainer.add(list_components);
 		list_components.addListSelectionListener(this);
@@ -135,6 +132,8 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		listContainer.repaint();
 
 	}
+
+	abstract protected void createListComp();
 
 	abstract protected void upDownMgmt();
 	
@@ -149,14 +148,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	
 
 	
-	private void addElementToAlternative(ComponenteSemplice componente) {
-		int[] selected = list_components.getSelectedIndices();
-		addCSempl(componente);
-		popolaProperties();
-		list_components.setSelectedIndices(selected);
-		Utils.buttonDeleteMgmt(list_components,bott_del);
-		upDownMgmt();
-	}
+	
 
 	abstract protected void addCSempl(ComponenteSemplice componente);
 	//{
@@ -184,7 +176,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 					MyEventClass e) {
 					mainW.setEnabled(true);
 						if(e != null){
-							addElementToAlternative((ComponenteSemplice) e.getComponente());
+							addElement((ComponenteSemplice) e.getComponente());
 							}}
 
 			@Override
@@ -192,6 +184,15 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 			});
 
 		nuovo.setVisible(true);
+	}
+	
+	private void addElement(ComponenteSemplice componente) {
+		int[] selected = list_components.getSelectedIndices();
+		addCSempl(componente);
+		popolaProperties();
+		list_components.setSelectedIndices(selected);
+		Utils.buttonDeleteMgmt(list_components,bott_del);
+		upDownMgmt();
 	}
 	
 	public void removeElements(){
@@ -206,6 +207,8 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	 */
 
 	abstract protected void removeElement(int i) ;
+
+	
 
 	
 }

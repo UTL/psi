@@ -82,4 +82,13 @@ public class PannelloComp extends PannelloGeneric {
 		compostoComp.cancellaComponenteS(list_components.getSelectedIndices()[i]);
 	}
 
+	@Override
+	protected void createListComp() {
+		if(compostoComp != null)
+			list_components = new JList(Utils.extractNomiComponenti(compostoComp.getComponenti()));
+		else
+			list_components = new JList();
+		
+	}
+
 }
