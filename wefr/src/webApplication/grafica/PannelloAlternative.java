@@ -11,6 +11,7 @@ import java.util.EventObject;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,9 +32,9 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 	private JList list_alt;
 	private ComponenteAlternative alternativeComp;
 	private final static String DELETE = "Delete";
-	private MainWindow mainW;
+	private JFrame mainW;
 	
-	public PannelloAlternative(MainWindow m){
+	public PannelloAlternative(JFrame m){
 		bott_up= new JButton();
 		bott_up.setBounds(12, 4, 46, 53);
 		bott_down= new JButton();
@@ -46,6 +47,11 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		mainW = m;
 
 		buildPanel();
+	}
+	
+	public PannelloAlternative(JFrame m, ComponenteAlternative c){
+		this(m);
+		alternativeComp = c;
 	}
 	
 	public PannelloAlternative(JButton b_up, JButton b_down, ButtonRemover b_del, JButton b_addExist, JList l_alt) {
@@ -136,7 +142,7 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 	private void popolaProperties() {
 		//--------------- MAIN WINDOW --------------//
 		//setGenerici(selected, "Alternative");
-		MainWindow.setContentLayout(MainWindow.PANEL_ALT);
+		//MainWindow.setContentLayout(MainWindow.PANEL_ALT);
 		//--------------- END MAIN WINDOW --------------//
 		
 		Container listContainer= list_alt.getParent();

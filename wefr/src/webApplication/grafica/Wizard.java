@@ -63,7 +63,7 @@ public class Wizard extends JFrame {
 
 	private JPanel contentPane;
 	private TextField name;
-	private JComboBox choice;
+	private JComboBox choice_type;
 	private JTabbedPane tabbedPane;
 	private JButton btnDone_text;
 	private JTextArea text;
@@ -80,11 +80,12 @@ public class Wizard extends JFrame {
 	private TextField textField_linktext;
 	private AddNew myAddNew;
 	
+	PannelloAlternative panel_alt;
+	
 	private JPanel panel_composite_s3;
 	private JButton button_deleteComp;
 	
 	private JList list_composite;
-	private JList list_alternative;
 	
 	private Immagine focusedImg;
 	
@@ -153,9 +154,9 @@ public class Wizard extends JFrame {
 		tabbedPane.addTab("1", null, panel, null);
 		panel.setLayout(null);
 		
-		choice = new JComboBox(tipi);
-		choice.setBounds(181, 165, 174, 20);
-		panel.add(choice);
+		choice_type = new JComboBox(tipi);
+		choice_type.setBounds(181, 165, 174, 20);
+		panel.add(choice_type);
 		
 		name = new TextField();
 		name.addTextListener(new TextListener() {
@@ -296,13 +297,13 @@ public class Wizard extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (choice.getSelectedItem().equals(tipi[0]))
+				if (choice_type.getSelectedItem().equals(tipi[0]))
 					tabbedPane.setSelectedIndex(2);
-				else if (choice.getSelectedItem().equals(tipi[2]))
+				else if (choice_type.getSelectedItem().equals(tipi[2]))
 					tabbedPane.setSelectedIndex(3);
-				else if (choice.getSelectedItem().equals(tipi[1]))
+				else if (choice_type.getSelectedItem().equals(tipi[1]))
 				    tabbedPane.setSelectedIndex(4);
-				else if (choice.getSelectedItem().equals(tipi[4])){
+				else if (choice_type.getSelectedItem().equals(tipi[4])){
 					
 					//TODO questo oggetto non deve essere statico, ma creato durante l'esecuzione
 					/*popolaOggetti();
@@ -311,7 +312,9 @@ public class Wizard extends JFrame {
 					popolaProperties(componentiComposite);*/
 					tabbedPane.setSelectedIndex(5);
 				}
-				else if (choice.getSelectedItem().equals(tipi[3]))
+				else if (choice_type.getSelectedItem().equals(tipi[3])) //alternative
+					buildAlternative();
+					panel_alt.setAlternativeComponent(alt);
 					tabbedPane.setSelectedIndex(6);
 			}
 		});
@@ -980,6 +983,11 @@ public class Wizard extends JFrame {
 		tabbedPane.addTab("3a", null, panel_11, null);
 		panel_11.setLayout(null);
 		
+		panel_alt = new PannelloAlternative(this);
+		panel_alt.setSize(421, 193);
+		panel_alt.setLocation(25, 61);
+		panel_11.add(panel_alt);
+		
 		JPanel panel_13 = new JPanel();
 		panel_13.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_13.setLayout(null);
@@ -1036,34 +1044,6 @@ public class Wizard extends JFrame {
 		label.setBounds(72, 64, 66, 14);
 		panel_11.add(label);
 		
-		list_alternative = new JList();
-		list_alternative.setBorder(new LineBorder(new Color(0, 0, 0)));
-		list_alternative.setBounds(73, 89, 355, 132);
-		panel_11.add(list_alternative);
-		
-		JButton btnNewButton = new JButton("^");
-		btnNewButton.setToolTipText("Click here to increase the priority of selected element");
-		btnNewButton.setBounds(20, 89, 43, 62);
-		panel_11.add(btnNewButton);
-		
-		JButton btnV = new JButton("v");
-		btnV.setToolTipText("Click here to decrease the priority of selected element");
-		btnV.setBounds(20, 159, 43, 62);
-		panel_11.add(btnV);
-		
-		JButton btnDelete = new JButton("Delete");
-		btnDelete.setEnabled(false);
-		btnDelete.setBounds(73, 226, 98, 27);
-		panel_11.add(btnDelete);
-		
-		JButton btnAddExisting = new JButton("Add existing");
-		btnAddExisting.setBounds(202, 226, 118, 27);
-		panel_11.add(btnAddExisting);
-		
-		JButton btnAddNew = new JButton("Add new");
-		btnAddNew.setBounds(321, 226, 107, 27);
-		panel_11.add(btnAddNew);
-		
 		JLabel label_5 = new JLabel("Step:");
 		label_5.setBounds(20, 21, 46, 14);
 		panel_11.add(label_5);
@@ -1108,6 +1088,10 @@ public class Wizard extends JFrame {
 		panel_34.add(label_26);
 	}
 	
+
+	protected void buildAlternative() {
+		alt = new ComponenteAlternative(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
+	}
 
 	private void chooseFile(int chooserValue, JFileChooser fc, JTextField target){
 		//TODO settare le cartelle di default
@@ -1258,17 +1242,17 @@ public class Wizard extends JFrame {
 
 		private Componente buildNewComp() {
 			System.out.println("builder");
-			if(choice.getSelectedItem()==TESTO)
+			if(choice_type.getSelectedItem()==TESTO)
 				return new Testo(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), text.getText());
-			else if(choice.getSelectedItem()==IMAGE)
+			else if(choice_type.getSelectedItem()==IMAGE)
 				return new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), textField_imagepath.getText());			
-			else if(choice.getSelectedItem()==LINK)
+			else if(choice_type.getSelectedItem()==LINK)
 				return new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), textField_url.getText(), textField_url.getText());
-			else if(choice.getSelectedItem()==ALT){
-				ComponenteAlternative newAlt =  new ComponenteAlternative(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
+			else if(choice_type.getSelectedItem()==ALT){
+				
 				//TODO settare la lista delle alternative
 				//newAlt.setAlternative()
-				return newAlt;
+				return alt;
 			}
 			else {
 				ComponenteComposto newComp = new ComponenteComposto(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
