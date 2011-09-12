@@ -39,16 +39,13 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	protected static String ADD_COMMAND = "add";
     protected static String REMOVE_COMMAND = "remove";
     protected static String CLEAR_COMMAND = "clear";
-    private static MainWindow mainWindow;
 	
 	private DefaultMutableTreeNode rootNode;
 	private DefaultTreeModel model;
 	private JTree tree;
 	private TreeTransferHandler th;
-	//private CustomTreeEditor te;
 	
-	public TreePanel(MainWindow mainW) {
-		mainWindow = mainW;
+	public TreePanel() {
 		init();
 	}
 
@@ -124,12 +121,12 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 				}
 			}
         	else	{
-        		//ï¿½ stata selezionata la radice perciï¿½ avviso l'utente che non puï¿½ essere cancellata->risolto: la root non puï¿½ essere selezionata
+        		//ï¿½ stata selezionata la radice perciò avviso l'utente che non può essere cancellata->risolto: la root non può essere selezionata
         		JOptionPane.showMessageDialog(this.getTopLevelAncestor(),ROOTDELETE,"Error!",JOptionPane.ERROR_MESSAGE);
         	}
 		}
 		else	{
-			//Segnala che non c'ï¿½ nulla selezionato quindi non puï¿½ rimuovere nulla->da rivedere in disabilita Remove se non c'ï¿½ nulla selezionato
+			//Segnala che non c'è nulla selezionato quindi non puï¿½ rimuovere nulla->da rivedere in disabilita Remove se non c'è nulla selezionato
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),EMPTYSELECTION,"Error!",JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -148,20 +145,21 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			Componente compElem = (Componente)parent.getUserObject();
 			String type = compElem.getType();
 			if (type==ComponenteComposto.COMPOSTOTYPE)	{
-				((ComponenteComposto)compElem).aggiungiComponenteS((ComponenteSemplice) node);
+				((ComponenteComposto)compElem).aggiungiOpzione((ComponenteSemplice) node);
 			}
 			else if (type==ComponenteAlternative.ALTERNATIVETYPE)	{
-				((ComponenteAlternative)compElem).aggiungiAlternativa((ComponenteSemplice)node);
+				((ComponenteAlternative)compElem).aggiungiOpzione((ComponenteSemplice)node);
 			}
 		}
-		//Verifico che il nodo genitore possa avere nodi figli anche se con il drag&drop ï¿½ giï¿½ esclusa come destinazione possibile (vedi canImport)
+		//Verifico che il nodo genitore possa avere nodi figli anche se con il drag&drop è già esclusa come destinazione possibile (vedi canImport)
 		if (parent.getAllowsChildren()==false)	{
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),parent.toString()+ADDCHILDRENNOTALLOWED,"Error!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		model.insertNodeInto(childNode, parent, parent.getChildCount());
-		//NOTA: Java SE7 puï¿½ fare switch su String ma Java SE6 no!
-		if (node.getType()==Testo.TEXTTYPE || node.getType()==Immagine.IMAGETYPE || node.getType()==Link.LINKTYPE)	{
+		//NOTA: Java SE7 può fare switch su String ma Java SE6 no!
+		if (node.isSimple())	{
+		//if (node.getType()==Testo.TEXTTYPE || node.getType()==Immagine.IMAGETYPE || node.getType()==Link.LINKTYPE)	{
 			childNode.setAllowsChildren(false);
 		}
 		model.reload(); //ricarico il modello dopo le modifiche
@@ -218,7 +216,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
 		if (node == null || node.isRoot())	{
 			tree.clearSelection();
-			//non ï¿½ stato selezionato nulla o ï¿½ stata selezionata la radice;
+			//non è stato selezionato nulla o è stata selezionata la radice;
 			return;
 		}	else	{
 			Componente comp = (Componente) node.getUserObject();
