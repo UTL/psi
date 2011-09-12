@@ -103,13 +103,13 @@ public class Pagina implements Serializable {
 			if ((moduli.get(i).getClass().getName())
 					.equals("webApplication.business.ComponenteAlternative")) {
 				for (int j = 0; j < ((ComponenteAlternative) moduli.get(i))
-						.getAlternative().size(); j++) { // scorre tutte le
+						.getOpzioni().size(); j++) { // scorre tutte le
 															// sottoalternative
 															// dei moduli di
 															// tipo
 															// ComponenteAlternativo
 					if ((((ComponenteAlternative) moduli.get(i))
-							.getAlternative().get(j).getNome()).equals(c
+							.getOpzioni().get(j).getNome()).equals(c
 							.getNome())) { // controlla l'univocità del nome
 											// nelle sottoAlternative
 						unico = false;
@@ -119,7 +119,7 @@ public class Pagina implements Serializable {
 			if ((moduli.get(i).getClass().getName())
 					.equals("webApplication.business.ComponenteComposto")) {
 				Vector<ComponenteSemplice> cs = ((ComponenteComposto) moduli
-						.get(i)).getComponenti();
+						.get(i)).getOpzioni();
 				for (int j = 0; j < cs.size(); j++) { // scorre tutti i
 														// sottocomponenti dei
 														// moduli di tipo
@@ -157,13 +157,13 @@ public class Pagina implements Serializable {
 			if ((moduli.get(i).getClass().getName())
 					.equals("webApplication.business.ComponenteAlternative")) {
 				for (int j = 0; j < ((ComponenteAlternative) moduli.get(i))
-						.getAlternative().size(); j++) { // scorre tutte le
+						.getOpzioni().size(); j++) { // scorre tutte le
 															// sottoalternative
 															// dei moduli di
 															// tipo
 															// ComponenteAlternativo
 					if ((((ComponenteAlternative) moduli.get(i))
-							.getAlternative().get(j).getNome()).equals(nome)) { // controlla
+							.getOpzioni().get(j).getNome()).equals(nome)) { // controlla
 																				// l'univocità
 																				// del
 																				// nome
@@ -176,7 +176,7 @@ public class Pagina implements Serializable {
 			if ((moduli.get(i).getClass().getName())
 					.equals("webApplication.business.ComponenteComposto")) {
 				Vector<ComponenteSemplice> cs = ((ComponenteComposto) moduli
-						.get(i)).getComponenti();
+						.get(i)).getOpzioni();
 				for (int j = 0; j < cs.size(); j++) { // scorre tutti i
 														// sottocomponenti dei
 														// moduli di tipo
@@ -207,7 +207,7 @@ public class Pagina implements Serializable {
 			if ((moduli.get(i).getClass().getName())
 					.equals("webApplication.business.ComponenteAlternative")) {
 				Vector<ComponenteSemplice> cs = ((ComponenteAlternative) moduli
-						.get(i)).getAlternative();
+						.get(i)).getOpzioni();
 				for (int j = 0; j < cs.size(); j++) { // scorre tutte le
 														// sottoalternative dei
 														// moduli di tipo
@@ -275,7 +275,7 @@ public class Pagina implements Serializable {
 			if ((moduli.get(i).getClass().getName())
 					.equals("webApplication.business.ComponenteComposto")) {
 				Vector<ComponenteSemplice> cs = ((ComponenteComposto) moduli
-						.get(i)).getComponenti();
+						.get(i)).getOpzioni();
 				for (int j = 0; j < cs.size(); j++) { // scorrimento dei
 														// sottocompponenti di
 														// nu ComponenteComposto
@@ -302,7 +302,7 @@ public class Pagina implements Serializable {
 																																			// la
 																																			// conferma
 									((ComponenteComposto) moduli.get(i))
-											.getComponenti().remove(j); // se
+											.getOpzioni().remove(j); // se
 																		// l'elemento
 																		// è
 																		// solo
@@ -317,7 +317,7 @@ public class Pagina implements Serializable {
 							} else { // con il drag and drop elimino
 										// direttamente anche il padre
 								((ComponenteComposto) moduli.get(i))
-										.getComponenti().remove(j);
+										.getOpzioni().remove(j);
 								app = i;
 								cancellato = false;
 							}
@@ -325,7 +325,7 @@ public class Pagina implements Serializable {
 						} else { // se ho altri sottocomponenti tolgo solo
 									// quello desiderato
 							((ComponenteComposto) moduli.get(i))
-									.getComponenti().remove(j);
+									.getOpzioni().remove(j);
 
 						}
 					}// if
@@ -334,19 +334,19 @@ public class Pagina implements Serializable {
 				if ((moduli.get(i).getClass().getName())
 						.equals("webApplication.business.ComponenteAlternative")) {
 					for (int j = 0; j < ((ComponenteAlternative) moduli.get(i))
-							.getAlternative().size(); j++) {
+							.getOpzioni().size(); j++) {
 						if ((((ComponenteAlternative) moduli.get(i))
-								.getAlternative().get(j).getNome()).equals(n)) {
+								.getOpzioni().get(j).getNome()).equals(n)) {
 							cancellato = true;
 							if (((ComponenteAlternative) moduli.get(i))
-									.getAlternative().size() == 1) {
+									.getOpzioni().size() == 1) {
 								if (!grafica) {
 									if (JOptionPane
 											.showConfirmDialog(
 													null,
 													"If you delete this component is also deleted the composite component. Continue?") == 0) {
 										((ComponenteAlternative) moduli.get(i))
-												.getAlternative().remove(j);
+												.getOpzioni().remove(j);
 										app = i;
 										cancellato = false;
 									} else {
@@ -354,13 +354,13 @@ public class Pagina implements Serializable {
 									}
 								} else {
 									((ComponenteAlternative) moduli.get(i))
-											.getAlternative().remove(j);
+											.getOpzioni().remove(j);
 									app = i;
 									cancellato = false;
 								}
 							} else {
 								((ComponenteAlternative) moduli.get(i))
-										.getAlternative().remove(j);
+										.getOpzioni().remove(j);
 							}
 						}// if
 					}// for
@@ -396,7 +396,7 @@ public class Pagina implements Serializable {
 			if ((moduli.get(i).getClass().getName())
 					.equals("webApplication.business.ComponenteComposto")) {
 				Vector<ComponenteSemplice> cs = ((ComponenteComposto) moduli
-						.get(i)).getComponenti();
+						.get(i)).getOpzioni();
 				for (int j = 0; j < cs.size(); j++) { // ricerca tra i vari
 														// sottocomponenti
 					if ((cs.get(j).getNome()).equals(n)) {
@@ -408,14 +408,14 @@ public class Pagina implements Serializable {
 				if ((moduli.get(i).getClass().getName())
 						.equals("webApplication.business.ComponenteAlternative")) {
 					for (int j = 0; j < ((ComponenteAlternative) moduli.get(i))
-							.getAlternative().size(); j++) { // ricerca tra le
+							.getOpzioni().size(); j++) { // ricerca tra le
 																// varie
 																// sottoAlternative
 						if ((((ComponenteAlternative) moduli.get(i))
-								.getAlternative().get(j).getNome()).equals(n)) {
+								.getOpzioni().get(j).getNome()).equals(n)) {
 							cancellato = true;
 							trovato = ((ComponenteAlternative) moduli.get(i))
-									.getAlternative().get(j);
+									.getOpzioni().get(j);
 						}// if
 					}// for
 				}// if alternative

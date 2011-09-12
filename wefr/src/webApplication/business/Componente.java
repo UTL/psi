@@ -148,4 +148,10 @@ public abstract class Componente implements Serializable, Cloneable {
 		
 	}
 	
+	public boolean isSimple()	{
+		if ((this.getType()==ComponenteAlternative.ALTERNATIVETYPE) || (this.getType()==ComponenteComposto.COMPOSTOTYPE))
+			return false;
+		return true;
+	}
+	
 }
