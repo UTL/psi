@@ -9,6 +9,8 @@ import webApplication.business.ComponenteSemplice;
 
 public class Utils {
 	public static String[] extractNomiComponenti (Vector<ComponenteSemplice> componenti){
+		if(componenti == null)
+			return null;
 		String[] nomiComponenti= new String[componenti.size()];
 		
 		//TODO mettere icone per il tipo degli oggetti

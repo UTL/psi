@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -44,6 +45,8 @@ import java.util.Vector;
 
 import javax.swing.JEditorPane;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.SwingConstants;
@@ -96,7 +99,7 @@ public class Wizard extends JFrame {
 	private ComponenteComposto cmp;
 	
 	private Vector<ComponenteSemplice> componentiComposite;
-	private Vector<ComponenteSemplice> componentiAlternative;
+	//private DefaultListModel componentiAlternative;
 	
 	//TODO come nel MainWindow, le tre stringhe tipi categorie e importanze andrebbero estratte
 	private final static String TESTO = "Text";
@@ -312,10 +315,11 @@ public class Wizard extends JFrame {
 					popolaProperties(componentiComposite);*/
 					tabbedPane.setSelectedIndex(5);
 				}
-				else if (choice_type.getSelectedItem().equals(tipi[3])) //alternative
+				else if (choice_type.getSelectedItem().equals(tipi[3])){ //alternative
 					buildAlternative();
 					panel_alt.setAlternativeComponent(alt);
 					tabbedPane.setSelectedIndex(6);
+					}
 			}
 		});
 		button_2.setBounds(375, 11, 66, 27);
@@ -995,7 +999,7 @@ public class Wizard extends JFrame {
 		panel_11.add(panel_13);
 		
 		JButton button_doneAlt = new JButton("Done");
-		button_doneAlt.setEnabled(false);
+		button_doneAlt.setEnabled(true);
 		button_doneAlt.addActionListener(new java.awt.event.ActionListener() {
 
 			@Override
@@ -1086,6 +1090,8 @@ public class Wizard extends JFrame {
 		label_26.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		label_26.setBounds(10, 0, 26, 43);
 		panel_34.add(label_26);
+		
+		
 	}
 	
 

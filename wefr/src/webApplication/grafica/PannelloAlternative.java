@@ -149,8 +149,11 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		
 		if(list_alt != null && listContainer!=null)
 			listContainer.remove(list_alt);
-
-		list_alt = new JList(Utils.extractNomiComponenti(alternativeComp.getAlternative()));
+		
+		if(alternativeComp != null)
+			list_alt = new JList(Utils.extractNomiComponenti(alternativeComp.getAlternative()));
+		else
+			list_alt = new JList();
 		
 		listContainer.add(list_alt);
 		
