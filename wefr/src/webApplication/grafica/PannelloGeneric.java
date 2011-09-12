@@ -1,5 +1,8 @@
 package webApplication.grafica;
 
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -10,31 +13,35 @@ import java.util.Collections;
 import java.util.EventObject;
 import java.util.Vector;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
+import webApplication.business.ComponenteComposto;
+
 import webApplication.business.ComponenteSemplice;
 
-public class PannelloAlternative extends JPanel implements ListSelectionListener, ActionListener{
-	private static final long serialVersionUID = 1285953256642735080L;
-	
-	private AListenerRemoveFromAlt actionAlternative;
-	private JButton bott_up;
-	private JButton bott_down;
-	private ButtonRemover bott_del;
-	private JButton bott_addExist;
-	private JList list_components;
-	private ComponenteAlternative alternativeComp;
+public abstract class PannelloGeneric extends JPanel implements ListSelectionListener, ActionListener{
+	private static final long serialVersionUID = 4733717394320867492L;
+
+	protected AListenerRemoveFromAlt actionAlternative;
+	protected JButton bott_up;
+	protected JButton bott_down;
+	protected ButtonRemover bott_del;
+	protected JButton bott_addExist;
+	protected JList list_components;
+	protected ComponenteAlternative alternativeComp;
+	protected ComponenteComposto compostoComp;
 	private final static String DELETE = "Delete";
 	private JFrame mainW;
 	
-	public PannelloAlternative(JFrame m){
+	/*
+	 * @wbp.parser.constructor
+	 */
+	public PannelloGeneric(JFrame m){
 		bott_up= new JButton();
 		bott_up.setBounds(12, 4, 46, 53);
 		bott_down= new JButton();
@@ -49,12 +56,14 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		buildPanel();
 	}
 	
-	public PannelloAlternative(JFrame m, ComponenteAlternative c){
+	public PannelloGeneric(JFrame m, Componente c){
 		this(m);
-		alternativeComp = c;
+		assignComponent(c);
 	}
+
+	abstract protected void assignComponent(Componente c);
 	
-	public PannelloAlternative(JButton b_up, JButton b_down, ButtonRemover b_del, JButton b_addExist, JList l_alt) {
+	public PannelloGeneric(JButton b_up, JButton b_down, ButtonRemover b_del, JButton b_addExist, JList l_alt) {
 		bott_up=b_up;
 		bott_down=b_down;
 		bott_del=b_del;
@@ -64,44 +73,9 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 		
 	}
 	
-	private void buildPanel(){
-		
-		//TODO cambiare le icone terribili dei bottoni up e down
+	abstract protected void buildPanel();
 
-		
-		bott_up.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				moveAlternativeElements(MainWindow.MOVE_UP);}});
-		this.setLayout(null);
-		bott_up.setToolTipText("Click here to increase the priority of selected element");
-		this.add(bott_up);
-
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(70, 4, 350, 149);
-		this.add(scrollPane);
-		
-		scrollPane.setViewportView(list_components);
-
-		bott_down.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				moveAlternativeElements(MainWindow.MOVE_DOWN);
-		}});
-		bott_down.setToolTipText("Click here to decrease the priority of selected element");
-		this.add(bott_down);
-		actionAlternative = new AListenerRemoveFromAlt(list_components);
-		bott_del.addActionListener(actionAlternative);
-		this.add(bott_del);
-		this.add(bott_addExist);
-
-		JButton button_addNewAlter = new JButton("Add new");
-		button_addNewAlter.setBounds(322, 165, 98, 27);
-		button_addNewAlter.addActionListener(this);
-		this.add(button_addNewAlter);
-		
-		
-	}
-
-	private void moveAlternativeElements(int upOrDown) {
+	void moveAlternativeElements(int upOrDown) {
 		int shift;
 		
 		Vector<ComponenteSemplice> listaAlternative = alternativeComp.getAlternative();
@@ -134,16 +108,12 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 	}
 	
 	
-	public void setAlternativeComponent(ComponenteAlternative comp){
-		alternativeComp = comp;
+	public void setComponent(Componente comp){
+		assignComponent(comp);
 		popolaProperties();
 	}
 	
 	private void popolaProperties() {
-		//--------------- MAIN WINDOW --------------//
-		//setGenerici(selected, "Alternative");
-		//MainWindow.setContentLayout(MainWindow.PANEL_ALT);
-		//--------------- END MAIN WINDOW --------------//
 		
 		Container listContainer= list_components.getParent();
 		
@@ -156,34 +126,42 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 			list_components = new JList();
 		
 		listContainer.add(list_components);
-		
-		Utils.buttonDeleteMgmt(list_components,bott_del);
-		Utils.buttonUpDownMgmt(list_components, bott_up, bott_down);
-		
 		list_components.addListSelectionListener(this);
 
+		Utils.buttonDeleteMgmt(list_components,bott_del);
+		upDownMgmt();
+		
+		
 		listContainer.repaint();
 
 	}
 
+	abstract protected void upDownMgmt();
+	
+	//Utils.buttonUpDownMgmt(list_components, bott_up, bott_down);
+	
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		/*if(arg0.getSource()==list_composite)
-			Utils.buttonDeleteMgmt(list_composite,button_deleteFromComp);*/
-			Utils.buttonUpDownMgmt(list_components, bott_up, bott_down);
+		upDownMgmt();
 			Utils.buttonDeleteMgmt(list_components,bott_del);
 		}
 		
 	
 
+	
 	private void addElementToAlternative(ComponenteSemplice componente) {
 		int[] selected = list_components.getSelectedIndices();
-		((ComponenteAlternative)alternativeComp).aggiungiAlternativa(componente);
+		addCSempl(componente);
 		popolaProperties();
 		list_components.setSelectedIndices(selected);
 		Utils.buttonDeleteMgmt(list_components,bott_del);
-		Utils.buttonUpDownMgmt(list_components, bott_up, bott_down);
+		upDownMgmt();
 	}
+
+	abstract protected void addCSempl(ComponenteSemplice componente);
+	//{
+	//	((ComponenteAlternative)alternativeComp).aggiungiAlternativa(componente);
+	//}
 
 	
 	
@@ -219,13 +197,15 @@ public class PannelloAlternative extends JPanel implements ListSelectionListener
 	public void removeElements(){
 		int i; 
 		for(i=list_components.getSelectedIndices().length-1; i>=0; i--){
-			alternativeComp.cancellaAlternativa(list_components.getSelectedIndices()[i]);
+			removeElement(i);
 		}
 		popolaProperties();
 	}
-		
-}
-	
-	
-	
+	/**
+	 * 
+	 */
 
+	abstract protected void removeElement(int i) ;
+
+	
+}

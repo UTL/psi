@@ -13,6 +13,8 @@ public class ButtonRemover extends JButton{
 	public void removeElements(){
 		if(this.getParent() != null && this.getParent() instanceof PannelloAlternative)
 			((PannelloAlternative)this.getParent()).removeElements();
+		else if(this.getParent() != null && this.getParent() instanceof PannelloAlt)
+			((PannelloAlt)this.getParent()).removeElements();
 	}
 	
 }

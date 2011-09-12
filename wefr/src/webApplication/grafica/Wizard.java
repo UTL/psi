@@ -83,12 +83,10 @@ public class Wizard extends JFrame {
 	private TextField textField_linktext;
 	private AddNew myAddNew;
 	
-	PannelloAlternative panel_alt;
+	PannelloAlt panel_alt;
+	PannelloComp panel_comp;
 	
 	private JPanel panel_composite_s3;
-	private JButton button_deleteComp;
-	
-	private JList list_composite;
 	
 	private Immagine focusedImg;
 	
@@ -308,6 +306,7 @@ public class Wizard extends JFrame {
 				    tabbedPane.setSelectedIndex(4);
 				else if (choice_type.getSelectedItem().equals(tipi[4])){
 					
+					panel_comp.setComponent(buildComposite());
 					//TODO questo oggetto non deve essere statico, ma creato durante l'esecuzione
 					/*popolaOggetti();
 					Vector<ComponenteSemplice> componenti = cmp.getComponenti();
@@ -316,8 +315,7 @@ public class Wizard extends JFrame {
 					tabbedPane.setSelectedIndex(5);
 				}
 				else if (choice_type.getSelectedItem().equals(tipi[3])){ //alternative
-					buildAlternative();
-					panel_alt.setAlternativeComponent(alt);
+					panel_alt.setComponent(buildAlternative());
 					tabbedPane.setSelectedIndex(6);
 					}
 			}
@@ -828,6 +826,10 @@ public class Wizard extends JFrame {
 		panel_composite_s3.setLayout(null);
 		
 		JPanel panel_12 = new JPanel();
+		panel_comp = new PannelloComp(this);
+		panel_comp.setLocation(6, 56);
+		panel_comp.setSize(436, 201);
+		panel_composite_s3.add(panel_comp);
 		panel_12.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_12.setLayout(null);
 		panel_12.setBounds(10, 259, 446, 49);
@@ -877,69 +879,6 @@ public class Wizard extends JFrame {
 		separator_5.setBounds(10, 54, 446, 2);
 		panel_composite_s3.add(separator_5);
 		
-		JLabel lblElements = new JLabel("Elements:");
-		lblElements.setBounds(28, 64, 91, 13);
-		panel_composite_s3.add(lblElements);
-		
-		list_composite = new JList();
-		list_composite.setBorder(new LineBorder(new Color(0, 0, 0)));
-		list_composite.setBounds(28, 89, 408, 132);
-		list_composite.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				if(list_composite.getSelectedIndex()>-1) //esiste almeno un elemento
-					button_deleteComp.setEnabled(true);
-			}
-		});
-		panel_composite_s3.add(list_composite);
-		
-		button_deleteComp = new JButton("Delete");
-		button_deleteComp.setEnabled(false);
-		button_deleteComp.setBounds(28, 226, 109, 27);
-		button_deleteComp.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO fare un controllo sul nome dell'oggetto
-				removeElementFromComposite(list_composite.getSelectedIndices());
-				
-			}
-		});
-		panel_composite_s3.add(button_deleteComp);
-		
-		JButton button_17 = new JButton("Add existing");
-		button_17.setBounds(196, 226, 121, 27);
-		panel_composite_s3.add(button_17);
-		
-		JButton button_18 = new JButton("Add new");
-		button_18.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				setEnabled(false);
-
-				if (myAddNew== null)
-					myAddNew = new AddNew();
-				myAddNew.setVisible(true);
-				myAddNew.addEventListener(new MyEventClassListener(){
-
-					@Override
-					public void handleMyEventClassEvent(EventObject e) {
-						// TODO Auto-generated method stub
-						setEnabled(true);
-						myAddNew=null;
-					}
-
-					@Override
-					public void handleMyEventClassEvent(MyEventClass e) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					});
-			}
-		});
-		button_18.setBounds(327, 226, 109, 27);
-		panel_composite_s3.add(button_18);
-		
 		JLabel lblStep_1 = new JLabel("Step:");
 		lblStep_1.setBounds(28, 21, 46, 14);
 		panel_composite_s3.add(lblStep_1);
@@ -987,7 +926,7 @@ public class Wizard extends JFrame {
 		tabbedPane.addTab("3a", null, panel_11, null);
 		panel_11.setLayout(null);
 		
-		panel_alt = new PannelloAlternative(this);
+		panel_alt = new PannelloAlt(this);
 		panel_alt.setSize(421, 193);
 		panel_alt.setLocation(25, 61);
 		panel_11.add(panel_alt);
@@ -1095,8 +1034,14 @@ public class Wizard extends JFrame {
 	}
 	
 
-	protected void buildAlternative() {
+	protected ComponenteComposto buildComposite() {
+		cmp = new ComponenteComposto(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
+		return cmp;
+	}
+
+	protected ComponenteAlternative buildAlternative() {
 		alt = new ComponenteAlternative(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
+		return alt;
 	}
 
 	private void chooseFile(int chooserValue, JFileChooser fc, JTextField target){
@@ -1155,7 +1100,7 @@ public class Wizard extends JFrame {
 			//TODO aggiungere le iconcine in parte ai nomi
 			//TODO disabilitare l'add existing quando non esistono elementi da aggiungere
 			
-			if(list_composite != null && panel_composite_s3!=null)
+			/*if(list_composite != null && panel_composite_s3!=null)
 				panel_composite_s3.remove(list_composite);
 			
 			String[] nomiComponenti= new String[componenti.size()];
@@ -1190,17 +1135,8 @@ public class Wizard extends JFrame {
 			
 			panel_composite_s3.repaint();
 			
+			*/
 			
-			
-		}
-	 
-	 private void removeElementFromComposite(int[] daRimuovere){
-			int i;
-			for(i=daRimuovere.length-1; i>=0; i--)
-				componentiComposite.remove(daRimuovere[i]);
-			popolaProperties(componentiComposite);
-			//FIXME sarebbe meglio fare anche un controllo sul nome e non solo sul numero di indice
-			//TODO tenere traccia della rimozione
 		}
 	 
 	 
