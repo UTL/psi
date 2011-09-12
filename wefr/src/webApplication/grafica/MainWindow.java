@@ -693,6 +693,7 @@ public class MainWindow extends JFrame {
 		JLabel lbl_linktxt = new JLabel("Link text:");
 		lbl_linktxt.setBounds(13, 14, 78, 15);
 		panel_link.add(lbl_linktxt);
+		
 
 		textField_linktext = new JTextField();
 		textField_linktext.getDocument().addDocumentListener(new DocumentListener() {
