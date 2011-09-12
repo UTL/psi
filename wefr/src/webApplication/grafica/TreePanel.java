@@ -2,6 +2,7 @@ package webApplication.grafica;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -146,10 +147,10 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			Componente compElem = (Componente)parent.getUserObject();
 			String type = compElem.getType();
 			if (type==ComponenteComposto.COMPOSTOTYPE)	{
-				((ComponenteComposto)compElem).aggiungiComponenteS((ComponenteSemplice) node);
+				((ComponenteComposto)compElem).aggiungiOpzione((ComponenteSemplice) node);
 			}
 			else if (type==ComponenteAlternative.ALTERNATIVETYPE)	{
-				((ComponenteAlternative)compElem).aggiungiAlternativa((ComponenteSemplice)node);
+				((ComponenteAlternative)compElem).aggiungiOpzione((ComponenteSemplice)node);
 			}
 		}
 		//Verifico che il nodo genitore possa avere nodi figli anche se con il drag&drop è già esclusa come destinazione possibile (vedi canImport)
@@ -221,6 +222,13 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		}	else	{
 			Componente comp = (Componente) node.getUserObject();
 			System.out.println("Componente: "+comp.getNome());
+			if (!comp.isSimple())	{
+				Vector<ComponenteSemplice> elementi= ((ComponenteMolteplice)comp).getOpzioni();
+				System.out.println("Elementi del componente:");
+				for (int i=0; i<elementi.size(); i++)	{
+					System.out.println(elementi.elementAt(i).getNome());
+				}
+			}
 		}
 	}
 	

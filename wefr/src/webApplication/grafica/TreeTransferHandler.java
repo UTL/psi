@@ -18,10 +18,8 @@ import javax.swing.tree.TreePath;
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
+import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
-import webApplication.business.Immagine;
-import webApplication.business.Link;
-import webApplication.business.Testo;
 
 public class TreeTransferHandler extends TransferHandler implements ClipboardOwner	{
 
@@ -114,20 +112,6 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     		Componente comp = (Componente) node.getUserObject();
     		List<Componente> compCopies = new ArrayList<Componente>();
     		List<DefaultMutableTreeNode> toRemove = new ArrayList<DefaultMutableTreeNode>(); //lista dei nodi da rimuovere->NOTA: memorizzo i nodi tanto mi serve sapere se erano Componente!
-    		//Se il parent era un nodo composto o alternative elimino l'elemento dall'elenco
-    		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
-    		if (!parent.isRoot())	{
-    			Componente parentComp = (Componente) parent.getUserObject();
-    			if (parentComp.getType()==ComponenteComposto.COMPOSTOTYPE)	{
-    				ComponenteComposto parentComposto = (ComponenteComposto)parentComp;
-    				int indiceComponenteS = parentComposto.cercaComponenteS(comp.getNome());
-    				parentComposto.cancellaComponenteS(indiceComponenteS);
-    			}	else if (parentComp.getType()==ComponenteAlternative.ALTERNATIVETYPE)	{
-    				ComponenteAlternative parentComposto = (ComponenteAlternative)parentComp;
-    				int indiceAlternativa = parentComposto.cercaAlternativa(comp.getNome());
-    				parentComposto.cancellaAlternativa(indiceAlternativa);
-    			}
-    		}
     		toRemove.add(node); //aggiungo il nodo originale agli elementi da eliminare*/
     		Componente compCopy = copy(comp);
     		compCopies.add(compCopy);
@@ -164,7 +148,14 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
             JTree tree = (JTree) source;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
             // Rimuovo gli elementi indicati per la rimozione
-            for (int i = 0; i <nodesToRemove.length ; i++) {
+            for (int i = 0; i <nodesToRemove.length ; i++)	{
+            	DefaultMutableTreeNode parent = (DefaultMutableTreeNode) nodesToRemove[i].getParent();
+                //Se il parent era un nodo composto o alternative elimino l'elemento dall'elenco
+            	if (!parent.isRoot())	{
+        			ComponenteMolteplice parentComp = (ComponenteMolteplice) parent.getUserObject();
+        			int indiceComponente = parentComp.cercaOpzione(((Componente)nodesToRemove[i].getUserObject()).getNome());
+        			parentComp.cancellaOpzione(indiceComponente);
+            	}
             	model.removeNodeFromParent(nodesToRemove[i]);
             }
         }
@@ -273,7 +264,7 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
             }
             //DefaultMutableTreeNode parent = null;
             //Se il nodo da spostare è composto, l'unico parent concesso è la root e come posizione sarà il successivo al target corrente
-            if ((comps[0].getType()==ComponenteComposto.COMPOSTOTYPE) || (comps[0].getType()==ComponenteAlternative.ALTERNATIVETYPE))	{
+            if (!comps[0].isSimple())	{
             	parent = (DefaultMutableTreeNode) tree.getModel().getRoot();
             	//index = node.getParent().getIndex(node)+1;
             	index = parent.getChildCount();
@@ -291,16 +282,13 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         //Inserisco i dati
         for (int i = 0; i < comps.length; i++) {
         	DefaultMutableTreeNode nodeToInsert = new DefaultMutableTreeNode(comps[i]);
-        	if (comps[i].getType()==Testo.TEXTTYPE || comps[i].getType()==Immagine.IMAGETYPE || comps[i].getType()==Link.LINKTYPE)	{
+        	if (comps[i].isSimple())	{
         		nodeToInsert.setAllowsChildren(false);
         	}
+        	System.out.println("Valore della i: "+i);
         	if (!parent.isRoot() && (i==0))	{ //se entro ma i!=0 significa che è sto spostando un componente composto e non devo riaggiungere i suoi elementi semplici
         		Componente parentComp = (Componente) parent.getUserObject();
-        		if (parentComp.getType()==ComponenteComposto.COMPOSTOTYPE)	{
-        			((ComponenteComposto)parentComp).aggiungiComponenteS((ComponenteSemplice) comps[i]);
-        		}	else if (parentComp.getType()==ComponenteAlternative.ALTERNATIVETYPE)	{
-        			((ComponenteAlternative)parentComp).aggiungiAlternativa((ComponenteSemplice) comps[i]);
-        		}
+        		((ComponenteMolteplice)parentComp).aggiungiOpzione((ComponenteSemplice) comps[i]);
         	}
         	model.insertNodeInto(nodeToInsert, parent, index++);
         	if (i==0 && ((comps[i]).getType()==ComponenteComposto.COMPOSTOTYPE)||((comps[i]).getType()==ComponenteAlternative.ALTERNATIVETYPE))	{
@@ -309,7 +297,6 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         	}
         }
         //rinomino i dati in memoria per il paste
-        //renameSavedComps();
         System.out.println("Terminata importazione");
         return true;
     }
@@ -344,11 +331,9 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     
     class NodeSelection implements Transferable	{
     	DefaultMutableTreeNode[] nodes;
-    	//Componente[] comps;
     	
     	NodeSelection(DefaultMutableTreeNode[] n)	{
     		nodes=n;
-    		//comps=(Componente[])n;
     	}
 
 		@Override
