@@ -22,6 +22,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import webApplication.grafica.TreePanel.AddAction;
+import webApplication.grafica.TreePanel.RedoAction;
+import webApplication.grafica.TreePanel.RemoveAction;
+import webApplication.grafica.TreePanel.UndoAction;
+
 import java.awt.event.InputEvent;
 
 /**
@@ -43,6 +48,8 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
     private JButton btnClear;
     private JButton btnRemove;
     private JButton btnAdd;
+    private JButton btnUndo;
+	private JButton btnRedo;
     private JMenuBar menuBar;
     private JMenuItem mntmCut;
     private JMenuItem mntmCopy;
@@ -135,10 +142,27 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		buttonPanel.add(btnClear, BorderLayout.NORTH);
 		btnClear.setActionCommand(TreePanel.CLEAR_COMMAND);
 		
+		btnUndo = new JButton("Undo");
+		buttonPanel.add(btnUndo,BorderLayout.CENTER);		
+		
+		btnRedo = new JButton("Redo");
+		buttonPanel.add(btnRedo,BorderLayout.SOUTH);
 		
 		btnClear.addActionListener(treePanel);
-		btnRemove.addActionListener(treePanel);
+		
+		//btnRemove.addActionListener(treePanel);
+		RemoveAction removeNodeAction = treePanel.new RemoveAction();
+		btnRemove.addActionListener(removeNodeAction);
+		
 		btnAdd.addActionListener(treePanel);
+		AddAction addNodeAction = treePanel.new AddAction();
+		btnAdd.addActionListener(addNodeAction);
+		
+		UndoAction undoAction = treePanel.new UndoAction();
+		btnUndo.addActionListener(undoAction);
+		
+		RedoAction redoAction = treePanel.new RedoAction();
+		btnRedo.addActionListener(redoAction);
 		
 		treePanel.getTree().addTreeSelectionListener(this);
 		treePanel.getTree().getModel().addTreeModelListener(this);

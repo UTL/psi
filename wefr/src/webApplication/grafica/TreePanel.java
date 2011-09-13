@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.DropMode;
@@ -15,10 +16,15 @@ import javax.swing.KeyStroke;
 import javax.swing.TransferHandler;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
+import javax.swing.undo.UndoableEditSupport;
 
 import webApplication.business.*;
 
@@ -45,6 +51,8 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	private DefaultTreeModel model;
 	private JTree tree;
 	private TreeTransferHandler th;
+	private UndoableEditSupport undoSupport;
+	private UndoManager undoManager;
 	//private CustomTreeEditor te;
 	
 	public TreePanel() {
@@ -74,6 +82,9 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		//pannello contenente il tree
 		JScrollPane scrollPane = new JScrollPane(tree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
+		undoManager = new UndoManager();
+		undoSupport = new UndoableEditSupport();
+		undoSupport.addUndoableEditListener(new UndoAdapter());
 	}
 
 	/**
@@ -117,6 +128,18 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 						if (choice == 1) {
 							return;
 						}
+						DefaultMutableTreeNode parent = (DefaultMutableTreeNode) currentNode.getParent();
+						int index = parent.getIndex(currentNode);
+						int parentIndex;
+						if (parent.isRoot())	{
+							parentIndex = -1;
+						}
+						else	{
+							DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+							parentIndex = root.getIndex(parent);
+						}
+						UndoableEdit edit = new UndoableRemoveNode(tree,(Componente)currentNode.getUserObject(),parentIndex,index);
+						undoSupport.postEdit(edit);
 						model.removeNodeFromParent(currentNode);
 						tree.clearSelection();
 					}
@@ -172,7 +195,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	
 	/**
 	 * Aggiunge le azioni di copia/taglia/incolla
-	 * @param tree
+	 * @param tree	L'albero
 	 */
 	private void setMappings(JTree tree)	{
 		ActionMap map = tree.getActionMap();
@@ -242,4 +265,69 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		}
 		return true;
 	}
+	
+	public class AddAction extends AbstractAction	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4513876659563150305L;
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+		}
+		
+	}
+	
+	public class RemoveAction extends AbstractAction	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3159160087603892781L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			removeSelectedNode();
+		}
+		
+	}
+	
+	public class UndoAction extends AbstractAction	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3952201139907413522L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			undoManager.undo();
+		}
+		
+	}
+	
+	public class RedoAction extends AbstractAction	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2568562509253946673L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			undoManager.redo();
+		}
+		
+	}
+	
+	private class UndoAdapter implements UndoableEditListener {
+		
+		public void undoableEditHappened (UndoableEditEvent evt) {
+			UndoableEdit edit = evt.getEdit();
+		    undoManager.addEdit(edit);
+		}
+	}
+	
 }
