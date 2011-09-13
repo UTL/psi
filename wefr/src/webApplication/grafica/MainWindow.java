@@ -92,7 +92,7 @@ public class MainWindow extends JFrame {
 	private static JList list_composite;
 	private static JList list_alternative;
 	private static JPanel panel_composite;
-	private static PannelloAlternative pannello_alterplus;
+	private static PannelloAlt pannello_alterplus;
 	private static JButton button_deleteFromComp;
 	private static JButton button_delFromAlt;
 	private static JButton button_addExistComp;
@@ -682,7 +682,7 @@ public class MainWindow extends JFrame {
 		button_up = new JButton("^");
 		button_delFromAlt = new JButton("Delete");
 		button_AddExisAlt = new JButton("Add existing");*/
-		pannello_alterplus = new PannelloAlternative(this);
+		pannello_alterplus = new PannelloAlt(this);
 		//buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
 		content_panel.add(pannello_alterplus, PANEL_ALT);
 
@@ -771,7 +771,7 @@ public class MainWindow extends JFrame {
 		//editorPane_text.setBounds(12, 32, 408, 156);
 		panel_text.add(scrollingArea);
 
-		albero = new TreePanel(this);
+		albero = new TreePanel();
 		albero.setBounds(15, 63, 222, 378);
 		contentPane.add(albero);
 		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
@@ -936,7 +936,7 @@ public class MainWindow extends JFrame {
 	private static void popolaProperties(ComponenteAlternative selected) {
 		setGenerici(selected, "Alternative");
 		
-		pannello_alterplus.setAlternativeComponent(selected);
+		pannello_alterplus.setComponent(selected);
 		setContentLayout(PANEL_ALT);
 		/*
 		Container listContainer= list_alternative.getParent();
@@ -986,7 +986,7 @@ public class MainWindow extends JFrame {
 	private void moveAlternativeElements(int upOrDown) {
 		int shift;
 		ComponenteAlternative comp = ((ComponenteAlternative)focused); 
-		Vector<ComponenteSemplice> listaAlternative = comp.getAlternative();
+		Vector<ComponenteSemplice> listaAlternative = comp.getOpzioni();
 		int i;
 		int[] toMove = list_alternative.getSelectedIndices();
 		
@@ -1010,7 +1010,7 @@ public class MainWindow extends JFrame {
 		//FIXME bisognerebbe controllare che l'elemento col focus sia davvero un alternativa e in caso di errore sollevare un eccezione
 		
 		
-		comp.setAlternative(listaAlternative);
+		comp.setOpzioni(listaAlternative);
 		popolaProperties((ComponenteAlternative)focused);
 		list_alternative.setSelectedIndices(toMove);
 	}
@@ -1027,7 +1027,7 @@ public class MainWindow extends JFrame {
 		
 		setContentLayout(PANEL_CMP);
 			
-		list_composite = new JList(Utils.extractNomiComponenti(selected.getComponenti()));
+		list_composite = new JList(Utils.extractNomiComponenti(selected.getOpzioni()));
 		list_composite.setBounds(12, 25, 408, 132);
 		
 		panel_composite.add(list_composite);
@@ -1071,13 +1071,13 @@ public class MainWindow extends JFrame {
 		//ciclo for al contrario: rimuovere gli elementi dall'ultimo a scendere altrimenti va in crash
 		if(focused.getType()== ComponenteComposto.COMPOSTOTYPE){
 			for(i=daRimuovere.length-1; i>=0; i--){
-				((ComponenteComposto)focused).cancellaComponenteS(daRimuovere[i]);
+				((ComponenteComposto)focused).cancellaOpzione(daRimuovere[i]);
 			}
 			popolaProperties((ComponenteComposto)focused);
 		}
 		else if (focused.getType()== ComponenteAlternative.ALTERNATIVETYPE){
 			for(i=daRimuovere.length-1; i>=0; i--){
-				((ComponenteAlternative)focused).cancellaAlternativa(daRimuovere[i]);
+				((ComponenteAlternative)focused).cancellaOpzione(daRimuovere[i]);
 			}
 			popolaProperties((ComponenteAlternative)focused);
 		}
@@ -1101,8 +1101,8 @@ public class MainWindow extends JFrame {
 	 data.getTxt().setTesto("scriviamoci tanta roba");
 	 data.setAlt(new ComponenteAlternative("alternativa", "alterniamoci", 2, 0));
 	 data.setCmp(new ComponenteComposto("Compostato", "compi", 1, 1));
-	 data.getCmp().aggiungiComponenteS(data.getImg()); data.getCmp().aggiungiComponenteS(data.getLnk());
-	 data.getCmp().aggiungiComponenteS(data.getTxt());
+	 data.getCmp().aggiungiOpzione(data.getImg()); data.getCmp().aggiungiOpzione(data.getLnk());
+	 data.getCmp().aggiungiOpzione(data.getTxt());
 	 }
 	 
 
@@ -1325,7 +1325,7 @@ public class MainWindow extends JFrame {
 	private void addElementToComposite(ComponenteSemplice componente) {
 		
 		int[] selected = list_composite.getSelectedIndices();
-		((ComponenteComposto)focusedCmp).aggiungiComponenteS(componente);
+		((ComponenteComposto)focusedCmp).aggiungiOpzione(componente);
 		popolaProperties(focusedCmp);
 		list_composite.setSelectedIndices(selected);
 		Utils.buttonDeleteMgmt(list_composite,button_deleteFromComp);
@@ -1335,7 +1335,7 @@ public class MainWindow extends JFrame {
 	
 	private void addElementToAlternative(ComponenteSemplice componente) {
 		int[] selected = list_alternative.getSelectedIndices();
-		((ComponenteAlternative)focusedAlt).aggiungiAlternativa(componente);
+		((ComponenteAlternative)focusedAlt).aggiungiOpzione(componente);
 		popolaProperties(focusedAlt);
 		list_alternative.setSelectedIndices(selected);
 		Utils.buttonDeleteMgmt(list_alternative,button_delFromAlt);

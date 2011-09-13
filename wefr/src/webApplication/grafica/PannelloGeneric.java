@@ -78,7 +78,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	void moveAlternativeElements(int upOrDown) {
 		int shift;
 		
-		Vector<ComponenteSemplice> listaAlternative = alternativeComp.getAlternative();
+		Vector<ComponenteSemplice> listaAlternative = alternativeComp.getOpzioni();
 		int i;
 		int[] toMove = list_components.getSelectedIndices();
 		
@@ -102,7 +102,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		//FIXME bisognerebbe controllare che l'elemento col focus sia davvero un alternativa e in caso di errore sollevare un eccezione
 		
 		
-		alternativeComp.setAlternative(listaAlternative);
+		alternativeComp.setOpzioni(listaAlternative);
 		popolaProperties();
 		list_components.setSelectedIndices(toMove);
 	}
@@ -121,7 +121,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 			listContainer.remove(list_components);
 		
 		if(alternativeComp != null)
-			list_components = new JList(Utils.extractNomiComponenti(alternativeComp.getAlternative()));
+			list_components = new JList(Utils.extractNomiComponenti(alternativeComp.getOpzioni()));
 		else
 			list_components = new JList();
 		

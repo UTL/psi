@@ -66,7 +66,7 @@ public class PannelloComp extends PannelloGeneric {
 
 	@Override
 	protected void addCSempl(ComponenteSemplice componente) {
-		((ComponenteComposto)compostoComp).aggiungiComponenteS(componente);
+		((ComponenteComposto)compostoComp).aggiungiOpzione(componente);
 
 	}
 
@@ -79,7 +79,7 @@ public class PannelloComp extends PannelloGeneric {
 
 	@Override
 	protected void removeElement(int i) {
-		compostoComp.cancellaComponenteS(list_components.getSelectedIndices()[i]);
+		compostoComp.cancellaOpzione(list_components.getSelectedIndices()[i]);
 	}
 
 }

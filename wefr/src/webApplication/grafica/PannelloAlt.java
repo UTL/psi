@@ -86,7 +86,7 @@ public class PannelloAlt extends PannelloGeneric {
 
 	@Override
 	protected void addCSempl(ComponenteSemplice componente) {
-		((ComponenteAlternative)alternativeComp).aggiungiAlternativa(componente);
+		((ComponenteAlternative)alternativeComp).aggiungiOpzione(componente);
 
 	}
 
@@ -100,7 +100,7 @@ public class PannelloAlt extends PannelloGeneric {
 
 	@Override
 	protected void removeElement(int i) {
-		alternativeComp.cancellaAlternativa(list_components.getSelectedIndices()[i]);
+		alternativeComp.cancellaOpzione(list_components.getSelectedIndices()[i]);
 	}
 
 }

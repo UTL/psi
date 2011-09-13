@@ -53,7 +53,7 @@ public class ComponenteMolteplice extends Componente implements Serializable {
 	 * 
 	 * @param cs
 	 */
-	public void setOpzione(Vector<ComponenteSemplice> cs) {
+	public void setOpzioni(Vector<ComponenteSemplice> cs) {
 		opzioni = cs;
 	}
 
