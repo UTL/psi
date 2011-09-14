@@ -22,6 +22,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import webApplication.business.ComponenteComposto;
 import webApplication.grafica.TreePanel.AddAction;
 import webApplication.grafica.TreePanel.RedoAction;
 import webApplication.grafica.TreePanel.RemoveAction;
@@ -35,9 +36,7 @@ import java.awt.event.InputEvent;
  *
  */
 public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeModelListener, ActionListener	{
-/*
- * TODO aggiungere focuslistener per abilitare/disabilitare i bottoni!
- */
+
     /**
 	 * 
 	 */
@@ -54,8 +53,7 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
     private JMenuItem mntmCut;
     private JMenuItem mntmCopy;
     private JMenuItem mntmPaste;
-    
-    
+     
 	private TransferActionListener ccpListener;
 	
 	/**
@@ -113,7 +111,6 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		mntmPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK));
 		mntmPaste.setMnemonic(KeyEvent.VK_V);
 		mntmPaste.addActionListener(ccpListener);
-		//mntmPaste.addActionListener(this);
 		mnEdit.add(mntmPaste);
 		
 		
@@ -148,15 +145,16 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		btnRedo = new JButton("Redo");
 		buttonPanel.add(btnRedo,BorderLayout.SOUTH);
 		
-		btnClear.addActionListener(treePanel);
+		//btnClear.addActionListener(treePanel);
 		
-		//btnRemove.addActionListener(treePanel);
-		RemoveAction removeNodeAction = treePanel.new RemoveAction();
-		btnRemove.addActionListener(removeNodeAction);
+		RemoveAction removeAction = treePanel.new RemoveAction();
+		btnRemove.addActionListener(removeAction);
 		
-		btnAdd.addActionListener(treePanel);
-		AddAction addNodeAction = treePanel.new AddAction();
-		btnAdd.addActionListener(addNodeAction);
+		AddAction addAction = treePanel.new AddAction();
+		ComponenteComposto composto1 = new ComponenteComposto("Composite1","Comp",0,0);
+		int pi = ((DefaultMutableTreeNode) treePanel.getTree().getModel().getRoot()).getChildCount();
+		addAction.setValues(composto1, -1, pi);
+		btnAdd.addActionListener(addAction);
 		
 		UndoAction undoAction = treePanel.new UndoAction();
 		btnUndo.addActionListener(undoAction);
@@ -166,7 +164,6 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		
 		treePanel.getTree().addTreeSelectionListener(this);
 		treePanel.getTree().getModel().addTreeModelListener(this);
-		
 	}
 
 	/* (non-Javadoc)

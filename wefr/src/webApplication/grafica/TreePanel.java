@@ -1,7 +1,6 @@
 package webApplication.grafica;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -28,31 +27,35 @@ import javax.swing.undo.UndoableEditSupport;
 
 import webApplication.business.*;
 
-public class TreePanel extends JPanel implements ActionListener, TreeSelectionListener	{
+public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelectionListener	{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8834919285623008305L;
 	
-	private static String ROOT = "Home";
-	private static String DELETEMESSAGE = "You are going to delete ";
-	private static String CONFIRMMESSAGE ="\n Do you want to continue?";
-	private static String NOTEMPTYMESSAGE = " is not empty.\n Deleting this element will delete all the elements inside.\n Do you want to continue?";
-	private static String CLEARALL = "This will delete the current work.\n Do you wish to continue?";
-	private static String ROOTDELETE = "You cannot delete this element because it is the tree root";
-	private static String EMPTYSELECTION = "No element selected";
-	private static String ADDCHILDRENNOTALLOWED = " can't have children";
-	protected static String ADD_COMMAND = "add";
-    protected static String REMOVE_COMMAND = "remove";
-    protected static String CLEAR_COMMAND = "clear";
+	private static final String ROOT = "Home";
+	private static final String DELETEMESSAGE = "You are going to delete ";
+	private static final String CONFIRMMESSAGE ="\n Do you want to continue?";
+	private static final String NOTEMPTYMESSAGE = " is not empty.\n Deleting this element will delete all the elements inside.\n Do you want to continue?";
+	private static final String CLEARALL = "This will delete the current work.\n Do you wish to continue?";
+	private static final String ROOTDELETE = "You cannot delete this element because it is the tree root";
+	private static final String EMPTYSELECTION = "No element selected";
+	private static final String ADDCHILDRENNOTALLOWED = " can't have children";
+	private static final int LIMITUNDO=10;
+	protected static final String ADD_COMMAND = "add";
+    protected static final String REMOVE_COMMAND = "remove";
+    protected static final String CLEAR_COMMAND = "clear";
 	
 	private DefaultMutableTreeNode rootNode;
 	private DefaultTreeModel model;
 	private JTree tree;
 	private TreeTransferHandler th;
+	
+	
 	private UndoableEditSupport undoSupport;
 	private UndoManager undoManager;
+	
 	//private CustomTreeEditor te;
 	
 	public TreePanel() {
@@ -82,7 +85,9 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		//pannello contenente il tree
 		JScrollPane scrollPane = new JScrollPane(tree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
+		//model.addTreeModelListener(this);
 		undoManager = new UndoManager();
+		undoManager.setLimit(LIMITUNDO);
 		undoSupport = new UndoableEditSupport();
 		undoSupport.addUndoableEditListener(new UndoAdapter());
 	}
@@ -108,8 +113,8 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	/**
 	 * Remove the current selected node
 	 */
-	protected void removeSelectedNode() {
-        TreePath currentSelection = tree.getSelectionPath();
+	protected void removeNode(DefaultMutableTreeNode node) {
+        /*TreePath currentSelection = tree.getSelectionPath();
 		if (currentSelection != null) {
 			if (currentSelection.getParentPath() != null) {
 				DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
@@ -129,7 +134,6 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 							return;
 						}
 						DefaultMutableTreeNode parent = (DefaultMutableTreeNode) currentNode.getParent();
-						int index = parent.getIndex(currentNode);
 						int parentIndex;
 						if (parent.isRoot())	{
 							parentIndex = -1;
@@ -138,10 +142,11 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 							DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
 							parentIndex = root.getIndex(parent);
 						}
-						UndoableEdit edit = new UndoableRemoveNode(tree,(Componente)currentNode.getUserObject(),parentIndex,index);
-						undoSupport.postEdit(edit);
-						model.removeNodeFromParent(currentNode);
-						tree.clearSelection();
+						
+						UndoableEdit edit = new UndoableRemoveNode(tree,(Componente)currentNode.getUserObject(),parentIndex,parent.getIndex(currentNode));
+						undoSupport.postEdit(edit);*/
+						
+						model.removeNodeFromParent(node);/*
 					}
 				}
 			}
@@ -153,7 +158,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		else	{
 			//Segnala che non c'è nulla selezionato quindi non può rimuovere nulla->da rivedere in disabilita Remove se non c'è nulla selezionato
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),EMPTYSELECTION,"Error!",JOptionPane.ERROR_MESSAGE);
-		}
+		}*/
 	}
 
 
@@ -162,18 +167,14 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	 * @param parent	The parent of the node
 	 * @param node		The node
 	 */
-	protected void addNode(DefaultMutableTreeNode parent, Componente node) {
-		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
+	protected void addNode(DefaultMutableTreeNode parent, DefaultMutableTreeNode node) {
+		//DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
 		if (parent == null) {
 			parent = rootNode;
 		}	else	{
 			Componente compElem = (Componente)parent.getUserObject();
-			String type = compElem.getType();
-			if (type==ComponenteComposto.COMPOSTOTYPE)	{
-				((ComponenteComposto)compElem).aggiungiOpzione((ComponenteSemplice) node);
-			}
-			else if (type==ComponenteAlternative.ALTERNATIVETYPE)	{
-				((ComponenteAlternative)compElem).aggiungiOpzione((ComponenteSemplice)node);
+			if (!compElem.isSimple())	{
+				((ComponenteMolteplice)compElem).aggiungiOpzione((ComponenteSemplice)node.getUserObject());
 			}
 		}
 		//Verifico che il nodo genitore possa avere nodi figli anche se con il drag&drop è già esclusa come destinazione possibile (vedi canImport)
@@ -181,16 +182,14 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),parent.toString()+ADDCHILDRENNOTALLOWED,"Error!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		model.insertNodeInto(childNode, parent, parent.getChildCount());
-		//NOTA: Java SE7 può fare switch su String ma Java SE6 no!
-		if (node.getType()==Testo.TEXTTYPE || node.getType()==Immagine.IMAGETYPE || node.getType()==Link.LINKTYPE)	{
-			childNode.setAllowsChildren(false);
+		model.insertNodeInto(node, parent, parent.getChildCount());
+		if (((Componente)node.getUserObject()).isSimple())	{
+			node.setAllowsChildren(false);
 		}
-		model.reload(); //ricarico il modello dopo le modifiche
-		//Espande l'albero fino al nuovo componente e centra la vista sul nuovo componente
-		tree.scrollPathToVisible(new TreePath(childNode.getPath()));
-		//Seleziona l'elemtno appena creato
-		tree.setSelectionPath(new TreePath(childNode.getPath()));
+		
+		//UndoableEdit edit = new UndoableAddNode(tree,(Componente) node.getUserObject(),parentIndex,parent.getIndex(node));
+		//undoSupport.postEdit(edit);
+		
 	}
 	
 	/**
@@ -210,14 +209,14 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	}
 
 	/**
-	 * TODO con i giusti command e listener!
+	 * TODO questi non mi serviranno più!!!
 	 */
-	public void actionPerformed(ActionEvent e) {
+	/*public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         if (ADD_COMMAND.equals(command)) {
         	ComponenteComposto composto1 = new ComponenteComposto("Composite1","Comp",0,0);
-            addNode(null,composto1);
-            Testo testo1 = new Testo("Testo1","Txt",0,0,"Sono un testo");
+            addNode(null,new DefaultMutableTreeNode(composto1));
+            /*Testo testo1 = new Testo("Testo1","Txt",0,0,"Sono un testo");
             addNode(null,testo1);
             Immagine img1 = new Immagine("Immagine1","Img",0,0,"Boh");
             addNode(null,img1);
@@ -230,7 +229,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
         } else if (CLEAR_COMMAND.equals(command)) {
             clear();
         }
-	}
+	}*/
 
 
 	/**
@@ -272,10 +271,31 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		 * 
 		 */
 		private static final long serialVersionUID = -4513876659563150305L;
-		
+		private Componente comp;
+		int parentIndex;
+
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+		public void actionPerformed(ActionEvent evt) {
+			if (comp!=null)	{
+				DefaultMutableTreeNode parent = null;
+				DefaultMutableTreeNode compNode = new DefaultMutableTreeNode(comp);
+				if (parentIndex==-1)	{
+					addNode(null,compNode);
+				}	else	{
+					parent = (DefaultMutableTreeNode) rootNode.getChildAt(parentIndex);
+					addNode(parent,compNode);
+				}
+				if (parent==null)	{
+					parent = rootNode;
+				}
+				UndoableEdit edit = new UndoableAddNode(tree,(Componente) compNode.getUserObject(),parentIndex,parent.getIndex(compNode));
+				undoSupport.postEdit(edit);
+			}
+		}
+		
+		public void setValues(Componente c, int pi, int i)	{
+			comp=c;
+			parentIndex=pi;
 		}
 		
 	}
@@ -289,10 +309,53 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			removeSelectedNode();
+	        TreePath currentSelection = tree.getSelectionPath();
+			if (currentSelection != null) {
+				if (currentSelection.getParentPath() != null) {
+					DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
+					String name = currentNode.toString();//((Componente) currentNode.getUserObject()).toString();
+					String message = DELETEMESSAGE + name + CONFIRMMESSAGE;
+					// Chiede conferma per la cancellazione dell'elemento selezionato
+					int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message, "Warning!",JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					if (choice == 0) {
+						if (currentSelection != null) {
+							if (currentNode.getChildCount() != 0) {
+								message = name + NOTEMPTYMESSAGE;
+								// Chiede conferma per eliminare un componente contenente altri elementi
+								choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message,"Warning!", JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+							}
+							if (choice == 1) {
+								return;
+							}
+							DefaultMutableTreeNode parent = (DefaultMutableTreeNode) currentNode.getParent();
+							int parentIndex;
+							if (parent.isRoot())	{
+								parentIndex = -1;
+							}
+							else	{
+								DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+								parentIndex = root.getIndex(parent);
+							}
+							//Creo l'oggetto per l'undo action
+							UndoableEdit edit = new UndoableRemoveNode(tree,(Componente)currentNode.getUserObject(),parentIndex,parent.getIndex(currentNode));
+							undoSupport.postEdit(edit);
+							//rimuovo effettivamente il nodo
+							removeNode(currentNode);
+						}
+					}
+				}
+	        	else	{
+	        		//è stata selezionata la radice perciò avviso l'utente che non può essere cancellata->risolto: la root non può essere selezionata
+	        		JOptionPane.showMessageDialog(getTopLevelAncestor(),ROOTDELETE,"Error!",JOptionPane.ERROR_MESSAGE);
+	        	}
+			}
+			else	{
+				//Segnala che non c'è nulla selezionato quindi non può rimuovere nulla->da rivedere in disabilita Remove se non c'è nulla selezionato
+				JOptionPane.showMessageDialog(getTopLevelAncestor(),EMPTYSELECTION,"Error!",JOptionPane.ERROR_MESSAGE);
+			}
 		}
-		
 	}
+	
 	
 	public class UndoAction extends AbstractAction	{
 
@@ -329,5 +392,5 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		    undoManager.addEdit(edit);
 		}
 	}
-	
+		
 }
