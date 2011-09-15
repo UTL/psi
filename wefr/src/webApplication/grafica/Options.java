@@ -63,7 +63,7 @@ public class Options extends JFrame {
 	public Options() {
 		setResizable(false);
 		setTitle("Options");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(closeOperation());
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -146,9 +146,7 @@ public class Options extends JFrame {
 		btnDone.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				fireEvent();
-				setVisible(false);
-				dispose();
+				closeOperation();
 			}
 		});
 		
@@ -194,5 +192,12 @@ public class Options extends JFrame {
 		
 
 		}
+	
+	private int closeOperation()	{
+		fireEvent();
+		setVisible(false);
+		dispose();
+		return 0;
+	}
 	
 }

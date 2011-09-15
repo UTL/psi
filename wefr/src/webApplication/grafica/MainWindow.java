@@ -16,6 +16,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -77,7 +78,7 @@ import java.awt.FlowLayout;
 import javax.swing.BoxLayout;
 import java.util.Collections;
 
-public class MainWindow extends JFrame implements TreeSelectionListener {
+public class MainWindow extends JFrame implements TreeSelectionListener, MyEventClassListener, ActionListener {
 
 	/**
 	 * 
@@ -264,46 +265,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener {
 
 		JMenuItem mntmOptions = new JMenuItem("Image directory");
 		
-		mntmOptions.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-
-				try {
-					setEnabled(false);
-					//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
-					if (frameOptions== null)
-						frameOptions = new Options();
-					frameOptions.addWindowListener(new WindowAdapter(){
-						@Override
-						public void windowClosing(WindowEvent e) {
-							frameOptions.dispose();
-							setEnabled(true);
-						}
-						
-						
-					});
-
-					frameOptions.setVisible(true);
-					frameOptions.addEventListener(new MyEventClassListener(){
-
-						@Override
-						public void handleMyEventClassEvent(
-								EventObject e) {
-							setEnabled(true);
-
-						}
-
-						@Override
-						public void handleMyEventClassEvent(MyEventClass e) {
-							// TODO Auto-generated method stub
-							
-						}});
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				//options.menu();
-			}
-		});
+		mntmOptions.addActionListener(this);
 		mnOptions.add(mntmOptions);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -376,6 +338,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener {
 		panel.add(button_2);
 
 		JButton button_5 = new JButton("");
+		button_5.setEnabled(false);
 		button_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				setEnabled(false);
@@ -384,7 +347,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener {
 					data.setMyWizard(new Wizard());
 				data.getMyWizard().setVisible(true);
 				data.getMyWizard().addEventListener(new MyEventClassListener(){
-
+/*
 					@Override
 					public void handleMyEventClassEvent(
 							EventObject e) {
@@ -392,11 +355,13 @@ public class MainWindow extends JFrame implements TreeSelectionListener {
 								data.setMyWizard(null);
 						// TODO Auto-generated method stub
 						
-					}
+					}*/
 
 					@Override
 					public void handleMyEventClassEvent(MyEventClass e) {
 						// TODO Auto-generated method stub
+						setEnabled(true);
+						data.setMyWizard(null);
 						
 					}});
 			}
@@ -663,11 +628,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener {
 								}
 					}
 
-					@Override
+					/*@Override
 					public void handleMyEventClassEvent(EventObject e) {
 						// TODO Auto-generated method stub
-						
-					}
+						setEnabled(true);
+						if(e != null){
+							addElementToComposite((ComponenteSemplice) e.getComponente());
+						}
+					}*/
 
 					
 
@@ -856,9 +824,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener {
 								if(e != null){
 									addElementToAlternative((ComponenteSemplice) e.getComponente());
 									}}
-
+/*
 					@Override
-					public void handleMyEventClassEvent(EventObject e) {}
+					public void handleMyEventClassEvent(EventObject e) {}*/
 					});
 
 				nuovo.setVisible(true);
@@ -895,12 +863,13 @@ public class MainWindow extends JFrame implements TreeSelectionListener {
 							
 						}
 			}
-
+/*
 			@Override
 			public void handleMyEventClassEvent(EventObject e) {
 				// TODO Auto-generated method stub
 				
-			}});
+			}*/
+			});
 
 		nuovo.setVisible(true);
 	}
@@ -1365,15 +1334,25 @@ public class MainWindow extends JFrame implements TreeSelectionListener {
 				fileChooser = new JFileChooser(frameOptions.getDefDirLoadSave()); 
 			else if (i == TEXT && frameOptions.getDefDirText()!= null && frameOptions.getDefDirText().length()>0)
 				fileChooser = new JFileChooser(frameOptions.getDefDirText()); 
-			else if (i == IMAGE && frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0)
-				fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
+			else if (i == IMAGE){
+				if(frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0)
+					fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
+				else
+					fileChooser = new JFileChooser();
+				
+				fileChooser.addChoosableFileFilter(new CustomFileFilter());
+				fileChooser.setAcceptAllFileFilterUsed(false);
+				System.out.println("asfds");
+			}
 			else {
 				return null;
 			}
 		}
 		else
 			fileChooser = new JFileChooser();
+		
 		chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); 
+		
 		return fileChooser;
 
 	}
@@ -1421,9 +1400,42 @@ public class MainWindow extends JFrame implements TreeSelectionListener {
 		setFocus((Componente)node.getUserObject());
 		
 	}
-	
-	
-	
 
 
+	@Override
+	public void handleMyEventClassEvent(MyEventClass e) {
+		setEnabled(true);
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		try {
+			setEnabled(false);
+			//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
+			if (frameOptions== null)
+				frameOptions = new Options();
+			frameOptions.addEventListener(this);
+
+			frameOptions.setVisible(true);
+			//{
+/*
+				/*@Override
+				public void handleMyEventClassEvent(
+						EventObject e) {
+					setEnabled(true);
+
+				}
+
+				@Override
+				public void handleMyEventClassEvent(MyEventClass e) {
+					// TODO Auto-generated method stub
+					setEnabled(true);
+					
+				}});*/
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		
+	}
 }

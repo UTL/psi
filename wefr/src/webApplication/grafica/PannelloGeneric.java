@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.Collections;
 import java.util.EventObject;
 import java.util.Vector;
@@ -24,7 +25,7 @@ import webApplication.business.ComponenteComposto;
 
 import webApplication.business.ComponenteSemplice;
 
-public abstract class PannelloGeneric extends JPanel implements ListSelectionListener, ActionListener{
+public abstract class PannelloGeneric extends JPanel implements ListSelectionListener, ActionListener, MyEventClassListener, WindowListener{
 	private static final long serialVersionUID = 4733717394320867492L;
 
 	protected AListenerRemoveFromAlt actionAlternative;
@@ -173,25 +174,8 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 			parentWindow.setEnabled(false);
 			AddNew nuovo = new AddNew();
 
-			nuovo.addWindowListener(new WindowAdapter(){
-				@Override
-				public void windowClosing(WindowEvent e) {
-					parentWindow.setEnabled(true);
-				}});
-
-			nuovo.addEventListener(new MyEventClassListener(){
-
-				@Override
-				public void handleMyEventClassEvent(
-						MyEventClass e) {
-					parentWindow.setEnabled(true);
-					if(e != null){
-						addElementToAlternative((ComponenteSemplice) e.getComponente());
-					}}
-
-				@Override
-				public void handleMyEventClassEvent(EventObject e) {}
-			});
+			nuovo.addWindowListener(this);
+			nuovo.addEventListener(this);
 
 			nuovo.setVisible(true);
 		}
@@ -213,5 +197,54 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 
 	abstract protected void removeElement(int i) ;
 
+
+	@Override
+	public void handleMyEventClassEvent(
+			MyEventClass e) {
+		parentWindow.setEnabled(true);
+		if(e != null){
+			addElementToAlternative((ComponenteSemplice) e.getComponente());
+		}}
+	
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		parentWindow.setEnabled(true);	
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
