@@ -30,13 +30,13 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	protected AListenerRemoveFromAlt actionAlternative;
 	protected JButton bott_up;
 	protected JButton bott_down;
-	protected ButtonRemover bott_del;
+	protected JButton bott_del;
 	protected JButton bott_addExist;
 	protected JList list_components;
 	protected ComponenteAlternative alternativeComp;
 	protected ComponenteComposto compostoComp;
 	private final static String DELETE = "Delete";
-	private JFrame mainW;
+	private JFrame parentWindow;
 	
 	/*
 	 * @wbp.parser.constructor
@@ -48,10 +48,12 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		bott_down.setBounds(12, 100, 46, 53);
 		bott_del= new ButtonRemover(DELETE);
 		bott_del.setBounds(65, 165, 90, 27);
+		bott_del.setActionCommand(DELETE);
+		bott_del.addActionListener(this);
 		bott_addExist= new JButton();
 		bott_addExist.setBounds(197, 165, 121, 27);
 		list_components= new JList();
-		mainW = m;
+		parentWindow = m;
 
 		buildPanel();
 	}
@@ -120,10 +122,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		if(list_components != null && listContainer!=null)
 			listContainer.remove(list_components);
 		
-		if(alternativeComp != null)
-			list_components = new JList(Utils.extractNomiComponenti(alternativeComp.getOpzioni()));
-		else
-			list_components = new JList();
+		checkEmptyComponent();
 		
 		listContainer.add(list_components);
 		list_components.addListSelectionListener(this);
@@ -135,6 +134,8 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		listContainer.repaint();
 
 	}
+
+	abstract protected void checkEmptyComponent();
 
 	abstract protected void upDownMgmt();
 	
@@ -168,30 +169,35 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	//TODO probabilmente si disattivera' solo il pannello e non tutta la finestra
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		mainW.setEnabled(false);
-		AddNew nuovo = new AddNew();
-		
-		nuovo.addWindowListener(new WindowAdapter(){
-			@Override
-			public void windowClosing(WindowEvent e) {
-				mainW.setEnabled(true);
-		}});
-		
-		nuovo.addEventListener(new MyEventClassListener(){
+		if(e.getActionCommand()!= DELETE){
+			parentWindow.setEnabled(false);
+			AddNew nuovo = new AddNew();
 
-			@Override
-			public void handleMyEventClassEvent(
-					MyEventClass e) {
-					mainW.setEnabled(true);
-						if(e != null){
-							addElementToAlternative((ComponenteSemplice) e.getComponente());
-							}}
+			nuovo.addWindowListener(new WindowAdapter(){
+				@Override
+				public void windowClosing(WindowEvent e) {
+					parentWindow.setEnabled(true);
+				}});
 
-			@Override
-			public void handleMyEventClassEvent(EventObject e) {}
+			nuovo.addEventListener(new MyEventClassListener(){
+
+				@Override
+				public void handleMyEventClassEvent(
+						MyEventClass e) {
+					parentWindow.setEnabled(true);
+					if(e != null){
+						addElementToAlternative((ComponenteSemplice) e.getComponente());
+					}}
+
+				@Override
+				public void handleMyEventClassEvent(EventObject e) {}
 			});
 
-		nuovo.setVisible(true);
+			nuovo.setVisible(true);
+		}
+		else{
+			 removeElements();
+		}
 	}
 	
 	public void removeElements(){

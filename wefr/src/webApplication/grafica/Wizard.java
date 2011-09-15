@@ -62,8 +62,12 @@ import webApplication.business.Testo;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 
-public class Wizard extends JFrame {
+public class Wizard extends JFrame  {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8706297359676605479L;
 	private JPanel contentPane;
 	private TextField name;
 	private JComboBox choice_type;
@@ -1197,12 +1201,13 @@ public class Wizard extends JFrame {
 				return alt;
 			}
 			else {
-				ComponenteComposto newComp = new ComponenteComposto(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
+				//ComponenteComposto newComp = new ComponenteComposto(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
 				//TODO settare la lista delle alternative
 				//newComp.setComponenti(cs);
-				return newComp;
+				return cmp;
 				}
 		}
+		
 }
 
 

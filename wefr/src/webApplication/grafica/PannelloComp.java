@@ -1,5 +1,7 @@
 package webApplication.grafica;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -81,5 +83,18 @@ public class PannelloComp extends PannelloGeneric {
 	protected void removeElement(int i) {
 		compostoComp.cancellaOpzione(list_components.getSelectedIndices()[i]);
 	}
+
+	@Override
+	protected void checkEmptyComponent() {
+		
+			if(compostoComp!= null)
+				list_components = new JList(Utils.extractNomiComponenti(compostoComp.getOpzioni()));
+			else
+				list_components = new JList();
+		
+		
+	}
+
+
 
 }

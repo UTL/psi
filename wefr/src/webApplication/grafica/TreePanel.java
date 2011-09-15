@@ -60,7 +60,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		model = new DefaultTreeModel(rootNode);
 		tree =  new JTree(model);
 		tree.setShowsRootHandles(true); // rende visibile il nodo root
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); //solo un nodo alla volta è selezionabile
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); //solo un nodo alla volta ï¿½ selezionabile
 		tree.setCellRenderer(new CustomCellRenderer());
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
@@ -123,12 +123,12 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 				}
 			}
         	else	{
-        		//è stata selezionata la radice perciò avviso l'utente che non può essere cancellata->risolto: la root non può essere selezionata
+        		//ï¿½ stata selezionata la radice perciï¿½ avviso l'utente che non puï¿½ essere cancellata->risolto: la root non puï¿½ essere selezionata
         		JOptionPane.showMessageDialog(this.getTopLevelAncestor(),ROOTDELETE,"Error!",JOptionPane.ERROR_MESSAGE);
         	}
 		}
 		else	{
-			//Segnala che non c'è nulla selezionato quindi non può rimuovere nulla->da rivedere in disabilita Remove se non c'è nulla selezionato
+			//Segnala che non c'ï¿½ nulla selezionato quindi non puï¿½ rimuovere nulla->da rivedere in disabilita Remove se non c'ï¿½ nulla selezionato
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),EMPTYSELECTION,"Error!",JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -143,7 +143,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
 		if (parent == null) {
 			parent = rootNode;
-		}	else	{
+		}/*	else	{
 			Componente compElem = (Componente)parent.getUserObject();
 			String type = compElem.getType();
 			if (type==ComponenteComposto.COMPOSTOTYPE)	{
@@ -152,16 +152,23 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			else if (type==ComponenteAlternative.ALTERNATIVETYPE)	{
 				((ComponenteAlternative)compElem).aggiungiOpzione((ComponenteSemplice)node);
 			}
-		}
-		//Verifico che il nodo genitore possa avere nodi figli anche se con il drag&drop è già esclusa come destinazione possibile (vedi canImport)
+		}*/
+		//Verifico che il nodo genitore possa avere nodi figli anche se con il drag&drop ï¿½ giï¿½ esclusa come destinazione possibile (vedi canImport)
 		if (parent.getAllowsChildren()==false)	{
 			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),parent.toString()+ADDCHILDRENNOTALLOWED,"Error!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		model.insertNodeInto(childNode, parent, parent.getChildCount());
-		//NOTA: Java SE7 può fare switch su String ma Java SE6 no!
+		//NOTA: Java SE7 puï¿½ fare switch su String ma Java SE6 no!
 		if (node.getType()==Testo.TEXTTYPE || node.getType()==Immagine.IMAGETYPE || node.getType()==Link.LINKTYPE)	{
 			childNode.setAllowsChildren(false);
+		}
+		if (!node.isSimple()){
+			parent=childNode;
+			ComponenteMolteplice parentComp = (ComponenteMolteplice)parent.getUserObject();
+			for (int i=0; i<parentComp.getOpzioni().size(); i++)	{
+				addNode(parent,parentComp.getOpzione(i));
+			}
 		}
 		model.reload(); //ricarico il modello dopo le modifiche
 		//Espande l'albero fino al nuovo componente e centra la vista sul nuovo componente
@@ -217,7 +224,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
 		if (node == null || node.isRoot())	{
 			tree.clearSelection();
-			//non è stato selezionato nulla o è stata selezionata la radice;
+			//non ï¿½ stato selezionato nulla o ï¿½ stata selezionata la radice;
 			return;
 		}	else	{
 			Componente comp = (Componente) node.getUserObject();

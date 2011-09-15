@@ -58,16 +58,16 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
      */
     @Override
     public boolean canImport(TransferSupport support)	{
-    	//controlli per verificare se il drop è valid
-    	if (support.isDrop())	{//se è una drop verifico direttamente
+    	//controlli per verificare se il drop ï¿½ valid
+    	if (support.isDrop())	{//se ï¿½ una drop verifico direttamente
     		support.setShowDropLocation(true);//indica visivamente dove sta avvenendo l'operazione di drop
-    		//1. se il data flavor non è supportato allora ritorna false
+    		//1. se il data flavor non ï¿½ supportato allora ritorna false
             if ((!support.isDataFlavorSupported(nodesFlavor)) && (!support.isDataFlavorSupported(componenteFlavor)))	{
                 return false;
             }
-            //2a. se la DropLocation è la stessa della DragLocation ritorna false
+            //2a. se la DropLocation ï¿½ la stessa della DragLocation ritorna false
             //2b. se la DropLocation e la DragLocation sono entrambi elementi composti
-            //2c. se la DragLocation è la root
+            //2c. se la DragLocation ï¿½ la root
             JTree.DropLocation dl = (JTree.DropLocation) support.getDropLocation();
             JTree tree = (JTree) support.getComponent();
             TreePath path = dl.getPath();
@@ -84,17 +84,17 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
                 	return false;
                 }
             }
-            //3. se la DropLocation è un componente che non permette figli
+            //3. se la DropLocation ï¿½ un componente che non permette figli
             if (!node.getAllowsChildren())	{
             	return false;
             }
     	}
-    	else	{//se è un copia/taglia dalla clipboard devo estrarre i dati prima
+    	else	{//se ï¿½ un copia/taglia dalla clipboard devo estrarre i dati prima
     		Transferable trans = clipboard.getContents(null);
             if ((trans==null) || (!trans.isDataFlavorSupported(nodesFlavor)) && (!trans.isDataFlavorSupported(componenteFlavor)))	{
                 return false;
             }
-            //verifiche da fare se è un incolla?
+            //verifiche da fare se ï¿½ un incolla?
     	}
         //4. altri???
     	return true;
@@ -115,7 +115,7 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     		toRemove.add(node); //aggiungo il nodo originale agli elementi da eliminare*/
     		Componente compCopy = copy(comp);
     		compCopies.add(compCopy);
-    		// se il nodo corrente può avere dei figli devo copiare anche quelli
+    		// se il nodo corrente puï¿½ avere dei figli devo copiare anche quelli
     		if (node.getAllowsChildren())	{
     			for (int i=0; i<node.getChildCount(); i++)	{
     				DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
@@ -263,16 +263,16 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
             	node = (DefaultMutableTreeNode) (tree.getModel()).getRoot();
             }
             //DefaultMutableTreeNode parent = null;
-            //Se il nodo da spostare è composto, l'unico parent concesso è la root e come posizione sarà il successivo al target corrente
+            //Se il nodo da spostare ï¿½ composto, l'unico parent concesso ï¿½ la root e come posizione sarï¿½ il successivo al target corrente
             if (!comps[0].isSimple())	{
             	parent = (DefaultMutableTreeNode) tree.getModel().getRoot();
             	//index = node.getParent().getIndex(node)+1;
             	index = parent.getChildCount();
-            }	else	{ //se non è composto allora è un nodo semplice
+            }	else	{ //se non ï¿½ composto allora ï¿½ un nodo semplice
             	if (!node.getAllowsChildren())	{ //se il target non permette figli, il parent del target corrente va bene
             		parent = (DefaultMutableTreeNode) node.getParent();
             		index=parent.getChildCount();
-            	}	else	{ //se il target corrente consente figli allora il target va bene e sarà messo in coda
+            	}	else	{ //se il target corrente consente figli allora il target va bene e sarï¿½ messo in coda
             		parent=node;
             		index=node.getChildCount();
             	}
@@ -286,7 +286,7 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         		nodeToInsert.setAllowsChildren(false);
         	}
         	System.out.println("Valore della i: "+i);
-        	if (!parent.isRoot() && (i==0))	{ //se entro ma i!=0 significa che è sto spostando un componente composto e non devo riaggiungere i suoi elementi semplici
+        	if (!parent.isRoot() && (i==0))	{ //se entro ma i!=0 significa che ï¿½ sto spostando un componente composto e non devo riaggiungere i suoi elementi semplici
         		Componente parentComp = (Componente) parent.getUserObject();
         		((ComponenteMolteplice)parentComp).aggiungiOpzione((ComponenteSemplice) comps[i]);
         	}

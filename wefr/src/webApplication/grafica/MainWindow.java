@@ -51,8 +51,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
@@ -74,7 +77,7 @@ import java.awt.FlowLayout;
 import javax.swing.BoxLayout;
 import java.util.Collections;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements TreeSelectionListener {
 
 	/**
 	 * 
@@ -414,13 +417,13 @@ public class MainWindow extends JFrame {
 				addNewWizard();
 			}
 		});
-		addButton.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
+		//addButton.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
 		addButton.setToolTipText("Open");
 		addButton.setBounds(277, 4, 30, 30);
 		panel.add(addButton);
 
 		JButton button_8 = new JButton("");
-		button_8.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/gtk/resources/gtk-cancel-4.png")));
+		//button_8.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/gtk/resources/gtk-cancel-4.png")));
 		button_8.setToolTipText("Open");
 		button_8.setBounds(310, 4, 30, 30);
 		panel.add(button_8);
@@ -762,12 +765,19 @@ public class MainWindow extends JFrame {
 		editorPane_text = new JTextArea();
 		JScrollPane scrollingArea = new JScrollPane(editorPane_text);
 		scrollingArea.setBounds(12, 32, 408, 156);
-		editorPane_text.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
+		editorPane_text.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
 				updateTextContent();
 			}
+			public void removeUpdate(DocumentEvent e) {
+				updateTextContent();
+			}
+			public void insertUpdate(DocumentEvent e) {
+				updateTextContent();
+
+			}
 		});
+		
 		//editorPane_text.setBounds(12, 32, 408, 156);
 		panel_text.add(scrollingArea);
 
@@ -775,6 +785,7 @@ public class MainWindow extends JFrame {
 		albero.setBounds(15, 63, 222, 378);
 		contentPane.add(albero);
 		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
+		albero.getTree().addTreeSelectionListener(this);
 		
 		
 
@@ -861,11 +872,13 @@ public class MainWindow extends JFrame {
 		//TODO andrebbe creata una classe e tolto il codice da qui
 
 		setEnabled(false);
+		setFocusable(false);
 		Wizard nuovo = new Wizard();
 		nuovo.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent e) {
 				setEnabled(true);
+				setFocusable(true);
 			}
 		});
 		nuovo.addEventListener(new MyEventClassListener(){
@@ -874,8 +887,11 @@ public class MainWindow extends JFrame {
 			public void handleMyEventClassEvent(
 					MyEventClass e) {
 						setEnabled(true);
+						setFocusable(true);
+
 						if(e != null){
-							addElementToTree(e.getComponente());
+							albero.addNode(null,e.getComponente());
+							
 							
 						}
 			}
@@ -889,11 +905,7 @@ public class MainWindow extends JFrame {
 		nuovo.setVisible(true);
 	}
 
-	protected void addElementToTree(Componente componente) {
-		if(focused == null || focused.getType()==Testo.TEXTTYPE || focused.getType() == Link.LINKTYPE || focused.getType()== Immagine.IMAGETYPE)
-			albero.addNode(null, componente);
-		//TODO gestire l'inserimento in un componente composto
-	}
+	
 
 	private static void setGenerici(Componente selected, String type) {
 		textField_Name.setText(selected.getNome());
@@ -1394,6 +1406,23 @@ public class MainWindow extends JFrame {
 		
 		
 	}
+
+	@Override
+	public void valueChanged(TreeSelectionEvent e) {
+		
+		JTree tree = albero.getTree();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+		if (node == null || node.isRoot())	{
+			tree.clearSelection();
+			//non � stato selezionato nulla o � stata selezionata la radice;
+			return;
+			}
+		
+		setFocus((Componente)node.getUserObject());
+		
+	}
+	
+	
 	
 
 
