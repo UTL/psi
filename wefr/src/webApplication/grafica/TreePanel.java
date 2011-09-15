@@ -271,33 +271,42 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 		 * 
 		 */
 		private static final long serialVersionUID = -4513876659563150305L;
-		private Componente comp;
-		int parentIndex;
+		private static final String COMPONENTE = "Componente";
+		private static final String PARENTINDEX = "ParentIndex";
 
+		/*AddAction(Componente c)	{
+			comp=c;
+			parentIndex=-1;
+		}
+		
+		AddAction(Componente c, int i)	{
+			comp=c;
+			parentIndex=i;
+		}*/
+		
 		@Override
-		public void actionPerformed(ActionEvent evt) {
-			if (comp!=null)	{
+		public void actionPerformed(ActionEvent evt) {			
+			if (getValue(COMPONENTE)!=null)	{
 				DefaultMutableTreeNode parent = null;
-				DefaultMutableTreeNode compNode = new DefaultMutableTreeNode(comp);
-				if (parentIndex==-1)	{
+				DefaultMutableTreeNode compNode = new DefaultMutableTreeNode((Componente)getValue(COMPONENTE));
+				if ((Integer)this.getValue(PARENTINDEX)==-1)	{
+					System.out.println("Sto aggiungendo");
 					addNode(null,compNode);
 				}	else	{
-					parent = (DefaultMutableTreeNode) rootNode.getChildAt(parentIndex);
+					parent = (DefaultMutableTreeNode) rootNode.getChildAt((Integer) getValue(PARENTINDEX));
 					addNode(parent,compNode);
 				}
 				if (parent==null)	{
 					parent = rootNode;
 				}
-				UndoableEdit edit = new UndoableAddNode(tree,(Componente) compNode.getUserObject(),parentIndex,parent.getIndex(compNode));
+				//creo l'undoable dell'add
+				UndoableEdit edit = new UndoableAddNode(tree,(Componente) compNode.getUserObject(),(Integer)getValue(PARENTINDEX),parent.getIndex(compNode));
 				undoSupport.postEdit(edit);
+				
+				//setto il focus sul nuovo oggetto
+				tree.setSelectionPath(new TreePath(compNode.getPath()));
 			}
 		}
-		
-		public void setValues(Componente c, int pi, int i)	{
-			comp=c;
-			parentIndex=pi;
-		}
-		
 	}
 	
 	public class RemoveAction extends AbstractAction	{

@@ -1,7 +1,6 @@
 package webApplication.grafica;
 
 import java.util.List;
-import java.awt.Color;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;

@@ -22,8 +22,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import webApplication.business.ComponenteComposto;
-import webApplication.grafica.TreePanel.AddAction;
 import webApplication.grafica.TreePanel.RedoAction;
 import webApplication.grafica.TreePanel.RemoveAction;
 import webApplication.grafica.TreePanel.UndoAction;
@@ -41,7 +39,7 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 	 * 
 	 */
 	private static final long serialVersionUID = 6651724218295819734L;
-	private TreePanel treePanel;
+	protected TreePanel treePanel;
     private JPanel workspace;
     private JPanel buttonPanel;
     private JButton btnClear;
@@ -150,11 +148,11 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		RemoveAction removeAction = treePanel.new RemoveAction();
 		btnRemove.addActionListener(removeAction);
 		
-		AddAction addAction = treePanel.new AddAction();
-		ComponenteComposto composto1 = new ComponenteComposto("Composite1","Comp",0,0);
-		int pi = ((DefaultMutableTreeNode) treePanel.getTree().getModel().getRoot()).getChildCount();
-		addAction.setValues(composto1, -1, pi);
-		btnAdd.addActionListener(addAction);
+		//AddAction addAction = treePanel.new AddAction();
+		//ComponenteComposto composto1 = new ComponenteComposto("Composite1","Comp",0,0);
+		//int pi = ((DefaultMutableTreeNode) treePanel.getTree().getModel().getRoot()).getChildCount();
+		//addAction.setValues(composto1, -1, pi);
+		btnAdd.addActionListener(this);
 		
 		UndoAction undoAction = treePanel.new UndoAction();
 		btnUndo.addActionListener(undoAction);
@@ -227,6 +225,9 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 	public void actionPerformed(ActionEvent e) {
 		if ((e.getActionCommand().equalsIgnoreCase((String)TransferHandler.getCopyAction().getValue(Action.NAME))) || (e.getActionCommand().equalsIgnoreCase((String)TransferHandler.getCutAction().getValue(Action.NAME))))	{
 			mntmPaste.setEnabled(true);
+		}
+		else if (e.getActionCommand().equalsIgnoreCase(TreePanel.ADD_COMMAND))	{
+			new AddWindow(this);
 		}
 	}
 
