@@ -175,98 +175,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		setResizable(false);
 		data.setThisWindow(this);
 
-		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
-
-		JMenu mnFile = new JMenu("File");
-		menuBar.add(mnFile);
-
-		JMenuItem mntmNew = new JMenuItem("New");
-		mntmNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
-		mntmNew.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				String newPath = fileChooser(LOADSAVE);
-				
-				
-				if (newPath.length()>0)
-					//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
-					data.setCurrentProject(newPath);
-					//TODO creare nuovo JTree
-				}
-		});
-		mntmNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
-				InputEvent.CTRL_MASK));
-		mnFile.add(mntmNew);
-
-		JMenuItem mntmOpen = new JMenuItem("Open");
-		mntmOpen.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				String newPath = fileChooser(LOADSAVE);
-
-				
-				if (newPath.length()>0)
-					//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
-					//TODO controllare che il nuovo file esista, e sia corretto
-					data.setCurrentProject(newPath);
-				}
-		});
-		mnFile.add(mntmOpen);
-
-		JMenuItem mntmSave = new JMenuItem("Save");
-		mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				InputEvent.CTRL_MASK));
-		mnFile.add(mntmSave);
-
-		JSeparator separator = new JSeparator();
-		mnFile.add(separator);
-
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mntmExit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				//TODO controllare che non ci sia qualcosa da salvare prima di chiudere
-				dispose();
-				 System.exit(0);
-			}
-		});
-		mnFile.add(mntmExit);
-
-		JMenu mnEdit = new JMenu("Edit");
-		mnEdit.setEnabled(false);
-		menuBar.add(mnEdit);
-
-		JMenuItem mntmUndo = new JMenuItem("Undo");
-		mntmUndo.setEnabled(false);
-		mnEdit.add(mntmUndo);
-
-		JMenuItem mntmRedo = new JMenuItem("Redo");
-		mnEdit.add(mntmRedo);
-		mntmRedo.setEnabled(false);
-
-		JSeparator separator_1 = new JSeparator();
-		mnEdit.add(separator_1);
-
-		JMenuItem mntmCut = new JMenuItem("Cut");
-		mnEdit.add(mntmCut);
-		mntmCut.setEnabled(false);
-
-		JMenuItem mntmCopy = new JMenuItem("Copy");
-		mnEdit.add(mntmCopy);
-		mntmCopy.setEnabled(false);
-
-		JMenuItem mntmPaste = new JMenuItem("Paste");
-		mnEdit.add(mntmPaste);
-		mntmPaste.setEnabled(false);
-
-		JMenu mnOptions = new JMenu("TODO Options");
-		menuBar.add(mnOptions);
-
-		JMenuItem mntmOptions = new JMenuItem("Image directory");
+		this.new MenuPanel().CreatePanel();
 		
-		mntmOptions.addActionListener(this);
-		mnOptions.add(mntmOptions);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -1410,32 +1320,174 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		try {
-			setEnabled(false);
-			//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
-			if (frameOptions== null)
-				frameOptions = new Options();
-			frameOptions.addEventListener(this);
-
-			frameOptions.setVisible(true);
-			//{
-/*
-				/*@Override
-				public void handleMyEventClassEvent(
-						EventObject e) {
-					setEnabled(true);
-
-				}
-
-				@Override
-				public void handleMyEventClassEvent(MyEventClass e) {
-					// TODO Auto-generated method stub
-					setEnabled(true);
-					
-				}});*/
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
 		
+		
+	}
+	class MenuPanel implements ActionListener, MyEventClassListener, MouseListener{
+
+		private final static String NEW = "New";
+		private final static String FILE = "File";
+		private final static String OPEN = "Open"; //forse meglio "load"?
+		private final static String SAVE = "Save";
+		private final static String EXIT = "Exit";
+		private final static String EDIT = "Edit";
+		private final static String UNDO = "Undo";
+		private final static String REDO = "Redo";
+		private final static String CUT = "Cut";
+		private final static String COPY = "Copy";
+		private final static String PASTE = "Paste";
+		private final static String OPTIONS = "Options";
+
+		private JMenuBar menuBar;
+		private JMenu menuFile;
+		private JMenuItem menuItemNew;
+		private JMenuItem menuItemOpen;
+		private JMenuItem menuItemSave;
+		private JMenuItem menuItemExit;
+
+		private void CreatePanel(){
+			menuBar = new JMenuBar();
+			setJMenuBar(menuBar);
+
+			buildMenuFile();
+
+			buildMenuEdit();
+
+			buildMenuOptions();
+		}
+
+		private void buildMenuOptions() {
+			JMenu mnOptions = new JMenu(OPTIONS);
+			menuBar.add(mnOptions);
+
+			JMenuItem mntmOptions = new JMenuItem("Image directory");
+
+			mntmOptions.addActionListener(this);
+			mnOptions.add(mntmOptions);
+		}
+
+		private void buildMenuEdit() {
+			JMenu mnEdit = new JMenu(EDIT);
+			mnEdit.setEnabled(false);
+			menuBar.add(mnEdit);
+
+			JMenuItem mntmUndo = new JMenuItem(UNDO);
+			mntmUndo.setEnabled(false);
+			mnEdit.add(mntmUndo);
+
+			JMenuItem mntmRedo = new JMenuItem(REDO);
+			mnEdit.add(mntmRedo);
+			mntmRedo.setEnabled(false);
+
+			JSeparator separator_1 = new JSeparator();
+			mnEdit.add(separator_1);
+
+			JMenuItem mntmCut = new JMenuItem(CUT);
+			mnEdit.add(mntmCut);
+			mntmCut.setEnabled(false);
+
+			JMenuItem mntmCopy = new JMenuItem(COPY);
+			mnEdit.add(mntmCopy);
+			mntmCopy.setEnabled(false);
+
+			JMenuItem mntmPaste = new JMenuItem(PASTE);
+			mnEdit.add(mntmPaste);
+			mntmPaste.setEnabled(false);
+		}
+
+		private void buildMenuFile() {
+			menuFile = new JMenu(FILE);
+			menuBar.add(menuFile);
+
+			menuItemNew = new JMenuItem(NEW);
+			menuItemNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
+			menuItemNew.addMouseListener(this);
+			menuItemNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,InputEvent.CTRL_MASK));
+			menuFile.add(menuItemNew);
+
+			menuItemOpen = new JMenuItem(OPEN);
+			menuItemOpen.addMouseListener(this);
+			menuFile.add(menuItemOpen);
+
+			menuItemSave = new JMenuItem(SAVE);
+			menuItemSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.CTRL_MASK));
+			menuFile.add(menuItemSave);
+
+			JSeparator separator = new JSeparator();
+			menuFile.add(separator);
+
+			menuItemExit = new JMenuItem(EXIT);
+			menuItemExit.addMouseListener(this);
+			menuFile.add(menuItemExit);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			try {
+				setEnabled(false);
+				//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
+				if (frameOptions== null)
+					frameOptions = new Options();
+				frameOptions.addEventListener(this);
+
+				frameOptions.setVisible(true);
+
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+
+		@Override
+		public void handleMyEventClassEvent(MyEventClass e) {
+			setEnabled(true);
+
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent arg0) {}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			if(e.getSource()==menuItemNew)
+				newAction();
+			else if (e.getSource()==menuItemOpen)
+				openAction();
+			else if(e.getSource()==menuItemExit)
+				exitAction();
+		}
+
+		private void exitAction() {
+			//TODO chiedere se bisogna salvare
+			dispose();
+			System.exit(0);
+		}
+
+		private void newAction(){
+			String newPath = fileChooser(LOADSAVE);
+
+			if (newPath.length()>0)
+				//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
+				data.setCurrentProject(newPath);
+			//TODO creare nuovo JTree
+		}
+
+		private void openAction(){
+			String newPath = fileChooser(LOADSAVE);
+
+			if (newPath.length()>0)
+				//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
+				//TODO controllare che il nuovo file esista, e sia corretto
+				data.setCurrentProject(newPath);
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {}
 	}
 }
