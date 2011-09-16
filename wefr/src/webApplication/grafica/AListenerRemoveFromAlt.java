@@ -20,9 +20,7 @@ public class AListenerRemoveFromAlt implements ActionListener {
 		
 		// TODO fare un controllo sul nome dell'oggetto
 		
-		if(arg0.getSource() != null && arg0.getSource() instanceof ButtonRemover)
-			((ButtonRemover)arg0.getSource()).removeElements();
-		else if(l_alter!= null)
+		if(l_alter!= null)
 			MainWindow.removeElementFromComposto(l_alter.getSelectedIndices());	
 	}
 

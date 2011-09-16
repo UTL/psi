@@ -47,7 +47,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		bott_up.setBounds(12, 4, 46, 53);
 		bott_down= new JButton();
 		bott_down.setBounds(12, 100, 46, 53);
-		bott_del= new ButtonRemover(DELETE);
+		bott_del= new JButton(DELETE);
 		bott_del.setBounds(65, 165, 90, 27);
 		bott_del.setActionCommand(DELETE);
 		bott_del.addActionListener(this);
@@ -66,7 +66,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 
 	abstract protected void assignComponent(Componente c);
 	
-	public PannelloGeneric(JButton b_up, JButton b_down, ButtonRemover b_del, JButton b_addExist, JList l_alt) {
+	public PannelloGeneric(JButton b_up, JButton b_down, JButton b_del, JButton b_addExist, JList l_alt) {
 		bott_up=b_up;
 		bott_down=b_down;
 		bott_del=b_del;

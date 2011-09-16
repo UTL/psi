@@ -38,7 +38,7 @@ public class PannelloAlt extends PannelloGeneric {
 		// TODO Auto-generated constructor stub
 	}
 
-	public PannelloAlt(JButton b_up, JButton b_down, ButtonRemover b_del,
+	public PannelloAlt(JButton b_up, JButton b_down, JButton b_del,
 			JButton b_addExist, JList l_alt) {
 		super(b_up, b_down, b_del, b_addExist, l_alt);
 		// TODO Auto-generated constructor stub
