@@ -273,24 +273,15 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 		private static final long serialVersionUID = -4513876659563150305L;
 		private static final String COMPONENTE = "Componente";
 		private static final String PARENTINDEX = "ParentIndex";
-
-		/*AddAction(Componente c)	{
-			comp=c;
-			parentIndex=-1;
-		}
-		
-		AddAction(Componente c, int i)	{
-			comp=c;
-			parentIndex=i;
-		}*/
 		
 		@Override
-		public void actionPerformed(ActionEvent evt) {			
+		public void actionPerformed(ActionEvent evt) {
 			if (getValue(COMPONENTE)!=null)	{
+				System.out.println("Sto aggiungendo");
 				DefaultMutableTreeNode parent = null;
 				DefaultMutableTreeNode compNode = new DefaultMutableTreeNode((Componente)getValue(COMPONENTE));
 				if ((Integer)this.getValue(PARENTINDEX)==-1)	{
-					System.out.println("Sto aggiungendo");
+					
 					addNode(null,compNode);
 				}	else	{
 					parent = (DefaultMutableTreeNode) rootNode.getChildAt((Integer) getValue(PARENTINDEX));
@@ -306,6 +297,7 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 				//setto il focus sul nuovo oggetto
 				tree.setSelectionPath(new TreePath(compNode.getPath()));
 			}
+			System.out.println("Arrivato ma null");
 		}
 	}
 	

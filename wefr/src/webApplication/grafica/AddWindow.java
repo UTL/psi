@@ -4,6 +4,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,6 +49,16 @@ public class AddWindow extends JDialog implements ActionListener	{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equalsIgnoreCase("ADD"))	{
+			/*//METODO 3 - non funzionante
+			TreePanel panel = ((ProvaAlbero)this.getParent()).treePanel;
+			ComponenteComposto comp = new ComponenteComposto("Composite1","Comp",0,0);
+			AddAction addAction = panel.new AddAction();
+			addAction.putValue("Componente", comp);
+			addAction.putValue("ParentIndex", -1);
+			btnAdd.addActionListener(addAction);
+			ActionEvent ae = new ActionEvent(e,ActionEvent.ACTION_PERFORMED,"Tutto ok");
+			btnAdd.dispatchEvent(ae);*/
+			
 			//METODO 1
 			TreePanel panel = ((ProvaAlbero)this.getParent()).treePanel;
 			ComponenteComposto comp = new ComponenteComposto("Composite1","Comp",0,0);
