@@ -66,7 +66,7 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 	 * Initialize the Tree component
 	 */
 	private void init() {
-		th = new TreeTransferHandler();
+		th = new TreeTransferHandler(this);
 		rootNode = new DefaultMutableTreeNode(ROOT);
 		model = new DefaultTreeModel(rootNode);
 		tree =  new JTree(model);
@@ -109,9 +109,9 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 		model.reload();
 	}
 	
-
 	/**
-	 * Remove the current selected node
+	 * Remove a node from the tree
+	 * @param node The node to remove
 	 */
 	protected void removeNode(DefaultMutableTreeNode node) {
         /*TreePath currentSelection = tree.getSelectionPath();
@@ -297,7 +297,6 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 				//setto il focus sul nuovo oggetto
 				tree.setSelectionPath(new TreePath(compNode.getPath()));
 			}
-			System.out.println("Arrivato ma null");
 		}
 	}
 	
@@ -355,6 +354,52 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 				JOptionPane.showMessageDialog(getTopLevelAncestor(),EMPTYSELECTION,"Error!",JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+	
+	//NOTA: una CopyAction è fondamentalmente una AddAction ma l'elemento inserito è una copia di quello esistente
+	//		infatti le tengo separate per "comprensione" ma in pratica uso sempre la AddAction
+	public class CopyAction extends AbstractAction	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4612100142468392225L;
+		//private static final String COMPONENTE = "Componente";
+		private static final String PARENTINDEX = "ParentIndex";
+		private static final String INDEX = "Index";
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			DefaultMutableTreeNode parent;
+			if (((Integer)this.getValue(PARENTINDEX))==-1)	{
+				parent = rootNode;
+			}
+			else	{
+				parent = (DefaultMutableTreeNode) rootNode.getChildAt((Integer)this.getValue(PARENTINDEX));
+			}
+			DefaultMutableTreeNode compNode = (DefaultMutableTreeNode) parent.getChildAt((Integer)this.getValue(INDEX));
+			UndoableEdit edit = new UndoableAddNode(tree,(Componente) compNode.getUserObject(),(Integer)getValue(PARENTINDEX),parent.getIndex(compNode));
+			undoSupport.postEdit(edit);
+		}
+	}
+	
+	public class MoveAction extends AbstractAction	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3099984963394542917L;
+		private static final String OLDPARENTINDEX = "OldParentIndex";
+		private static final String NEWPARENTINDEX = "NewParentIndex";
+		private static final String NEWINDEX = "NewIndex";
+		private static final String OLDINDEX = "OldIndex";
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			UndoableEdit edit = new UndoableMoveNode(tree,(Integer)getValue(OLDPARENTINDEX),(Integer)getValue(NEWPARENTINDEX),(Integer)getValue(OLDINDEX),(Integer)getValue(NEWINDEX));
+			undoSupport.postEdit(edit);
+		}
+		
 	}
 	
 	

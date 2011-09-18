@@ -132,10 +132,10 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 		buttonPanel.add(btnRemove, BorderLayout.EAST);
 		btnRemove.setActionCommand(TreePanel.REMOVE_COMMAND);
 		
-		btnClear = new JButton("Clear");
+/*		btnClear = new JButton("Clear");
 		btnClear.setEnabled(false);
 		buttonPanel.add(btnClear, BorderLayout.NORTH);
-		btnClear.setActionCommand(TreePanel.CLEAR_COMMAND);
+		btnClear.setActionCommand(TreePanel.CLEAR_COMMAND);*/
 		
 		btnUndo = new JButton("Undo");
 		buttonPanel.add(btnUndo,BorderLayout.CENTER);		
@@ -192,7 +192,7 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 	 */
 	@Override
 	public void treeNodesInserted(TreeModelEvent e) {
-		btnClear.setEnabled(true);
+		//btnClear.setEnabled(true);
 	}
 
 	/* (non-Javadoc)
@@ -202,9 +202,9 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 	@Override
 	public void treeNodesRemoved(TreeModelEvent e) {
 		if (((DefaultMutableTreeNode)(treePanel.getTree().getModel().getRoot())).getChildCount()!=0)	{
-			btnClear.setEnabled(true);
+			//btnClear.setEnabled(true);
 		}	else	{
-			btnClear.setEnabled(false);
+			//btnClear.setEnabled(false);
 		}
 	}
 
@@ -215,9 +215,9 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 	@Override
 	public void treeStructureChanged(TreeModelEvent e) {
 		if (treePanel.isEmpty())	{
-			btnClear.setEnabled(false);
+			//btnClear.setEnabled(false);
 		}	else	{
-			btnClear.setEnabled(true);
+			//btnClear.setEnabled(true);
 		}
 	}
 
