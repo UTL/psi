@@ -2,9 +2,9 @@ package webApplication.grafica;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -17,7 +17,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Options extends JFrame implements ActionListener{
+public class Options extends JDialog implements ActionListener{
 
 	private static final String TITLE = " Default directories ";
 
@@ -87,7 +87,7 @@ public class Options extends JFrame implements ActionListener{
 	 * Create the frame.
 	 */
 	public Options() {
-		buildJPanel();
+		buildJDialog();
 		
 		buildFieldImage();
 		
@@ -101,7 +101,7 @@ public class Options extends JFrame implements ActionListener{
 		
 		
 	}
-	private void buildJPanel() {
+	private void buildJDialog() {
 		setResizable(false);
 		setTitle(OPTIONS);
 		setDefaultCloseOperation(closeOperation());
@@ -117,6 +117,7 @@ public class Options extends JFrame implements ActionListener{
 		panel_dirs.setBounds(12, 0, 424, 218);
 		contentPane.add(panel_dirs);
 		panel_dirs.setLayout(null);
+		this.setModalityType(ModalityType.APPLICATION_MODAL);
 	}
 	private void buildLabels() {
 		JLabel lblImageDirectory = new JLabel(IMAGES);
