@@ -42,7 +42,7 @@ public class ProvaAlbero extends JFrame implements TreeSelectionListener, TreeMo
 	protected TreePanel treePanel;
     private JPanel workspace;
     private JPanel buttonPanel;
-    private JButton btnClear;
+    //private JButton btnClear;
     private JButton btnRemove;
     private JButton btnAdd;
     private JButton btnUndo;
