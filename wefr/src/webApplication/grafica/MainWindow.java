@@ -3,44 +3,30 @@ package webApplication.grafica;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-
 import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.EventObject;
-import java.util.Iterator;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -56,18 +42,13 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.text.Document;
-import javax.swing.text.JTextComponent;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
-import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
@@ -75,16 +56,7 @@ import webApplication.business.Testo;
 import webApplication.grafica.TreePanel;
 
 
-import java.awt.TextField;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Vector;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.beans.XMLEncoder;
-
 import javax.swing.BoxLayout;
-import java.util.Collections;
 
 public class MainWindow extends JFrame implements TreeSelectionListener, MyEventClassListener, ActionListener {
 
@@ -101,22 +73,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 	private static JTextArea editorPane_text;
 	private static JTextField textField_imagepath;
 	private static JPanel content_panel;
-	private static JList list_composite;
-	private static JList list_alternative;
 	private static JPanel panel_composite;
 	private static PannelloAlt pannello_alterplus;
 	private static PannelloComp pannello_comp;
-	private static JButton button_deleteFromComp;
-	private static JButton button_delFromAlt;
-	private static JButton button_addExistComp;
-	private static JButton button_addNewComp;
-	private static JButton button_AddExisAlt;
-	private static JButton button_up;
-	private static JButton button_down;
 	private static JPanel errorePath;
 	private static JPanel erroreTestoLink;
 	private static JPanel erroreUrl;
-	private AListenerRemoveFromAlt actionAlternative;
 	private static JButton button_1;
 	
 	public static final int LOADSAVE = 0;
@@ -130,9 +92,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 	private static Testo focusedTxt;
 	private static Immagine focusedImg;
 	private static Link focusedLnk;
-	private static ComponenteComposto focusedCmp;
-	private static ComponenteAlternative focusedAlt;
-
 	private static final String URL_REGEX =
             "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
     private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
@@ -270,15 +229,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 					data.setMyWizard(new Wizard());
 				data.getMyWizard().setVisible(true);
 				data.getMyWizard().addEventListener(new MyEventClassListener(){
-/*
-					@Override
-					public void handleMyEventClassEvent(
-							EventObject e) {
-								setEnabled(true);
-								data.setMyWizard(null);
-						// TODO Auto-generated method stub
-						
-					}*/
+
 
 					@Override
 					public void handleMyEventClassEvent(MyEventClass e) {
@@ -489,14 +440,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		panel_image.add(errorePath);
 		
 		panel_composite = new JPanel();
-/*=======
 
-		JButton button_17 = new JButton("Browse\r\n");
-		button_17.setBounds(298, 25, 89, 29);
-		panel_image.add(button_17);
-
-		JPanel panel_composite = new JPanel();
->>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@1aa9a7bb/testing*/
 		content_panel.add(panel_composite, PANEL_CMP);
 		panel_composite.setLayout(null);
 		pannello_comp = new PannelloComp(this);
@@ -504,82 +448,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		pannello_comp.setSize(426, 196);
 		pannello_comp.setLocation(-16, 1);
 		panel_composite.add(pannello_comp);
-		/*JLabel label_1 = new JLabel("Elements:");
-		label_1.setBounds(12, 0, 91, 13);
-		panel_composite.add(label_1);
-
-		list_composite = new JList();
-		//TODO aggiungere un bottone o un menu contestuale per vedere i dettagli degli elementi
-		
-		list_composite.setBounds(12, 25, 408, 132);
-		panel_composite.add(list_composite);
-		
-		//Aggiunta la scroll bar
-		//scrollPane_composite = new JScrollPane(list_composite);
-		
-		button_deleteFromComp = new JButton("Delete");
-		button_deleteFromComp.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO fare un controllo sul nome dell'oggetto
-				removeElementFromComposto(list_composite.getSelectedIndices());
-				
-			}
-		});
-		button_deleteFromComp.setBounds(12, 162, 91, 27);
-		panel_composite.add(button_deleteFromComp);
-		
-		button_addExistComp = new JButton("Add existing");
-		button_addExistComp.setBounds(195, 162, 121, 27);
-		panel_composite.add(button_addExistComp);
-		
-		button_addNewComp = new JButton("Add new");
-		button_addNewComp.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setEnabled(false);
-				AddNew nuovo = new AddNew();
-				nuovo.addWindowListener(new WindowAdapter(){
-					@Override
-					public void windowClosing(WindowEvent e) {
-						setEnabled(true);
-					}
-				});
-				nuovo.addEventListener(new MyEventClassListener(){
-
-					@Override
-					public void handleMyEventClassEvent(MyEventClass e) {
-								setEnabled(true);
-								if(e != null){
-									addElementToComposite((ComponenteSemplice) e.getComponente());
-								}
-					}
-
-					@Override
-					public void handleMyEventClassEvent(EventObject e) {
-						// TODO Auto-generated method stub
-						setEnabled(true);
-						if(e != null){
-							addElementToComposite((ComponenteSemplice) e.getComponente());
-						}
-					}
-
-					
-
-					});
-
-				nuovo.setVisible(true);
-			}
-		});
-		button_addNewComp.setBounds(320, 162, 100, 27);
-		panel_composite.add(button_addNewComp);*/
-		
-		/*panel_alternative = new JPanel();
-		list_alternative = new JList();
-		button_down = new JButton("v");
-		button_up = new JButton("^");
-		button_delFromAlt = new JButton("Delete");
-		button_AddExisAlt = new JButton("Add existing");*/
 		
 		pannello_alterplus = new PannelloAlt(this);
 		//buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
@@ -688,81 +556,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		// TODO rimuovere invocazione a testing concluso
 		popolaOggetti();
 
-//>>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@1aa9a7bb/testing
 	}
-	//invocazione: panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative
-	private void buildPanelAlternative(JPanel panelAlt, JButton b_up, JButton b_down, JButton b_del, JButton b_addExist, JList l_alt) {
-
-		panelAlt.setLayout(null);
-		
-		//TODO cambiare le icone terribili dei bottoni up e down
-
-		
-		b_up.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				moveAlternativeElements(MainWindow.MOVE_UP);}});
-		b_up.setToolTipText("Click here to increase the priority of selected element");
-		b_up.setBounds(12, 0, 46, 53);
-		panelAlt.add(b_up);
-
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setLocation(70, 0);
-		scrollPane.setSize(350, 149);
-		panelAlt.add(scrollPane);
-		
-		scrollPane.setViewportView(l_alt);
-
-		b_down.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				moveAlternativeElements(MainWindow.MOVE_DOWN);
-		}});
-		b_down.setToolTipText("Click here to decrease the priority of selected element");
-		b_down.setBounds(12, 96, 46, 53);
-		panelAlt.add(b_down);
-
-		
-		b_del.setBounds(65, 161, 90, 27);
-		actionAlternative = new AListenerRemoveFromAlt(l_alt);
-		b_del.addActionListener(actionAlternative);
-		panelAlt.add(b_del);
-		
-		//TODO se non ne esistono di esistenti disabilitare
-		
-		b_addExist.setBounds(198, 161, 121, 27);
-		panelAlt.add(b_addExist);
-
-		JButton button_addNewAlter = new JButton("Add new");
-		button_addNewAlter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setEnabled(false);
-				AddNew nuovo = new AddNew();
-				
-				nuovo.addWindowListener(new WindowAdapter(){
-					@Override
-					public void windowClosing(WindowEvent e) {
-						setEnabled(true);
-				}});
-				
-				nuovo.addEventListener(new MyEventClassListener(){
-
-					@Override
-					public void handleMyEventClassEvent(
-							MyEventClass e) {
-								setEnabled(true);
-								if(e != null){
-									addElementToAlternative((ComponenteSemplice) e.getComponente());
-									}}
-/*
-					@Override
-					public void handleMyEventClassEvent(EventObject e) {}*/
-					});
-
-				nuovo.setVisible(true);
-		}});
-		button_addNewAlter.setBounds(322, 161, 98, 27);
-		panelAlt.add(button_addNewAlter);
-	}
-
 	private void addNewWizard() {
 		//TODO agganciarci il wizard e non l'addnew
 		//TODO andrebbe creata una classe e tolto il codice da qui
@@ -850,136 +644,21 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 	}
 	
-	private static void buttonUpDownMgmt() {
-		int num_elem = list_alternative.getModel().getSize();
-		int max_selected = list_alternative.getMaxSelectionIndex(); // -1 se nessun elemento selezionato
-		int min_selected = list_alternative.getMinSelectionIndex();
-		
-		if(num_elem < 2 || max_selected == -1 || (min_selected == 0 && max_selected == num_elem-1)){
-			button_down.setEnabled(false);
-			button_up.setEnabled(false);
-		}
-		else if(min_selected == 0){
-			button_down.setEnabled(true);
-			button_up.setEnabled(false);
-		}
-		else if(max_selected == num_elem-1){
-			button_down.setEnabled(false);
-			button_up.setEnabled(true);
-		}
-		else {
-			button_down.setEnabled(true);
-			button_up.setEnabled(true);
-		}
-	}
-	
-	private void moveAlternativeElements(int upOrDown) {
-		int shift;
-		ComponenteAlternative comp = ((ComponenteAlternative)focused); 
-		Vector<ComponenteSemplice> listaAlternative = comp.getOpzioni();
-		int i;
-		int[] toMove = list_alternative.getSelectedIndices();
-		
-		if(upOrDown == MOVE_UP){
-			shift=MOVE_UP;
-			for (i=0; i<toMove.length; i++){
-				Collections.swap(listaAlternative,toMove[i], toMove[i]+shift);
-				toMove[i]= toMove[i]+shift;
-			}
-		}
-		else if(upOrDown == MOVE_DOWN){
-			shift = MOVE_DOWN;
-			for (i=toMove.length-1; i>=0; i--){
-				Collections.swap(listaAlternative,toMove[i], toMove[i]+shift);
-				toMove[i]= toMove[i]+shift;
-			}
-		}
-		else 
-			return;
-		
-		//FIXME bisognerebbe controllare che l'elemento col focus sia davvero un alternativa e in caso di errore sollevare un eccezione
-		
-		
-		comp.setOpzioni(listaAlternative);
-		popolaProperties((ComponenteAlternative)focused);
-		list_alternative.setSelectedIndices(toMove);
-	}
-
 	private static void popolaProperties(ComponenteComposto selected){
-		//TODO il list_composite non ha le scrollbar
-		//TODO aggiungere le iconcine in parte ai nomi
-		//TODO disabilitare l'add existing quando non esistono elementi da aggiungere
-		
+
 		pannello_comp.setComponent(selected);
-		
-		
 
 		setGenerici(selected,"Composite");
 		
 		setContentLayout(PANEL_CMP);
-		/*
-			if(list_composite != null && panel_composite!=null)
-			panel_composite.remove(list_composite);
-		list_composite = new JList(Utils.extractNomiComponenti(selected.getOpzioni()));
-		list_composite.setBounds(12, 25, 408, 132);
-		
-		panel_composite.add(list_composite);
-	
-		Utils.buttonDeleteMgmt(list_composite,button_deleteFromComp);
 
-		list_addFocusList(list_composite);
-		
-		panel_composite.repaint();*/
 	}
 	
-	
-	
-	private static void list_addFocusList(JList list){
-		list.addListSelectionListener(new ListSelectionListener() {
-			
-
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				if(arg0.getSource()==list_composite)
-					Utils.buttonDeleteMgmt(list_composite,button_deleteFromComp);
-				else if (arg0.getSource()==list_alternative){
-					Utils.buttonDeleteMgmt(list_alternative,button_delFromAlt);
-					buttonUpDownMgmt();
-				}
-				
-			}
-		});
-	}
-	
-
-
 	
 	public static void setContentLayout(String panel){
 		CardLayout cl = (CardLayout)(content_panel.getLayout());
         cl.show(content_panel, panel);
 	}
-	
-	public static void removeElementFromComposto(int[] daRimuovere){
-		int i;
-		//ciclo for al contrario: rimuovere gli elementi dall'ultimo a scendere altrimenti va in crash
-		if(focused.getType()== ComponenteComposto.COMPOSTOTYPE){
-			for(i=daRimuovere.length-1; i>=0; i--){
-				((ComponenteComposto)focused).cancellaOpzione(daRimuovere[i]);
-			}
-			popolaProperties((ComponenteComposto)focused);
-		}
-		else if (focused.getType()== ComponenteAlternative.ALTERNATIVETYPE){
-			for(i=daRimuovere.length-1; i>=0; i--){
-				((ComponenteAlternative)focused).cancellaOpzione(daRimuovere[i]);
-			}
-			popolaProperties((ComponenteAlternative)focused);
-		}
-		
-		//FIXME sarebbe meglio fare anche un controllo sul nome e non solo sul numero di indice
-		//TODO tenere traccia della rimorzione
-	}
-
-
 
 	 //metodo per popolare oggetti per farci prove
 	 private void popolaOggetti()	{ data.setImg(new Immagine("immagineeee", "immagini!",
@@ -1007,8 +686,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		focusedTxt = null;
 		focusedImg = null;
 		focusedLnk = null;
-		focusedCmp = null;
-		focusedAlt = null;
 	}
 
 	public static void setFocus(Componente selected){
@@ -1050,7 +727,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 	private static void setFocus(ComponenteComposto selected) {
 		unFocus();
-		focusedCmp = selected;
 		setFocusGeneric(selected);
 		popolaProperties(selected);
 		// TODO implementare parte specifica
@@ -1059,7 +735,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 	private static void setFocus(ComponenteAlternative selected) {
 		unFocus();
-		focusedAlt = selected;
 		setFocusGeneric(selected);
 		popolaProperties(selected);
 		// TODO implementare parte specifica
@@ -1215,30 +890,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		return filec.getSelectedFile().getAbsolutePath();
 	}
 	
-	private void addElementToComposite(ComponenteSemplice componente) {
-		
-		int[] selected = list_composite.getSelectedIndices();
-		((ComponenteComposto)focusedCmp).aggiungiOpzione(componente);
-		popolaProperties(focusedCmp);
-		list_composite.setSelectedIndices(selected);
-		Utils.buttonDeleteMgmt(list_composite,button_deleteFromComp);
-		
-		
-	}
-	
-	private void addElementToAlternative(ComponenteSemplice componente) {
-		int[] selected = list_alternative.getSelectedIndices();
-		((ComponenteAlternative)focusedAlt).aggiungiOpzione(componente);
-		popolaProperties(focusedAlt);
-		list_alternative.setSelectedIndices(selected);
-		Utils.buttonDeleteMgmt(list_alternative,button_delFromAlt);
-		buttonUpDownMgmt();
-	}
-	
-	
-	
-	
-	
 	private static JFileChooser buildFileChooser (int i){
 		JFileChooser fileChooser=null;
 		if(frameOptions != null){
@@ -1280,24 +931,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 			target.setText(path);
 	}
 	
-	private void setChangeListener (JTextComponent toAttachListener){
-		
-		JTextComponent textComponent_imagepath=toAttachListener;
-		textComponent_imagepath.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				
-			}
-			public void removeUpdate(DocumentEvent e) {
-				
-			}
-			public void insertUpdate(DocumentEvent e) {
-				
-			}
-			});
-		
-		
-	}
-
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		
