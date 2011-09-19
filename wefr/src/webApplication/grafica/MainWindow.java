@@ -91,8 +91,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 	
 	private CustomFCSave fcSave = new CustomFCSave(frameOptions, this);
 	private CustomFCLoad fcLoad = new CustomFCLoad(frameOptions, this);
-	private CustomFCText fcImage=new CustomFCText(frameOptions, this);
-	private CustomFCImage fcText=new CustomFCImage(frameOptions, this);
+	private CustomFCImage fcImage=new CustomFCImage(frameOptions, this);
+	private CustomFCText fcText=new CustomFCText(frameOptions, this);
 	
 	private static Componente focused;
 
@@ -233,7 +233,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 				setEnabled(false);
 				//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
 				if (data.getMyWizard()== null)
-					data.setMyWizard(new Wizard());
+					data.setMyWizard(new Wizard(frameOptions));
 				data.getMyWizard().setVisible(true);
 				data.getMyWizard().addEventListener(new MyEventClassListener(){
 
@@ -433,7 +433,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		button_browseImg.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				fileChooser(IMAGE, textField_imagepath);
+				fcImage.showDialog();
+				fcImage.setJTFPath(textField_imagepath);
 				
 			}
 		});
@@ -450,13 +451,13 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 		content_panel.add(panel_composite, PANEL_CMP);
 		panel_composite.setLayout(null);
-		pannello_comp = new PannelloComp(this);
+		pannello_comp = new PannelloComp(this, frameOptions);
 		pannello_comp.bott_del.setLocation(33, 165);
 		pannello_comp.setSize(426, 196);
 		pannello_comp.setLocation(-16, 1);
 		panel_composite.add(pannello_comp);
 		
-		pannello_alterplus = new PannelloAlt(this);
+		pannello_alterplus = new PannelloAlt(this, frameOptions);
 		//buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
 		content_panel.add(pannello_alterplus, PANEL_ALT);
 
@@ -570,7 +571,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 		setEnabled(false);
 		setFocusable(false);
-		Wizard nuovo = new Wizard();
+		Wizard nuovo = new Wizard(frameOptions);
 		nuovo.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -886,7 +887,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 				+ Font.BOLD, button.getFont().getSize() + 1);
 		button.setFont(newButtonFont);
 	}
-	
+	/*
 	public static String fileChooser(int i){
 		JFileChooser filec=buildFileChooser(i);
 		if(filec==null)
@@ -927,6 +928,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 	}
 	
+	
 	public static File getFileFromChooser(int i){
 		return buildFileChooser(i).getSelectedFile();
 	}
@@ -936,7 +938,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		path=fileChooser(i);
 		if (path!= null && path.length()>0)
 			target.setText(path);
-	}
+	}*/
 	
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
@@ -1139,23 +1141,16 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 	}
 
 	private void newAction(){
-		String newPath = fileChooser(LOADSAVE);
-
-		if (newPath.length()>0)
-			//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
-			data.setCurrentProject(newPath);
 		//TODO creare nuovo JTree
 	}
 
 	private void loadAction(){
-		
-		
-		String newPath = fileChooser(LOADSAVE);
+		fcLoad.showDialog();
 
-		if (newPath.length()>0)
+		if (fcLoad.getFilePath().length()>0)
 			//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
 			//TODO controllare che il nuovo file esista, e sia corretto
-			data.setCurrentProject(newPath);
+			data.setCurrentProject(fcLoad.getFilePath());
 		
 		
 	}

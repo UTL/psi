@@ -114,6 +114,7 @@ public class Wizard extends JFrame  {
 	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? 
 	private static final boolean CREATENEWCOMP = false;
+	private Options frameOptions;
 
 	
 	/**
@@ -123,7 +124,7 @@ public class Wizard extends JFrame  {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Wizard frame = new Wizard();
+					Wizard frame = new Wizard(new Options());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -135,9 +136,11 @@ public class Wizard extends JFrame  {
 	/**
 	 * Create the frame.
 	 */
-	public Wizard() {
+	public Wizard(Options o) {
 		setResizable(false);
 		setTitle("Add element");
+		
+		frameOptions= o;
 		
 		//TODO mettere input da history (magari con un metodo)
 		
@@ -830,7 +833,7 @@ public class Wizard extends JFrame  {
 		panel_composite_s3.setLayout(null);
 		
 		JPanel panel_12 = new JPanel();
-		panel_comp = new PannelloComp(this);
+		panel_comp = new PannelloComp(this, frameOptions);
 		panel_comp.setLocation(6, 56);
 		panel_comp.setSize(436, 201);
 		panel_composite_s3.add(panel_comp);
@@ -930,7 +933,7 @@ public class Wizard extends JFrame  {
 		tabbedPane.addTab("3a", null, panel_11, null);
 		panel_11.setLayout(null);
 		
-		panel_alt = new PannelloAlt(this);
+		panel_alt = new PannelloAlt(this, frameOptions);
 		panel_alt.setSize(421, 193);
 		panel_alt.setLocation(25, 61);
 		panel_11.add(panel_alt);

@@ -28,13 +28,13 @@ public class PannelloAlt extends PannelloGeneric {
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public PannelloAlt(JFrame m) {
-		super(m);
+	public PannelloAlt(JFrame m, Options o) {
+		super(m, o);
 		// TODO Auto-generated constructor stub
 	}
 
-	public PannelloAlt(JFrame m, ComponenteAlternative c) {
-		super(m, c);
+	public PannelloAlt(JFrame m, ComponenteAlternative c, Options o) {
+		super(m, c, o);
 		// TODO Auto-generated constructor stub
 	}
 

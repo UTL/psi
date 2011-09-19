@@ -68,7 +68,12 @@ public class AddNew extends JFrame {
 	private static boolean ONLYDISPOSE = true;
 	private static boolean CREATENEWCOMP = false;
 	
+	private CustomFCText fcText;
+	private CustomFCImage fcImage;
+	
 	private boolean anError=true;
+	
+	private Options frameOptions;
 
 	/**
 	 * Launch the application.
@@ -77,7 +82,7 @@ public class AddNew extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AddNew frame = new AddNew();
+					AddNew frame = new AddNew(new Options());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -89,7 +94,10 @@ public class AddNew extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public AddNew() {
+	public AddNew(Options fOptions) {
+		frameOptions=fOptions;
+		fcText = new CustomFCText(frameOptions, this);
+		fcImage=new CustomFCImage(frameOptions, this);
 		setAlwaysOnTop(true);
 
 		setResizable(false);
@@ -457,13 +465,13 @@ public class AddNew extends JFrame {
 		redify(textField_imagePath, !MainWindow.isPathCorrect(textField_imagePath.getText()));
 	}
 	
-	private static void readFile(){
+	private void readFile(){
 		try {
 			//TODO escapare caratteri speciali
-			File f = MainWindow.getFileFromChooser(MainWindow.TEXT);
+			fcText.showDialog();
 			
-			if (f != null){
-			String letto = Wizard.readFile(f);
+			if (fcText.getFile() != null){
+			String letto = Wizard.readFile(fcText.getFile());
 			if ( letto!= null && letto.length()>0)
 				textArea.setText(letto);}
 		} catch (IOException e) {
@@ -488,9 +496,10 @@ public class AddNew extends JFrame {
 	}
 	
 	private void setPath(){
-		String path = MainWindow.fileChooser(MainWindow.IMAGE);
-		if (path!= null && path.length()>0)
-			textField_imagePath.setText(path);
+		fcImage.showDialog();
+		
+		if (fcImage.getFilePath().length()>0)
+			textField_imagePath.setText(fcImage.getFilePath());
 	}
 	
 	private void updateAddBtn(){

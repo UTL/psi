@@ -22,12 +22,12 @@ public class PannelloComp extends PannelloGeneric {
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public PannelloComp(JFrame m) {
-		super(m);
+	public PannelloComp(JFrame m, Options o) {
+		super(m,o);
 	}
 
-	public PannelloComp(JFrame m, Componente c) {
-		super(m, c);
+	public PannelloComp(JFrame m, Componente c, Options o) {
+		super(m, c,o);
 	}
 
 	public PannelloComp(JButton b_up, JButton b_down, JButton b_del,

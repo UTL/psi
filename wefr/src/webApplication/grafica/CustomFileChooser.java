@@ -45,35 +45,10 @@ public abstract class CustomFileChooser{
 	}
 	
 	
-	/*{
-		JFileChooser fileChooser=null;
-		if(frameOptions != null){
-			if(i== LOADSAVE && frameOptions.getDefDirLoadSave()!= null && frameOptions.getDefDirLoadSave().length()>0)
-				fileChooser = new JFileChooser(frameOptions.getDefDirLoadSave()); 
-			else if (i == TEXT && frameOptions.getDefDirText()!= null && frameOptions.getDefDirText().length()>0)
-				fileChooser = new JFileChooser(frameOptions.getDefDirText()); 
-			else if (i == IMAGE){
-				if(frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0)
-					fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
-				else
-					fileChooser = new JFileChooser();
-				
-				fileChooser.addChoosableFileFilter(new CustomFileFilter());
-				fileChooser.setAcceptAllFileFilterUsed(false);
-				System.out.println("asfds");
-			}
-			else {
-				return null;
-			}
-		}
-		else
-			fileChooser = new JFileChooser();
-		
-		chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); 
-		
-		return fileChooser;
-
-	}*/
+	public void setJTFPath(JTextField target){
+		if(option == fc.APPROVE_OPTION)
+			target.setText(fc.getSelectedFile().getAbsolutePath());
+	}
 	
 	
 
