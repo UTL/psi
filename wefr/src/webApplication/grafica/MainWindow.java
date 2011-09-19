@@ -19,7 +19,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Iterator;
@@ -75,6 +81,8 @@ import java.awt.event.MouseEvent;
 import java.util.Vector;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.beans.XMLEncoder;
+
 import javax.swing.BoxLayout;
 import java.util.Collections;
 
@@ -97,6 +105,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 	private static JList list_alternative;
 	private static JPanel panel_composite;
 	private static PannelloAlt pannello_alterplus;
+	private static PannelloComp pannello_comp;
 	private static JButton button_deleteFromComp;
 	private static JButton button_delFromAlt;
 	private static JButton button_addExistComp;
@@ -108,6 +117,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 	private static JPanel erroreTestoLink;
 	private static JPanel erroreUrl;
 	private AListenerRemoveFromAlt actionAlternative;
+	private static JButton button_1;
 	
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
@@ -168,6 +178,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 	/**
 	 * Create the frame.
 	 */
+	/**
+	 * 
+	 */
 	public MainWindow() {
 		setTitle("EUD-MAMBA");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -225,7 +238,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		button_4.setBounds(78, 4, 30, 30);
 		panel.add(button_4);
 
-		JButton button_1 = new JButton("");
+		button_1 = new JButton("");
 		button_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -486,8 +499,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 >>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@1aa9a7bb/testing*/
 		content_panel.add(panel_composite, PANEL_CMP);
 		panel_composite.setLayout(null);
-
-		JLabel label_1 = new JLabel("Elements:");
+		pannello_comp = new PannelloComp(this);
+		pannello_comp.bott_del.setLocation(33, 165);
+		pannello_comp.setSize(426, 196);
+		pannello_comp.setLocation(-16, 1);
+		panel_composite.add(pannello_comp);
+		/*JLabel label_1 = new JLabel("Elements:");
 		label_1.setBounds(12, 0, 91, 13);
 		panel_composite.add(label_1);
 
@@ -538,14 +555,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 								}
 					}
 
-					/*@Override
+					@Override
 					public void handleMyEventClassEvent(EventObject e) {
 						// TODO Auto-generated method stub
 						setEnabled(true);
 						if(e != null){
 							addElementToComposite((ComponenteSemplice) e.getComponente());
 						}
-					}*/
+					}
 
 					
 
@@ -555,7 +572,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 			}
 		});
 		button_addNewComp.setBounds(320, 162, 100, 27);
-		panel_composite.add(button_addNewComp);
+		panel_composite.add(button_addNewComp);*/
 		
 		/*panel_alternative = new JPanel();
 		list_alternative = new JList();
@@ -563,6 +580,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		button_up = new JButton("^");
 		button_delFromAlt = new JButton("Delete");
 		button_AddExisAlt = new JButton("Add existing");*/
+		
 		pannello_alterplus = new PannelloAlt(this);
 		//buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
 		content_panel.add(pannello_alterplus, PANEL_ALT);
@@ -829,25 +847,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		
 		pannello_alterplus.setComponent(selected);
 		setContentLayout(PANEL_ALT);
-		/*
-		Container listContainer= list_alternative.getParent();
-		
-		if(list_alternative != null && listContainer!=null)
-			listContainer.remove(list_alternative);
-		
-		
-		
-		
-		list_alternative = new JList(Utils.extractNomiComponenti(selected.getAlternative()));
-		
-		listContainer.add(list_alternative);
-		
-		Utils.buttonDeleteMgmt(list_alternative,button_delFromAlt);
-		buttonUpDownMgmt();
-		
-		list_addFocusList(list_alternative);
-
-		listContainer.repaint();*/
 
 	}
 	
@@ -911,13 +910,16 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		//TODO aggiungere le iconcine in parte ai nomi
 		//TODO disabilitare l'add existing quando non esistono elementi da aggiungere
 		
-		if(list_composite != null && panel_composite!=null)
-			panel_composite.remove(list_composite);
+		pannello_comp.setComponent(selected);
+		
+		
 
 		setGenerici(selected,"Composite");
 		
 		setContentLayout(PANEL_CMP);
-			
+		/*
+			if(list_composite != null && panel_composite!=null)
+			panel_composite.remove(list_composite);
 		list_composite = new JList(Utils.extractNomiComponenti(selected.getOpzioni()));
 		list_composite.setBounds(12, 25, 408, 132);
 		
@@ -927,7 +929,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 		list_addFocusList(list_composite);
 		
-		panel_composite.repaint();
+		panel_composite.repaint();*/
 	}
 	
 	
@@ -1327,7 +1329,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 		private final static String NEW = "New";
 		private final static String FILE = "File";
-		private final static String OPEN = "Open"; //forse meglio "load"?
+		private final static String OPEN = "Load"; //forse meglio "load"?
 		private final static String SAVE = "Save";
 		private final static String EXIT = "Exit";
 		private final static String EDIT = "Edit";
@@ -1402,7 +1404,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 			menuItemNew = new JMenuItem(NEW);
 			menuItemNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
 			menuItemNew.addMouseListener(this);
-			menuItemNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,InputEvent.CTRL_MASK));
 			menuFile.add(menuItemNew);
 
 			menuItemOpen = new JMenuItem(OPEN);
@@ -1410,6 +1411,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 			menuFile.add(menuItemOpen);
 
 			menuItemSave = new JMenuItem(SAVE);
+			menuItemSave.addMouseListener(this);
 			menuItemSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.CTRL_MASK));
 			menuFile.add(menuItemSave);
 
@@ -1423,7 +1425,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
+			System.out.println("click");
 			try {
 				setEnabled(false);
 				//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
@@ -1458,36 +1460,77 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 			if(e.getSource()==menuItemNew)
 				newAction();
 			else if (e.getSource()==menuItemOpen)
-				openAction();
+				loadAction();
 			else if(e.getSource()==menuItemExit)
 				exitAction();
-		}
-
-		private void exitAction() {
-			//TODO chiedere se bisogna salvare
-			dispose();
-			System.exit(0);
-		}
-
-		private void newAction(){
-			String newPath = fileChooser(LOADSAVE);
-
-			if (newPath.length()>0)
-				//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
-				data.setCurrentProject(newPath);
-			//TODO creare nuovo JTree
-		}
-
-		private void openAction(){
-			String newPath = fileChooser(LOADSAVE);
-
-			if (newPath.length()>0)
-				//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
-				//TODO controllare che il nuovo file esista, e sia corretto
-				data.setCurrentProject(newPath);
+			else if(e.getSource()==menuItemSave)
+				saveAction();
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent arg0) {}
 	}
+	
+	
+	private void exitAction() {
+		//TODO chiedere se bisogna salvare
+		dispose();
+		System.exit(0);
+	}
+
+	public void saveAction() {
+		ObjectOutputStream aStream = null;
+		JFileChooser fc = new JFileChooser();
+		Component temporaryLostComponent = null;
+		fc.showSaveDialog(temporaryLostComponent);
+		try {
+			aStream = new ObjectOutputStream(new FileOutputStream("out.dat"));
+			aStream.writeObject(albero.getTree().getComponents());
+			aStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("vai");
+		//XMLEncoder encoder = new XMLEncoder( new BufferedOutputStream(new FileOutputStream("tree.xml")));
+		//encoder.writeObject(immagg);
+		//encoder.close();
+		
+	}
+
+	private void newAction(){
+		String newPath = fileChooser(LOADSAVE);
+
+		if (newPath.length()>0)
+			//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
+			data.setCurrentProject(newPath);
+		//TODO creare nuovo JTree
+	}
+
+	private void loadAction(){
+		
+		
+		String newPath = fileChooser(LOADSAVE);
+
+		if (newPath.length()>0)
+			//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
+			//TODO controllare che il nuovo file esista, e sia corretto
+			data.setCurrentProject(newPath);
+		
+		
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
