@@ -246,4 +246,22 @@ public class Options extends JDialog implements ActionListener{
 		chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, target,i);
 	}
 	
+	
+	protected String getImagePath(){
+		if(textField_defImgDir.getText().length()>0)
+			return textField_defImgDir.getText();
+		else return "";
+	}
+	
+	protected String getTextPath(){
+		if(textField_defTxtDir.getText().length()>0)
+			return textField_defTxtDir.getText();
+		else return "";
+	}
+	protected String getLoadSavePath(){
+		if(textField_defSaveLoadDir.getText().length()>0)
+			return textField_defSaveLoadDir.getText();
+		else return "";
+	}
+	
 }

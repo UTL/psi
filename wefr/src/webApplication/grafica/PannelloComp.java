@@ -48,8 +48,9 @@ public class PannelloComp extends PannelloGeneric {
 		scrollPane.setViewportView(list_components);
 
 		
-		actionAlternative = new AListenerRemoveFromAlt(list_components);
-		bott_del.addActionListener(actionAlternative);
+		
+		
+		
 		this.add(bott_del);
 		this.add(bott_addExist);
 

@@ -68,8 +68,7 @@ public class PannelloAlt extends PannelloGeneric {
 				}});
 				bott_down.setToolTipText("Click here to decrease the priority of selected element");
 				this.add(bott_down);
-				actionAlternative = new AListenerRemoveFromAlt(list_components);
-				bott_del.addActionListener(actionAlternative);
+				
 				this.add(bott_del);
 				this.add(bott_addExist);
 

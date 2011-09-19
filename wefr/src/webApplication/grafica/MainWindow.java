@@ -85,7 +85,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 	public static final int IMAGE = 1;
 	public static final int TEXT = 2;
 	
-	private static Options frameOptions;
+	
+	
+	private static Options frameOptions  = new Options();
+	
+	private CustomFCSave fcSave = new CustomFCSave(frameOptions, this);
+	private CustomFCLoad fcLoad = new CustomFCLoad(frameOptions, this);
+	private CustomFCText fcImage=new CustomFCText(frameOptions, this);
+	private CustomFCImage fcText=new CustomFCImage(frameOptions, this);
 	
 	private static Componente focused;
 
@@ -1112,12 +1119,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 	}
 
 	public void saveAction() {
+		fcSave.showDialog();
+		if(fcSave.getFilePath().length()>0){
 		ObjectOutputStream aStream = null;
-		JFileChooser fc = new JFileChooser();
-		Component temporaryLostComponent = null;
-		fc.showSaveDialog(temporaryLostComponent);
 		try {
-			aStream = new ObjectOutputStream(new FileOutputStream("out.dat"));
+			aStream = new ObjectOutputStream(new FileOutputStream(fcSave.getFilePath()));
 			aStream.writeObject(albero.getTree().getComponents());
 			aStream.close();
 		} catch (IOException e) {
@@ -1127,7 +1133,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		System.out.println("vai");
 		//XMLEncoder encoder = new XMLEncoder( new BufferedOutputStream(new FileOutputStream("tree.xml")));
 		//encoder.writeObject(immagg);
-		//encoder.close();
+		//encoder.close();*/
+		}
 		
 	}
 

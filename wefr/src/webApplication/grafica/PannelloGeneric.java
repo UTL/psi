@@ -28,7 +28,6 @@ import webApplication.business.ComponenteSemplice;
 public abstract class PannelloGeneric extends JPanel implements ListSelectionListener, ActionListener, MyEventClassListener, WindowListener{
 	private static final long serialVersionUID = 4733717394320867492L;
 
-	protected AListenerRemoveFromAlt actionAlternative;
 	protected JButton bott_up;
 	protected JButton bott_down;
 	protected JButton bott_del;
