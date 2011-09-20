@@ -1100,7 +1100,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				e.printStackTrace();
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this,
-					    "The file \"" +fcLoad.getFile().getName() +"\"\n isn't a EUDMamba project or is corrupted.",
+					    "The file \"" +fcLoad.getFile().getName() +"\"\n isn't a EUDMamba project or it is corrupted.",
 					    "Error loading data",
 					    JOptionPane.ERROR_MESSAGE);
 			

@@ -43,6 +43,23 @@ import java.util.Iterator;
 
 public class AddNew extends JDialog {
 
+	private static final String LOAD_TOOLTIP = "Click to load text from an existing file";
+	private static final String IMPORT_BTN = "Import from file";
+	private static final String NAME = "Name of the new element";
+	private static final String NAME_EMPTY = "It's mandatory to fill the name field";
+	
+	private static final String CATE = "Category of the new element";
+	private static final String CATE_EMPTY = "It's mandatory to fill the category field";
+	
+	private static final String URL = "URL of the link";
+	private static final String URL_EMPTY = "It's mandatory to fill the URL field";
+	
+	private static final String TEXT = "Text that will be displayed in the web page";
+	private static final String TEXT_EMPTY = "It's mandatory to fill the text field";
+	
+	private static final String RBTN_LINK = "Select to enable fields of Link element";
+	private static final String RBTN_TEXT = "Select to enable fields of Text element";
+	private static final String RBTN_IMAGE = "Select to enable fields of Image element";
 	/**
 	 * 
 	 */
@@ -120,7 +137,7 @@ public class AddNew extends JDialog {
 		contentPane.add(textField_category);
 		
 		textField_name = new JTextField();
-		textField_name.setToolTipText("name");
+		textField_name.setToolTipText(NAME);
 		textField_name.setColumns(10);
 		textField_name.setBounds(229, 11, 114, 19);
 		contentPane.add(textField_name);
@@ -155,18 +172,19 @@ public class AddNew extends JDialog {
 		panel_link.add(textField_linkText);
 		
 		textField_url = new JTextField();
-		textField_url.setToolTipText("name");
 		textField_url.setColumns(10);
 		textField_url.setBounds(111, 21, 303, 19);
 		panel_link.add(textField_url);
 		
 		rdbtnLink = new JRadioButton("Link");
+		rdbtnLink.setToolTipText(RBTN_LINK);
 		
 		rdbtnLink.setBounds(8, 110, 68, 23);
 		contentPane.add(rdbtnLink);
 		
 		rdbtnText = new JRadioButton("Text");
 		rdbtnText.setSelected(true);
+		rdbtnText.setToolTipText(RBTN_TEXT);
 		rdbtnText.setBounds(8, 238, 68, 23);
 		contentPane.add(rdbtnText);
 		
@@ -177,7 +195,8 @@ public class AddNew extends JDialog {
 		panel_text.setBounds(92, 168, 426, 183);
 		contentPane.add(panel_text);
 		
-		JButton button = new JButton("Import from file");
+		JButton button = new JButton(IMPORT_BTN);
+		button.setToolTipText(LOAD_TOOLTIP);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				readFile();//MainWindow.fileChooser(MainWindow.TEXT), textArea);
@@ -200,6 +219,8 @@ public class AddNew extends JDialog {
 		
 		rdbtnImage = new JRadioButton("Image");
 		rdbtnImage.setBounds(8, 378, 68, 23);
+		rdbtnImage.setToolTipText(RBTN_IMAGE);
+
 		contentPane.add(rdbtnImage);
 		
 		panel_image = new JPanel();
@@ -214,7 +235,7 @@ public class AddNew extends JDialog {
 		panel_image.add(lblPath);
 		
 		textField_imagePath = new JTextField();
-		textField_imagePath.setToolTipText("name");
+		
 		textField_imagePath.setColumns(10);
 		textField_imagePath.setBounds(12, 51, 301, 19);
 		textField_imagePath.getDocument().addDocumentListener(new DocumentListener() {
@@ -332,7 +353,9 @@ public class AddNew extends JDialog {
 		int i;
 		for(i=0; i < figli.length;i++)
 		{
+			
 			updateComponent(figli[i], enable);
+			
 
 		}
 		
@@ -347,12 +370,18 @@ public class AddNew extends JDialog {
 			scrollingArea.getHorizontalScrollBar().setEnabled(enable);
 			scrollingArea.getVerticalScrollBar().setEnabled(enable);
 			scrollingArea.getViewport().getView().setEnabled(enable);
+			manageTooltips(textArea, isBlank(textArea));
 		}
 		if (figlio instanceof javax.swing.JTextField || figlio instanceof javax.swing.JTextArea){
-			if(enable)
+			if(enable){
 				redify((JTextComponent) figlio,isBlank((JTextComponent) figlio));
-			else
-				redify((JTextComponent) figlio, false);
+				figlio.setBackground(new Color(255, 255, 255));
+				}
+			else{
+				((JTextComponent)figlio).setBorder(new LineBorder(new Color(200, 200, 200), 1, true));
+				figlio.setBackground(new Color(245, 245, 245));
+				
+			}
 		}
 	}
 	
@@ -378,13 +407,53 @@ public class AddNew extends JDialog {
 	}
 	
 	private void redify(JTextComponent toRed, boolean b){
-		if(b)
+		if(b){
 			toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo rosso
-		else 
+			
+		}
+		else {
 			toRed.setBorder(new LineBorder(new Color(184, 207, 229), 1, true));//bordo normale
 			
+		}
+		manageTooltips(toRed, b);
+			
 	}
+
+	private void manageTooltips(Component component, boolean b) {
+		if (component == textField_name){
+			if(b)
+				textField_name.setToolTipText(NAME_EMPTY);
+			else
+				textField_name.setToolTipText(NAME);
+		}
+		else if(component == textField_category){
+			if(b)
+				textField_category.setToolTipText(CATE_EMPTY);
+			else
+				textField_category.setToolTipText(CATE);
+		}
+		else if(component == textField_imagePath){
+			if(b)
+				textField_imagePath.setToolTipText(URL_EMPTY);
+			else
+				textField_imagePath.setToolTipText(URL);
+			}
+		else if(component == textField_linkText ){
+			if(b)
+				textField_linkText.setToolTipText(TEXT_EMPTY);
+			else
+				textField_linkText.setToolTipText(TEXT);
+			}
+		else if(component == textArea){
+			if(b)
+				textArea.setToolTipText(TEXT_EMPTY);
+			else
+				textArea.setToolTipText(TEXT);
+		}
+	}
+
 	
+
 	private void setChangeListener (JTextComponent toAttachListener){
 		
 		JTextComponent textComponent_imagepath=toAttachListener;
