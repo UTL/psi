@@ -104,7 +104,7 @@ public class Options extends JDialog implements ActionListener{
 	private void buildJDialog() {
 		setResizable(false);
 		setTitle(OPTIONS);
-		setDefaultCloseOperation(closeOperation());
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

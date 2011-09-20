@@ -1,5 +1,6 @@
 package webApplication.grafica;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -28,12 +29,12 @@ public class PannelloAlt extends PannelloGeneric {
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public PannelloAlt(JFrame m, Options o) {
+	public PannelloAlt(Component m, Options o) {
 		super(m, o);
 		// TODO Auto-generated constructor stub
 	}
 
-	public PannelloAlt(JFrame m, ComponenteAlternative c, Options o) {
+	public PannelloAlt(Component m, ComponenteAlternative c, Options o) {
 		super(m, c, o);
 		// TODO Auto-generated constructor stub
 	}

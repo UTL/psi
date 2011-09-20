@@ -3,6 +3,7 @@ package webApplication.grafica;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog.ModalityType;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -14,10 +15,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -58,7 +65,7 @@ import webApplication.grafica.TreePanel;
 
 import javax.swing.BoxLayout;
 
-public class MainWindow extends JFrame implements TreeSelectionListener, MyEventClassListener, ActionListener {
+public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener, ActionListener {
 
 	/**
 	 * 
@@ -153,8 +160,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		setBounds(100, 100, 728, 502);
 		setResizable(false);
 		data.setThisWindow(this);
+		
+		frameOptions = new Options();
+		frameOptions.addEventListener(this);
+		frameOptions.addWindowListener(this);
 
-		this.new MenuPanel().CreatePanel();
+		setJMenuBar(this.new MenuPanel().CreatePanel()); //aggiungo la menubar
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -228,25 +239,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 		JButton button_5 = new JButton("");
 		button_5.setEnabled(false);
-		button_5.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				setEnabled(false);
-				//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
-				if (data.getMyWizard()== null)
-					data.setMyWizard(new Wizard(frameOptions));
-				data.getMyWizard().setVisible(true);
-				data.getMyWizard().addEventListener(new MyEventClassListener(){
-
-
-					@Override
-					public void handleMyEventClassEvent(MyEventClass e) {
-						// TODO Auto-generated method stub
-						setEnabled(true);
-						data.setMyWizard(null);
-						
-					}});
-			}
-		});
+		
 		button_5.setIcon(new ImageIcon("/home/enrico/Documenti/PSI/icons/list-add-md.png"));
 		button_5.setToolTipText("Open");
 		button_5.setBounds(195, 4, 30, 30);
@@ -257,12 +250,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		button_6.setBounds(228, 4, 30, 30);
 		panel.add(button_6);
 
-		JButton addButton = new JButton("");
+		JButton addButton = new JButton(".");
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addNewWizard();
 			}
 		});
+		
+		
 		//addButton.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
 		addButton.setToolTipText("Open");
 		addButton.setBounds(277, 4, 30, 30);
@@ -569,8 +564,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		//TODO agganciarci il wizard e non l'addnew
 		//TODO andrebbe creata una classe e tolto il codice da qui
 
-		setEnabled(false);
-		setFocusable(false);
+		//setEnabled(false);
+		//setFocusable(false);
 		Wizard nuovo = new Wizard(frameOptions);
 		nuovo.addWindowListener(new WindowAdapter(){
 			@Override
@@ -887,58 +882,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 				+ Font.BOLD, button.getFont().getSize() + 1);
 		button.setFont(newButtonFont);
 	}
-	/*
-	public static String fileChooser(int i){
-		JFileChooser filec=buildFileChooser(i);
-		if(filec==null)
-			return "";
-		if (filec.getSelectedFile()==null){
-			return "";
-		}
-		return filec.getSelectedFile().getAbsolutePath();
-	}
-	
-	private static JFileChooser buildFileChooser (int i){
-		JFileChooser fileChooser=null;
-		if(frameOptions != null){
-			if(i== LOADSAVE && frameOptions.getDefDirLoadSave()!= null && frameOptions.getDefDirLoadSave().length()>0)
-				fileChooser = new JFileChooser(frameOptions.getDefDirLoadSave()); 
-			else if (i == TEXT && frameOptions.getDefDirText()!= null && frameOptions.getDefDirText().length()>0)
-				fileChooser = new JFileChooser(frameOptions.getDefDirText()); 
-			else if (i == IMAGE){
-				if(frameOptions.getDefDirImage()!= null && frameOptions.getDefDirImage().length()>0)
-					fileChooser = new JFileChooser(frameOptions.getDefDirImage()); 
-				else
-					fileChooser = new JFileChooser();
-				
-				fileChooser.addChoosableFileFilter(new CustomFileFilter());
-				fileChooser.setAcceptAllFileFilterUsed(false);
-				System.out.println("asfds");
-			}
-			else {
-				return null;
-			}
-		}
-		else
-			fileChooser = new JFileChooser();
-		
-		chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser); 
-		
-		return fileChooser;
 
-	}
-	
-	
-	public static File getFileFromChooser(int i){
-		return buildFileChooser(i).getSelectedFile();
-	}
-	
-	private void fileChooser(int i, JTextField target){
-		String path;
-		path=fileChooser(i);
-		if (path!= null && path.length()>0)
-			target.setText(path);
-	}*/
 	
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
@@ -989,20 +933,21 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		private JMenuItem menuItemSave;
 		private JMenuItem menuItemExit;
 
-		private void CreatePanel(){
+		private JMenuBar CreatePanel(){
 			menuBar = new JMenuBar();
-			setJMenuBar(menuBar);
+			
 
-			buildMenuFile();
+			buildMenuFile(menuBar);
 
-			buildMenuEdit();
+			buildMenuEdit(menuBar);
 
-			buildMenuOptions();
+			buildMenuOptions(menuBar);
+			return menuBar;
 		}
 
-		private void buildMenuOptions() {
+		private void buildMenuOptions(JMenuBar mb) {
 			JMenu mnOptions = new JMenu(OPTIONS);
-			menuBar.add(mnOptions);
+			mb.add(mnOptions);
 
 			JMenuItem mntmOptions = new JMenuItem("Image directory");
 
@@ -1010,10 +955,10 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 			mnOptions.add(mntmOptions);
 		}
 
-		private void buildMenuEdit() {
+		private void buildMenuEdit(JMenuBar mb) {
 			JMenu mnEdit = new JMenu(EDIT);
 			mnEdit.setEnabled(false);
-			menuBar.add(mnEdit);
+			mb.add(mnEdit);
 
 			JMenuItem mntmUndo = new JMenuItem(UNDO);
 			mntmUndo.setEnabled(false);
@@ -1039,9 +984,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 			mntmPaste.setEnabled(false);
 		}
 
-		private void buildMenuFile() {
+		private void buildMenuFile(JMenuBar mb) {
 			menuFile = new JMenu(FILE);
-			menuBar.add(menuFile);
+			mb.add(menuFile);
 
 			menuItemNew = new JMenuItem(NEW);
 			menuItemNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
@@ -1071,9 +1016,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 			try {
 				setEnabled(false);
 				//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
-				if (frameOptions== null)
-					frameOptions = new Options();
-				frameOptions.addEventListener(this);
+				
 
 				frameOptions.setVisible(true);
 
@@ -1124,18 +1067,17 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 		fcSave.showDialog();
 		if(fcSave.getFilePath().length()>0){
 		ObjectOutputStream aStream = null;
+
 		try {
 			aStream = new ObjectOutputStream(new FileOutputStream(fcSave.getFilePath()));
-			aStream.writeObject(albero.getTree().getComponents());
+			aStream.writeObject(((DefaultMutableTreeNode)albero.getTree().getLastSelectedPathComponent()).getUserObject());
+			//albero.getTree().getLastSelectedPathComponent()
 			aStream.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("vai");
-		//XMLEncoder encoder = new XMLEncoder( new BufferedOutputStream(new FileOutputStream("tree.xml")));
-		//encoder.writeObject(immagg);
-		//encoder.close();*/
 		}
 		
 	}
@@ -1146,12 +1088,73 @@ public class MainWindow extends JFrame implements TreeSelectionListener, MyEvent
 
 	private void loadAction(){
 		fcLoad.showDialog();
-
+		ObjectInputStream aStream = null;
+		if(fcLoad.getFile()!=null)
+		{
+			try {
+				aStream = new ObjectInputStream(new FileInputStream(fcLoad.getFile()));
+				Componente read = (Componente) aStream.readObject();
+				System.out.println("Il tipo del primo nodo e': "+read.getType());
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this,
+					    "The file \"" +fcLoad.getFile().getName() +"\"\n isn't a EUDMamba project or is corrupted.",
+					    "Error loading data",
+					    JOptionPane.ERROR_MESSAGE);
+			
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			
+		}
+			
 		if (fcLoad.getFilePath().length()>0)
 			//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
 			//TODO controllare che il nuovo file esista, e sia corretto
 			data.setCurrentProject(fcLoad.getFilePath());
 		
+		
+	}
+		}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		setEnabled(true);
+		setFocusable(true);
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
 		
 	}
 }

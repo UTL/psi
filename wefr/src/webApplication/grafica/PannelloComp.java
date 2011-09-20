@@ -1,5 +1,6 @@
 package webApplication.grafica;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
@@ -22,11 +23,11 @@ public class PannelloComp extends PannelloGeneric {
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public PannelloComp(JFrame m, Options o) {
+	public PannelloComp(Component m, Options o) {
 		super(m,o);
 	}
 
-	public PannelloComp(JFrame m, Componente c, Options o) {
+	public PannelloComp(Component m, Componente c, Options o) {
 		super(m, c,o);
 	}
 
@@ -34,6 +35,7 @@ public class PannelloComp extends PannelloGeneric {
 			JButton b_addExist, JList l_alt) {
 		super(b_up, b_down, b_del, b_addExist, l_alt);
 	}
+
 
 	@Override
 	protected void buildPanel() {

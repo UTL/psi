@@ -17,11 +17,13 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
 import java.awt.Color;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -39,7 +41,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class AddNew extends JFrame {
+public class AddNew extends JDialog {
 
 	/**
 	 * 
@@ -95,7 +97,10 @@ public class AddNew extends JFrame {
 	 * Create the frame.
 	 */
 	public AddNew(Options fOptions) {
+		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		frameOptions=fOptions;
+		Component c ;
+		
 		fcText = new CustomFCText(frameOptions, this);
 		fcImage=new CustomFCImage(frameOptions, this);
 		setAlwaysOnTop(true);

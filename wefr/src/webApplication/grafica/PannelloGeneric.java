@@ -36,13 +36,13 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	protected ComponenteAlternative alternativeComp;
 	protected ComponenteComposto compostoComp;
 	private final static String DELETE = "Delete";
-	private JFrame parentWindow;
+	private Component parentWindow;
 	private Options frameOptions;
 	
 	/*
 	 * @wbp.parser.constructor
 	 */
-	public PannelloGeneric(JFrame m, Options o){
+	public PannelloGeneric(Component m, Options o){
 		bott_up= new JButton();
 		bott_up.setBounds(12, 4, 46, 53);
 		bott_down= new JButton();
@@ -60,7 +60,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		buildPanel();
 	}
 	
-	public PannelloGeneric(JFrame m, Componente c, Options o){
+	public PannelloGeneric(Component m, Componente c, Options o){
 		this(m, o);
 		assignComponent(c);
 	}

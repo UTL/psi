@@ -10,10 +10,12 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -62,7 +64,7 @@ import webApplication.business.Testo;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 
-public class Wizard extends JFrame  {
+public class Wizard extends JDialog  {
 
 	/**
 	 * 
@@ -137,6 +139,7 @@ public class Wizard extends JFrame  {
 	 * Create the frame.
 	 */
 	public Wizard(Options o) {
+		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 		setTitle("Add element");
 		
