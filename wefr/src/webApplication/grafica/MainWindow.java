@@ -72,11 +72,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	 */
 	private static final long serialVersionUID = 1L;
 	private static JPanel contentPane;
+	
 	private static JTextField textField_Name;
 	private static JTextField textField_Type;
 	private static JTextField textField_Category;
 	private static JComboBox comboBox_Importance;
 	private static JComboBox comboBox_Emphasize;
+	
+	
 	private static JTextArea editorPane_text;
 	private static JTextField textField_imagepath;
 	private static JPanel content_panel;
@@ -1056,7 +1059,34 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		public void mouseReleased(MouseEvent arg0) {}
 	}
 	
-	
+	class GenericProperties implements ActionListener, DocumentListener{
+
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void insertUpdate(DocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 	private void exitAction() {
 		//TODO chiedere se bisogna salvare
 		dispose();
@@ -1073,9 +1103,17 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			aStream.writeObject(((DefaultMutableTreeNode)albero.getTree().getLastSelectedPathComponent()).getUserObject());
 			//albero.getTree().getLastSelectedPathComponent()
 			aStream.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+		}catch (FileNotFoundException e){
+			JOptionPane.showMessageDialog(this, "File "+fcSave.getFile().getName()+" cannot be saved in selected directory",
+				    "Error saving data",
+				    JOptionPane.ERROR_MESSAGE);
+		} 
+		
+		catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "File "+fcSave.getFile().getName()+" cannot be saved",
+				    "Error saving data",
+				    JOptionPane.ERROR_MESSAGE);
 		}
 		System.out.println("vai");
 		}
@@ -1096,11 +1134,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				Componente read = (Componente) aStream.readObject();
 				System.out.println("Il tipo del primo nodo e': "+read.getType());
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, "File "+fcLoad.getFile().getName()+" not found",
+					    "Unexpected error",
+					    JOptionPane.ERROR_MESSAGE);
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this,
-					    "The file \"" +fcLoad.getFile().getName() +"\"\n isn't a EUDMamba project or it is corrupted.",
+					    "The file \"" +fcLoad.getFile().getName() +"\"\n isn't a EUDMamba project or it is corrupted",
 					    "Error loading data",
 					    JOptionPane.ERROR_MESSAGE);
 			
@@ -1108,14 +1147,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				//e.printStackTrace();
 				
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Unexpected error",
+					    "Error loading data",
+					    JOptionPane.ERROR_MESSAGE);
 			
 		}
 			
 		if (fcLoad.getFilePath().length()>0)
 			//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
-			//TODO controllare che il nuovo file esista, e sia corretto
 			data.setCurrentProject(fcLoad.getFilePath());
 		
 		
@@ -1157,6 +1196,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	public void windowOpened(WindowEvent arg0) {
 		
 	}
+	
+	
 }
 
 
