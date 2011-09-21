@@ -43,23 +43,23 @@ import java.util.Iterator;
 
 public class AddNew extends JDialog {
 
-	private static final String LOAD_TOOLTIP = "Click to load text from an existing file";
-	private static final String IMPORT_BTN = "Import from file";
-	private static final String NAME = "Name of the new element";
-	private static final String NAME_EMPTY = "It's mandatory to fill the name field";
+	static final String LOAD_TOOLTIP = "Click to load text from an existing file";
+	static final String IMPORT_BTN = "Import from file";
+	static final String NAME = "Name of the new element";
+	static final String NAME_EMPTY = "It's mandatory to fill the name field";
 	
-	private static final String CATE = "Category of the new element";
-	private static final String CATE_EMPTY = "It's mandatory to fill the category field";
+	static final String CATE = "Category of the new element";
+	static final String CATE_EMPTY = "It's mandatory to fill the category field";
 	
-	private static final String URL = "URL of the link";
-	private static final String URL_EMPTY = "It's mandatory to fill the URL field";
+	static final String URL = "URL of the link";
+	static final String URL_EMPTY = "It's mandatory to fill the URL field";
 	
-	private static final String TEXT = "Text that will be displayed in the web page";
-	private static final String TEXT_EMPTY = "It's mandatory to fill the text field";
+	static final String TEXT = "Text that will be displayed in the web page";
+	static final String TEXT_EMPTY = "It's mandatory to fill the text field";
 	
-	private static final String RBTN_LINK = "Select to enable fields of Link element";
-	private static final String RBTN_TEXT = "Select to enable fields of Text element";
-	private static final String RBTN_IMAGE = "Select to enable fields of Image element";
+	static final String RBTN_LINK = "Select to enable fields of Link element";
+	static final String RBTN_TEXT = "Select to enable fields of Text element";
+	static final String RBTN_IMAGE = "Select to enable fields of Image element";
 	/**
 	 * 
 	 */

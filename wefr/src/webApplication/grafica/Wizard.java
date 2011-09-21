@@ -1,5 +1,6 @@
 package webApplication.grafica;
 
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.HeadlessException;
 
@@ -51,6 +52,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 import javax.swing.SwingConstants;
 
 import webApplication.business.Componente;
@@ -64,14 +66,14 @@ import webApplication.business.Testo;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 
-public class Wizard extends JDialog  {
+public class Wizard extends JDialog implements DocumentListener  {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8706297359676605479L;
 	private JPanel contentPane;
-	private TextField name;
+	private JTextField name = new JTextField();
 	private JComboBox choice_type;
 	private JTabbedPane tabbedPane;
 	private JButton btnDone_text;
@@ -174,19 +176,12 @@ public class Wizard extends JDialog  {
 		choice_type.setBounds(181, 165, 174, 20);
 		panel.add(choice_type);
 		
-		name = new TextField();
-		name.addTextListener(new TextListener() {
-			public void textValueChanged(TextEvent e) {
-				if (name.getText().equalsIgnoreCase(""))
-					button.setEnabled(false);
-				else if (name.getText().matches(" * "))
-					     button.setEnabled(false);
-				else button.setEnabled(true);
-			}
-		});
+		name.setText("Element0"); //TODO mettere default incrementale
+		name.getDocument().addDocumentListener(this);
+		
 		name.setBounds(181, 106, 174, 22);
 		panel.add(name);
-		name.setText("Element0"); //TODO mettere default incrementale
+		
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -767,21 +762,12 @@ public class Wizard extends JDialog  {
 	    textField_imagepath = new JTextField();
 	    
 	    textField_imagepath.setToolTipText("Path of the image file");
-		textField_imagepath.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				
-				updateImagePath();
-			}
-			public void removeUpdate(DocumentEvent e) {
-				updateImagePath();
-			// text was deleted
-			}
-			public void insertUpdate(DocumentEvent e) {
-				updateImagePath();
-
-			// text was inserted
-			}
-			});
+		textField_imagepath.getDocument().addDocumentListener(this);
+		
+		if(textField_imagepath.getText().equals(""));{//Serve a triggerare l'evento di change
+			textField_imagepath.setText("1");
+			textField_imagepath.setText(""); 
+		}
 		
 		textField_imagepath.addFocusListener(new FocusAdapter() {
 			@Override
@@ -1126,51 +1112,6 @@ public class Wizard extends JDialog  {
 			}
 		}
 	 
-	 private void popolaProperties(Vector<ComponenteSemplice> componenti){
-			//FIXME questo metodo fa schifo
-			//TODO verificare se il list_composite ha le scrollbar (non credo)
-			//TODO aggiungere le iconcine in parte ai nomi
-			//TODO disabilitare l'add existing quando non esistono elementi da aggiungere
-			
-			/*if(list_composite != null && panel_composite_s3!=null)
-				panel_composite_s3.remove(list_composite);
-			
-			String[] nomiComponenti= new String[componenti.size()];
-			
-			//TODO mettere icone per il tipo degli oggetti
-			int i;
-			for(i=0; i < componenti.size();i++){
-				nomiComponenti[i]=componenti.get(i).getNome();
-			}
-			
-			list_composite = new JList(nomiComponenti);
-			list_composite.setBounds(28, 89, 408, 132);
-			list_composite.addFocusListener(new FocusAdapter() {
-				@Override
-				public void focusGained(FocusEvent arg0) {
-					if(list_composite.getSelectedIndex()>-1) //esiste almeno un elemento
-						button_deleteComp.setEnabled(true);
-				}
-			});
-			panel_composite_s3.add(list_composite);
-		
-			button_deleteComp.setEnabled(false);
-
-			list_composite.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-				
-					if(list_composite.getSelectedIndex()>-1) //esiste almeno un elemento
-						button_deleteComp.setEnabled(true);
-				}
-			});
-			
-			panel_composite_s3.repaint();
-			
-			*/
-			
-		}
-	 
 	 
 	 
 	 private void updateImagePath() {
@@ -1235,6 +1176,79 @@ public class Wizard extends JDialog  {
 				return cmp;
 				}
 		}
+		
+		private void redify(JTextComponent toRed, boolean b){
+			if(b){
+				toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo rosso
+				
+			}
+			else {
+				toRed.setBorder(new LineBorder(new Color(184, 207, 229), 1, true));//bordo normale
+				
+			}
+			manageTooltips(toRed, b);
+				
+		}
+		
+		private boolean isBlank(JTextComponent toCheck){
+			if (toCheck.getText().trim().length()>0)
+				return false;
+			return true;
+		}
+		
+
+		private void manageTooltips(Component component, boolean b) {
+			if (component == textField_imagepath){
+				if(b)
+					textField_imagepath.setToolTipText(AddNew.URL_EMPTY);
+				else
+					textField_imagepath.setToolTipText(AddNew.URL);
+				}
+			else if (component == name){
+				if(b)
+					name.setToolTipText(AddNew.NAME_EMPTY);
+				else
+					name.setToolTipText(AddNew.NAME);
+				}
+			}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			updateComponent(e);
+			
+		}
+		
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			updateComponent(e);
+			
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			updateComponent(e);
+			
+		}
+
+		private void updateComponent(DocumentEvent e) {
+			if(textField_imagepath.getDocument()==e.getDocument()){
+				imageUpdate();
+			}
+			else if(name.getDocument()==e.getDocument() ){
+				redify(name,isBlank(name));
+				manageTooltips(name, isBlank(name));
+				button.setEnabled(!isBlank(name));
+				
+			}
+		}
+
+		private void imageUpdate() {
+			updateImagePath();
+			redify(textField_imagepath,isBlank(textField_imagepath));
+			manageTooltips(textField_imagepath, isBlank(textField_imagepath));
+		}
+
+		
 		
 }
 
