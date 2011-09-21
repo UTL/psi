@@ -73,11 +73,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private static final long serialVersionUID = 1L;
 	private static JPanel contentPane;
 	
-	private static JTextField textField_Name;
-	private static JTextField textField_Type;
-	private static JTextField textField_Category;
-	private static JComboBox comboBox_Importance;
-	private static JComboBox comboBox_Emphasize;
+	
 	
 	
 	private static JTextArea editorPane_text;
@@ -129,6 +125,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	
 	public static final int MOVE_UP = -1;
 	public static final int MOVE_DOWN = +1;
+	
+	private GenericProperties genProperties;
 
 	
 	
@@ -280,112 +278,16 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		panel.add(btnGenerateWebsite);
 
 		JPanel properties = new JPanel();
-		properties.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-
-		properties.setLayout(null);
-		properties.setBounds(249, 49, 466, 392);
-		contentPane.add(properties);
-
-		JPanel id_panel = new JPanel();
-		id_panel.setBounds(12, 18, 193, 125);
-		properties.add(id_panel);
-		id_panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207,
-				229)), " ID ", TitledBorder.LEADING, TitledBorder.TOP, null,
-				new Color(51, 51, 51)));
-		id_panel.setLayout(null);
-
-		JLabel lblName = new JLabel("Name:");
-		lblName.setBounds(12, 40, 51, 15);
-		id_panel.add(lblName);
-
-		textField_Name = new JTextField();
-		textField_Name.setToolTipText("name");
-		
-		// TODO mettere check che il nome non sia gia' esistente
-		textField_Name.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				setFocusedName();
-				albero.getTree().repaint();
-			}
-			public void removeUpdate(DocumentEvent e) {
-				setFocusedName();
-				albero.getTree().repaint();
-			}
-			public void insertUpdate(DocumentEvent e) {
-				setFocusedName();
-				albero.getTree().repaint();
-			}
-			});
-		textField_Name.setBounds(67, 40, 114, 19);
-		id_panel.add(textField_Name);
-		textField_Name.setColumns(10);
-
-		JLabel lblType = new JLabel("Type:");
-		lblType.setBounds(12, 70, 51, 15);
-		id_panel.add(lblType);
-
-		textField_Type = new JTextField();
-		textField_Type.setEditable(false);
-		textField_Type.setColumns(10);
-		textField_Type.setBounds(67, 70, 114, 19);
-		id_panel.add(textField_Type);
-
 		JPanel presentation_panel = new JPanel();
-		presentation_panel.setBorder(new TitledBorder(new LineBorder(new Color(
-				184, 207, 229)), " Presentation ", TitledBorder.LEADING,
-				TitledBorder.TOP, null, new Color(51, 51, 51)));
-		presentation_panel.setBounds(217, 18, 237, 125);
-		properties.add(presentation_panel);
-		presentation_panel.setLayout(null);
-
-		JLabel lblCategory = new JLabel("Category:");
-		lblCategory.setBounds(12, 24, 81, 15);
-		presentation_panel.add(lblCategory);
-
-		JLabel lblEmphasize = new JLabel("Emphasize:");
-		lblEmphasize.setBounds(12, 54, 81, 14);
-		presentation_panel.add(lblEmphasize);
-
-		comboBox_Importance = new JComboBox(importanze);
-		comboBox_Importance.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				setFocusedImpo();
-			}
-		});
+		JPanel id_panel = new JPanel();
 		
-		comboBox_Importance.setBounds(111, 49, 112, 24);
-		presentation_panel.add(comboBox_Importance);
-
-		textField_Category = new JTextField();
-		textField_Category.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				setFocusedCategory();
-			}
-			public void removeUpdate(DocumentEvent e) {
-				setFocusedCategory();
-			}
-			public void insertUpdate(DocumentEvent e) {
-				setFocusedCategory();
-			}
-			});
+		initEmptyPanels(properties, presentation_panel,id_panel ); //Crea i JPanel vuoti
 		
-		textField_Category.setColumns(10);
-		textField_Category.setBounds(109, 22, 114, 19);
-		presentation_panel.add(textField_Category);
-
-		JLabel lblImportance = new JLabel("Importance:");
-		lblImportance.setBounds(12, 86, 97, 15);
-		presentation_panel.add(lblImportance);
-
-		comboBox_Emphasize = new JComboBox(categorie);
-		comboBox_Emphasize.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setFocusedEmph();
-			}
-		});
+		contentPane.add(properties);
 		
-		comboBox_Emphasize.setBounds(111, 85, 112, 24);
-		presentation_panel.add(comboBox_Emphasize);
+		genProperties= this.new GenericProperties(presentation_panel, id_panel); //Popola i JPanel dall'inner class
+		
+
 
 		// TODO Gestire i diversi contenuti per i vari tipi di oggetto
 		// (soprattutto i composite e alternative)
@@ -563,6 +465,28 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		popolaOggetti();
 
 	}
+	private void initEmptyPanels(JPanel properties,JPanel presentation_panel, JPanel id_panel ) {
+		
+		properties.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		properties.setLayout(null);
+		properties.setBounds(249, 49, 466, 392);
+		
+		presentation_panel.setBorder(new TitledBorder(new LineBorder(new Color(
+				184, 207, 229)), " Presentation ", TitledBorder.LEADING,
+				TitledBorder.TOP, null, new Color(51, 51, 51)));
+		presentation_panel.setBounds(217, 18, 237, 125);
+		properties.add(presentation_panel);
+		presentation_panel.setLayout(null);
+		
+		id_panel.setBounds(12, 18, 193, 125);
+		properties.add(id_panel);
+		id_panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207,
+				229)), " ID ", TitledBorder.LEADING, TitledBorder.TOP, null,
+				new Color(51, 51, 51)));
+		id_panel.setLayout(null);
+		
+	}
+
 	private void addNewWizard() {
 		//TODO agganciarci il wizard e non l'addnew
 		//TODO andrebbe creata una classe e tolto il codice da qui
@@ -604,37 +528,25 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 	
 
-	private static void setGenerici(Componente selected, String type) {
-		textField_Name.setText(selected.getNome());
+	
 
-		textField_Category.setText(selected.getCategoria());
-
-		textField_Type.setText(type);
-
-		// TODO verificare che l'ordine sia giusto (che il numero restituito dal
-		// getenfasi corrisp a quello del menu a tendina)
-		comboBox_Emphasize.setSelectedIndex(selected.getEnfasi());
-		comboBox_Importance.setSelectedIndex(selected.getVisibilita());
-
-	}
-
-	private static void popolaProperties(Testo selected) {
-		setGenerici(selected, "Text");
+	private void popolaProperties(Testo selected) {
+		genProperties.setGenerici(selected, "Text");
 		editorPane_text.setText(selected.getTesto());
 
 		setContentLayout(PANEL_TXT);
 	}
 
-	private static void popolaProperties(Immagine selected) {
-		setGenerici(selected, "Image");
+	private void popolaProperties(Immagine selected) {
+		genProperties.setGenerici(selected, "Image");
 		textField_imagepath.setText(selected.getPath());
 
 		setContentLayout(PANEL_IMG);
 
 	}
 	
-	private static void popolaProperties(Link selected){
-		setGenerici(selected,"Link");
+	private void popolaProperties(Link selected){
+		genProperties.setGenerici(selected,"Link");
 		textField_url.setText(selected.getUri());
 
 		textField_linktext.setText(selected.getTesto());
@@ -642,19 +554,19 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		setContentLayout(PANEL_LNK);
 	}
 
-	private static void popolaProperties(ComponenteAlternative selected) {
-		setGenerici(selected, "Alternative");
+	private void popolaProperties(ComponenteAlternative selected) {
+		genProperties.setGenerici(selected, "Alternative");
 		
 		pannello_alterplus.setComponent(selected);
 		setContentLayout(PANEL_ALT);
 
 	}
 	
-	private static void popolaProperties(ComponenteComposto selected){
+	private void popolaProperties(ComponenteComposto selected){
 
 		pannello_comp.setComponent(selected);
 
-		setGenerici(selected,"Composite");
+		genProperties.setGenerici(selected,"Composite");
 		
 		setContentLayout(PANEL_CMP);
 
@@ -694,7 +606,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		focusedLnk = null;
 	}
 
-	public static void setFocus(Componente selected){
+	public void setFocus(Componente selected){
 		if (selected.getType()==Testo.TEXTTYPE)
 			setFocus((Testo)selected);
 		else if (selected.getType()==Immagine.IMAGETYPE)
@@ -707,7 +619,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			setFocus((Link)selected);
 	}
 	
-	private static void setFocus(Immagine selected) {
+	private void setFocus(Immagine selected) {
 		unFocus();
 		focusedImg = selected;
 		setFocusGeneric(selected);
@@ -715,7 +627,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 	}
 
-	private static void setFocus(Testo selected) {
+	private void setFocus(Testo selected) {
 		unFocus();
 		focusedTxt = selected;
 		setFocusGeneric(selected);
@@ -723,7 +635,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 	}
 
-	private static void setFocus(Link selected) {
+	private void setFocus(Link selected) {
 		unFocus();
 		focusedLnk = selected;
 		setFocusGeneric(selected);
@@ -731,7 +643,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 	}
 
-	private static void setFocus(ComponenteComposto selected) {
+	private void setFocus(ComponenteComposto selected) {
 		unFocus();
 		setFocusGeneric(selected);
 		popolaProperties(selected);
@@ -739,7 +651,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 	}
 
-	private static void setFocus(ComponenteAlternative selected) {
+	private void setFocus(ComponenteAlternative selected) {
 		unFocus();
 		setFocusGeneric(selected);
 		popolaProperties(selected);
@@ -751,26 +663,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		focused = comp;
 	}
 
-	// TODO verificare se va
-	private void setFocusedName() {
-		if (focused != null)
-			focused.setNome(textField_Name.getText());
-	}
-
-	private void setFocusedCategory() {
-		if (focused != null)
-			focused.setCategoria(textField_Category.getText());
-	}
-
-	private void setFocusedEmph() {
-		if (focused != null)
-			focused.setEnfasi(comboBox_Emphasize.getSelectedIndex());//
-	}
-
-	private void setFocusedImpo() {
-		if (focused != null)
-			focused.setVisibilita(comboBox_Importance.getSelectedIndex());// focused.setVisibilita
-	}
+	
 
 	private void updateTextContent() {
 		if (focusedTxt != null)
@@ -1060,30 +953,155 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 	
 	class GenericProperties implements ActionListener, DocumentListener{
+		private  JTextField textField_Name;
+		private  JTextField textField_Type;
+		private  JTextField textField_Category;
+		private  JComboBox comboBox_Importance;
+		private  JComboBox comboBox_Emphasize;
+		private final static String IMP = "imp";
+		private final static String EMP = "emp";
+		
+		public GenericProperties(JPanel presentation_panel, JPanel id_panel){
+			buildIdPanel(id_panel);
+			
+			buildPresentationPanel(presentation_panel);
+		}
 
+		private void buildPresentationPanel(JPanel presentation_panel) {
+			
+
+			initPresentationJLabels(presentation_panel);
+					
+			comboBox_Importance = new JComboBox(importanze);
+			comboBox_Importance.setActionCommand(IMP);
+			comboBox_Importance.addActionListener(this);
+			
+			comboBox_Importance.setBounds(111, 49, 112, 24);
+			presentation_panel.add(comboBox_Importance);
+
+			textField_Category = new JTextField();
+			textField_Category.getDocument().addDocumentListener(this);
+			
+			textField_Category.setColumns(10);
+			textField_Category.setBounds(109, 22, 114, 19);
+			presentation_panel.add(textField_Category);
+
+			comboBox_Emphasize = new JComboBox(categorie);
+			comboBox_Emphasize.setActionCommand(EMP);
+			comboBox_Emphasize.addActionListener(this);
+			
+			comboBox_Emphasize.setBounds(111, 85, 112, 24);
+			presentation_panel.add(comboBox_Emphasize);
+		}
+
+		private void initPresentationJLabels(JPanel presentation_panel) {
+			JLabel lblCategory = new JLabel("Category:");
+			lblCategory.setBounds(12, 24, 81, 15);
+			presentation_panel.add(lblCategory);
+
+			JLabel lblEmphasize = new JLabel("Emphasize:");
+			lblEmphasize.setBounds(12, 54, 81, 14);
+			presentation_panel.add(lblEmphasize);
+			
+			JLabel lblImportance = new JLabel("Importance:");
+			lblImportance.setBounds(12, 86, 97, 15);
+			presentation_panel.add(lblImportance);
+		}
+
+		private void buildIdPanel(JPanel id_panel) {
+			JLabel lblName = new JLabel("Name:");
+			lblName.setBounds(12, 40, 51, 15);
+			id_panel.add(lblName);
+
+			textField_Name = new JTextField();
+			textField_Name.setToolTipText("name");
+			
+			// TODO mettere check che il nome non sia gia' esistente
+			textField_Name.getDocument().addDocumentListener(this);
+			textField_Name.setBounds(67, 40, 114, 19);
+			id_panel.add(textField_Name);
+			textField_Name.setColumns(10);
+
+			JLabel lblType = new JLabel("Type:");
+			lblType.setBounds(12, 70, 51, 15);
+			id_panel.add(lblType);
+
+			textField_Type = new JTextField();
+			textField_Type.setEditable(false);
+			textField_Type.setColumns(10);
+			textField_Type.setBounds(67, 70, 114, 19);
+			id_panel.add(textField_Type);
+		}
+		
+		protected void setGenerici(Componente selected, String type) {
+			textField_Name.setText(selected.getNome());
+
+			textField_Category.setText(selected.getCategoria());
+
+			textField_Type.setText(type);
+
+			// TODO verificare che l'ordine sia giusto (che il numero restituito dal
+			// getenfasi corrisp a quello del menu a tendina)
+			comboBox_Emphasize.setSelectedIndex(selected.getEnfasi());
+			comboBox_Importance.setSelectedIndex(selected.getVisibilita());
+		}
+		
+		// TODO verificare se va
+		private void setFocusedName() {
+			if (focused != null)
+				focused.setNome(textField_Name.getText());
+		}
+
+		private void setFocusedCategory() {
+			if (focused != null)
+				focused.setCategoria(textField_Category.getText());
+		}
+
+		private void setFocusedEmph() {
+			if (focused != null)
+				focused.setEnfasi(comboBox_Emphasize.getSelectedIndex());//
+		}
+
+		private void setFocusedImpo() {
+			if (focused != null)
+				focused.setVisibilita(comboBox_Importance.getSelectedIndex());// focused.setVisibilita
+		}
 		
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
+			if (arg0.getActionCommand()==IMP)
+				setFocusedImpo();
+			else if(arg0.getActionCommand()==EMP)
+				setFocusedEmph();
 			
 		}
 
 		@Override
 		public void changedUpdate(DocumentEvent arg0) {
-			// TODO Auto-generated method stub
+			manageDocumentEvent(arg0);
+				
 			
 		}
 
 		@Override
 		public void insertUpdate(DocumentEvent arg0) {
-			// TODO Auto-generated method stub
+			manageDocumentEvent(arg0);
 			
 		}
 
 		@Override
 		public void removeUpdate(DocumentEvent arg0) {
-			// TODO Auto-generated method stub
+			manageDocumentEvent(arg0);
 			
+		}
+		
+		private void manageDocumentEvent(DocumentEvent arg0) {
+			if(arg0.getDocument()==textField_Category.getDocument())
+				setFocusedCategory();
+			else if(arg0.getDocument()==textField_Name.getDocument()){
+				setFocusedName();
+				albero.getTree().repaint();
+			}
 		}
 		
 	}
