@@ -102,6 +102,9 @@ public class Wizard extends JDialog  {
 	private ComponenteAlternative alt;
 	private ComponenteComposto cmp;
 	
+	private CustomFCImage fcImage;
+	private CustomFCText fcText;
+	
 	private Vector<ComponenteSemplice> componentiComposite;
 	//private DefaultListModel componentiAlternative;
 	
@@ -144,6 +147,8 @@ public class Wizard extends JDialog  {
 		setTitle("Add element");
 		
 		frameOptions= o;
+		fcImage = new CustomFCImage(frameOptions, this);
+		fcText=new CustomFCText(frameOptions, this);
 		
 		//TODO mettere input da history (magari con un metodo)
 		
@@ -484,7 +489,21 @@ public class Wizard extends JDialog  {
 		btnImportFromFile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
+				
+				
+				try {
+					//TODO escapare caratteri speciali
+					fcText.showDialog();
+
+					if (fcText.getFile() != null){
+						String letto = Wizard.readFile(fcText.getFile());
+						if ( letto!= null && letto.length()>0)
+							text.setText(letto);
+					}
+				} catch (IOException e1) {
+				}
+				
+				/*JFileChooser fileChooser = new JFileChooser();
 				try {
 					chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, text);
 				} catch (HeadlessException e1) {
@@ -493,7 +512,7 @@ public class Wizard extends JDialog  {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
+				}*/
 				btnDone_text.setEnabled(true);
 			}
 		});
@@ -780,8 +799,11 @@ public class Wizard extends JDialog  {
 		btnBrowse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser();
-				chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, textField_imagepath);
+				fcImage.showDialog();
+				fcImage.setJTFPath(textField_imagepath);
+				
+				//JFileChooser fileChooser = new JFileChooser();
+				//chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, textField_imagepath);
 				btnDone_Image.setEnabled(true);
 			}
 		});

@@ -543,15 +543,16 @@ public class AddNew extends JDialog {
 		try {
 			//TODO escapare caratteri speciali
 			fcText.showDialog();
-			
+
 			if (fcText.getFile() != null){
-			String letto = Wizard.readFile(fcText.getFile());
-			if ( letto!= null && letto.length()>0)
-				textArea.setText(letto);}
+				String letto = Wizard.readFile(fcText.getFile());
+				if ( letto!= null && letto.length()>0)
+					textArea.setText(letto);
+			}
 		} catch (IOException e) {
 		}
 	}
-	
+
 	private ComponenteSemplice getNuovoComp(){
 		//TODO escapare i vari campi
 		//TODO quando viene invocato il metodo bisogna passargli i valori di enfasi e importanza
