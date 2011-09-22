@@ -85,7 +85,6 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 		//pannello contenente il tree
 		JScrollPane scrollPane = new JScrollPane(tree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
-		//model.addTreeModelListener(this);
 		undoManager = new UndoManager();
 		undoManager.setLimit(LIMITUNDO);
 		undoSupport = new UndoableEditSupport();
@@ -114,51 +113,7 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 	 * @param node The node to remove
 	 */
 	protected void removeNode(DefaultMutableTreeNode node) {
-        /*TreePath currentSelection = tree.getSelectionPath();
-		if (currentSelection != null) {
-			if (currentSelection.getParentPath() != null) {
-				DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
-				String name = currentNode.toString();//((Componente) currentNode.getUserObject()).toString();
-				String message = DELETEMESSAGE + name + CONFIRMMESSAGE;
-				// Chiede conferma per la cancellazione dell'elemento selezionato
-				int choice = JOptionPane.showConfirmDialog(
-						this.getTopLevelAncestor(), message, "Warning!",JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-				if (choice == 0) {
-					if (currentSelection != null) {
-						if (currentNode.getChildCount() != 0) {
-							message = name + NOTEMPTYMESSAGE;
-							// Chiede conferma per eliminare un componente contenente altri elementi
-							choice = JOptionPane.showConfirmDialog(this.getTopLevelAncestor(), message,"Warning!", JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
-						}
-						if (choice == 1) {
-							return;
-						}
-						DefaultMutableTreeNode parent = (DefaultMutableTreeNode) currentNode.getParent();
-						int parentIndex;
-						if (parent.isRoot())	{
-							parentIndex = -1;
-						}
-						else	{
-							DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-							parentIndex = root.getIndex(parent);
-						}
-						
-						UndoableEdit edit = new UndoableRemoveNode(tree,(Componente)currentNode.getUserObject(),parentIndex,parent.getIndex(currentNode));
-						undoSupport.postEdit(edit);*/
-						
-						model.removeNodeFromParent(node);/*
-					}
-				}
-			}
-        	else	{
-        		//è stata selezionata la radice perciò avviso l'utente che non può essere cancellata->risolto: la root non può essere selezionata
-        		JOptionPane.showMessageDialog(this.getTopLevelAncestor(),ROOTDELETE,"Error!",JOptionPane.ERROR_MESSAGE);
-        	}
-		}
-		else	{
-			//Segnala che non c'è nulla selezionato quindi non può rimuovere nulla->da rivedere in disabilita Remove se non c'è nulla selezionato
-			JOptionPane.showMessageDialog(this.getTopLevelAncestor(),EMPTYSELECTION,"Error!",JOptionPane.ERROR_MESSAGE);
-		}*/
+		model.removeNodeFromParent(node);
 	}
 
 
@@ -186,10 +141,6 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 		if (((Componente)node.getUserObject()).isSimple())	{
 			node.setAllowsChildren(false);
 		}
-		
-		//UndoableEdit edit = new UndoableAddNode(tree,(Componente) node.getUserObject(),parentIndex,parent.getIndex(node));
-		//undoSupport.postEdit(edit);
-		
 	}
 	
 	/**
@@ -207,30 +158,6 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 		tree.getInputMap().put(KeyStroke.getKeyStroke("control X"), "none");
 		tree.getInputMap().put(KeyStroke.getKeyStroke("control V"), "none");
 	}
-
-	/**
-	 * TODO questi non mi serviranno più!!!
-	 */
-	/*public void actionPerformed(ActionEvent e) {
-        String command = e.getActionCommand();
-        if (ADD_COMMAND.equals(command)) {
-        	ComponenteComposto composto1 = new ComponenteComposto("Composite1","Comp",0,0);
-            addNode(null,new DefaultMutableTreeNode(composto1));
-            /*Testo testo1 = new Testo("Testo1","Txt",0,0,"Sono un testo");
-            addNode(null,testo1);
-            Immagine img1 = new Immagine("Immagine1","Img",0,0,"Boh");
-            addNode(null,img1);
-            Link link1 = new Link("Link1", "lnk", 0, 0, "boh", "boh");
-            addNode(null, link1);
-            ComponenteAlternative alternative1 = new ComponenteAlternative("Alternative1","Alte",0,0);
-            addNode(null,alternative1);
-        } else if (REMOVE_COMMAND.equals(command)) {
-            removeSelectedNode();
-        } else if (CLEAR_COMMAND.equals(command)) {
-            clear();
-        }
-	}*/
-
 
 	/**
 	 * @param e
@@ -402,6 +329,81 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 		
 	}
 	
+	public class ChangePriorityAction extends AbstractAction	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5836454808095990928L;
+		private static final String OLDINDEX = "OldIndex";
+		private static final String PARENT = "Parent";
+		private static final String GAP = "gap";
+		
+		public void actionPerformed(ActionEvent arg0)	{
+			// TODO Verificare che funzioni effettivamente
+			//Il senso: prendo la selezione, prendo il parent e swappo spostandolo
+			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) getValue(PARENT);
+			int oldIndex = (Integer)getValue(OLDINDEX);
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) parent.getChildAt(oldIndex);
+			int gap = (Integer)getValue(GAP);
+			//se sono in testa alla lista non posso diminuire viceversa se sono in fondo non posso scendere->già gestito anche nell'interfaccia disabilitando i bottoni
+			if ((oldIndex!=0 && gap!=-1) || (oldIndex!=(parent.getChildCount()-1) && gap!=+1))	{
+				model.removeNodeFromParent(node);
+				model.insertNodeInto(node, parent, oldIndex+gap);
+				((ComponenteMolteplice)parent.getUserObject()).spostaOpzione((ComponenteSemplice)node.getUserObject(),+gap);
+				UndoableChangePriority edit = new UndoableChangePriority(tree, parent, oldIndex, gap);
+				undoSupport.postEdit(edit);
+			}
+		}
+	}
+	
+	public class ChangeField extends AbstractAction	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8756265766454125789L;
+		private static final String COMPONENTEINDEX = "Componente";
+		private static final String PARENTINDEX = "ParentIndex";
+		private static final String FIELD = "Field";
+		private static final String OLDVALUE = "OldValue";
+		private static final String NEWVALUE = "NewValue";
+		
+		public static final String NOME = "Nome";
+		public static final String CATEGORY = "Category";
+		public static final String EMPHASIS = "Category";
+		public static final String VISIBILITY = "Category";
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			//TODO Verificare che funzioni correttamente
+			DefaultMutableTreeNode parent;
+			if ((Integer)getValue(PARENTINDEX)==-1)	{
+				parent = rootNode;
+			}
+			else	{
+				parent = (DefaultMutableTreeNode) rootNode.getChildAt((Integer)getValue(PARENTINDEX));
+			}
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) parent.getChildAt((Integer)getValue(COMPONENTEINDEX));
+			Componente comp = (Componente)node.getUserObject();
+			String field = (String)getValue(FIELD);
+			if (field==NOME)	{
+				comp.setNome((String)getValue(NEWVALUE));
+			}
+			else if (field==CATEGORY)	{
+				comp.setCategoria((String)getValue(NEWVALUE));
+			}
+			else if (field==EMPHASIS)	{
+				comp.setEnfasi((Integer)getValue(NEWVALUE));
+			}
+			else if (field==VISIBILITY)	{
+				comp.setVisibilita((Integer)getValue(NEWVALUE));
+			}
+			UndoableChangeField edit = new UndoableChangeField(tree, (Integer)getValue(PARENTINDEX), (Integer)getValue(COMPONENTEINDEX), (String)getValue(FIELD), (Object)getValue(OLDVALUE), (Object)getValue(NEWVALUE));
+			undoSupport.postEdit(edit);
+		}
+		
+	}
 	
 	public class UndoAction extends AbstractAction	{
 

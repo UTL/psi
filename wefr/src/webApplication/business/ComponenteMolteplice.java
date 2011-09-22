@@ -1,6 +1,7 @@
 package webApplication.business;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Vector;
 
 public class ComponenteMolteplice extends Componente implements Serializable {
@@ -37,6 +38,17 @@ public class ComponenteMolteplice extends Componente implements Serializable {
 	public void cancellaOpzione(int i) {
 		opzioni.remove(i);
 	}
+	
+	/**
+	 * Metodo per spostare una opzione
+	 * @param c L'opzione da spostare
+	 * @param p Il salto da fare
+	 */
+	public void spostaOpzione(ComponenteSemplice c, int p)	{
+		int indice = cercaOpzione(c.getNome());
+		Vector<ComponenteSemplice> opzioni = getOpzioni();
+		Collections.swap(opzioni, indice, indice+p);
+	}
 
 	/**
 	 * 
@@ -53,7 +65,7 @@ public class ComponenteMolteplice extends Componente implements Serializable {
 	 * 
 	 * @param cs
 	 */
-	public void setOpzione(Vector<ComponenteSemplice> cs) {
+	public void setOpzioni(Vector<ComponenteSemplice> cs) {
 		opzioni = cs;
 	}
 
