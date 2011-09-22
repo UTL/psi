@@ -86,6 +86,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private static JPanel erroreTestoLink;
 	private static JPanel erroreUrl;
 	private static JButton button_1;
+	private static String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+
 	
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
@@ -1215,6 +1217,16 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		
 	}
 	
+	
+	private static boolean IsMatch(String s) {
+        try {
+            Pattern patt = Pattern.compile(regex);
+            Matcher matcher = patt.matcher(s);
+            return matcher.matches();
+        } catch (RuntimeException e) {
+        return false;
+    }   
+    }        
 	
 }
 

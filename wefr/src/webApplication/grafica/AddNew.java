@@ -40,6 +40,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddNew extends JDialog {
 
@@ -70,6 +72,8 @@ public class AddNew extends JDialog {
 	private JTextField textField_linkText;
 	private JTextField textField_url;
 	private JTextField textField_imagePath;
+	
+	private static String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 	
 	private JPanel panel_link;
 	private JPanel panel_text;
@@ -374,7 +378,10 @@ public class AddNew extends JDialog {
 		}
 		if (figlio instanceof javax.swing.JTextField || figlio instanceof javax.swing.JTextArea){
 			if(enable){
-				redify((JTextComponent) figlio,isBlank((JTextComponent) figlio));
+				if(figlio == textField_url)
+					redify((JTextComponent) figlio,isBlank((JTextComponent) figlio)||errorUrl());
+				else
+					redify((JTextComponent) figlio,isBlank((JTextComponent) figlio));
 				figlio.setBackground(new Color(255, 255, 255));
 				}
 			else{
@@ -459,28 +466,34 @@ public class AddNew extends JDialog {
 		JTextComponent textComponent_imagepath=toAttachListener;
 		textComponent_imagepath.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
-				redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
-				updateAddBtn();
+				changeEvent(e);
 			}
 			public void removeUpdate(DocumentEvent e) {
-				redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
-				updateAddBtn();
+				changeEvent(e);
 			}
 			public void insertUpdate(DocumentEvent e) {
-				redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
-				updateAddBtn();
+				changeEvent(e);
 			}
 			});
 		
 		
 	}
 
+	private void changeEvent(DocumentEvent e) {
+		if(e.getDocument()== textField_url.getDocument())
 	
-	private JTextComponent fromDocToJComp(Document doc){
-		if(doc== textField_category.getDocument())
-			return textField_category;
-		else if(doc== textField_imagePath.getDocument())
-			return textField_imagePath;
+			redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument())))||errorUrl());
+	
+		else
+			redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
+		updateAddBtn();
+	}
+
+		private JTextComponent fromDocToJComp(Document doc){
+			if(doc== textField_category.getDocument())
+				return textField_category;
+			else if(doc== textField_imagePath.getDocument())
+				return textField_imagePath;
 		else if(doc== textField_linkText.getDocument())
 			return textField_linkText;
 		else if(doc== textField_name.getDocument())
@@ -521,8 +534,13 @@ public class AddNew extends JDialog {
 	}
 
 	private boolean errorUrl() {
-		// TODO Auto-generated method stub
-		return false;
+		if(!IsMatch(textField_url.getText())&& IsMatch("http://"+textField_url.getText())){
+			//textField_url.setText("http://"+textField_url.getText());
+			//String temp = "http://"+textField_url.getText();
+			//textField_url.setText(temp);
+			}
+		System.out.println("Match errorurl"+IsMatch(textField_url.getText()));
+		return !(IsMatch(textField_url.getText()) || IsMatch("http://"+textField_url.getText()));
 	}
 
 	private boolean fileError(){
@@ -590,6 +608,16 @@ public class AddNew extends JDialog {
 			((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
 		}
 	}
+	
+	private static boolean IsMatch(String s) {
+		try {
+			Pattern patt = Pattern.compile(regex);
+			Matcher matcher = patt.matcher(s);
+			return matcher.matches();
+		} catch (RuntimeException e) {
+			return false;
+		}   
+	}  
 	
 }
 
