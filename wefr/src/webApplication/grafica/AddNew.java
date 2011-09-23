@@ -52,10 +52,13 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 	static final String CATE_EMPTY = "It's mandatory to fill the category field";
 	
 	static final String URL = "URL of the link";
-	static final String URL_EMPTY = "It's mandatory to fill the URL field";
+	static final String URL_EMPTY = "This field must be a valid url (ex www.myweb.com)";
 	
 	static final String TEXT = "Text that will be displayed in the web page";
 	static final String TEXT_EMPTY = "It's mandatory to fill the text field";
+	
+	static final String PATH = "Path of image file";
+	static final String PATH_ERROR = "The path is wrong, select an image using \"Browse\" button";
 	
 	static final String RBTN_LINK = "Select to enable fields of Link element";
 	static final String RBTN_TEXT = "Select to enable fields of Text element";
@@ -449,11 +452,11 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 			else
 				textField_category.setToolTipText(CATE);
 		}
-		else if(component == textField_imagePath){
+		else if(component == textField_url){
 			if(b)
-				textField_imagePath.setToolTipText(URL_EMPTY);
+				textField_url.setToolTipText(URL_EMPTY);
 			else
-				textField_imagePath.setToolTipText(URL);
+				textField_url.setToolTipText(URL);
 			}
 		else if(component == textField_linkText ){
 			if(b)
@@ -466,6 +469,12 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 				textArea.setToolTipText(TEXT_EMPTY);
 			else
 				textArea.setToolTipText(TEXT);
+		}
+		else if(component == textField_imagePath){
+			if(b)
+				textField_imagePath.setToolTipText(TEXT_EMPTY);
+			else
+				textField_imagePath.setToolTipText(TEXT);
 		}
 	}
 
@@ -637,8 +646,7 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 
 	@Override
 	public void changedUpdate(DocumentEvent arg0) {
-		changeEvent(arg0);
-		
+		changeEvent(arg0);		
 	}
 
 	@Override
