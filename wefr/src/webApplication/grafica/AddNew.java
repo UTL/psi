@@ -23,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JToolTip;
 
 import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
@@ -109,7 +110,9 @@ public class AddNew extends JDialog implements DocumentListener {
 	/**
 	 * Create the frame.
 	 */
+
 	public AddNew(Options fOptions, String title) {
+
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		frameOptions=fOptions;
 		fcText = new CustomFCText(frameOptions, this);
@@ -143,7 +146,13 @@ public class AddNew extends JDialog implements DocumentListener {
 		category.setBounds(119, 38, 81, 15);
 		contentPane.add(category);
 		
-		panel_link = new JPanel();
+		panel_link = new JPanel(){
+		      public JToolTip createToolTip() {
+		          MultiLineToolTip tip = new MultiLineToolTip();
+		          tip.setComponent(this);
+		          return tip;
+		        }
+		      };
 		panel_link.setEnabled(false);
 		
 		panel_link.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
@@ -329,6 +338,10 @@ public class AddNew extends JDialog implements DocumentListener {
 		redify(textField_name,isBlank(textField_name));
 		redify(textField_category,isBlank(textField_category));
 		updateAddBtn();
+		
+		 MultiLineToolTip tip = new MultiLineToolTip();
+	        tip.setComponent(panel_link);
+	        panel_link.setToolTipText("Hello\nworld");
 		
 	}
 	
