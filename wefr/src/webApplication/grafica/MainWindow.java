@@ -117,7 +117,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 	private static JTextField textField_linktext;
 	private static JTextField textField_url;
-	//TODO le due stringhe andrebbero esportate da qualche altra parte
 	
 	private static final String PANEL_TXT="panel_text";
 	private static final String PANEL_IMG="panel_image";
@@ -175,109 +174,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JPanel panel = new JPanel();
-		panel.setBounds(5, 0, 710, 37);
-		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING,
-				TitledBorder.TOP, null, null));
-		contentPane.add(panel);
-		panel.setLayout(null);
-
-		JButton button = new JButton("");
-		button.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				setFocus(data.getTxt());
-			}
-		});
-		button.setBounds(12, 4, 30, 30);
-		panel.add(button);
-		button.setToolTipText("Open");
-		button.setIcon(new ImageIcon(
-				MainWindow.class
-						.getResource("/com/sun/java/swing/plaf/motif/icons/TreeOpen.gif")));
-
-		JButton button_3 = new JButton("");
-		button_3.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				setFocus(data.getImg());
-			}
-		});
-		button_3.setToolTipText("Open");
-		button_3.setBounds(45, 4, 30, 30);
-		panel.add(button_3);
-
-		JButton button_4 = new JButton("");
-		button_4.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				setFocus(data.getLnk());
-			}
-		});
-		button_4.setToolTipText("Open");
-		button_4.setBounds(78, 4, 30, 30);
-		panel.add(button_4);
-
-		button_1 = new JButton("");
-		button_1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				setFocus(data.getAlt());
-			}
-		});
-		button_1.setToolTipText("Open");
-		button_1.setBounds(120, 4, 30, 30);
-		panel.add(button_1);
-
-		JButton button_2 = new JButton("");
-		button_2.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				setFocus(data.getCmp());
-			}
-		});
-		button_2.setToolTipText("Open");
-		button_2.setBounds(153, 4, 30, 30);
-		panel.add(button_2);
-
-		JButton button_5 = new JButton("");
-		button_5.setEnabled(false);
+		JPanel panelButtonsBar = new JPanel();
 		
-		button_5.setIcon(new ImageIcon("/home/enrico/Documenti/PSI/icons/list-add-md.png"));
-		button_5.setToolTipText("Open");
-		button_5.setBounds(195, 4, 30, 30);
-		panel.add(button_5);
-
-		JButton button_6 = new JButton("");
-		button_6.setToolTipText("Open");
-		button_6.setBounds(228, 4, 30, 30);
-		panel.add(button_6);
-
-		JButton addButton = new JButton(".");
-		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				addNewWizard();
-			}
-		});
-		
-		
-		//addButton.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
-		addButton.setToolTipText("Open");
-		addButton.setBounds(277, 4, 30, 30);
-		panel.add(addButton);
-
-		JButton button_8 = new JButton("");
-		//button_8.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/gtk/resources/gtk-cancel-4.png")));
-		button_8.setToolTipText("Open");
-		button_8.setBounds(310, 4, 30, 30);
-		panel.add(button_8);
-
-		JButton btnGenerateWebsite = new JButton("GENERATE WEBSITE");
-		
-		btnGenerateWebsite.setToolTipText("Open");
-		btnGenerateWebsite.setBounds(365, 4, 187, 30);
-		boldify(btnGenerateWebsite);
-		panel.add(btnGenerateWebsite);
+		initPanelButtonsBar(panelButtonsBar);
 
 		JPanel properties = new JPanel();
 		JPanel presentation_panel = new JPanel();
@@ -289,80 +188,67 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		
 		genProperties= this.new GenericProperties(presentation_panel, id_panel); //Popola i JPanel dall'inner class
 		
+		
+		initContentPanel(properties);
 
+		initPanelImage();
+		
+		initPanelComposite();
+		
+		initPanelAlternative();
 
-		// TODO Gestire i diversi contenuti per i vari tipi di oggetto
-		// (soprattutto i composite e alternative)
-		// TODO mettere immagine priorità per alternative, up e down
-		content_panel = new JPanel();
-		content_panel.setBorder(new TitledBorder(new LineBorder(new Color(184,
-				207, 229)), " Content ", TitledBorder.LEADING,
-				TitledBorder.TOP, null, new Color(51, 51, 51)));
-		content_panel.setBounds(12, 155, 442, 225);
-		properties.add(content_panel);
-		content_panel.setLayout(new CardLayout(0, 0));
+		initPanelPanelLink();
+		
 
-		JPanel panel_image = new JPanel();
-		content_panel.add(panel_image, PANEL_IMG);
-		panel_image.setLayout(null);
+		initPanelText();
 
-		JLabel label_2 = new JLabel("File path:");
-		label_2.setBounds(22, 12, 91, 14);
-		panel_image.add(label_2);
-				
-		textField_imagepath = new JTextField();
-		textField_imagepath.setToolTipText("Path of the image file");
-		textField_imagepath.getDocument().addDocumentListener(new DocumentListener() {
+		initPanelTree();
+		
+		
+
+		// TODO rimuovere invocazione a testing concluso
+		popolaOggetti();
+
+	}
+
+	private void initPanelTree() {
+		albero = new TreePanel();
+		albero.setBounds(15, 63, 222, 378);
+		contentPane.add(albero);
+		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
+		albero.getTree().addTreeSelectionListener(this);
+	}
+
+	private void initPanelText() {
+		JPanel panel_text = new JPanel();
+		content_panel.add(panel_text, PANEL_TXT);
+		panel_text.setLayout(null);
+
+		JLabel label_namecontent = new JLabel("Name:");
+		label_namecontent.setBounds(12, 5, 45, 15);
+		panel_text.add(label_namecontent);
+		
+		editorPane_text = new JTextArea();
+		JScrollPane scrollingArea = new JScrollPane(editorPane_text);
+		scrollingArea.setBounds(12, 32, 408, 156);
+		editorPane_text.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
-				
-				updateImagePath();
+				updateTextContent();
 			}
 			public void removeUpdate(DocumentEvent e) {
-				updateImagePath();
-			// text was deleted
+				updateTextContent();
 			}
 			public void insertUpdate(DocumentEvent e) {
-				updateImagePath();
+				updateTextContent();
 
-			// text was inserted
-			}
-			});
-		
-		textField_imagepath.setBounds(22, 42, 292, 22);
-		panel_image.add(textField_imagepath);
-		
-		JButton button_browseImg = new JButton("Browse\r\n");
-		button_browseImg.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				fcImage.showDialog();
-				fcImage.setJTFPath(textField_imagepath);
-				
 			}
 		});
-		button_browseImg.setBounds(331, 39, 89, 29);
-		panel_image.add(button_browseImg);
 		
-		errorePath = new JPanel();
-		errorePath.setToolTipText("The file doesn't exist or is not readable");
-		errorePath.setBorder(new LineBorder(Color.RED));
-		errorePath.setBounds(19, 38, 300, 30);
-		panel_image.add(errorePath);
-		
-		panel_composite = new JPanel();
+		//editorPane_text.setBounds(12, 32, 408, 156);
+		panel_text.add(scrollingArea);
+	}
 
-		content_panel.add(panel_composite, PANEL_CMP);
-		panel_composite.setLayout(null);
-		pannello_comp = new PannelloComp(this, frameOptions);
-		pannello_comp.bott_del.setLocation(33, 165);
-		pannello_comp.setSize(426, 196);
-		pannello_comp.setLocation(-16, 1);
-		panel_composite.add(pannello_comp);
-		
-		pannello_alterplus = new PannelloAlt(this, frameOptions);
-		//buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
-		content_panel.add(pannello_alterplus, PANEL_ALT);
-
+	private void initPanelPanelLink() {
 		JPanel panel_link = new JPanel();
 		content_panel.add(panel_link, PANEL_LNK);
 		panel_link.setLayout(null);
@@ -426,46 +312,189 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		erroreUrl.setToolTipText("");
 		erroreUrl.setBounds(90, 42, 319, 24);
 		panel_link.add(erroreUrl);
-		
+	}
 
-		JPanel panel_text = new JPanel();
-		content_panel.add(panel_text, PANEL_TXT);
-		panel_text.setLayout(null);
+	private void initPanelAlternative() {
+		pannello_alterplus = new PannelloAlt(this, frameOptions);
+		//buildPanelAlternative(panel_alternative, button_up, button_down, button_delFromAlt, button_AddExisAlt, list_alternative);
+		content_panel.add(pannello_alterplus, PANEL_ALT);
+	}
 
-		JLabel label_namecontent = new JLabel("Name:");
-		label_namecontent.setBounds(12, 5, 45, 15);
-		panel_text.add(label_namecontent);
-		
-		editorPane_text = new JTextArea();
-		JScrollPane scrollingArea = new JScrollPane(editorPane_text);
-		scrollingArea.setBounds(12, 32, 408, 156);
-		editorPane_text.getDocument().addDocumentListener(new DocumentListener() {
+	private void initPanelComposite() {
+		panel_composite = new JPanel();
+
+		content_panel.add(panel_composite, PANEL_CMP);
+		panel_composite.setLayout(null);
+		pannello_comp = new PannelloComp(this, frameOptions);
+		pannello_comp.bott_del.setLocation(33, 165);
+		pannello_comp.setSize(426, 196);
+		pannello_comp.setLocation(-16, 1);
+		panel_composite.add(pannello_comp);
+	}
+
+	private void initContentPanel(JPanel properties) {
+		// TODO mettere immagine priorità per alternative, up e down
+		content_panel = new JPanel();
+		content_panel.setBorder(new TitledBorder(new LineBorder(new Color(184,
+				207, 229)), " Content ", TitledBorder.LEADING,
+				TitledBorder.TOP, null, new Color(51, 51, 51)));
+		content_panel.setBounds(12, 155, 442, 225);
+		properties.add(content_panel);
+		content_panel.setLayout(new CardLayout(0, 0));
+	}
+
+	private void initPanelImage() {
+		JPanel panel_image = new JPanel();
+		content_panel.add(panel_image, PANEL_IMG);
+		panel_image.setLayout(null);
+
+		JLabel label_2 = new JLabel("File path:");
+		label_2.setBounds(22, 12, 91, 14);
+		panel_image.add(label_2);
+				
+		textField_imagepath = new JTextField();
+		textField_imagepath.setToolTipText("Path of the image file");
+		textField_imagepath.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
-				updateTextContent();
+				
+				updateImagePath();
 			}
 			public void removeUpdate(DocumentEvent e) {
-				updateTextContent();
+				updateImagePath();
+			// text was deleted
 			}
 			public void insertUpdate(DocumentEvent e) {
-				updateTextContent();
+				updateImagePath();
 
+			// text was inserted
+			}
+			});
+		
+		textField_imagepath.setBounds(22, 42, 292, 22);
+		panel_image.add(textField_imagepath);
+		
+		JButton button_browseImg = new JButton("Browse\r\n");
+		button_browseImg.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				fcImage.showDialog();
+				fcImage.setJTFPath(textField_imagepath);
+				
+			}
+		});
+		button_browseImg.setBounds(331, 39, 89, 29);
+		panel_image.add(button_browseImg);
+		
+		errorePath = new JPanel();
+		errorePath.setToolTipText("The file doesn't exist or is not readable");
+		errorePath.setBorder(new LineBorder(Color.RED));
+		errorePath.setBounds(19, 38, 300, 30);
+		panel_image.add(errorePath);
+	}
+
+	private void initPanelButtonsBar(JPanel panelButtonsBar) {
+		panelButtonsBar.setBounds(5, 0, 710, 37);
+		panelButtonsBar.setBorder(new TitledBorder(null, "", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
+		contentPane.add(panelButtonsBar);
+		panelButtonsBar.setLayout(null);
+
+		JButton button = new JButton("");
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				setFocus(data.getTxt());
+			}
+		});
+		button.setBounds(12, 4, 30, 30);
+		panelButtonsBar.add(button);
+		button.setToolTipText("Open");
+		button.setIcon(new ImageIcon(
+				MainWindow.class
+						.getResource("/com/sun/java/swing/plaf/motif/icons/TreeOpen.gif")));
+
+		JButton button_3 = new JButton("");
+		button_3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setFocus(data.getImg());
+			}
+		});
+		button_3.setToolTipText("Open");
+		button_3.setBounds(45, 4, 30, 30);
+		panelButtonsBar.add(button_3);
+
+		JButton button_4 = new JButton("");
+		button_4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setFocus(data.getLnk());
+			}
+		});
+		button_4.setToolTipText("Open");
+		button_4.setBounds(78, 4, 30, 30);
+		panelButtonsBar.add(button_4);
+
+		button_1 = new JButton("");
+		button_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				setFocus(data.getAlt());
+			}
+		});
+		button_1.setToolTipText("Open");
+		button_1.setBounds(120, 4, 30, 30);
+		panelButtonsBar.add(button_1);
+
+		JButton button_2 = new JButton("");
+		button_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setFocus(data.getCmp());
+			}
+		});
+		button_2.setToolTipText("Open");
+		button_2.setBounds(153, 4, 30, 30);
+		panelButtonsBar.add(button_2);
+
+		JButton button_5 = new JButton("");
+		button_5.setEnabled(false);
+		
+		button_5.setIcon(new ImageIcon("/home/enrico/Documenti/PSI/icons/list-add-md.png"));
+		button_5.setToolTipText("Open");
+		button_5.setBounds(195, 4, 30, 30);
+		panelButtonsBar.add(button_5);
+
+		JButton button_6 = new JButton("");
+		button_6.setToolTipText("Open");
+		button_6.setBounds(228, 4, 30, 30);
+		panelButtonsBar.add(button_6);
+
+		JButton addButton = new JButton(".");
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				addNewWizard();
 			}
 		});
 		
-		//editorPane_text.setBounds(12, 32, 408, 156);
-		panel_text.add(scrollingArea);
-
-		albero = new TreePanel();
-		albero.setBounds(15, 63, 222, 378);
-		contentPane.add(albero);
-		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
-		albero.getTree().addTreeSelectionListener(this);
 		
+		//addButton.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
+		addButton.setToolTipText("Open");
+		addButton.setBounds(277, 4, 30, 30);
+		panelButtonsBar.add(addButton);
+
+		JButton button_8 = new JButton("");
+		//button_8.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/gtk/resources/gtk-cancel-4.png")));
+		button_8.setToolTipText("Open");
+		button_8.setBounds(310, 4, 30, 30);
+		panelButtonsBar.add(button_8);
+
+		JButton btnGenerateWebsite = new JButton("GENERATE WEBSITE");
 		
-
-		// TODO rimuovere invocazione a testing concluso
-		popolaOggetti();
-
+		btnGenerateWebsite.setToolTipText("Open");
+		btnGenerateWebsite.setBounds(365, 4, 187, 30);
+		boldify(btnGenerateWebsite);
+		panelButtonsBar.add(btnGenerateWebsite);
 	}
 	private void initEmptyPanels(JPanel properties,JPanel presentation_panel, JPanel id_panel ) {
 		
@@ -517,12 +546,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 							
 						}
 			}
-/*
-			@Override
-			public void handleMyEventClassEvent(EventObject e) {
-				// TODO Auto-generated method stub
-				
-			}*/
+
 			});
 
 		nuovo.setVisible(true);
@@ -598,7 +622,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	 }
 	 
 
-	// TODO agganciare i metodi setfocus al click nelle foglie sull'albero...
 
 	// metodo per togliere il focus all'oggetto precedente
 	private static void unFocus() {
@@ -649,7 +672,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		unFocus();
 		setFocusGeneric(selected);
 		popolaProperties(selected);
-		// TODO implementare parte specifica
 
 	}
 
@@ -657,7 +679,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		unFocus();
 		setFocusGeneric(selected);
 		popolaProperties(selected);
-		// TODO implementare parte specifica
 
 	}
 
@@ -670,8 +691,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private void updateTextContent() {
 		if (focusedTxt != null)
 			focusedTxt.setTesto(editorPane_text.getText());
-		// TODO finire updatecontent per i vari tipi di oggetto
-
 	}
 	
 	private boolean checkLinkText(){
@@ -690,7 +709,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	
 	private void updateLinkText(){
 		if(focusedLnk!= null)
-
 			focusedLnk.setTesto(textField_linktext.getText());
 		checkLinkText();
 			//TODO sarebbe bello sollevare un'eccezione ogni volta che questo if non si verifica (e anche per tutti gli altri metodi di update)
@@ -726,14 +744,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 
 	private void updateImagePath() {
-		// TODO Evitare di salvare se il path e' errato? Se si sostituire il metodo con il commento qua sotto
-		/* if(focusedImg!= null && checkImagePath())
-		 *	 focusedImg.setPath(textField_imagepath.getText());
-		 */
 		if(focusedImg!= null)
-
 			focusedImg.setPath(textField_imagepath.getText());
-
 		checkImagePath();
 	}
 
@@ -750,22 +762,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		return false;
 	}
 	
-	
-	static void chooseFile(int chooserValue, JFileChooser fc, JTextField target){
-		//TODO settare le cartelle di default
-		if (chooserValue == JFileChooser.APPROVE_OPTION) {
-            target.setText(fc.getSelectedFile().getAbsolutePath());
-        } 
-	}
-	
-	static String chooseFile(int chooserValue, JFileChooser fc){
-		//TODO settare le cartelle di default
-		String output = "";
-		if (chooserValue == JFileChooser.APPROVE_OPTION) {
-			output = fc.getSelectedFile().getAbsolutePath();
-        } 
-		return output;
-	}
 	
 	public static boolean isPathCorrect(String path){
 		//TODO fare prove con files e dir verificare che funzioni
@@ -1218,15 +1214,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 	
 	
-	private static boolean IsMatch(String s) {
-        try {
-            Pattern patt = Pattern.compile(regex);
-            Matcher matcher = patt.matcher(s);
-            return matcher.matches();
-        } catch (RuntimeException e) {
-        return false;
-    }   
-    }        
+	
+         
 	
 }
 
