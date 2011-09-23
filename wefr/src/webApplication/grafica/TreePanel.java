@@ -89,8 +89,8 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 			}
 		}
 		rootNode.removeAllChildren();
-		model.nodeStructureChanged(rootNode);
-		model.reload();
+		//model.nodeStructureChanged(rootNode);
+		//model.reload();
 	}
 	
 
@@ -249,4 +249,19 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		}
 		return true;
 	}
+	
+	public Vector<Componente> getComponenti()	{
+		Vector<Componente> comps = new Vector<Componente>();
+		for (int i=0; i< rootNode.getChildCount(); i++)	{
+			comps.add((Componente)((DefaultMutableTreeNode) rootNode.getChildAt(i)).getUserObject());
+		}
+		return comps;
+	}
+	
+	public void setComponenti(Vector<Componente> comps)	{
+		for (int i=0; i<comps.size(); i++)	{
+			addNode(null,(Componente)comps.get(i));
+		}
+	}
+	
 }
