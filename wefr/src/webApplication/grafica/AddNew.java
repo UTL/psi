@@ -18,6 +18,9 @@ import javax.swing.text.JTextComponent;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -38,7 +41,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AddNew extends JDialog implements DocumentListener {
+public class AddNew extends JDialog implements DocumentListener, KeyListener {
 
 	static final String LOAD_TOOLTIP = "Click to load text from an existing file";
 	static final String IMPORT_BTN = "Import from file";
@@ -68,7 +71,10 @@ public class AddNew extends JDialog implements DocumentListener {
 	private JTextField textField_url;
 	private JTextField textField_imagePath;
 	
-	private static String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+	private static final String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+	private Pattern valid_url = Pattern.compile(regex);
+	private static final String allowedUrlChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYWZZ0123456789+&@#/%?=~_|!:,.;";
+	
 	
 	private JPanel panel_link;
 	private JPanel panel_text;
@@ -333,6 +339,8 @@ public class AddNew extends JDialog implements DocumentListener {
 		textField_url.getDocument().addDocumentListener(this);
 		textArea.getDocument().addDocumentListener(this);
 		
+		textField_url.addKeyListener(this);
+		
 		enabler(panel_text);
 		
 		redify(textField_name,isBlank(textField_name));
@@ -541,7 +549,7 @@ public class AddNew extends JDialog implements DocumentListener {
 			//String temp = "http://"+textField_url.getText();
 			//textField_url.setText(temp);
 			}
-		System.out.println("Match errorurl"+IsMatch(textField_url.getText()));
+		//System.out.println("Match errorurl"+IsMatch(textField_url.getText()));
 		return !(IsMatch(textField_url.getText()) || IsMatch("http://"+textField_url.getText()));
 	}
 
@@ -611,14 +619,20 @@ public class AddNew extends JDialog implements DocumentListener {
 		}
 	}
 	
-	private static boolean IsMatch(String s) {
+	private boolean IsMatch(String s) {
 		try {
-			Pattern patt = Pattern.compile(regex);
-			Matcher matcher = patt.matcher(s);
+			
+			Matcher matcher = valid_url.matcher(s);
 			return matcher.matches();
 		} catch (RuntimeException e) {
 			return false;
 		}   
+	}
+	
+	private boolean allowedChar(char c){
+		if(allowedUrlChar.indexOf(c)==-1)
+			return false;
+		return true;
 	}
 
 	@Override
@@ -637,6 +651,25 @@ public class AddNew extends JDialog implements DocumentListener {
 	public void removeUpdate(DocumentEvent arg0) {
 		changeEvent(arg0);
 		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		if(allowedChar(arg0.getKeyChar()))
+			arg0.consume();
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		if(allowedChar(arg0.getKeyChar()))
+			arg0.consume();
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		if(!allowedChar(arg0.getKeyChar()))
+			arg0.consume();
 	}  
 	
 }
