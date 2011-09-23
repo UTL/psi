@@ -15,6 +15,7 @@ import webApplication.business.ComponenteSemplice;
 
 public class PannelloComp extends PannelloGeneric {
 
+	private static final String COMPOSITE = "Composite";
 	/**
 	 * 
 	 */
@@ -96,6 +97,11 @@ public class PannelloComp extends PannelloGeneric {
 				list_components = new JList();
 		
 		
+	}
+
+	@Override
+	protected String addNewTitle() {
+		return COMPOSITE;
 	}
 
 

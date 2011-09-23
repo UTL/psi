@@ -173,7 +173,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand()!= DELETE){
 			parentWindow.setEnabled(false);
-			AddNew nuovo = new AddNew(frameOptions);
+			AddNew nuovo = new AddNew(frameOptions, addNewTitle());
 
 			nuovo.addWindowListener(this);
 			nuovo.addEventListener(this);
@@ -185,6 +185,8 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		}
 	}
 	
+	protected abstract String addNewTitle();
+
 	public void removeElements(){
 		int i; 
 		for(i=list_components.getSelectedIndices().length-1; i>=0; i--){

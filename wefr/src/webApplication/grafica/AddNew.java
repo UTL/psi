@@ -17,18 +17,13 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
 import java.awt.Color;
-import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import webApplication.business.Componente;
 import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
@@ -36,14 +31,13 @@ import webApplication.business.Testo;
 
 import java.awt.event.ActionEvent;
 import java.awt.Font;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AddNew extends JDialog {
+public class AddNew extends JDialog implements DocumentListener {
 
 	static final String LOAD_TOOLTIP = "Click to load text from an existing file";
 	static final String IMPORT_BTN = "Import from file";
@@ -94,8 +88,6 @@ public class AddNew extends JDialog {
 	private CustomFCText fcText;
 	private CustomFCImage fcImage;
 	
-	private boolean anError=true;
-	
 	private Options frameOptions;
 
 	/**
@@ -105,7 +97,7 @@ public class AddNew extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AddNew frame = new AddNew(new Options());
+					AddNew frame = new AddNew(new Options(), "");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -117,17 +109,14 @@ public class AddNew extends JDialog {
 	/**
 	 * Create the frame.
 	 */
-	public AddNew(Options fOptions) {
+	public AddNew(Options fOptions, String title) {
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		frameOptions=fOptions;
-		Component c ;
-		
 		fcText = new CustomFCText(frameOptions, this);
 		fcImage=new CustomFCImage(frameOptions, this);
-		setAlwaysOnTop(true);
 
 		setResizable(false);
-		setTitle("Add new to Alternative");
+		setTitle("Add new element to "+ title);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 532, 542);
 		contentPane = new JPanel();
@@ -329,11 +318,11 @@ public class AddNew extends JDialog {
 			}
 		});
 		
-		setChangeListener(textField_category);
-		setChangeListener(textField_linkText);
-		setChangeListener(textField_name);
-		setChangeListener(textField_url);
-		setChangeListener(textArea);
+		textField_category.getDocument().addDocumentListener(this);
+		textField_linkText.getDocument().addDocumentListener(this);
+		textField_name.getDocument().addDocumentListener(this);
+		textField_url.getDocument().addDocumentListener(this);
+		textArea.getDocument().addDocumentListener(this);
 		
 		enabler(panel_text);
 		
@@ -460,7 +449,7 @@ public class AddNew extends JDialog {
 	}
 
 	
-
+/*
 	private void setChangeListener (JTextComponent toAttachListener){
 		
 		JTextComponent textComponent_imagepath=toAttachListener;
@@ -478,7 +467,7 @@ public class AddNew extends JDialog {
 		
 		
 	}
-
+*/
 	private void changeEvent(DocumentEvent e) {
 		if(e.getDocument()== textField_url.getDocument())
 	
@@ -617,6 +606,24 @@ public class AddNew extends JDialog {
 		} catch (RuntimeException e) {
 			return false;
 		}   
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent arg0) {
+		changeEvent(arg0);
+		
+	}
+
+	@Override
+	public void insertUpdate(DocumentEvent arg0) {
+		changeEvent(arg0);
+		
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent arg0) {
+		changeEvent(arg0);
+		
 	}  
 	
 }

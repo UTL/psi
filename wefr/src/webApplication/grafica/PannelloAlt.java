@@ -18,6 +18,7 @@ import webApplication.business.ComponenteSemplice;
 
 public class PannelloAlt extends PannelloGeneric {
 
+	private static final String ALTERNATIVE = "Alternative";
 	/**
 	 * 
 	 */
@@ -113,6 +114,11 @@ public class PannelloAlt extends PannelloGeneric {
 			else
 				list_components = new JList();
 		}
+
+	@Override
+	protected String addNewTitle() {
+		return ALTERNATIVE;
+	}
 
 	
 
