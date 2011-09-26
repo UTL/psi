@@ -160,7 +160,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 		}
 		model.insertNodeInto(childNode, parent, parent.getChildCount());
 		//NOTA: Java SE7 pu� fare switch su String ma Java SE6 no!
-		if (node.getType()==Testo.TEXTTYPE || node.getType()==Immagine.IMAGETYPE || node.getType()==Link.LINKTYPE)	{
+		if (node.getType().equals(Testo.TEXTTYPE) || node.getType().equals(Immagine.IMAGETYPE) || node.getType().equals(Link.LINKTYPE))	{
 			childNode.setAllowsChildren(false);
 		}
 		if (!node.isSimple()){
