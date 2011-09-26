@@ -967,10 +967,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 	 
 	 
 	 private void updateImagePath() {
-			// TODO Evitare di salvare se il path e' errato? Se si sostituire il metodo con il commento qua sotto
-			/* if(focusedImg!= null && checkImagePath())
-			 *	 focusedImg.setPath(textField_imagepath.getText());
-			 */
+			
 			if(focusedImg!= null)
 				focusedImg.setPath(textField_imagepath.getText());
 			checkImagePath();
@@ -990,7 +987,6 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		}
 	 
 		private boolean isPathCorrect(String path){
-			//TODO fare prove con files e dir verificare che funzioni
 			File daControllare = new File(path);
 			if(daControllare.isFile() && daControllare.canRead())
 				return true;
@@ -1016,15 +1012,11 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 			else if(choice_type.getSelectedItem()==LINK)
 				return new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), textField_url.getText(), textField_url.getText());
 			else if(choice_type.getSelectedItem()==ALT){
-				
-				//TODO settare la lista delle alternative
-				//newAlt.setAlternative()
+
 				return alt;
 			}
 			else {
-				//ComponenteComposto newComp = new ComponenteComposto(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
-				//TODO settare la lista delle alternative
-				//newComp.setComponenti(cs);
+				
 				return cmp;
 				}
 		}
