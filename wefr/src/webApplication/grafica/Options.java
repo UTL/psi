@@ -58,6 +58,8 @@ public class Options extends JDialog implements ActionListener{
 	private String defDirLoadSave;
 	private JPanel panel_dirs;
 	
+	private CustomFCOptions fc = new CustomFCOptions(null, this);
+	
 	 private ArrayList<MyEventClassListener> _listeners = new ArrayList<MyEventClassListener>();
 	
 	 public synchronized void addEventListener(MyEventClassListener listener)  {
@@ -197,15 +199,16 @@ public class Options extends JDialog implements ActionListener{
 	}
 	
 	
-	private void chooseFile(int chooserValue, JFileChooser fc, JTextField target, int dir){
-		MainWindow.chooseFile(chooserValue,  fc, target);
-		if (chooserValue == JFileChooser.APPROVE_OPTION){ //TODO controllare che il length ritorni il n di stringhe del vettore e non dei caratteri contenuti
+	private void chooseFile(JTextField target, int dir){
+		fc.showDialog();
+		if (fc.getFilePath().length()>0){
 			if (dir == 0)
-				defDirImage =fc.getSelectedFile().getAbsolutePath();
+				defDirImage =fc.getFilePath();
 			else if (dir == 1)
-				defDirText =fc.getSelectedFile().getAbsolutePath();
+				defDirText =fc.getFilePath();
 			else
-				defDirLoadSave = fc.getSelectedFile().getAbsolutePath();
+				defDirLoadSave = fc.getFilePath();
+			target.setText(fc.getFilePath());
 		}
 	}	
 	private synchronized void fireEvent() {	
@@ -233,19 +236,12 @@ public class Options extends JDialog implements ActionListener{
 		if(arg0.getActionCommand()==DONE_ACT)
 			closeOperation();
 		else if(arg0.getActionCommand()==LOAD_ACT)
-			setDefaultDirectory(textField_defSaveLoadDir, 2);
+			chooseFile(textField_defSaveLoadDir, 2);
 		else if(arg0.getActionCommand()==TEXT_ACT)
-			setDefaultDirectory(textField_defTxtDir,1);
+			chooseFile(textField_defTxtDir,1);
 		else if(arg0.getActionCommand()==IMAGE_ACT)
-			setDefaultDirectory(textField_defImgDir,0);
+			chooseFile(textField_defImgDir,0);
 	}
-	
-	private void setDefaultDirectory(JTextField target, int i){
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, target,i);
-	}
-	
 	
 	protected String getImagePath(){
 		if(textField_defImgDir.getText().length()>0)

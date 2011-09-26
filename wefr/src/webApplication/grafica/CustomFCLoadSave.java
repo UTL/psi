@@ -22,7 +22,7 @@ public abstract class CustomFCLoadSave extends CustomFileChooser {
 			fc = new JFileChooser(optionFrame.getLoadSavePath()); 
 		else 
 			fc= new JFileChooser();
-		
+
 		return show();
 
 	}

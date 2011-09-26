@@ -18,6 +18,7 @@ public abstract class CustomFileChooser{
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -3668680215000685482L;
 	
 	public CustomFileChooser(Options oFrame, Component p) {
@@ -32,21 +33,21 @@ public abstract class CustomFileChooser{
 	}
 	
 	public String getFilePath() {
-		if(option == fc.APPROVE_OPTION)
+		if(option == JFileChooser.APPROVE_OPTION)
 			return fc.getSelectedFile().getAbsolutePath();
 		else return "";
 		}
 
 	
 	public File getFile() {
-		if(option == fc.APPROVE_OPTION)
+		if(option == JFileChooser.APPROVE_OPTION)
 			return fc.getSelectedFile();
 		else return null;
 	}
 	
 	
 	public void setJTFPath(JTextField target){
-		if(option == fc.APPROVE_OPTION)
+		if(option == JFileChooser.APPROVE_OPTION)
 			target.setText(fc.getSelectedFile().getAbsolutePath());
 	}
 	
