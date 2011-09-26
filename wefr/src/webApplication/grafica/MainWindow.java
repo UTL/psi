@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1116,7 +1117,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 		try {
 			aStream = new ObjectOutputStream(new FileOutputStream(fcSave.getFilePath()));
-			aStream.writeObject(((DefaultMutableTreeNode)albero.getTree().getLastSelectedPathComponent()).getUserObject());
+			albero.getComponenti();
+			aStream.writeObject(albero.getComponenti());
 			//albero.getTree().getLastSelectedPathComponent()
 			aStream.close();
 			
@@ -1146,9 +1148,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		if(fcLoad.getFile()!=null)
 		{
 			try {
+				albero.getComponenti();
 				aStream = new ObjectInputStream(new FileInputStream(fcLoad.getFile()));
-				Componente read = (Componente) aStream.readObject();
-				System.out.println("Il tipo del primo nodo e': "+read.getType());
+				albero.setComponenti((Vector <Componente>) aStream.readObject());
+				aStream.close();
+				//System.out.println("Il tipo del primo nodo e': "+read.getType());
 			} catch (FileNotFoundException e) {
 				JOptionPane.showMessageDialog(this, "File "+fcLoad.getFile().getName()+" not found",
 					    "Unexpected error",
