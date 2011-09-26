@@ -1111,8 +1111,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				tabbedPane.setSelectedIndex(0);
 			}
 			else if (e.getActionCommand().equals(DONE)){
-				fireEvent(CREATENEWCOMP);
-				dispose();
+				createAndDispose();
 			}
 			else if (e.getActionCommand().equals(BACK3)){
 				tabbedPane.setSelectedIndex(1);
@@ -1121,16 +1120,13 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				loadTextAction();
 			}
 			else if (e.getActionCommand().equals(DONE_LINK)){
-
 				lnk= new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(),textField_url.getText(), textField_linktext.getText());
-				fireEvent(CREATENEWCOMP);
-				dispose();
+				createAndDispose();
 			}
 
 			else if (e.getActionCommand().equals(DONE_IMG)){
 				img = new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(),emph.getSelectedIndex(), textField_imagepath.getText());
-				fireEvent(CREATENEWCOMP);
-				dispose();
+				createAndDispose();
 			}
 			else if(e.getActionCommand().equals(BROWSE_IMG)){
 				fcImage.showDialog();
@@ -1139,6 +1135,11 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 			}
 
 
+		}
+
+		private void createAndDispose() {
+			fireEvent(CREATENEWCOMP);
+			dispose();
 		}
 
 		protected void loadTextAction() {
