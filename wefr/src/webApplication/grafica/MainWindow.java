@@ -2,8 +2,6 @@ package webApplication.grafica;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dialog.ModalityType;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -23,8 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
-import java.util.ArrayList;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +28,6 @@ import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -89,9 +84,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private static JPanel erroreTestoLink;
 	private static JPanel erroreUrl;
 	private static JButton button_1;
-	private static String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
-
-	
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
 	public static final int TEXT = 2;
@@ -105,8 +97,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private CustomFCSave fcSave = new CustomFCSave(frameOptions, this);
 	private CustomFCLoad fcLoad = new CustomFCLoad(frameOptions, this);
 	private CustomFCImage fcImage=new CustomFCImage(frameOptions, this);
-	private CustomFCText fcText=new CustomFCText(frameOptions, this);
-	
 	private static Componente focused;
 
 	private static Testo focusedTxt;
@@ -1090,14 +1080,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			
 		}
 
-		private void deleteNode() {
-			
-			albero.removeSelectedNode();
-			
-			// TODO Auto-generated method stub
-			
-		}
-
 		@Override
 		public void changedUpdate(DocumentEvent arg0) {
 			manageDocumentEvent(arg0);
@@ -1174,6 +1156,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				albero.getComponenti();
 				aStream = new ObjectInputStream(new FileInputStream(fcLoad.getFile()));
 				
+				//Soluzione per questo warning
+				//http://stackoverflow.com/questions/509076/how-do-i-address-unchecked-cast-warnings
 				Vector <Componente> temp = (Vector <Componente>) aStream.readObject();
 				albero.clear();
 				albero.setComponenti(temp);
@@ -1197,6 +1181,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 					    JOptionPane.ERROR_MESSAGE);
 			
 		}
+			catch (ClassCastException e){
+				
+			}
 			
 		if (fcLoad.getFilePath().length()>0)
 			//TODO aprire un JDialog per chiedere di salvare se il vecchio proj e' stato modificato
