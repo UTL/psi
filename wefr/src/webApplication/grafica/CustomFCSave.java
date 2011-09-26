@@ -15,4 +15,11 @@ public class CustomFCSave extends CustomFCLoadSave {
 
 	}
 
+	@Override 
+	public String getFilePath(){
+		if(super.getFilePath().endsWith("."+CustomFFEudSave.EXTENSION))
+			return super.getFilePath();
+		return super.getFilePath()+"."+CustomFFEudSave.EXTENSION;
+		
+	}
 }

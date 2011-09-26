@@ -22,7 +22,8 @@ public abstract class CustomFCLoadSave extends CustomFileChooser {
 			fc = new JFileChooser(optionFrame.getLoadSavePath()); 
 		else 
 			fc= new JFileChooser();
-
+		fc.addChoosableFileFilter(new CustomFFEudSave());
+		fc.setAcceptAllFileFilterUsed(false);
 		return show();
 
 	}

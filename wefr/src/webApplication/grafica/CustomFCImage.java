@@ -22,7 +22,7 @@ public class CustomFCImage extends CustomFileChooser {
 		else
 			fc = new JFileChooser();
 		
-		fc.addChoosableFileFilter(new CustomFileFilter());
+		fc.addChoosableFileFilter(new CustomFFImage());
 		fc.setAcceptAllFileFilterUsed(false);
 		
 		return fc.showOpenDialog(parent);
