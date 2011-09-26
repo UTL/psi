@@ -68,6 +68,8 @@ import java.awt.event.ActionListener;
 
 public class Wizard extends JDialog implements DocumentListener , ActionListener {
 
+	private static final String BROWSE_IMG = "browseImg";
+
 	private static final String DONE_IMG = "done image";
 
 	private static final String DONE_LINK = "donelinl";
@@ -633,23 +635,15 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		panel_9.add(btnDone_Image);
 		
 		JButton button_11 = new JButton("Exit");
-		button_11.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				fireEvent();
-				dispose();
-			}
-		});
+		button_11.addActionListener(this);
+		button_11.setActionCommand(EXIT);
 		button_11.setBounds(10, 11, 66, 27);
 		panel_9.add(button_11);
 		
 		JButton button_12 = new JButton("Back");
-		button_12.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				tabbedPane.setSelectedIndex(1);
-			}
-		});
+		button_12.addActionListener(this);
+		button_12.setActionCommand(BACK3);
+		
 		button_12.setBounds(299, 11, 66, 27);
 		panel_9.add(button_12);
 		
@@ -680,17 +674,10 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		panel_8.add(textField_imagepath);
 		
 		JButton btnBrowse = new JButton("Browse\r\n");
-		btnBrowse.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				fcImage.showDialog();
-				fcImage.setJTFPath(textField_imagepath);
-				
-				//JFileChooser fileChooser = new JFileChooser();
-				//chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, textField_imagepath);
-				btnDone_Image.setEnabled(true);
-			}
-		});
+		btnBrowse.addActionListener(this);
+		btnBrowse.setActionCommand(BROWSE_IMG);
+		
+		
 		btnBrowse.setBounds(346, 139, 99, 29);
 		panel_8.add(btnBrowse);
 		
@@ -753,40 +740,25 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		button_doneComp = new JButton("Done");
 		button_doneComp.setEnabled(false);
-		button_doneComp.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				/*int i;
-				cmp= new ComponenteComposto(textField.getText(), textField_1.getText(), choice_1.getSelectedIndex(),choice_2.getSelectedIndex());
-				for(i=list_composite.getComponentCount()-1; i>=0; i-- ){
-	    		cmp.aggiungiComponenteS((ComponenteSemplice) list_composite.);	
-				}*/
-				fireEvent(CREATENEWCOMP);
-				dispose();
-			}
-		});
+		button_doneComp.addActionListener(this);
+		
+		button_doneComp.setActionCommand(DONE);
+		
 		button_doneComp.setFont(new Font("Tahoma", Font.BOLD, 12));
 		button_doneComp.setBounds(375, 11, 66, 27);
 		panel_12.add(button_doneComp);
 		
 		JButton button_7 = new JButton("Exit");
-		button_7.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				fireEvent();
-				dispose();
-			}
-		});
+		button_7.addActionListener(this);
+		button_7.setActionCommand(EXIT);
 		button_7.setBounds(10, 11, 66, 27);
 		panel_12.add(button_7);
 		
 		JButton button_10 = new JButton("Back");
-		button_10.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				tabbedPane.setSelectedIndex(1);
-			}
-		});
+		button_10.addActionListener(this);
+		button_10.setActionCommand(BACK3);
+		
+		
 		button_10.setBounds(299, 11, 66, 27);
 		panel_12.add(button_10);
 		
@@ -855,41 +827,23 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		JButton button_doneAlt = new JButton("Done");
 		button_doneAlt.setEnabled(true);
-		button_doneAlt.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				/*int i;
-				alt= new ComponenteAlternative(textField.getText(), textField_1.getText(), choice_1.getSelectedIndex(),choice_2.getSelectedIndex());
-				for(i=list_alternative.getComponentCount()-1; i>=0; i-- ){
-					alt.aggiungiAlternativa((ComponenteSemplice)list_alternative.getSelectedValue());	
-				}*/
-				fireEvent(CREATENEWCOMP);
-				dispose();
-			}
-		});
+		button_doneAlt.addActionListener(this);
+		button_doneAlt.setActionCommand(DONE);
+		
 		button_doneAlt.setFont(new Font("Tahoma", Font.BOLD, 12));
 		button_doneAlt.setBounds(375, 11, 66, 27);
 		panel_13.add(button_doneAlt);
 		
 		JButton button_14 = new JButton("Exit");
-		button_14.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				fireEvent();
-				dispose();
-			}
-		});
+		button_14.addActionListener(this);
+		button_14.setActionCommand(EXIT);
+		
 		button_14.setBounds(10, 11, 66, 27);
 		panel_13.add(button_14);
 		
 		JButton button_15 = new JButton("Back");
-		button_15.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				tabbedPane.setSelectedIndex(1);
-			}
-		});
+		button_15.addActionListener(this);
+		button_15.setActionCommand(BACK3);
 		
 		button_15.setBounds(299, 11, 66, 27);
 		panel_13.add(button_15);
@@ -1186,7 +1140,12 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				fireEvent(CREATENEWCOMP);
 				dispose();
 			}
-			
+			else if(e.getActionCommand().equals(BROWSE_IMG)){
+				fcImage.showDialog();
+				fcImage.setJTFPath(textField_imagepath);
+				btnDone_Image.setEnabled(true);
+			}
+
 
 		}
 
