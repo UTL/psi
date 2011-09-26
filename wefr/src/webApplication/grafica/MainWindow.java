@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -633,15 +634,15 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 
 	public void setFocus(Componente selected){
-		if (selected.getType()==Testo.TEXTTYPE)
+		if (selected.getType().equals(Testo.TEXTTYPE))
 			setFocus((Testo)selected);
-		else if (selected.getType()==Immagine.IMAGETYPE)
+		else if (selected.getType().equals(Immagine.IMAGETYPE))
 			setFocus((Immagine)selected);
-		else if (selected.getType()==ComponenteComposto.COMPOSTOTYPE)
+		else if (selected.getType().equals(ComponenteComposto.COMPOSTOTYPE))
 			setFocus((ComponenteComposto)selected);
-		else if (selected.getType()==ComponenteAlternative.ALTERNATIVETYPE)
+		else if (selected.getType().equals(ComponenteAlternative.ALTERNATIVETYPE))
 			setFocus((ComponenteAlternative)selected);
-		else if (selected.getType()==Link.LINKTYPE)
+		else if (selected.getType().equals(Link.LINKTYPE))
 			setFocus((Link)selected);
 	}
 	
@@ -1068,9 +1069,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (arg0.getActionCommand()==IMP)
+			if (arg0.getActionCommand().equals(IMP))
 				setFocusedImpo();
-			else if(arg0.getActionCommand()==EMP)
+			else if(arg0.getActionCommand().equals(EMP))
 				setFocusedEmph();
 			
 		}
@@ -1150,9 +1151,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			try {
 				albero.getComponenti();
 				aStream = new ObjectInputStream(new FileInputStream(fcLoad.getFile()));
-				albero.setComponenti((Vector <Componente>) aStream.readObject());
+				
+				Vector <Componente> temp = (Vector <Componente>) aStream.readObject();
+				albero.clear();
+				albero.setComponenti(temp);
 				aStream.close();
-				//System.out.println("Il tipo del primo nodo e': "+read.getType());
 			} catch (FileNotFoundException e) {
 				JOptionPane.showMessageDialog(this, "File "+fcLoad.getFile().getName()+" not found",
 					    "Unexpected error",
