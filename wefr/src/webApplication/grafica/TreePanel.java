@@ -97,7 +97,7 @@ public class TreePanel extends JPanel implements ActionListener, TreeSelectionLi
 	/**
 	 * Remove the current selected node
 	 */
-	protected void removeSelectedNode() {
+	public void removeSelectedNode() {
         TreePath currentSelection = tree.getSelectionPath();
 		if (currentSelection != null) {
 			if (currentSelection.getParentPath() != null) {

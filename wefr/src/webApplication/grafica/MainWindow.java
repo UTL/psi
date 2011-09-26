@@ -69,6 +69,7 @@ import javax.swing.BoxLayout;
 
 public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener, ActionListener {
 
+	private static final String DELNODE = "Delnode";
 	/**
 	 * 
 	 */
@@ -94,6 +95,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
 	public static final int TEXT = 2;
+	
+	private JButton button_del;
 	
 	
 	
@@ -485,11 +488,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		addButton.setBounds(277, 4, 30, 30);
 		panelButtonsBar.add(addButton);
 
-		JButton button_8 = new JButton("");
+		button_del = new JButton("");
 		//button_8.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/gtk/resources/gtk-cancel-4.png")));
-		button_8.setToolTipText("Open");
-		button_8.setBounds(310, 4, 30, 30);
-		panelButtonsBar.add(button_8);
+		button_del.setToolTipText("Open");
+		button_del.setBounds(310, 4, 30, 30);
+		panelButtonsBar.add(button_del);
+		button_del.addActionListener(this);
+		button_del.setActionCommand(DELNODE);
+		button_del.setEnabled(false);
 
 		JButton btnGenerateWebsite = new JButton("GENERATE WEBSITE");
 		
@@ -788,10 +794,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		if (node == null || node.isRoot())	{
 			tree.clearSelection();
 			//non � stato selezionato nulla o � stata selezionata la radice;
+			button_del.setEnabled(false);
 			return;
 			}
 		
 		setFocus((Componente)node.getUserObject());
+		button_del.setEnabled(true);
 		
 	}
 
@@ -804,11 +812,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals(DELNODE))
+			albero.removeSelectedNode();
 		
 		
 	}
 	class MenuPanel implements ActionListener, MyEventClassListener, MouseListener{
 
+		private static final String OPT_PANEL = "optionopanel";
 		private final static String NEW = "New";
 		private final static String FILE = "File";
 		private final static String OPEN = "Load"; //forse meglio "load"?
@@ -848,6 +859,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			JMenuItem mntmOptions = new JMenuItem("Image directory");
 
 			mntmOptions.addActionListener(this);
+			mntmOptions.setActionCommand(OPT_PANEL);
 			mnOptions.add(mntmOptions);
 		}
 
@@ -908,18 +920,19 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("click");
-			try {
-				setEnabled(false);
-				//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
-				
+			if(e.getActionCommand().equals(OPT_PANEL))
+				try {
+					setEnabled(false);
+					//TIP qua probabilmente c'e' la sol http://castever.wordpress.com/2008/07/31/how-to-create-your-own-events-in-java/
 
-				frameOptions.setVisible(true);
 
-			} catch (Exception e2) {
-				e2.printStackTrace();
+					frameOptions.setVisible(true);
+
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			
 			}
-		}
 
 		@Override
 		public void handleMyEventClassEvent(MyEventClass e) {
@@ -1073,6 +1086,15 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				setFocusedImpo();
 			else if(arg0.getActionCommand().equals(EMP))
 				setFocusedEmph();
+			
+			
+		}
+
+		private void deleteNode() {
+			
+			albero.removeSelectedNode();
+			
+			// TODO Auto-generated method stub
 			
 		}
 
