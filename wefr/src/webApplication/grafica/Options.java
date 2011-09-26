@@ -1,6 +1,7 @@
 package webApplication.grafica;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -131,12 +132,13 @@ public class Options extends JDialog implements ActionListener{
 		panel_dirs.add(lblTextFileDirectory);
 		
 		JLabel lblLoadAndSave = new JLabel(LOAD_SAVE_LBL);
-		lblLoadAndSave.setBounds(15, 150, 131, 15);
+		lblLoadAndSave.setBounds(15, 155, 131, 15);
 		panel_dirs.add(lblLoadAndSave);
 	}
 	
 	private void buildButtonDone() {
-		JButton btnDone = new JButton(DONE);
+		JButton btnDone = new JButton("Done");
+		boldify(btnDone);
 		btnDone.addActionListener(this);
 		btnDone.setActionCommand(DONE_ACT);
 		
@@ -163,28 +165,28 @@ public class Options extends JDialog implements ActionListener{
 		textField_defTxtDir = new JTextField();
 		textField_defTxtDir.setEnabled(false);
 		textField_defTxtDir.setToolTipText(PATH_IMAGE);
-		textField_defTxtDir.setBounds(15, 116, 292, 22);
+		textField_defTxtDir.setBounds(15, 110, 292, 22);
 		panel_dirs.add(textField_defTxtDir);
 		
 		JButton btnBrowseDir_1 = new JButton(BROWSE);
 		btnBrowseDir_1.addActionListener(this);
 		btnBrowseDir_1.setActionCommand(TEXT_ACT);
 		
-		btnBrowseDir_1.setBounds(324, 113, 89, 29);
+		btnBrowseDir_1.setBounds(324, 107, 89, 29);
 		panel_dirs.add(btnBrowseDir_1);
 	}
 	private void buildFieldImage() {
 		textField_defImgDir = new JTextField();
 		textField_defImgDir.setEnabled(false);
 		textField_defImgDir.setToolTipText("");
-		textField_defImgDir.setBounds(15, 43, 292, 22);
+		textField_defImgDir.setBounds(15, 45, 292, 22);
 		panel_dirs.add(textField_defImgDir);
 		
 		JButton btnBrowseDir = new JButton(BROWSE);
 		btnBrowseDir.addActionListener(this);
 		btnBrowseDir.setActionCommand(IMAGE_ACT);
 		
-		btnBrowseDir.setBounds(324, 40, 89, 29);
+		btnBrowseDir.setBounds(324, 42, 89, 29);
 		panel_dirs.add(btnBrowseDir);
 	}
 	
@@ -258,6 +260,11 @@ public class Options extends JDialog implements ActionListener{
 		if(textField_defSaveLoadDir.getText().length()>0)
 			return textField_defSaveLoadDir.getText();
 		else return "";
+	}
+	
+	private void boldify(JButton button) {
+		Font newButtonFont = new Font(button.getFont().getName(), Font.BOLD, button.getFont().getSize() + 2);
+		button.setFont(newButtonFont);
 	}
 	
 }
