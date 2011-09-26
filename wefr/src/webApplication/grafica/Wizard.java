@@ -66,8 +66,19 @@ import webApplication.business.Testo;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 
-public class Wizard extends JDialog implements DocumentListener  {
+public class Wizard extends JDialog implements DocumentListener , ActionListener {
 
+	private static final String DONE_IMG = "done image";
+
+	private static final String DONE_LINK = "donelinl";
+	private static final String LOAD_FILE = "load file";
+	private static final String BACK3 = "back334234";
+	private static final String DONE = "done";
+	private static final String BACK = "Backkk21";
+
+	private static final String NEXT2 = "Next234";
+	private static final String EXIT = "Exit1243";
+	private static final String NEXT1 = "Next1";
 	/**
 	 * 
 	 */
@@ -190,25 +201,18 @@ public class Wizard extends JDialog implements DocumentListener  {
 		panel.add(panel_1);
 		
 		button = new JButton("Next");
-		button.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				tabbedPane.setSelectedIndex(1);
+		button.addActionListener(this);
+		button.setActionCommand(NEXT1);
 				
-			}
-		});
+				
 		button.setBounds(375, 11, 66, 27);
 		panel_1.add(button);
 		
 		JButton button_1 = new JButton("Exit");
-		button_1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				fireEvent();
-				dispose();
-			}
-		});
+		button_1.addActionListener(this);
+		button_1.setActionCommand(EXIT);
+		
+		
 		button_1.setBounds(10, 11, 66, 27);
 		panel_1.add(button_1);
 		
@@ -304,53 +308,25 @@ public class Wizard extends JDialog implements DocumentListener  {
 		panel_2.add(panel_3);
 		
 		button_2 = new JButton("Next");
-		button_2.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (choice_type.getSelectedItem().equals(tipi[0]))
-					tabbedPane.setSelectedIndex(2);
-				else if (choice_type.getSelectedItem().equals(tipi[2]))
-					tabbedPane.setSelectedIndex(3);
-				else if (choice_type.getSelectedItem().equals(tipi[1]))
-				    tabbedPane.setSelectedIndex(4);
-				else if (choice_type.getSelectedItem().equals(tipi[4])){
-					
-					panel_comp.setComponent(buildComposite());
-					//TODO questo oggetto non deve essere statico, ma creato durante l'esecuzione
-					/*popolaOggetti();
-					Vector<ComponenteSemplice> componenti = cmp.getComponenti();
-					componentiComposite= ((Vector<ComponenteSemplice>)componenti.clone());
-					popolaProperties(componentiComposite);*/
-					tabbedPane.setSelectedIndex(5);
-				}
-				else if (choice_type.getSelectedItem().equals(tipi[3])){ //alternative
-					panel_alt.setComponent(buildAlternative());
-					tabbedPane.setSelectedIndex(6);
-					}
-			}
-		});
+		button_2.addActionListener(this);
+		button_2.setActionCommand(NEXT2);
+		
 		button_2.setBounds(375, 11, 66, 27);
 		panel_3.add(button_2);
 		
 		JButton button_3 = new JButton("Exit");
-		button_3.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				fireEvent();
-				dispose();
-			}
-		});
+		button_3.addActionListener(this);
+		button_3.setActionCommand(EXIT);
+		
+		
+		
 		button_3.setBounds(10, 11, 66, 27);
 		panel_3.add(button_3);
 		
 		JButton btnBack = new JButton("Back");
-		btnBack.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				tabbedPane.setSelectedIndex(0);
-			}
-		});
+		btnBack.addActionListener(this);
+		btnBack.setActionCommand(BACK);
+		
 		btnBack.setBounds(299, 11, 66, 27);
 		panel_3.add(btnBack);
 		
@@ -435,24 +411,8 @@ public class Wizard extends JDialog implements DocumentListener  {
 		
 		btnDone_text = new JButton("Done");
 		
-		btnDone_text.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				/*System.out.println("Name:"+textField.getText());
-				System.out.println("Type:"+choice.getSelectedItem());
-				System.out.println("Category:"+textField_1.getText());
-				System.out.println("Emphasize:"+choice_2.getSelectedItem());
-				System.out.println("Importance:"+choice_1.getSelectedItem());
-				System.out.println("Text:"+textArea.getText());*/
-				
-				fireEvent(CREATENEWCOMP);
-				dispose();
-			}
-
-			
-		});
+		btnDone_text.addActionListener(this);
+		btnDone_text.setActionCommand(DONE);
 		
 		btnDone_text.setEnabled(false);
 		btnDone_text.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -460,57 +420,25 @@ public class Wizard extends JDialog implements DocumentListener  {
 		panel_5.add(btnDone_text);
 		
 		JButton button_5 = new JButton("Exit");
-		button_5.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				fireEvent();
-				dispose();
-			}
-		});
+		button_5.addActionListener(this);
+		button_5.setActionCommand(EXIT);
+		
+		
 		button_5.setBounds(10, 11, 66, 27);
 		panel_5.add(button_5);
 		
 		JButton button_6 = new JButton("Back");
-		button_6.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				tabbedPane.setSelectedIndex(1);
-			}
-		});
+		button_6.addActionListener(this);
+		button_6.setActionCommand(BACK3);
+		
+		
 		button_6.setBounds(299, 11, 66, 27);
 		panel_5.add(button_6);
 		
 		JButton btnImportFromFile = new JButton("Import from file");
-		btnImportFromFile.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				
-				try {
-					//TODO escapare caratteri speciali
-					fcText.showDialog();
-
-					if (fcText.getFile() != null){
-						String letto = Wizard.readFile(fcText.getFile());
-						if ( letto!= null && letto.length()>0)
-							text.setText(letto);
-					}
-				} catch (IOException e1) {
-				}
-				
-				/*JFileChooser fileChooser = new JFileChooser();
-				try {
-					chooseFile(fileChooser.showOpenDialog(contentPane), fileChooser, text);
-				} catch (HeadlessException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}*/
-				btnDone_text.setEnabled(true);
-			}
-		});
+		btnImportFromFile.addActionListener(this);
+		btnImportFromFile.setActionCommand(LOAD_FILE);
+		
 		btnImportFromFile.setBounds(25, 223, 171, 27);
 		panel_4.add(btnImportFromFile);
 		
@@ -615,43 +543,25 @@ public class Wizard extends JDialog implements DocumentListener  {
 		
 		btnDone_link = new JButton("Done");
 		btnDone_link.setEnabled(false);
-		btnDone_link.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				/*System.out.println("Name:"+textField.getText());
-				System.out.println("Type:"+choice.getSelectedItem());
-				System.out.println("Category:"+textField_1.getText());
-				System.out.println("Emphasize:"+choice_2.getSelectedItem());
-				System.out.println("Importance:"+choice_1.getSelectedItem());
-				System.out.println("Value: link target:"+textField_3.getText()+"  link text:"+textField_4.getText());*/
-				lnk= new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(),textField_url.getText(), textField_linktext.getText());
-				fireEvent(CREATENEWCOMP);
-				dispose();
-			}
-		});
+		btnDone_link.addActionListener(this);
+		btnDone_link.setActionCommand(DONE_LINK);
+		
 		btnDone_link.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnDone_link.setBounds(375, 11, 66, 27);
 		panel_7.add(btnDone_link);
 		
 		JButton button_8 = new JButton("Exit");
-		button_8.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				fireEvent();
-				dispose();
-			}
-		});
+		button_8.addActionListener(this);
+		button_8.setActionCommand(EXIT);
+		
 		button_8.setBounds(10, 11, 66, 27);
 		panel_7.add(button_8);
 		
 		JButton button_9 = new JButton("Back");
-		button_9.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				tabbedPane.setSelectedIndex(1);
-			}
-		});
+		button_9.addActionListener(this);
+		button_9.setActionCommand(BACK3);
+		
+		
 		button_9.setBounds(299, 11, 66, 27);
 		panel_7.add(button_9);
 		
@@ -714,21 +624,9 @@ public class Wizard extends JDialog implements DocumentListener  {
 		panel_8.add(panel_9);
 		
 		btnDone_Image = new JButton("Done");
-		btnDone_Image.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				/*System.out.println("Name:"+textField.getText());
-				System.out.println("Type:"+choice.getSelectedItem());
-				System.out.println("Category:"+textField_1.getText());
-				System.out.println("Emphasize:"+choice_2.getSelectedItem());
-				System.out.println("Importance:"+choice_1.getSelectedItem());
-				System.out.println("File path:"+textField_5.getText());*/
-				img = new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(),emph.getSelectedIndex(), textField_imagepath.getText());
-				fireEvent(CREATENEWCOMP);
-				dispose();
-			}
-		});
+		btnDone_Image.addActionListener(this);
+		btnDone_Image.setActionCommand(DONE_IMG);
+		
 		btnDone_Image.setEnabled(false);
 		btnDone_Image.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnDone_Image.setBounds(375, 11, 66, 27);
@@ -1246,6 +1144,82 @@ public class Wizard extends JDialog implements DocumentListener  {
 			updateImagePath();
 			redify(textField_imagepath,isBlank(textField_imagepath));
 			manageTooltips(textField_imagepath, isBlank(textField_imagepath));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (e.getActionCommand().equals(NEXT1)){
+				tabbedPane.setSelectedIndex(1);
+			}
+			
+			else if (e.getActionCommand().equals(EXIT)){
+				fireEvent();
+				dispose();
+			}
+			
+			else if (e.getActionCommand().equals(NEXT2)){
+				nextAction();
+			}
+			
+			else if (e.getActionCommand().equals(BACK)){
+				tabbedPane.setSelectedIndex(0);
+			}
+			else if (e.getActionCommand().equals(DONE)){
+				fireEvent(CREATENEWCOMP);
+				dispose();
+			}
+			else if (e.getActionCommand().equals(BACK3)){
+				tabbedPane.setSelectedIndex(1);
+			}
+			else if (e.getActionCommand().equals(LOAD_FILE)){
+				loadTextAction();
+			}
+			else if (e.getActionCommand().equals(DONE_LINK)){
+
+				lnk= new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(),textField_url.getText(), textField_linktext.getText());
+				fireEvent(CREATENEWCOMP);
+				dispose();
+			}
+
+			else if (e.getActionCommand().equals(DONE_IMG)){
+				img = new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(),emph.getSelectedIndex(), textField_imagepath.getText());
+				fireEvent(CREATENEWCOMP);
+				dispose();
+			}
+			
+
+		}
+
+		protected void loadTextAction() {
+			try {
+				//TODO escapare caratteri speciali
+				fcText.showDialog();
+
+				if (fcText.getFile() != null){
+					String letto = Wizard.readFile(fcText.getFile());
+					if ( letto!= null && letto.length()>0)
+						text.setText(letto);
+				}
+			} catch (IOException e1) {
+			}
+		}
+
+		protected void nextAction() {
+			if (choice_type.getSelectedItem().equals(tipi[0]))
+				tabbedPane.setSelectedIndex(2);
+			else if (choice_type.getSelectedItem().equals(tipi[2]))
+				tabbedPane.setSelectedIndex(3);
+			else if (choice_type.getSelectedItem().equals(tipi[1]))
+			    tabbedPane.setSelectedIndex(4);
+			else if (choice_type.getSelectedItem().equals(tipi[4])){
+				
+				panel_comp.setComponent(buildComposite());
+				tabbedPane.setSelectedIndex(5);
+			}
+			else if (choice_type.getSelectedItem().equals(tipi[3])){ //alternative
+				panel_alt.setComponent(buildAlternative());
+				tabbedPane.setSelectedIndex(6);
+				}
 		}
 
 		
