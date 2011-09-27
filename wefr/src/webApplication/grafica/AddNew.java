@@ -48,12 +48,19 @@ import java.util.regex.Pattern;
 
 public class AddNew extends JDialog implements DocumentListener, FocusListener ,KeyListener, ActionListener {
 
-	private static final String RDBTN_LINK = "rdbtnLink";
-	private static final String RDBTN_TEXT = "rdbtnText";
-	private static final String RDBTN_IMAGE = "rdbtnImage";
-	private static final String CREATE_EXIT = "createAndExit";
-	private static final String BACK = "Back";
-	private static final String BROWSE = "Browse";
+	private static final String ADD = "Add";
+	private static final String FILE_PATH = "File path:";
+	private static final String IMAGE = "Image";
+	private static final String DIALOG = "Dialog";
+	private static final String TEXT2 = "Text";
+	private static final String LINK = "Link";
+	private static final String LINK_TEXT = "Link text:";
+	private static final String URL2 = "URL:";
+	private static final String NAME2 = "Name:";
+	private static final String CATEGORY = "Category:";
+	
+
+	
 	static final String LOAD_TOOLTIP = "Click to load text from an existing file";
 	static final String IMPORT_BTN = "Import from file";
 	static final String NAME = "Name of the new element";
@@ -74,6 +81,15 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 	static final String RBTN_LINK = "Select to enable fields of Link element";
 	static final String RBTN_TEXT = "Select to enable fields of Text element";
 	static final String RBTN_IMAGE = "Select to enable fields of Image element";
+	
+	//ACTIONS
+	private static final String RDBTN_LINK = "rdbtnLink";
+	private static final String RDBTN_TEXT = "rdbtnText";
+	private static final String RDBTN_IMAGE = "rdbtnImage";
+	private static final String CREATE_EXIT = "createAndExit";
+	private static final String BACK = "Back";
+	private static final String BROWSE = "Browse";
+	
 	/**
 	 * 
 	 */
@@ -158,11 +174,11 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		textField_name.setBounds(229, 11, 114, 19);
 		contentPane.add(textField_name);
 		
-		JLabel name = new JLabel("Name:");
+		JLabel name = new JLabel(NAME2);
 		name.setBounds(119, 13, 51, 15);
 		contentPane.add(name);
 		
-		JLabel category = new JLabel("Category:");
+		JLabel category = new JLabel(CATEGORY);
 		category.setBounds(119, 38, 81, 15);
 		contentPane.add(category);
 		
@@ -180,11 +196,11 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		contentPane.add(panel_link);
 		panel_link.setLayout(null);
 		
-		JLabel lblUrl = new JLabel("URL:");
+		JLabel lblUrl = new JLabel(URL2);
 		lblUrl.setBounds(24, 23, 51, 15);
 		panel_link.add(lblUrl);
 		
-		JLabel lblLink = new JLabel("Link text:");
+		JLabel lblLink = new JLabel(LINK_TEXT);
 		lblLink.setBounds(24, 48, 81, 15);
 		panel_link.add(lblLink);
 		
@@ -198,13 +214,13 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		textField_url.setBounds(111, 21, 303, 19);
 		panel_link.add(textField_url);
 		
-		rdbtnLink = new JRadioButton("Link");
+		rdbtnLink = new JRadioButton(LINK);
 		rdbtnLink.setToolTipText(RBTN_LINK);
 		
 		rdbtnLink.setBounds(8, 110, 68, 23);
 		contentPane.add(rdbtnLink);
 		
-		rdbtnText = new JRadioButton("Text");
+		rdbtnText = new JRadioButton(TEXT2);
 		rdbtnText.setSelected(true);
 		rdbtnText.setToolTipText(RBTN_TEXT);
 		rdbtnText.setBounds(8, 238, 68, 23);
@@ -221,7 +237,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		button.setToolTipText(LOAD_TOOLTIP);
 		button.addActionListener(this);
 		button.setActionCommand(IMPORT_BTN);
-		button.setFont(new Font("Dialog", Font.PLAIN, 12));
+		button.setFont(new Font(DIALOG, Font.PLAIN, 12));
 		button.setBounds(12, 152, 142, 19);
 		panel_text.add(button);
 		
@@ -232,7 +248,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 
 		panel_text.add(scrollingArea);
 		
-		rdbtnImage = new JRadioButton("Image");
+		rdbtnImage = new JRadioButton(IMAGE);
 		rdbtnImage.setBounds(8, 378, 68, 23);
 		rdbtnImage.setToolTipText(RBTN_IMAGE);
 
@@ -245,7 +261,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		panel_image.setBounds(92, 363, 426, 88);
 		contentPane.add(panel_image);
 		
-		JLabel lblPath = new JLabel("File path:");
+		JLabel lblPath = new JLabel(FILE_PATH);
 		lblPath.setBounds(12, 24, 81, 15);
 		panel_image.add(lblPath);
 		
@@ -253,34 +269,14 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		
 		textField_imagePath.setColumns(10);
 		textField_imagePath.setBounds(12, 51, 301, 19);
-		textField_imagePath.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				
-				checkPath();
-				updateAddBtn();
-
-			}
-			public void removeUpdate(DocumentEvent e) {
-				checkPath();
-				updateAddBtn();
-
-			// text was deleted
-			}
-			public void insertUpdate(DocumentEvent e) {
-				checkPath();
-				updateAddBtn();
-
-
-			// text was inserted
-			}
-			});
+		textField_imagePath.getDocument().addDocumentListener(this);
 		panel_image.add(textField_imagePath);
 		
 		JButton button_browse = new JButton(BROWSE);
 		button_browse.addActionListener(this);
 		button_browse.setActionCommand(BROWSE);
 		
-		button_browse.setFont(new Font("Dialog", Font.PLAIN, 12));
+		button_browse.setFont(new Font(DIALOG, Font.PLAIN, 12));
 		button_browse.setBounds(325, 51, 89, 19);
 		panel_image.add(button_browse);
 
@@ -293,13 +289,13 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		button_back.setActionCommand(BACK);
 		button_back.addActionListener(this);
 		
-		button_back.setFont(new Font("Dialog", Font.PLAIN, 12));
+		button_back.setFont(new Font(DIALOG, Font.PLAIN, 12));
 		button_back.setBounds(341, 468, 82, 27);
 		contentPane.add(button_back);
 		
-		buttonAdd = new JButton("Add");
+		buttonAdd = new JButton(ADD);
 		
-		if (this.getOwner().getClass().getCanonicalName().endsWith("Wizard"))
+		if (this.getOwner() instanceof Wizard)
 			buttonAdd.setActionCommand(CREATE_EXIT);
 		else 
 			buttonAdd.setActionCommand(BACK);
@@ -313,7 +309,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 			buttonAdd.addActionListener(addAction);
 			buttonAdd.addFocusListener(this);
 		}
-		buttonAdd.setFont(new Font("Dialog", Font.BOLD, 12));
+		buttonAdd.setFont(new Font(DIALOG, Font.BOLD, 12));
 		buttonAdd.setBounds(433, 468, 82, 27);
 		contentPane.add(buttonAdd);
 		
@@ -472,9 +468,10 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 
 	private void changeEvent(DocumentEvent e) {
 		if(e.getDocument()== textField_url.getDocument())
-	
 			redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument())))||errorUrl());
-	
+		else if(e.getDocument()==textField_imagePath.getDocument()){
+			checkPath();
+		}
 		else
 			redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
 		updateAddBtn();
