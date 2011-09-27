@@ -68,13 +68,13 @@ import java.awt.event.ActionListener;
 
 public class Wizard extends JDialog implements DocumentListener , ActionListener {
 
-	private static final String BROWSE_IMG = "browseImg";
+	private static final String LOAD_IMG = "browseImg";
 
 	private static final String DONE_IMG = "done image";
 
 	private static final String DONE_LINK = "donelinl";
-	private static final String LOAD_FILE = "load file";
-	private static final String BACK3 = "back334234";
+	private static final String LOAD_TEXT = "load file";
+	private static final String BACK2 = "back334234";
 	private static final String DONE = "done";
 	private static final String BACK = "Backkk21";
 
@@ -431,7 +431,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		JButton button_6 = new JButton("Back");
 		button_6.addActionListener(this);
-		button_6.setActionCommand(BACK3);
+		button_6.setActionCommand(BACK2);
 		
 		
 		button_6.setBounds(299, 11, 66, 27);
@@ -439,7 +439,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		JButton btnImportFromFile = new JButton("Import from file");
 		btnImportFromFile.addActionListener(this);
-		btnImportFromFile.setActionCommand(LOAD_FILE);
+		btnImportFromFile.setActionCommand(LOAD_TEXT);
 		
 		btnImportFromFile.setBounds(25, 223, 171, 27);
 		panel_4.add(btnImportFromFile);
@@ -561,7 +561,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		JButton button_9 = new JButton("Back");
 		button_9.addActionListener(this);
-		button_9.setActionCommand(BACK3);
+		button_9.setActionCommand(BACK2);
 		
 		
 		button_9.setBounds(299, 11, 66, 27);
@@ -642,7 +642,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		JButton button_12 = new JButton("Back");
 		button_12.addActionListener(this);
-		button_12.setActionCommand(BACK3);
+		button_12.setActionCommand(BACK2);
 		
 		button_12.setBounds(299, 11, 66, 27);
 		panel_9.add(button_12);
@@ -675,7 +675,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		JButton btnBrowse = new JButton("Browse\r\n");
 		btnBrowse.addActionListener(this);
-		btnBrowse.setActionCommand(BROWSE_IMG);
+		btnBrowse.setActionCommand(LOAD_IMG);
 		
 		
 		btnBrowse.setBounds(346, 139, 99, 29);
@@ -756,7 +756,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		JButton button_10 = new JButton("Back");
 		button_10.addActionListener(this);
-		button_10.setActionCommand(BACK3);
+		button_10.setActionCommand(BACK2);
 		
 		
 		button_10.setBounds(299, 11, 66, 27);
@@ -843,7 +843,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		JButton button_15 = new JButton("Back");
 		button_15.addActionListener(this);
-		button_15.setActionCommand(BACK3);
+		button_15.setActionCommand(BACK2);
 		
 		button_15.setBounds(299, 11, 66, 27);
 		panel_13.add(button_15);
@@ -1113,10 +1113,10 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 			else if (e.getActionCommand().equals(DONE)){
 				createAndDispose();
 			}
-			else if (e.getActionCommand().equals(BACK3)){
+			else if (e.getActionCommand().equals(BACK2)){
 				tabbedPane.setSelectedIndex(1);
 			}
-			else if (e.getActionCommand().equals(LOAD_FILE)){
+			else if (e.getActionCommand().equals(LOAD_TEXT)){
 				loadTextAction();
 			}
 			else if (e.getActionCommand().equals(DONE_LINK)){
@@ -1128,7 +1128,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				img = new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(),emph.getSelectedIndex(), textField_imagepath.getText());
 				createAndDispose();
 			}
-			else if(e.getActionCommand().equals(BROWSE_IMG)){
+			else if(e.getActionCommand().equals(LOAD_IMG)){
 				fcImage.showDialog();
 				fcImage.setJTFPath(textField_imagepath);
 				btnDone_Image.setEnabled(true);

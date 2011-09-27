@@ -257,7 +257,7 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 	
 	public class RemoveAction extends AbstractAction	{
 
-		private static final String INDEXES ="Indexes";
+		public static final String INDEXES ="Indexes";
 		/**
 		 * 
 		 */
@@ -270,6 +270,7 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			System.out.println(e.getActionCommand());
 	        TreePath currentSelection = tree.getSelectionPath();
 	        DefaultMutableTreeNode currentNode;
 			if (currentSelection != null) {

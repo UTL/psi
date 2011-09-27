@@ -29,7 +29,9 @@ import webApplication.business.ComponenteComposto;
 import webApplication.business.ComponenteSemplice;
 import webApplication.grafica.TreePanel.RemoveAction;
 
-public abstract class PannelloGeneric extends JPanel implements ListSelectionListener, ActionListener, MyEventClassListener, WindowListener{
+public abstract class PannelloGeneric extends JPanel implements ListSelectionListener, ActionListener, MyEventClassListener, WindowListener, FocusListener{
+	private static final String REFRESH_LIST = "RefreshList";
+
 	private static final long serialVersionUID = 4733717394320867492L;
 
 	protected JButton bott_up;
@@ -58,27 +60,19 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		bott_down.setBounds(12, 100, 46, 53);
 		bott_del= new JButton(DELETE);
 		bott_del.setBounds(65, 165, 90, 27);
-		bott_del.setActionCommand(DELETE);
+		
+		bott_del.addActionListener(this);
 		
 		if (!(m instanceof Wizard))	{
 			remAction = MainWindow.albero.new RemoveAction();
 			bott_del.addActionListener(remAction);
-			bott_del.addFocusListener(new FocusListener()	{
-
-				@Override
-				public void focusGained(FocusEvent arg0) {
-					// TODO Auto-generated method stub
-					remAction.putValue("Indexes", list_components.getSelectedIndices());
-				}
-
-				@Override
-				public void focusLost(FocusEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-			});
+			bott_del.addFocusListener(this);
+			
+			bott_del.setActionCommand(REFRESH_LIST);
 		}
+		else
+			bott_del.setActionCommand(DELETE);
+		
 		bott_addExist= new JButton();
 		bott_addExist.setBounds(197, 165, 121, 27);
 		list_components= new JList();
@@ -141,8 +135,14 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		popolaProperties();
 	}
 	
-	private void popolaProperties() {
-		
+	private void popolaProperties() {		
+		listUpdate();
+
+		Utils.buttonDeleteMgmt(list_components,bott_del);
+		upDownMgmt();
+	}
+
+	private void listUpdate() {
 		Container listContainer= list_components.getParent();
 		
 		if(list_components != null && listContainer!=null)
@@ -152,13 +152,8 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		
 		listContainer.add(list_components);
 		list_components.addListSelectionListener(this);
-
-		Utils.buttonDeleteMgmt(list_components,bott_del);
-		upDownMgmt();
-		
 		
 		listContainer.repaint();
-
 	}
 
 	abstract protected void checkEmptyComponent();
@@ -191,11 +186,19 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	//}
 
 	
-	
-	//TODO probabilmente si disattivera' solo il pannello e non tutta la finestra
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand()!= DELETE){/*&&(())){*/
+		
+		
+		if(e.getActionCommand()== DELETE)
+			removeElements();
+		else if(e.getActionCommand()==REFRESH_LIST){
+			listUpdate();
+			Utils.buttonDeleteMgmt(list_components,bott_del);
+		}
+			
+		else
+			{
 			parentWindow.setEnabled(false);
 			AddNew nuovo = new AddNew((Window)this.getTopLevelAncestor(),frameOptions, addNewTitle());
 
@@ -204,9 +207,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 
 			nuovo.setVisible(true);
 		}
-		else{
-			 removeElements();
-		}
+		
 		//Ricostruire lista quando andrea cancella un elemento (nel mainwindow non cancella)
 	}
 	
@@ -236,13 +237,13 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	
 	@Override
 	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		// non serve
 		
 	}
 
 	@Override
 	public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		// non serve
 		
 	}
 
@@ -253,26 +254,40 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 
 	@Override
 	public void windowDeactivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		// non serve
 		
 	}
 
 	@Override
 	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		// non serve
 		
 	}
 
 	@Override
 	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		// non serve
 		
 	}
 
 	@Override
 	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		// non serve
 		
 	}
+	
+	@Override
+	public void focusGained(FocusEvent arg0) {
+		remAction.putValue(RemoveAction.INDEXES, list_components.getSelectedIndices());
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent arg0) {
+		// non serve
+		
+	}
+
+
 	
 }

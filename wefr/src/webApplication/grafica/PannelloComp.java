@@ -2,6 +2,7 @@ package webApplication.grafica;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -100,6 +101,6 @@ public class PannelloComp extends PannelloGeneric {
 		return COMPOSITE;
 	}
 
-
+	
 
 }
