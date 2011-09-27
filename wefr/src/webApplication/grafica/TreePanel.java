@@ -113,6 +113,11 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 	 * @param node The node to remove
 	 */
 	protected void removeNode(DefaultMutableTreeNode node) {
+		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+		if (!parent.isRoot())	{
+			ComponenteMolteplice compParent = (ComponenteMolteplice) parent.getUserObject();
+			compParent.cancellaOpzione(parent.getIndex(node));
+		}
 		model.removeNodeFromParent(node);
 	}
 
@@ -138,7 +143,15 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 			return;
 		}
 		model.insertNodeInto(node, parent, parent.getChildCount());
-		if (((Componente)node.getUserObject()).isSimple())	{
+		if (!((Componente)node.getUserObject()).isSimple())	{
+			parent = node;
+			System.out.println("Parent name: "+((Componente)parent.getUserObject()).getNome());
+			ComponenteMolteplice comps = (ComponenteMolteplice)node.getUserObject();
+			for (int i =0; i<comps.getOpzioni().size(); i++)	{
+				model.insertNodeInto(new DefaultMutableTreeNode((ComponenteSemplice)comps.getOpzione(i)), parent, i);
+			}
+		} else	{
+		//if (((Componente)node.getUserObject()).isSimple())	{
 			node.setAllowsChildren(false);
 		}
 	}
@@ -222,11 +235,12 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 				DefaultMutableTreeNode parent = null;
 				DefaultMutableTreeNode compNode = new DefaultMutableTreeNode((Componente)getValue(COMPONENTE));
 				if ((Integer)this.getValue(PARENTINDEX)==-1)	{
-					
 					addNode(null,compNode);
 				}	else	{
+					System.out.println("Parent index: "+(Integer) getValue(PARENTINDEX));
 					parent = (DefaultMutableTreeNode) rootNode.getChildAt((Integer) getValue(PARENTINDEX));
 					addNode(parent,compNode);
+					
 				}
 				if (parent==null)	{
 					parent = rootNode;
@@ -243,47 +257,35 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 	
 	public class RemoveAction extends AbstractAction	{
 
+		private static final String INDEXES ="Indexes";
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -3159160087603892781L;
 
+		RemoveAction()	{
+			super();
+			this.putValue(INDEXES, null);
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 	        TreePath currentSelection = tree.getSelectionPath();
+	        DefaultMutableTreeNode currentNode;
 			if (currentSelection != null) {
 				if (currentSelection.getParentPath() != null) {
-					DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
-					String name = currentNode.toString();//((Componente) currentNode.getUserObject()).toString();
-					String message = DELETEMESSAGE + name + CONFIRMMESSAGE;
-					// Chiede conferma per la cancellazione dell'elemento selezionato
-					int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message, "Warning!",JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-					if (choice == 0) {
-						if (currentSelection != null) {
-							if (currentNode.getChildCount() != 0) {
-								message = name + NOTEMPTYMESSAGE;
-								// Chiede conferma per eliminare un componente contenente altri elementi
-								choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message,"Warning!", JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
-							}
-							if (choice == 1) {
-								return;
-							}
-							DefaultMutableTreeNode parent = (DefaultMutableTreeNode) currentNode.getParent();
-							int parentIndex;
-							if (parent.isRoot())	{
-								parentIndex = -1;
-							}
-							else	{
-								DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-								parentIndex = root.getIndex(parent);
-							}
-							//Creo l'oggetto per l'undo action
-							UndoableEdit edit = new UndoableRemoveNode(tree,(Componente)currentNode.getUserObject(),parentIndex,parent.getIndex(currentNode));
-							undoSupport.postEdit(edit);
-							//rimuovo effettivamente il nodo
-							removeNode(currentNode);
+					if (getValue(INDEXES)==null)	{
+						currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
+						delete(currentSelection, currentNode);
+					}	else	{
+						DefaultMutableTreeNode parent = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
+						int[] indexes = (int[]) getValue(INDEXES);
+						for (int i=0; i<indexes.length; i++)	{
+							currentNode = (DefaultMutableTreeNode) parent.getChildAt(indexes[i]);
+							delete(currentSelection, currentNode);
 						}
 					}
+					
 				}
 	        	else	{
 	        		//� stata selezionata la radice perci� avviso l'utente che non pu� essere cancellata->risolto: la root non pu� essere selezionata
@@ -294,6 +296,43 @@ public class TreePanel extends JPanel implements /*ActionListener,*/ TreeSelecti
 				//Segnala che non c'� nulla selezionato quindi non pu� rimuovere nulla->da rivedere in disabilita Remove se non c'� nulla selezionato
 				JOptionPane.showMessageDialog(getTopLevelAncestor(),EMPTYSELECTION,"Error!",JOptionPane.ERROR_MESSAGE);
 			}
+		}
+
+		private void delete(TreePath currentSelection, DefaultMutableTreeNode currentNode) {
+			String name = currentNode.toString();//((Componente) currentNode.getUserObject()).toString();
+			String message = DELETEMESSAGE + name + CONFIRMMESSAGE;
+			// Chiede conferma per la cancellazione dell'elemento selezionato
+			//int choice;
+			//int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message, "Warning!",JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			//if (choice == 0) {
+				if (currentSelection != null) {
+					if (currentNode.getChildCount() != 0) {
+						message = name + NOTEMPTYMESSAGE;
+						// Chiede conferma per eliminare un componente contenente altri elementi
+						int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message,"Warning!", JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+						if (choice == 1)	{
+							return;
+						}
+					}
+					/*if (choice == 1) {
+						return;
+					}*/
+					DefaultMutableTreeNode parent = (DefaultMutableTreeNode) currentNode.getParent();
+					int parentIndex;
+					if (parent.isRoot())	{
+						parentIndex = -1;
+					}
+					else	{
+						DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+						parentIndex = root.getIndex(parent);
+					}
+					//Creo l'oggetto per l'undo action
+					UndoableEdit edit = new UndoableRemoveNode(tree,(Componente)currentNode.getUserObject(),parentIndex,parent.getIndex(currentNode));
+					undoSupport.postEdit(edit);
+					//rimuovo effettivamente il nodo
+					removeNode(currentNode);
+				}
+			//}
 		}
 	}
 	

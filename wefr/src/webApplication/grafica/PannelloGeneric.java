@@ -8,6 +8,8 @@ import java.awt.Container;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -25,6 +27,7 @@ import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
 
 import webApplication.business.ComponenteSemplice;
+import webApplication.grafica.TreePanel.RemoveAction;
 
 public abstract class PannelloGeneric extends JPanel implements ListSelectionListener, ActionListener, MyEventClassListener, WindowListener{
 	private static final long serialVersionUID = 4733717394320867492L;
@@ -39,8 +42,13 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	private final static String DELETE = "Delete";
 	private Component parentWindow;
 	private Options frameOptions;
+	private RemoveAction remAction;
+	protected JButton button_addNewAlter = new JButton("Add new");
 	
 	/*
+	 * @wbp.parser.constructor
+	 */
+	/**
 	 * @wbp.parser.constructor
 	 */
 	public PannelloGeneric(Component m, Options o){
@@ -51,13 +59,36 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		bott_del= new JButton(DELETE);
 		bott_del.setBounds(65, 165, 90, 27);
 		bott_del.setActionCommand(DELETE);
-		bott_del.addActionListener(this);
+		
+		if (!(m instanceof Wizard))	{
+			remAction = MainWindow.albero.new RemoveAction();
+			bott_del.addActionListener(remAction);
+			bott_del.addFocusListener(new FocusListener()	{
+
+				@Override
+				public void focusGained(FocusEvent arg0) {
+					// TODO Auto-generated method stub
+					remAction.putValue("Indexes", list_components.getSelectedIndices());
+				}
+
+				@Override
+				public void focusLost(FocusEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
+		}
 		bott_addExist= new JButton();
 		bott_addExist.setBounds(197, 165, 121, 27);
 		list_components= new JList();
 		parentWindow = m;
 		frameOptions = o;
-
+		if(m instanceof Wizard){
+		
+			bott_del.addActionListener(this);	
+		}
+		button_addNewAlter.addActionListener(this);
 		buildPanel();
 	}
 	
@@ -68,15 +99,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 
 	abstract protected void assignComponent(Componente c);
 	
-	public PannelloGeneric(JButton b_up, JButton b_down, JButton b_del, JButton b_addExist, JList l_alt) {
-		bott_up=b_up;
-		bott_down=b_down;
-		bott_del=b_del;
-		bott_addExist=b_addExist;
-		list_components=l_alt;
-		buildPanel();
-		
-	}
+	
 	
 	abstract protected void buildPanel();
 
@@ -172,8 +195,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	//TODO probabilmente si disattivera' solo il pannello e non tutta la finestra
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Parent :"+this.getTopLevelAncestor().getClass().getCanonicalName());
-		if(e.getActionCommand()!= DELETE){/*&&((this.getTopLevelAncestor().getClass().getCanonicalName().endsWith("Wizard")))){*/
+		if(e.getActionCommand()!= DELETE){/*&&(())){*/
 			parentWindow.setEnabled(false);
 			AddNew nuovo = new AddNew((Window)this.getTopLevelAncestor(),frameOptions, addNewTitle());
 
@@ -185,6 +207,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		else{
 			 removeElements();
 		}
+		//Ricostruire lista quando andrea cancella un elemento (nel mainwindow non cancella)
 	}
 	
 	protected abstract String addNewTitle();

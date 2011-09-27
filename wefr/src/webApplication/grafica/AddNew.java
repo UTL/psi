@@ -304,14 +304,20 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 		contentPane.add(button_back);
 		
 		buttonAdd = new JButton("Add");
-		System.out.println("Genitore: "+this.getOwner().getClass().getCanonicalName());
-		buttonAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				fireEvent(CREATENEWCOMP);
-				System.out.println("Sono dentro");
-				dispose();
-			}
-		});
+		if (!(this.getOwner().getClass().getCanonicalName().endsWith("Wizard")))	{
+			buttonAdd.setActionCommand("Dispose");
+		}
+		
+		
+			buttonAdd.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (!(e.getActionCommand().equals("Dispose")))
+							fireEvent(CREATENEWCOMP);
+					else
+						fireEvent(ONLYDISPOSE);
+					dispose();
+				}
+			});
 		if (!(this.getOwner().getClass().getCanonicalName().endsWith("Wizard")))	{
 			addAction = MainWindow.albero.new AddAction();
 			buttonAdd.addActionListener(addAction);
@@ -321,7 +327,7 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 				public void focusGained(FocusEvent arg0) {
 					// TODO Auto-generated method stub
 					addAction.putValue("Componente", getNuovoComp());
-					addAction.putValue("ParentIndex", MainWindow.albero.getTree().getSelectionRows()[0]);
+					addAction.putValue("ParentIndex", (MainWindow.albero.getTree().getSelectionRows()[0]-1));
 				}
 
 				@Override

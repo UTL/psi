@@ -32,10 +32,7 @@ public class PannelloComp extends PannelloGeneric {
 		super(m, c,o);
 	}
 
-	public PannelloComp(JButton b_up, JButton b_down, JButton b_del,
-			JButton b_addExist, JList l_alt) {
-		super(b_up, b_down, b_del, b_addExist, l_alt);
-	}
+
 
 
 	@Override
@@ -57,9 +54,8 @@ public class PannelloComp extends PannelloGeneric {
 		this.add(bott_del);
 		this.add(bott_addExist);
 
-		JButton button_addNewAlter = new JButton("Add new");
 		button_addNewAlter.setBounds(322, 165, 98, 27);
-		button_addNewAlter.addActionListener(this);
+		
 		this.add(button_addNewAlter);
 
 	}

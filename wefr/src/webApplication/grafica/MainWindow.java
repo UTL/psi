@@ -490,8 +490,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		button_del.setToolTipText("Open");
 		button_del.setBounds(346, 4, 30, 30);
 		panelButtonsBar.add(button_del);
-		//RemoveAction remAction = albero.new RemoveAction();
-		//button_del.addActionListener(remAction);
+		RemoveAction remAction = albero.new RemoveAction();
+		button_del.addActionListener(remAction);
 		//button_del.addActionListener(this);
 		//button_del.setActionCommand(DELNODE);
 		button_del.setEnabled(false);
@@ -794,6 +794,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			tree.clearSelection();
 			//non � stato selezionato nulla o � stata selezionata la radice;
 			button_del.setEnabled(false);
+			//TODO qua dovrei anche rendere grigio il pannello a destra
 			return;
 			}
 		
