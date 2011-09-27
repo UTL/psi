@@ -150,19 +150,57 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 	public AddNew(Window window,Options fOptions, String title) {
 		super(window, ModalityType.APPLICATION_MODAL);
 		//this.setModalityType();
-		frameOptions=fOptions;
-		fcText = new CustomFCText(frameOptions, this);
-		fcImage=new CustomFCImage(frameOptions, this);
+		setAttributes(fOptions);
 
+		buildWindow(title);
+		
+		buildGenericFields();
+		
+		buildPanelLink();
+		
+		buildPanelText();
+		
+		buildPanelImage();
+				
+		buildRadioButtons();
+			
+		buildButtonBack();
+		
+		buildButtonAdd();
+		
+		addDocumentListeners();
+		
+		enabler(panel_text);
+		
+		redify(textField_name,isBlank(textField_name));
+		redify(textField_category,isBlank(textField_category));
+		updateAddBtn();
+		
+		 MultiLineToolTip tip = new MultiLineToolTip();
+	        tip.setComponent(panel_link);
+	        panel_link.setToolTipText("Hello\nworld");
+		//this.setVisible(true);
+	}
+
+	private void buildWindow(String title) {
 		setResizable(false);
 		setTitle("Add new element to "+ title);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 532, 542);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+	}
+
+	private void setAttributes(Options fOptions) {
+		frameOptions=fOptions;
+		fcText = new CustomFCText(frameOptions, this);
+		fcImage=new CustomFCImage(frameOptions, this);
+	}
+
+	private void buildGenericFields() {
 		textField_category = new JTextField();
 		textField_category.setColumns(10);
 		textField_category.setBounds(229, 36, 114, 19);
@@ -181,7 +219,138 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		JLabel category = new JLabel(CATEGORY);
 		category.setBounds(119, 38, 81, 15);
 		contentPane.add(category);
+	}
+
+	private void addDocumentListeners() {
+		textField_category.getDocument().addDocumentListener(this);
+		textField_linkText.getDocument().addDocumentListener(this);
+		textField_name.getDocument().addDocumentListener(this);
+		textField_url.getDocument().addDocumentListener(this);
+		textArea.getDocument().addDocumentListener(this);
 		
+		textField_url.addKeyListener(this);
+	}
+
+	private void buildButtonAdd() {
+		buttonAdd = new JButton(ADD);
+		
+		if (this.getOwner() instanceof Wizard)
+			buttonAdd.setActionCommand(CREATE_EXIT);
+		else 
+			buttonAdd.setActionCommand(BACK);
+
+		buttonAdd.addActionListener(this);
+
+		if (this.getOwner() instanceof MainWindow)
+		{	
+			addAction = MainWindow.albero.new AddAction();
+
+			buttonAdd.addActionListener(addAction);
+			buttonAdd.addFocusListener(this);
+		}
+		buttonAdd.setFont(new Font(DIALOG, Font.BOLD, 12));
+		buttonAdd.setBounds(433, 468, 82, 27);
+		contentPane.add(buttonAdd);
+	}
+
+	private void buildButtonBack() {
+		button_back = new JButton(BACK);
+		button_back.setActionCommand(BACK);
+		button_back.addActionListener(this);
+		
+		button_back.setFont(new Font(DIALOG, Font.PLAIN, 12));
+		button_back.setBounds(341, 468, 82, 27);
+		contentPane.add(button_back);
+	}
+
+	private void buildRadioButtons() {
+		rdbtnLink = new JRadioButton(LINK);
+		rdbtnLink.setToolTipText(RBTN_LINK);
+		
+		rdbtnLink.setBounds(8, 110, 68, 23);
+		contentPane.add(rdbtnLink);
+		
+		rdbtnText = new JRadioButton(TEXT2);
+		rdbtnText.setSelected(true);
+		rdbtnText.setToolTipText(RBTN_TEXT);
+		rdbtnText.setBounds(8, 238, 68, 23);
+		contentPane.add(rdbtnText);
+			
+		rdbtnImage = new JRadioButton(IMAGE);
+		rdbtnImage.setBounds(8, 378, 68, 23);
+		rdbtnImage.setToolTipText(RBTN_IMAGE);
+
+		contentPane.add(rdbtnImage);
+		
+		rdbtnImage.setActionCommand(RDBTN_IMAGE);
+		rdbtnImage.addActionListener(this);
+		
+		rdbtnText.setActionCommand(RDBTN_TEXT);
+		rdbtnImage.addActionListener(this);
+		
+		
+		rdbtnLink.setActionCommand(RDBTN_LINK);
+		rdbtnImage.addActionListener(this);
+
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(rdbtnImage);
+		bg.add(rdbtnText);
+		bg.add(rdbtnLink);
+	}
+
+	private void buildPanelImage() {
+		panel_image = new JPanel();
+		panel_image.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+		panel_image.setLayout(null);
+		panel_image.setEnabled(false);
+		panel_image.setBounds(92, 363, 426, 88);
+		contentPane.add(panel_image);
+		
+		JLabel lblPath = new JLabel(FILE_PATH);
+		lblPath.setBounds(12, 24, 81, 15);
+		panel_image.add(lblPath);
+		
+		textField_imagePath = new JTextField();
+		
+		textField_imagePath.setColumns(10);
+		textField_imagePath.setBounds(12, 51, 301, 19);
+		textField_imagePath.getDocument().addDocumentListener(this);
+		panel_image.add(textField_imagePath);
+		
+		JButton button_browse = new JButton(BROWSE);
+		button_browse.addActionListener(this);
+		button_browse.setActionCommand(BROWSE);
+		
+		button_browse.setFont(new Font(DIALOG, Font.PLAIN, 12));
+		button_browse.setBounds(325, 51, 89, 19);
+		panel_image.add(button_browse);
+	}
+
+	private void buildPanelText() {
+		panel_text = new JPanel();
+		panel_text.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		panel_text.setLayout(null);
+		panel_text.setEnabled(false);
+		panel_text.setBounds(92, 168, 426, 183);
+		contentPane.add(panel_text);
+		
+		JButton button = new JButton(IMPORT_BTN);
+		button.setToolTipText(LOAD_TOOLTIP);
+		button.addActionListener(this);
+		button.setActionCommand(IMPORT_BTN);
+		button.setFont(new Font(DIALOG, Font.PLAIN, 12));
+		button.setBounds(12, 152, 142, 19);
+		panel_text.add(button);
+		
+		textArea = new JTextArea();
+		scrollingArea = new JScrollPane(textArea);
+		scrollingArea.setBorder(new LineBorder(new Color(204, 204, 204), 1, true));
+		scrollingArea.setBounds(12, 20, 402, 120);
+
+		panel_text.add(scrollingArea);
+	}
+
+	private void buildPanelLink() {
 		panel_link = new JPanel(){
 		      public JToolTip createToolTip() {
 		          MultiLineToolTip tip = new MultiLineToolTip();
@@ -213,135 +382,6 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		textField_url.setColumns(10);
 		textField_url.setBounds(111, 21, 303, 19);
 		panel_link.add(textField_url);
-		
-		rdbtnLink = new JRadioButton(LINK);
-		rdbtnLink.setToolTipText(RBTN_LINK);
-		
-		rdbtnLink.setBounds(8, 110, 68, 23);
-		contentPane.add(rdbtnLink);
-		
-		rdbtnText = new JRadioButton(TEXT2);
-		rdbtnText.setSelected(true);
-		rdbtnText.setToolTipText(RBTN_TEXT);
-		rdbtnText.setBounds(8, 238, 68, 23);
-		contentPane.add(rdbtnText);
-		
-		panel_text = new JPanel();
-		panel_text.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		panel_text.setLayout(null);
-		panel_text.setEnabled(false);
-		panel_text.setBounds(92, 168, 426, 183);
-		contentPane.add(panel_text);
-		
-		JButton button = new JButton(IMPORT_BTN);
-		button.setToolTipText(LOAD_TOOLTIP);
-		button.addActionListener(this);
-		button.setActionCommand(IMPORT_BTN);
-		button.setFont(new Font(DIALOG, Font.PLAIN, 12));
-		button.setBounds(12, 152, 142, 19);
-		panel_text.add(button);
-		
-		textArea = new JTextArea();
-		scrollingArea = new JScrollPane(textArea);
-		scrollingArea.setBorder(new LineBorder(new Color(204, 204, 204), 1, true));
-		scrollingArea.setBounds(12, 20, 402, 120);
-
-		panel_text.add(scrollingArea);
-		
-		rdbtnImage = new JRadioButton(IMAGE);
-		rdbtnImage.setBounds(8, 378, 68, 23);
-		rdbtnImage.setToolTipText(RBTN_IMAGE);
-
-		contentPane.add(rdbtnImage);
-		
-		panel_image = new JPanel();
-		panel_image.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
-		panel_image.setLayout(null);
-		panel_image.setEnabled(false);
-		panel_image.setBounds(92, 363, 426, 88);
-		contentPane.add(panel_image);
-		
-		JLabel lblPath = new JLabel(FILE_PATH);
-		lblPath.setBounds(12, 24, 81, 15);
-		panel_image.add(lblPath);
-		
-		textField_imagePath = new JTextField();
-		
-		textField_imagePath.setColumns(10);
-		textField_imagePath.setBounds(12, 51, 301, 19);
-		textField_imagePath.getDocument().addDocumentListener(this);
-		panel_image.add(textField_imagePath);
-		
-		JButton button_browse = new JButton(BROWSE);
-		button_browse.addActionListener(this);
-		button_browse.setActionCommand(BROWSE);
-		
-		button_browse.setFont(new Font(DIALOG, Font.PLAIN, 12));
-		button_browse.setBounds(325, 51, 89, 19);
-		panel_image.add(button_browse);
-
-		ButtonGroup bg = new ButtonGroup();
-		bg.add(rdbtnImage);
-		bg.add(rdbtnText);
-		bg.add(rdbtnLink);
-		
-		button_back = new JButton(BACK);
-		button_back.setActionCommand(BACK);
-		button_back.addActionListener(this);
-		
-		button_back.setFont(new Font(DIALOG, Font.PLAIN, 12));
-		button_back.setBounds(341, 468, 82, 27);
-		contentPane.add(button_back);
-		
-		buttonAdd = new JButton(ADD);
-		
-		if (this.getOwner() instanceof Wizard)
-			buttonAdd.setActionCommand(CREATE_EXIT);
-		else 
-			buttonAdd.setActionCommand(BACK);
-
-		buttonAdd.addActionListener(this);
-
-		if (this.getOwner() instanceof MainWindow)
-		{	
-			addAction = MainWindow.albero.new AddAction();
-
-			buttonAdd.addActionListener(addAction);
-			buttonAdd.addFocusListener(this);
-		}
-		buttonAdd.setFont(new Font(DIALOG, Font.BOLD, 12));
-		buttonAdd.setBounds(433, 468, 82, 27);
-		contentPane.add(buttonAdd);
-		
-		rdbtnImage.setActionCommand(RDBTN_IMAGE);
-		rdbtnImage.addActionListener(this);
-		
-		rdbtnText.setActionCommand(RDBTN_TEXT);
-		rdbtnImage.addActionListener(this);
-		
-		
-		rdbtnLink.setActionCommand(RDBTN_LINK);
-		rdbtnImage.addActionListener(this);
-		
-		
-		textField_category.getDocument().addDocumentListener(this);
-		textField_linkText.getDocument().addDocumentListener(this);
-		textField_name.getDocument().addDocumentListener(this);
-		textField_url.getDocument().addDocumentListener(this);
-		textArea.getDocument().addDocumentListener(this);
-		
-		textField_url.addKeyListener(this);
-		
-		enabler(panel_text);
-		
-		redify(textField_name,isBlank(textField_name));
-		redify(textField_category,isBlank(textField_category));
-		updateAddBtn();
-		
-		 MultiLineToolTip tip = new MultiLineToolTip();
-	        tip.setComponent(panel_link);
-	        panel_link.setToolTipText("Hello\nworld");
-		//this.setVisible(true);
 	}
 	
 	private void enabler(JPanel toEnable){
