@@ -6,6 +6,7 @@ import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
@@ -20,6 +21,8 @@ import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
 import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
+import webApplication.grafica.TreePanel.CopyAction;
+import webApplication.grafica.TreePanel.MoveAction;
 
 public class TreeTransferHandler extends TransferHandler implements ClipboardOwner	{
 
@@ -34,11 +37,15 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     private Componente[] compsToCopy;
     private int cont = 1;
     private Clipboard clipboard;
+    private CopyAction copyAction;
+    private MoveAction moveAction;
+    private TreePanel panel;
+    private boolean isCopy;
     
     /**
      * 
      */
-    public TreeTransferHandler() {
+    public TreeTransferHandler(TreePanel p) {
         try {
         	String mimeType1 = DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + webApplication.business.Componente[].class.getName()+"\"";
         	componenteFlavor = new DataFlavor(mimeType1);
@@ -47,6 +54,7 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         	nodesFlavor = new DataFlavor(mimeType8);
         	flavors[1] = nodesFlavor;
         	clipboard = new Clipboard("Tree Clipboard");
+        	panel = p;
         } catch (ClassNotFoundException e) {
             System.out.println("ClassNotFound: " + e.getMessage());
         }
@@ -58,16 +66,16 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
      */
     @Override
     public boolean canImport(TransferSupport support)	{
-    	//controlli per verificare se il drop ï¿½ valid
-    	if (support.isDrop())	{//se ï¿½ una drop verifico direttamente
+    	//controlli per verificare se il drop è valid
+    	if (support.isDrop())	{//se è una drop verifico direttamente
     		support.setShowDropLocation(true);//indica visivamente dove sta avvenendo l'operazione di drop
-    		//1. se il data flavor non ï¿½ supportato allora ritorna false
+    		//1. se il data flavor non è supportato allora ritorna false
             if ((!support.isDataFlavorSupported(nodesFlavor)) && (!support.isDataFlavorSupported(componenteFlavor)))	{
                 return false;
             }
-            //2a. se la DropLocation ï¿½ la stessa della DragLocation ritorna false
+            //2a. se la DropLocation è la stessa della DragLocation ritorna false
             //2b. se la DropLocation e la DragLocation sono entrambi elementi composti
-            //2c. se la DragLocation ï¿½ la root
+            //2c. se la DragLocation è la root
             JTree.DropLocation dl = (JTree.DropLocation) support.getDropLocation();
             JTree tree = (JTree) support.getComponent();
             TreePath path = dl.getPath();
@@ -84,17 +92,16 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
                 	return false;
                 }
             }
-            //3. se la DropLocation ï¿½ un componente che non permette figli
+            //3. se la DropLocation è un componente che non permette figli
             if (!node.getAllowsChildren())	{
             	return false;
             }
     	}
-    	else	{//se ï¿½ un copia/taglia dalla clipboard devo estrarre i dati prima
+    	else	{//se è un copia/taglia dalla clipboard devo estrarre i dati prima
     		Transferable trans = clipboard.getContents(null);
             if ((trans==null) || (!trans.isDataFlavorSupported(nodesFlavor)) && (!trans.isDataFlavorSupported(componenteFlavor)))	{
                 return false;
             }
-            //verifiche da fare se ï¿½ un incolla?
     	}
         //4. altri???
     	return true;
@@ -103,19 +110,36 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     /* (non-Javadoc)
      * @see javax.swing.TransferHandler#createTransferable(javax.swing.JComponent)
      */
+    // NOTA: i dati li salvo in un campo locale per facilità di accesso, ma potrei estrarli dal transferable ogni volta che servono
     @Override
     protected Transferable createTransferable(JComponent c)	{
     	JTree tree = (JTree) c;
     	TreePath path = tree.getSelectionPath();
     	if (path!=null)	{
     		DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+    		
+    		//Salvo le informazioni sulla posizione attuale del nodo per l'undo
+        	copyAction = panel.new CopyAction();
+        	moveAction = panel.new MoveAction();
+    		int oldIndex = node.getParent().getIndex(node);
+    		copyAction.putValue("OldIndex", oldIndex);
+    		moveAction.putValue("OldIndex", oldIndex);
+    		if (((DefaultMutableTreeNode) node.getParent()).isRoot())	{
+    			copyAction.putValue("OldParentIndex", -1);
+        		moveAction.putValue("OldParentIndex", -1);
+    		}	else	{
+    			int oldParentIndex = ((DefaultMutableTreeNode) tree.getModel().getRoot()).getIndex(node.getParent());
+    			copyAction.putValue("OldParentIndex", oldParentIndex);
+        		moveAction.putValue("OldParentIndex", oldParentIndex);
+    		}
+    		
     		Componente comp = (Componente) node.getUserObject();
     		List<Componente> compCopies = new ArrayList<Componente>();
     		List<DefaultMutableTreeNode> toRemove = new ArrayList<DefaultMutableTreeNode>(); //lista dei nodi da rimuovere->NOTA: memorizzo i nodi tanto mi serve sapere se erano Componente!
     		toRemove.add(node); //aggiungo il nodo originale agli elementi da eliminare*/
     		Componente compCopy = copy(comp);
     		compCopies.add(compCopy);
-    		// se il nodo corrente puï¿½ avere dei figli devo copiare anche quelli
+    		// se il nodo corrente può avere dei figli devo copiare anche quelli
     		if (node.getAllowsChildren())	{
     			for (int i=0; i<node.getChildCount(); i++)	{
     				DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
@@ -145,8 +169,10 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     protected void exportDone(JComponent source, Transferable data, int action) {
     	System.out.println("Inizio ad esportare");
         if (action == MOVE) {
+        	isCopy=false;
             JTree tree = (JTree) source;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
             // Rimuovo gli elementi indicati per la rimozione
             for (int i = 0; i <nodesToRemove.length ; i++)	{
             	DefaultMutableTreeNode parent = (DefaultMutableTreeNode) nodesToRemove[i].getParent();
@@ -155,9 +181,15 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         			ComponenteMolteplice parentComp = (ComponenteMolteplice) parent.getUserObject();
         			int indiceComponente = parentComp.cercaOpzione(((Componente)nodesToRemove[i].getUserObject()).getNome());
         			parentComp.cancellaOpzione(indiceComponente);
+        			moveAction.putValue("OldParentIndex", root.getIndex(parent));
+            	}	else	{
+            		moveAction.putValue("OldParentIndex", -1);
             	}
+            	moveAction.putValue("OldIndex", parent.getIndex(nodesToRemove[i]));
             	model.removeNodeFromParent(nodesToRemove[i]);
             }
+        }	else	{
+        	isCopy=true;
         }
         System.out.println("Terminata esportazione");
     }
@@ -173,6 +205,7 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     		return;
     	}
     	if ((action == MOVE) && (nodesToRemove!=null))	{
+    		isCopy=false;
             JTree tree = (JTree) c;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
             // Rimuovo gli elementi indicati per la rimozione
@@ -180,21 +213,10 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
             	model.removeNodeFromParent(nodesToRemove[i]);
             }
     	}
-    	else if ((action == COPY)&& (nodesToRemove!=null))	{
-    		for (int i=0; i<compsToCopy.length;i++)	{
-    			String name = compsToCopy[i].getNome();
-    			int beginIndex = name.lastIndexOf('(');
-    			if (beginIndex == -1)	{
-    				beginIndex = compsToCopy[i].getNome().length();
-    			}
-    			String newName = name.substring(0,beginIndex);
-    			newName = newName+'('+cont+')';
-    			compsToCopy[i].setNome(newName);
-    			cont++;
-    		}
+    	else if ((action == COPY))	{//&& (nodesToRemove!=null))	{
+    		isCopy=true;
     	}
     	clipboard.setContents(treeTransferable, this);
-    	//nodesToRemove = null;
     	System.out.println("Terminata esportazione nella clipboard...");
     }
     
@@ -212,7 +234,6 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     @Override
     public boolean importData(TransferHandler.TransferSupport support) {
     	System.out.println("Inizio ad importare...");
-    	Componente[] comps = null;
     	DefaultMutableTreeNode parent = null;
     	int index = -1;
         if (!canImport(support)) {
@@ -222,18 +243,23 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
         if (support.isDrop())	{
         	System.out.println("Operazione di drop");
-            // Estraggo i dati
-        	if (support.getDropAction()== COPY)	{
-        		renameSavedComps();
+        	if (support.getDropAction()==MOVE)	{
+        		System.out.println("Sposta");
+        		isCopy=false;
+        	}	else	{
+        		System.out.println("Copia");
+        		isCopy=true;
         	}
-            try {
+            // Estraggo i dati -> i dati sono già salvati in compsToCopy non devo estrarli dal transferable
+            /*try {
+            	comps = compsToCopy;
                 Transferable t = support.getTransferable();
                 comps = (Componente[]) t.getTransferData(componenteFlavor);
             } catch (UnsupportedFlavorException ufe) {
                 System.out.println("UnsupportedFlavor: " + ufe.getMessage());
             } catch (java.io.IOException ioe) {
                 System.out.println("I/O error: " + ioe.getMessage());
-            }
+            }*/
         	// Recupero la location per il drop
         	JTree.DropLocation dl = (JTree.DropLocation) support.getDropLocation();
         	int childIndex = dl.getChildIndex();
@@ -248,7 +274,7 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         	System.out.println("Operazione di paste");
         	Transferable trans = clipboard.getContents(null);
             try {
-                comps = (Componente[]) trans.getTransferData(componenteFlavor);
+            	compsToCopy = (Componente[]) trans.getTransferData(componenteFlavor);
             } catch (UnsupportedFlavorException ufe) {
                 System.out.println("UnsupportedFlavor: " + ufe.getMessage());
             } catch (java.io.IOException ioe) {
@@ -262,41 +288,56 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
             else {
             	node = (DefaultMutableTreeNode) (tree.getModel()).getRoot();
             }
-            //DefaultMutableTreeNode parent = null;
-            //Se il nodo da spostare ï¿½ composto, l'unico parent concesso ï¿½ la root e come posizione sarï¿½ il successivo al target corrente
-            if (!comps[0].isSimple())	{
+            //Se il nodo da spostare è composto, l'unico parent concesso è la root e come posizione sarà il successivo al target corrente
+            if (!compsToCopy[0].isSimple())	{
             	parent = (DefaultMutableTreeNode) tree.getModel().getRoot();
-            	//index = node.getParent().getIndex(node)+1;
             	index = parent.getChildCount();
-            }	else	{ //se non ï¿½ composto allora ï¿½ un nodo semplice
+            }	else	{ //se non è composto allora è un nodo semplice
             	if (!node.getAllowsChildren())	{ //se il target non permette figli, il parent del target corrente va bene
             		parent = (DefaultMutableTreeNode) node.getParent();
             		index=parent.getChildCount();
-            	}	else	{ //se il target corrente consente figli allora il target va bene e sarï¿½ messo in coda
+            	}	else	{ //se il target corrente consente figli allora il target va bene e sarà messo in coda
             		parent=node;
             		index=node.getChildCount();
             	}
             }
-            renameSavedComps();
         }
         //Inserisco i dati
-        for (int i = 0; i < comps.length; i++) {
-        	DefaultMutableTreeNode nodeToInsert = new DefaultMutableTreeNode(comps[i]);
-        	if (comps[i].isSimple())	{
+        for (int i = 0; i < compsToCopy.length; i++) {
+        	
+        	//Se il nome esiste già rinomino il componente da incollare
+        	//NOTA: lo faccio prima di creare il nodo altrimenti le modifiche non sono rilevate
+        	if (nameExists(tree, compsToCopy[i].getNome()) && isCopy)	{
+        		compsToCopy[i]=renameComponente(compsToCopy[i]);
+        	}
+        	
+        	DefaultMutableTreeNode nodeToInsert = new DefaultMutableTreeNode(compsToCopy[i]);
+        	if (compsToCopy[i].isSimple())	{
         		nodeToInsert.setAllowsChildren(false);
         	}
-        	System.out.println("Valore della i: "+i);
-        	if (!parent.isRoot() && (i==0))	{ //se entro ma i!=0 significa che ï¿½ sto spostando un componente composto e non devo riaggiungere i suoi elementi semplici
+        	if (!parent.isRoot() && (i==0))	{ //se entro ma i!=0 significa che è sto spostando un componente composto e non devo riaggiungere i suoi elementi semplici
         		Componente parentComp = (Componente) parent.getUserObject();
-        		((ComponenteMolteplice)parentComp).aggiungiOpzione((ComponenteSemplice) comps[i]);
+        		((ComponenteMolteplice)parentComp).aggiungiOpzione((ComponenteSemplice) compsToCopy[i]);
+        		copyAction.putValue("ParentIndex",parent.getParent().getIndex(parent));
+        		moveAction.putValue("NewParentIndex",parent.getParent().getIndex(parent));
+        	}	else	{
+        		copyAction.putValue("ParentIndex", -1);
+        		moveAction.putValue("NewParentIndex", -1);
         	}
         	model.insertNodeInto(nodeToInsert, parent, index++);
-        	if (i==0 && ((comps[i]).getType()==ComponenteComposto.COMPOSTOTYPE)||((comps[i]).getType()==ComponenteAlternative.ALTERNATIVETYPE))	{
+        	System.out.println("è una copia: "+isCopy);
+        	if (isCopy)	{
+        		copyAction.putValue("Index", index-1);
+        		copyAction.actionPerformed(new ActionEvent(this, -1, "CopyAction"));
+        	}	else	{
+        		moveAction.putValue("NewIndex", index-1);
+        		moveAction.actionPerformed(new ActionEvent(this, -1, "MoveAction"));
+        	}
+        	if (i==0 && ((compsToCopy[i]).getType()==ComponenteComposto.COMPOSTOTYPE)||((compsToCopy[i]).getType()==ComponenteAlternative.ALTERNATIVETYPE))	{
         		parent = nodeToInsert;
         		index=0;
         	}
         }
-        //rinomino i dati in memoria per il paste
         System.out.println("Terminata importazione");
         return true;
     }
@@ -309,23 +350,20 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         return getClass().getName();
     }
     
-    private void renameSavedComps()	{
+    private Componente renameComponente(Componente comp)	{
     	System.out.println("Inizio a rinominare...");
-    	Componente[] newCompsToCopy = compsToCopy;
-		for (int i=0; i<compsToCopy.length;i++)	{
-			newCompsToCopy[i] = copy(compsToCopy[i]);
-			String name = compsToCopy[i].getNome();
-			int beginIndex = name.lastIndexOf('(');
-			if (beginIndex == -1)	{
-				beginIndex = compsToCopy[i].getNome().length();
-			}
-			String newName = name.substring(0,beginIndex);
-			newName = newName+'('+cont+')';
-			newCompsToCopy[i].setNome(newName);
-			cont++;
+    	Componente newComp = copy(comp);
+    	String name = comp.getNome();
+		int beginIndex = name.lastIndexOf('(');
+		if (beginIndex == -1)	{
+			beginIndex = comp.getNome().length();
 		}
-		compsToCopy = newCompsToCopy;
+		String newName = name.substring(0,beginIndex);
+		newName = newName+'('+cont+')';
+    	newComp.setNome(newName);
+    	cont++;
 		System.out.println("Terminato di rinominare...");
+		return newComp;
     }
 
     

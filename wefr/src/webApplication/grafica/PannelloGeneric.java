@@ -5,6 +5,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -171,9 +172,10 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	//TODO probabilmente si disattivera' solo il pannello e non tutta la finestra
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand()!= DELETE){
+		System.out.println("Parent :"+this.getTopLevelAncestor().getClass().getCanonicalName());
+		if(e.getActionCommand()!= DELETE){/*&&((this.getTopLevelAncestor().getClass().getCanonicalName().endsWith("Wizard")))){*/
 			parentWindow.setEnabled(false);
-			AddNew nuovo = new AddNew(frameOptions, addNewTitle());
+			AddNew nuovo = new AddNew((Window)this.getTopLevelAncestor(),frameOptions, addNewTitle());
 
 			nuovo.addWindowListener(this);
 			nuovo.addEventListener(this);

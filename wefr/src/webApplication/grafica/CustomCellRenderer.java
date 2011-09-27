@@ -54,15 +54,15 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
     			Componente comp = (Componente) nodo.getUserObject();
     			//Java SE6 non supporta lo switch con String solo da Java SE 7
     			String objType = comp.getType();
-    			if (objType.equals(Testo.TEXTTYPE))	{
+    			if (objType==Testo.TEXTTYPE)	{
     				setIcon(textIcon);
-    			}	else if (objType.equals(Immagine.IMAGETYPE))	{
+    			}	else if (objType==Immagine.IMAGETYPE)	{
     				setIcon(imageIcon);
-    			}	else if (objType.equals(Link.LINKTYPE))	{
+    			}	else if (objType==Link.LINKTYPE)	{
     				setIcon(linkIcon);
-    			}	else if (objType.equals(ComponenteComposto.COMPOSTOTYPE))	{
+    			}	else if (objType==ComponenteComposto.COMPOSTOTYPE)	{
     				setIcon(compositeIcon);
-    			}	else if (objType.equals(ComponenteAlternative.ALTERNATIVETYPE))	{
+    			}	else if (objType==ComponenteAlternative.ALTERNATIVETYPE)	{
     				setIcon(alternativeIcon);
     			}
     		}

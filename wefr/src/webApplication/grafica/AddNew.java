@@ -1,7 +1,9 @@
 package webApplication.grafica;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.EventQueue;
+import java.awt.Window;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,6 +20,8 @@ import javax.swing.text.JTextComponent;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -32,6 +36,7 @@ import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
+import webApplication.grafica.TreePanel.AddAction;
 
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -99,30 +104,30 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 	private CustomFCImage fcImage;
 	
 	private Options frameOptions;
-
+	private AddAction addAction;
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AddNew frame = new AddNew(new Options(), "");
+					AddNew frame = new AddNew(this, new Options(), "");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-	}
-
+	}*/
+	
 	/**
 	 * Create the frame.
 	 */
 
-	public AddNew(Options fOptions, String title) {
-
-		this.setModalityType(ModalityType.APPLICATION_MODAL);
+	public AddNew(Window window,Options fOptions, String title) {
+		super(window, ModalityType.APPLICATION_MODAL);
+		//this.setModalityType();
 		frameOptions=fOptions;
 		fcText = new CustomFCText(frameOptions, this);
 		fcImage=new CustomFCImage(frameOptions, this);
@@ -212,10 +217,7 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 			public void actionPerformed(ActionEvent arg0) {
 				readFile();//MainWindow.fileChooser(MainWindow.TEXT), textArea);
 				updateAddBtn();
-
 			}
-
-			
 		});
 		button.setFont(new Font("Dialog", Font.PLAIN, 12));
 		button.setBounds(12, 152, 142, 19);
@@ -302,12 +304,34 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 		contentPane.add(button_back);
 		
 		buttonAdd = new JButton("Add");
+		System.out.println("Genitore: "+this.getOwner().getClass().getCanonicalName());
 		buttonAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fireEvent(CREATENEWCOMP);
+				System.out.println("Sono dentro");
 				dispose();
 			}
 		});
+		if (!(this.getOwner().getClass().getCanonicalName().endsWith("Wizard")))	{
+			addAction = MainWindow.albero.new AddAction();
+			buttonAdd.addActionListener(addAction);
+			buttonAdd.addFocusListener(new FocusListener()	{
+
+				@Override
+				public void focusGained(FocusEvent arg0) {
+					// TODO Auto-generated method stub
+					addAction.putValue("Componente", getNuovoComp());
+					addAction.putValue("ParentIndex", MainWindow.albero.getTree().getSelectionRows()[0]);
+				}
+
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+					//non mi serve
+				}
+				
+			});
+		}
 		buttonAdd.setFont(new Font("Dialog", Font.BOLD, 12));
 		buttonAdd.setBounds(433, 468, 82, 27);
 		contentPane.add(buttonAdd);
@@ -353,7 +377,7 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 		 MultiLineToolTip tip = new MultiLineToolTip();
 	        tip.setComponent(panel_link);
 	        panel_link.setToolTipText("Hello\nworld");
-		
+		//this.setVisible(true);
 	}
 	
 	private void enabler(JPanel toEnable){

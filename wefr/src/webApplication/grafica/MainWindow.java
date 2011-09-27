@@ -58,11 +58,12 @@ import webApplication.business.Link;
 import webApplication.business.Testo;
 
 import webApplication.grafica.TreePanel;
+import webApplication.grafica.TreePanel.RemoveAction;
 
 
 import javax.swing.BoxLayout;
 
-public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener, ActionListener {
+public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener/*, ActionListener*/ {
 
 	private static final String DELNODE = "Delnode";
 	/**
@@ -83,7 +84,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private static JPanel errorePath;
 	private static JPanel erroreTestoLink;
 	private static JPanel erroreUrl;
-	private static JButton button_1;
+	private static JButton btnUndo;
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
 	public static final int TEXT = 2;
@@ -127,7 +128,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	
 	
 	public MainWindowData data = new MainWindowData();
-	private static TreePanel albero;
+	protected static TreePanel albero;
 
 	/**
 	 * Launch the application.
@@ -171,7 +172,13 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 		JPanel panelButtonsBar = new JPanel();
 		
+		initPanelTree();
 		initPanelButtonsBar(panelButtonsBar);
+		
+		JButton btnPaste = new JButton("");
+		btnPaste.setToolTipText("Open");
+		btnPaste.setBounds(261, 4, 30, 30);
+		panelButtonsBar.add(btnPaste);
 
 		JPanel properties = new JPanel();
 		JPanel presentation_panel = new JPanel();
@@ -197,7 +204,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 		initPanelText();
 
-		initPanelTree();
+		//initPanelTree();
 		
 		
 
@@ -394,79 +401,79 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		contentPane.add(panelButtonsBar);
 		panelButtonsBar.setLayout(null);
 
-		JButton button = new JButton("");
-		button.addMouseListener(new MouseAdapter() {
+		JButton btnNew = new JButton("");
+		btnNew.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				setFocus(data.getTxt());
 			}
 		});
-		button.setBounds(12, 4, 30, 30);
-		panelButtonsBar.add(button);
-		button.setToolTipText("Open");
-		button.setIcon(new ImageIcon(
+		btnNew.setBounds(12, 4, 30, 30);
+		panelButtonsBar.add(btnNew);
+		btnNew.setToolTipText("Open");
+		btnNew.setIcon(new ImageIcon(
 				MainWindow.class
 						.getResource("/com/sun/java/swing/plaf/motif/icons/TreeOpen.gif")));
 
-		JButton button_3 = new JButton("");
-		button_3.addMouseListener(new MouseAdapter() {
+		JButton btnOpen = new JButton("");
+		btnOpen.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				setFocus(data.getImg());
 			}
 		});
-		button_3.setToolTipText("Open");
-		button_3.setBounds(45, 4, 30, 30);
-		panelButtonsBar.add(button_3);
+		btnOpen.setToolTipText("Open");
+		btnOpen.setBounds(45, 4, 30, 30);
+		panelButtonsBar.add(btnOpen);
 
-		JButton button_4 = new JButton("");
-		button_4.addMouseListener(new MouseAdapter() {
+		JButton btnSave = new JButton("");
+		btnSave.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				setFocus(data.getLnk());
 			}
 		});
-		button_4.setToolTipText("Open");
-		button_4.setBounds(78, 4, 30, 30);
-		panelButtonsBar.add(button_4);
+		btnSave.setToolTipText("Open");
+		btnSave.setBounds(78, 4, 30, 30);
+		panelButtonsBar.add(btnSave);
 
-		button_1 = new JButton("");
-		button_1.addMouseListener(new MouseAdapter() {
+		btnUndo = new JButton(".");
+		btnUndo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				setFocus(data.getAlt());
 			}
 		});
-		button_1.setToolTipText("Open");
-		button_1.setBounds(120, 4, 30, 30);
-		panelButtonsBar.add(button_1);
+		btnUndo.setToolTipText("Open");
+		btnUndo.setBounds(120, 4, 30, 30);
+		panelButtonsBar.add(btnUndo);
 
-		JButton button_2 = new JButton("");
-		button_2.addMouseListener(new MouseAdapter() {
+		JButton btnRedo = new JButton("");
+		btnRedo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				setFocus(data.getCmp());
 			}
 		});
-		button_2.setToolTipText("Open");
-		button_2.setBounds(153, 4, 30, 30);
-		panelButtonsBar.add(button_2);
+		btnRedo.setToolTipText("Open");
+		btnRedo.setBounds(153, 4, 30, 30);
+		panelButtonsBar.add(btnRedo);
 
-		JButton button_5 = new JButton("");
-		button_5.setEnabled(false);
+		JButton btnCopy = new JButton("");
+		btnCopy.setEnabled(false);
 		
-		button_5.setIcon(new ImageIcon("/home/enrico/Documenti/PSI/icons/list-add-md.png"));
-		button_5.setToolTipText("Open");
-		button_5.setBounds(195, 4, 30, 30);
-		panelButtonsBar.add(button_5);
+		btnCopy.setIcon(new ImageIcon("/home/enrico/Documenti/PSI/icons/list-add-md.png"));
+		btnCopy.setToolTipText("Open");
+		btnCopy.setBounds(195, 4, 30, 30);
+		panelButtonsBar.add(btnCopy);
 
-		JButton button_6 = new JButton("");
-		button_6.setToolTipText("Open");
-		button_6.setBounds(228, 4, 30, 30);
-		panelButtonsBar.add(button_6);
+		JButton btnCut = new JButton("");
+		btnCut.setToolTipText("Open");
+		btnCut.setBounds(228, 4, 30, 30);
+		panelButtonsBar.add(btnCut);
 
-		JButton addButton = new JButton(".");
-		addButton.addActionListener(new ActionListener() {
+		JButton btnAdd = new JButton(".");
+		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addNewWizard();
 			}
@@ -474,23 +481,25 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		
 		
 		//addButton.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
-		addButton.setToolTipText("Open");
-		addButton.setBounds(277, 4, 30, 30);
-		panelButtonsBar.add(addButton);
+		btnAdd.setToolTipText("Open");
+		btnAdd.setBounds(313, 4, 30, 30);
+		panelButtonsBar.add(btnAdd);
 
 		button_del = new JButton("");
 		//button_8.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/gtk/resources/gtk-cancel-4.png")));
 		button_del.setToolTipText("Open");
-		button_del.setBounds(310, 4, 30, 30);
+		button_del.setBounds(346, 4, 30, 30);
 		panelButtonsBar.add(button_del);
-		button_del.addActionListener(this);
-		button_del.setActionCommand(DELNODE);
+		//RemoveAction remAction = albero.new RemoveAction();
+		//button_del.addActionListener(remAction);
+		//button_del.addActionListener(this);
+		//button_del.setActionCommand(DELNODE);
 		button_del.setEnabled(false);
 
 		JButton btnGenerateWebsite = new JButton("GENERATE WEBSITE");
 		
 		btnGenerateWebsite.setToolTipText("Open");
-		btnGenerateWebsite.setBounds(365, 4, 187, 30);
+		btnGenerateWebsite.setBounds(401, 4, 187, 30);
 		boldify(btnGenerateWebsite);
 		panelButtonsBar.add(btnGenerateWebsite);
 	}
@@ -539,7 +548,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 						setFocusable(true);
 
 						if(e != null){
-							albero.addNode(null,e.getComponente());
+							albero.addNode(null,new DefaultMutableTreeNode(e.getComponente()));
 							
 							
 						}
@@ -800,13 +809,13 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		
 	}
 
-	@Override
+	/*@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(DELNODE))
 			albero.removeSelectedNode();
 		
 		
-	}
+	}*/
 	class MenuPanel implements ActionListener, MyEventClassListener, MouseListener{
 
 		private static final String OPT_PANEL = "optionopanel";
@@ -1228,11 +1237,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	public void windowOpened(WindowEvent arg0) {
 		
 	}
-	
-	
-	
-         
-	
 }
 
 

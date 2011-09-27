@@ -13,6 +13,7 @@ public class TransferActionListener implements ActionListener, PropertyChangeLis
 	
 	private JComponent focusOwner;
 	
+	//Si occupa di gestire le azioni come shortcut da tastiera!
 	public TransferActionListener()	{
 		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		manager.addPropertyChangeListener("permanentFocusOwner", this);
