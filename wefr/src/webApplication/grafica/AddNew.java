@@ -46,8 +46,14 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AddNew extends JDialog implements DocumentListener, KeyListener {
+public class AddNew extends JDialog implements DocumentListener, FocusListener ,KeyListener, ActionListener {
 
+	private static final String RDBTN_LINK = "rdbtnLink";
+	private static final String RDBTN_TEXT = "rdbtnText";
+	private static final String RDBTN_IMAGE = "rdbtnImage";
+	private static final String CREATE_EXIT = "createAndExit";
+	private static final String BACK = "Back";
+	private static final String BROWSE = "Browse";
 	static final String LOAD_TOOLTIP = "Click to load text from an existing file";
 	static final String IMPORT_BTN = "Import from file";
 	static final String NAME = "Name of the new element";
@@ -213,12 +219,8 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 		
 		JButton button = new JButton(IMPORT_BTN);
 		button.setToolTipText(LOAD_TOOLTIP);
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				readFile();//MainWindow.fileChooser(MainWindow.TEXT), textArea);
-				updateAddBtn();
-			}
-		});
+		button.addActionListener(this);
+		button.setActionCommand(IMPORT_BTN);
 		button.setFont(new Font("Dialog", Font.PLAIN, 12));
 		button.setBounds(12, 152, 142, 19);
 		panel_text.add(button);
@@ -274,14 +276,10 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 			});
 		panel_image.add(textField_imagePath);
 		
-		JButton button_browse = new JButton("Browse");
-		button_browse.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setPath();
-				updateAddBtn();
-
-			}
-		});
+		JButton button_browse = new JButton(BROWSE);
+		button_browse.addActionListener(this);
+		button_browse.setActionCommand(BROWSE);
+		
 		button_browse.setFont(new Font("Dialog", Font.PLAIN, 12));
 		button_browse.setBounds(325, 51, 89, 19);
 		panel_image.add(button_browse);
@@ -291,80 +289,44 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 		bg.add(rdbtnText);
 		bg.add(rdbtnLink);
 		
-		button_back = new JButton("Back");
-		button_back.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				fireEvent(ONLYDISPOSE);
-				dispose();
-				
-			}
-		});
+		button_back = new JButton(BACK);
+		button_back.setActionCommand(BACK);
+		button_back.addActionListener(this);
+		
 		button_back.setFont(new Font("Dialog", Font.PLAIN, 12));
 		button_back.setBounds(341, 468, 82, 27);
 		contentPane.add(button_back);
 		
 		buttonAdd = new JButton("Add");
-		if (!(this.getOwner().getClass().getCanonicalName().endsWith("Wizard")))	{
-			buttonAdd.setActionCommand("Dispose");
-		}
 		
-		
-			buttonAdd.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (!(e.getActionCommand().equals("Dispose")))
-							fireEvent(CREATENEWCOMP);
-					else
-						fireEvent(ONLYDISPOSE);
-					dispose();
-				}
-			});
-		if (!(this.getOwner().getClass().getCanonicalName().endsWith("Wizard")))	{
+		if (this.getOwner().getClass().getCanonicalName().endsWith("Wizard"))
+			buttonAdd.setActionCommand(CREATE_EXIT);
+		else 
+			buttonAdd.setActionCommand(BACK);
+
+		buttonAdd.addActionListener(this);
+
+		if (this.getOwner() instanceof MainWindow)
+		{	
 			addAction = MainWindow.albero.new AddAction();
+
 			buttonAdd.addActionListener(addAction);
-			buttonAdd.addFocusListener(new FocusListener()	{
-
-				@Override
-				public void focusGained(FocusEvent arg0) {
-					// TODO Auto-generated method stub
-					addAction.putValue("Componente", getNuovoComp());
-					addAction.putValue("ParentIndex", (MainWindow.albero.getTree().getSelectionRows()[0]-1));
-				}
-
-				@Override
-				public void focusLost(FocusEvent e) {
-					// TODO Auto-generated method stub
-					//non mi serve
-				}
-				
-			});
+			buttonAdd.addFocusListener(this);
 		}
 		buttonAdd.setFont(new Font("Dialog", Font.BOLD, 12));
 		buttonAdd.setBounds(433, 468, 82, 27);
 		contentPane.add(buttonAdd);
 		
-		rdbtnImage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				enabler(panel_image);
-				updateAddBtn();
-			}
-		});
+		rdbtnImage.setActionCommand(RDBTN_IMAGE);
+		rdbtnImage.addActionListener(this);
 		
-		rdbtnText.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				enabler(panel_text);
-				updateAddBtn();
-
-			}
-		});
+		rdbtnText.setActionCommand(RDBTN_TEXT);
+		rdbtnImage.addActionListener(this);
 		
-		rdbtnLink.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				enabler(panel_link);
-				updateAddBtn();
-
-
-			}
-		});
+		
+		rdbtnLink.setActionCommand(RDBTN_LINK);
+		rdbtnImage.addActionListener(this);
+		
 		
 		textField_category.getDocument().addDocumentListener(this);
 		textField_linkText.getDocument().addDocumentListener(this);
@@ -508,26 +470,6 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 		}
 	}
 
-	
-/*
-	private void setChangeListener (JTextComponent toAttachListener){
-		
-		JTextComponent textComponent_imagepath=toAttachListener;
-		textComponent_imagepath.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				changeEvent(e);
-			}
-			public void removeUpdate(DocumentEvent e) {
-				changeEvent(e);
-			}
-			public void insertUpdate(DocumentEvent e) {
-				changeEvent(e);
-			}
-			});
-		
-		
-	}
-*/
 	private void changeEvent(DocumentEvent e) {
 		if(e.getDocument()== textField_url.getDocument())
 	
@@ -622,11 +564,11 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 
 	private ComponenteSemplice getNuovoComp(){
 		//TODO escapare i vari campi
-		//TODO quando viene invocato il metodo bisogna passargli i valori di enfasi e importanza
+		
 		ComponenteSemplice output = null;
 		if (!erroriPresenti()){
 			if (rdbtnImage.isSelected())
-				//FIXME non vanno fissati a zero i due parametri!
+				
 				output = new Immagine(textField_name.getText(), textField_category.getText(), 0, 0, textField_imagePath.getText());
 
 			else if (rdbtnLink.isSelected())
@@ -708,8 +650,52 @@ public class AddNew extends JDialog implements DocumentListener, KeyListener {
 	public void keyTyped(KeyEvent arg0) {
 		if(!allowedChar(arg0.getKeyChar()))
 			arg0.consume();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand()==IMPORT_BTN){
+			readFile();//MainWindow.fileChooser(MainWindow.TEXT), textArea);
+			updateAddBtn();
+		}
+		else if(e.getActionCommand()==BROWSE){
+			setPath();
+			updateAddBtn();
+		}
+		else if (e.getActionCommand()==BACK){
+			fireEvent(ONLYDISPOSE);
+			dispose();
+		}
+		else if(e.getActionCommand()==CREATE_EXIT){
+			fireEvent(CREATENEWCOMP);
+			dispose();
+		}
+		else if(e.getActionCommand()==RDBTN_IMAGE){
+			enabler(panel_image);
+			updateAddBtn();
+		}
+		else if(e.getActionCommand()==RDBTN_TEXT){
+			enabler(panel_text);
+			updateAddBtn();
+		}
+		else if(e.getActionCommand()==RDBTN_LINK){
+			enabler(panel_link);
+			updateAddBtn();
+		}
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		addAction.putValue("Componente", getNuovoComp());
+		addAction.putValue("ParentIndex", (MainWindow.albero.getTree().getSelectionRows()[0]-1));
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		//non mi serve
+		
 	}  
-	
+
 }
 
 
