@@ -547,11 +547,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 						setEnabled(true);
 						setFocusable(true);
 
-						if(e != null){
+						/*if(e != null){
 							albero.addNode(null,new DefaultMutableTreeNode(e.getComponente()));
 							
 							
-						}
+						}*/
 			}
 
 			});
