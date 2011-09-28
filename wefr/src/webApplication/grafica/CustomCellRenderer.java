@@ -14,6 +14,11 @@ import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
 
+/**
+ * Il renderer dei nodi limitatamente per le icone a seconda del tipo di componente che rappresenta 
+ * @author Andrea
+ *
+ */
 public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	
 	/**
@@ -27,7 +32,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	private ImageIcon compositeIcon;
 	private ImageIcon alternativeIcon;
 	
-	private static String BASEPATH = "immagini/";
+	private static String BASEPATH = "icon/";
 	private static String HOMEICON = "Home.png"; 
 	private static String TEXTICONNAME = "Testo.png";
 	private static String IMAGEICONNAME = "Immagine.png";
@@ -36,6 +41,9 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	private static String COMPOSITEICONNAME = "Composto.png";
 	
 	
+	/**
+	 * Il costruttore base
+	 */
 	public CustomCellRenderer()	{
 		homeIcon = createImageIcon(BASEPATH+HOMEICON);
 		textIcon = createImageIcon(BASEPATH+TEXTICONNAME);
@@ -46,6 +54,9 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	}
 	
 	
+    /* (non-Javadoc)
+     * @see javax.swing.tree.DefaultTreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int, boolean)
+     */
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus)	{
     	super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
     	DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) value;
@@ -67,7 +78,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
     			}
     		}
     		catch(ClassCastException e){
-    			//System.out.println("Non posso fare il cast");
+    			//eccezione non gestita perchè non si potrà mai verificare
     		}
     	}
     	else	{
@@ -76,6 +87,11 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
     	return this;
     }
 	
+    /**
+     * Carica l'immagine partendo dal suo path
+     * @param path	Il path dell'immagine
+     * @return		L'immagine caricata
+     */
     private static ImageIcon createImageIcon(String path) {
     	return new ImageIcon(path);
     }

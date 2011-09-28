@@ -6,6 +6,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 
+/**
+ * L'oggetto per l'undo di una azione di spostamento di un nodo nell'albero
+ * @author Andrea
+ *
+ */
 public class UndoableMoveNode extends AbstractUndoableEdit {
 
 	/**
@@ -18,6 +23,14 @@ public class UndoableMoveNode extends AbstractUndoableEdit {
 	private int oldIndex;
 	private int newIndex;
 	
+	/**
+	 * Il costruttore di base
+	 * @param t		L'albero
+	 * @param op	L'indice del precedente genitore
+	 * @param np	L'indice del nuovo genitore
+	 * @param oi	Il vecchio indice del nodo
+	 * @param ni	Il nuovo indice del nodo
+	 */
 	UndoableMoveNode(JTree t, int op, int np, int oi, int ni)	{
 		tree=t;
 		oldParentIndex=op;
@@ -26,6 +39,9 @@ public class UndoableMoveNode extends AbstractUndoableEdit {
 		newIndex=ni;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#undo()
+	 */
 	public void undo() throws CannotUndoException	{
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
@@ -42,6 +58,9 @@ public class UndoableMoveNode extends AbstractUndoableEdit {
 		model.insertNodeInto(node, parent, oldIndex);
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#redo()
+	 */
 	public void redo() throws CannotUndoException	{
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
@@ -58,16 +77,25 @@ public class UndoableMoveNode extends AbstractUndoableEdit {
 		model.insertNodeInto(node, parent, newIndex);
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#canUndo()
+	 */
 	public boolean canUndo()	{
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#canRedo()
+	 */
 	public boolean canRedo()	{
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#getPresentationName()
+	 */
 	public String getPresentationName()	{
-		return "MoveNode";
+		return "Move Node";
 	}
 
 }

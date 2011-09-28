@@ -26,6 +26,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -59,7 +60,9 @@ import webApplication.business.Link;
 import webApplication.business.Testo;
 
 import webApplication.grafica.TreePanel;
+import webApplication.grafica.TreePanel.RedoAction;
 import webApplication.grafica.TreePanel.RemoveAction;
+import webApplication.grafica.TreePanel.UndoAction;
 
 
 import javax.swing.BoxLayout;
@@ -73,8 +76,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private static final long serialVersionUID = 1L;
 	private static JPanel contentPane;
 	
-	
-	
+	private static final String BASEPATH="icon/";
+	private static final String ENUNDOICON="undo.png";
+	private static final String DISUNDOICON="disundo.png";
+	private static final String ENREDOICON="redo.png";
+	private static final String DISREDOICON="disredo.png";
 	
 	private static JTextArea editorPane_text;
 	private static JTextField textField_imagepath;
@@ -436,10 +442,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		});
 		btnNew.setBounds(12, 4, 30, 30);
 		panelButtonsBar.add(btnNew);
-		btnNew.setToolTipText("Open");
-		btnNew.setIcon(new ImageIcon(
-				MainWindow.class
-						.getResource("/com/sun/java/swing/plaf/motif/icons/TreeOpen.gif")));
+		btnNew.setToolTipText("New");
+		btnNew.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/motif/icons/TreeOpen.gif")));
 
 		JButton btnOpen = new JButton("");
 		btnOpen.addMouseListener(new MouseAdapter() {
@@ -459,30 +463,30 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				setFocus(data.getLnk());
 			}
 		});
-		btnSave.setToolTipText("Open");
+		btnSave.setToolTipText("Save");
 		btnSave.setBounds(78, 4, 30, 30);
 		panelButtonsBar.add(btnSave);
 
-		btnUndo = new JButton(".");
-		btnUndo.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				setFocus(data.getAlt());
-			}
-		});
-		btnUndo.setToolTipText("Open");
+		Icon enabledIcon = new ImageIcon(BASEPATH+ENUNDOICON);
+		Icon disabledIcon = new ImageIcon(BASEPATH+DISUNDOICON);
+		btnUndo = new JButton(enabledIcon);
+		btnUndo.setDisabledIcon(disabledIcon);
+		//btnUndo.setEnabled(false); //TODO da decommentare quando ci sarà le gestione dei pulsanti
+		btnUndo.setToolTipText("Undo");
 		btnUndo.setBounds(120, 4, 30, 30);
+		UndoAction undoAction = albero.new UndoAction();
+		btnUndo.addActionListener(undoAction);
 		panelButtonsBar.add(btnUndo);
 
-		JButton btnRedo = new JButton("");
-		btnRedo.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				setFocus(data.getCmp());
-			}
-		});
-		btnRedo.setToolTipText("Open");
+		enabledIcon = new ImageIcon(BASEPATH+ENREDOICON);
+		disabledIcon = new ImageIcon(BASEPATH+DISREDOICON);
+		JButton btnRedo = new JButton(enabledIcon);
+		btnRedo.setDisabledIcon(disabledIcon);
+		//btnRedo.setEnabled(false); //TODO da decommentare quando ci sarà le gestione dei pulsanti
+		btnRedo.setToolTipText("Redo");
 		btnRedo.setBounds(153, 4, 30, 30);
+		RedoAction redoAction = albero.new RedoAction();
+		btnRedo.addActionListener(redoAction);
 		panelButtonsBar.add(btnRedo);
 
 		JButton btnCopy = new JButton("");

@@ -11,6 +11,11 @@ import webApplication.business.Componente;
 import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
 
+/**
+ * L'oggetto per l'undo di una azione di aggiunta di un nodo all'albero
+ * @author Andrea
+ *
+ */
 public class UndoableAddNode extends AbstractUndoableEdit {
 
 	/**
@@ -23,6 +28,13 @@ public class UndoableAddNode extends AbstractUndoableEdit {
 	private int parentIndex;
 	private int index;
 	
+	/**
+	 * Il costruttore di base
+	 * @param t	L'albero
+	 * @param n	Il componente
+	 * @param p	L'indice del genitore
+	 * @param i	L'indice del nodo
+	 */
 	UndoableAddNode(JTree t, Componente n, int p, int i)	{
 		tree=t;
 		nodeComp=n;
@@ -30,8 +42,9 @@ public class UndoableAddNode extends AbstractUndoableEdit {
 		index=i;
 	}
 	
-	
-	//TODO sistemare con i nuovi attributi
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#undo()
+	 */
 	public void undo() throws CannotUndoException	{
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 		DefaultMutableTreeNode parent = findParent();
@@ -50,6 +63,9 @@ public class UndoableAddNode extends AbstractUndoableEdit {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#redo()
+	 */
 	public void redo() throws CannotRedoException	{
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 		DefaultMutableTreeNode parent = findParent();
@@ -67,6 +83,10 @@ public class UndoableAddNode extends AbstractUndoableEdit {
 		}
 	}
 	
+	/**
+	 * Cerca il genitore del nodo salvato nel campo nodeComp
+	 * @return	Il genitore
+	 */
 	private DefaultMutableTreeNode findParent()	{
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 		if ((!nodeComp.isSimple()) || (parentIndex==-1))	{
@@ -78,16 +98,25 @@ public class UndoableAddNode extends AbstractUndoableEdit {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#canUndo()
+	 */
 	public boolean canUndo()	{
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#canRedo()
+	 */
 	public boolean canRedo()	{
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#getPresentationName()
+	 */
 	public String getPresentationName()	{
-		return "AddNode";
+		return "Add Node";
 	}
 
 }

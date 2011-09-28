@@ -24,6 +24,11 @@ import webApplication.business.ComponenteSemplice;
 import webApplication.grafica.TreePanel.CopyAction;
 import webApplication.grafica.TreePanel.MoveAction;
 
+/**
+ * Gestisce le azioni di copia/taglia/incolla e drag&drop sui nodi dell'albero 
+ * @author Andrea
+ *
+ */
 public class TreeTransferHandler extends TransferHandler implements ClipboardOwner	{
 
 	/**
@@ -43,7 +48,7 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     private boolean isCopy;
     
     /**
-     * 
+     * Il costruttore di base
      */
     public TreeTransferHandler(TreePanel p) {
         try {
@@ -110,9 +115,8 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     /* (non-Javadoc)
      * @see javax.swing.TransferHandler#createTransferable(javax.swing.JComponent)
      */
-    // NOTA: i dati li salvo in un campo locale per facilità di accesso, ma potrei estrarli dal transferable ogni volta che servono
-    @Override
     protected Transferable createTransferable(JComponent c)	{
+    	// NOTA: i dati li salvo in un campo locale per facilità di accesso, ma potrei estrarli dal transferable ogni volta che servono
     	JTree tree = (JTree) c;
     	TreePath path = tree.getSelectionPath();
     	if (path!=null)	{
@@ -157,6 +161,11 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         return null;
     }
     
+    /**
+     * Crea una copia del nodo
+     * @param comp	Il nodo da copiare
+     * @return		Il nodo copiato
+     */
     private Componente copy(Componente comp) {
     	Componente compCopy = comp.clone();
         return compCopy;
@@ -223,7 +232,6 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     /* (non-Javadoc)
      * @see javax.swing.TransferHandler#getSourceActions(javax.swing.JComponent)
      */
-    @Override
     public int getSourceActions(JComponent c) {
         return COPY_OR_MOVE;
     }
@@ -231,7 +239,6 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     /* (non-Javadoc)
      * @see javax.swing.TransferHandler#importData(javax.swing.TransferHandler.TransferSupport)
      */
-    @Override
     public boolean importData(TransferHandler.TransferSupport support) {
     	System.out.println("Inizio ad importare...");
     	DefaultMutableTreeNode parent = null;
@@ -350,6 +357,11 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
         return getClass().getName();
     }
     
+    /**
+     * Modifica il campo Nome dell'oggetto Componente
+     * @param comp	Il componente il cui nome deve essere modificato
+     * @return		Il nuovo componente con il nome modificato
+     */
     private Componente renameComponente(Componente comp)	{
     	System.out.println("Inizio a rinominare...");
     	Componente newComp = copy(comp);
@@ -367,14 +379,25 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     }
 
     
+    /**
+     * Implementa il dataflavor dell'oggetto Nodo usato per il drag&drop
+     * @author Andrea
+     *
+     */
     class NodeSelection implements Transferable	{
     	DefaultMutableTreeNode[] nodes;
     	
+    	/**
+    	 * Il costruttore di base
+    	 * @param n	i nodi da spostare
+    	 */
     	NodeSelection(DefaultMutableTreeNode[] n)	{
     		nodes=n;
     	}
 
-		@Override
+		/* (non-Javadoc)
+		 * @see java.awt.datatransfer.Transferable#getTransferData(java.awt.datatransfer.DataFlavor)
+		 */
 		public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException	{
 			if (!isDataFlavorSupported(flavor))	{
 				throw new UnsupportedFlavorException(flavor);
@@ -382,12 +405,16 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
 			return nodes;
 		}
 
-		@Override
+		/* (non-Javadoc)
+		 * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
+		 */
 		public DataFlavor[] getTransferDataFlavors() {
 			return flavors;
 		}
 
-		@Override
+		/* (non-Javadoc)
+		 * @see java.awt.datatransfer.Transferable#isDataFlavorSupported(java.awt.datatransfer.DataFlavor)
+		 */
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
 			if (nodesFlavor.equals(flavor))	{
 				System.out.println("Node data flavor");
@@ -398,14 +425,25 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
 		}
     }
     
+    /**
+     * Implementa il dataflavor dell'oggetto componente usato per il drag&drop
+     * @author Andrea
+     *
+     */
     class ComponenteSelection implements Transferable	{
     	Componente[] comps;
     	
+    	/**
+    	 * Costruttore di base
+    	 * @param n	I nodi da spostare
+    	 */
     	ComponenteSelection(Componente[] n)	{
     		comps=n;
     	}
 
-		@Override
+		/* (non-Javadoc)
+		 * @see java.awt.datatransfer.Transferable#getTransferData(java.awt.datatransfer.DataFlavor)
+		 */
 		public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException	{
 			if (!isDataFlavorSupported(flavor))	{
 				throw new UnsupportedFlavorException(flavor);
@@ -413,12 +451,16 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
 			return comps;
 		}
 
-		@Override
+		/* (non-Javadoc)
+		 * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
+		 */
 		public DataFlavor[] getTransferDataFlavors() {
 			return flavors;
 		}
 
-		@Override
+		/* (non-Javadoc)
+		 * @see java.awt.datatransfer.Transferable#isDataFlavorSupported(java.awt.datatransfer.DataFlavor)
+		 */
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
 			if (componenteFlavor.equals(flavor))	{
 				return true;
@@ -428,15 +470,18 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
     	
     }
 
-	@Override
+	/* (non-Javadoc)
+	 * @see java.awt.datatransfer.ClipboardOwner#lostOwnership(java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
+	 */
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
+		//non mi serve
 		System.out.println("Ownership lost");
 	}
 	
 	/**
-	 * Check if the given element name is already taken
-	 * @param name
-	 * @return
+	 * Verifica se un nome è già stato usato nell'albero
+	 * @param name	Il nome da verificare
+	 * @return	True o False a seconda se il nome è già stato usato o meno
 	 */
 	public boolean nameExists(JTree tree, String name)	{
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
@@ -449,10 +494,10 @@ public class TreeTransferHandler extends TransferHandler implements ClipboardOwn
 	}
 	
 	/**
-	 * Check if the given element name is already taken for the given node
-	 * @param name
-	 * @param node
-	 * @return
+	 * Verifica se un nome è già stato usato in un nodo specifico 
+	 * @param name	Il nome da verificare
+	 * @param node	Il nodo in cui verificare
+	 * @return		True o False a seconda se il nome è già stato usato o meno
 	 */
 	private boolean nameExists(String name, DefaultMutableTreeNode node)	{
 		Componente comp = (Componente) node.getUserObject();

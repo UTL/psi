@@ -8,6 +8,11 @@ import javax.swing.undo.CannotUndoException;
 
 import webApplication.business.Componente;
 
+/**
+ * L'oggetto per l'undo di una azione di modifica di un campo di un nodo
+ * @author Andrea
+ *
+ */
 public class UndoableChangeField extends AbstractUndoableEdit {
 
 	/**
@@ -21,6 +26,15 @@ public class UndoableChangeField extends AbstractUndoableEdit {
 	private Object oldValue;
 	private Object newValue;
 	
+	/**
+	 * Il costruttore di base
+	 * @param t		L'albero
+	 * @param pi	L'indice del genitore
+	 * @param ci	L'indice del componente
+	 * @param f		Il nome campo
+	 * @param ov	Il vecchio valore
+	 * @param nv	Il nuovo valore
+	 */
 	UndoableChangeField(JTree t, int pi, int ci, String f, Object ov, Object nv)	{
 		root=(DefaultMutableTreeNode) t.getModel().getRoot();
 		parentIndex=pi;
@@ -30,6 +44,9 @@ public class UndoableChangeField extends AbstractUndoableEdit {
 		newValue=nv;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#undo()
+	 */
 	public void undo() throws CannotUndoException	{
 		DefaultMutableTreeNode parent;
 		if (parentIndex!=-1)	{
@@ -53,6 +70,9 @@ public class UndoableChangeField extends AbstractUndoableEdit {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#redo()
+	 */
 	public void redo() throws CannotRedoException	{
 		DefaultMutableTreeNode parent;
 		if (parentIndex!=-1)	{
@@ -76,16 +96,25 @@ public class UndoableChangeField extends AbstractUndoableEdit {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#canUndo()
+	 */
 	public boolean canUndo()	{
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#canRedo()
+	 */
 	public boolean canRedo()	{
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.undo.AbstractUndoableEdit#getPresentationName()
+	 */
 	public String getPresentationName()	{
-		return "FieldChanged";
+		return "Field Changed";
 	}
 
 }

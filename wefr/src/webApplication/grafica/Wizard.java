@@ -1,8 +1,6 @@
 package webApplication.grafica;
 
 import java.awt.Component;
-import java.awt.EventQueue;
-import java.awt.HeadlessException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,11 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
-import java.awt.Dialog.ModalityType;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
@@ -26,34 +20,22 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import java.awt.Font;
-import javax.swing.JList;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.TextListener;
 import java.awt.event.TextEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.Iterator;
 import java.util.Vector;
 
-import javax.swing.JEditorPane;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.JTextComponent;
 import javax.swing.SwingConstants;
 
 import webApplication.business.Componente;
@@ -140,28 +122,6 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? 
 	private static final boolean CREATENEWCOMP = false;
 	private Options frameOptions;
-
-	
-	/*/**
-	 * Launch the application.
-<<<<<<< HEAD
-	 */
-	/*public static void main(String[] args) {
-=======
-	 
-	public static void main(String[] args) {
->>>>>>> 47c82c340320c2c141336405e6ee2fb262197d2f
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Wizard frame = new Wizard(new Options());
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
 
 	/**
 	 * Create the frame.
