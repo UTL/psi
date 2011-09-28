@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
+import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
 
 public class PannelloComp extends PannelloGeneric {
@@ -85,22 +86,22 @@ public class PannelloComp extends PannelloGeneric {
 		compostoComp.cancellaOpzione(list_components.getSelectedIndices()[i]);
 	}
 
-	@Override
-	protected boolean isEmptyComponent() {
-		
-			if(compostoComp!= null){
-				list_components = new JList(Utils.extractNomiComponenti(compostoComp.getOpzioni()));
-				return false;
-			}
-			else
-				list_components = new JList();
-			return true;
-		
-	}
+	
 
 	@Override
 	protected String addNewTitle() {
 		return COMPOSITE;
+	}
+
+	@Override
+	protected boolean componentNotNull() {
+		
+		return compostoComp!=null;
+	}
+
+	@Override
+	protected ComponenteMolteplice getComponente() {
+		return compostoComp;
 	}
 
 	

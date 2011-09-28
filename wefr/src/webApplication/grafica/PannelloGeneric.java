@@ -25,6 +25,7 @@ import javax.swing.event.ListSelectionListener;
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
+import webApplication.business.ComponenteMolteplice;
 
 import webApplication.business.ComponenteSemplice;
 import webApplication.grafica.TreePanel.RemoveAction;
@@ -38,7 +39,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	protected JButton bott_down;
 	protected JButton bott_del;
 	protected JButton bott_addExist;
-	protected JList list_components;
+	protected CustomJList list_components;
 	protected ComponenteAlternative alternativeComp;
 	protected ComponenteComposto compostoComp;
 	private final static String DELETE = "Delete";
@@ -75,7 +76,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		
 		bott_addExist= new JButton();
 		bott_addExist.setBounds(197, 165, 121, 27);
-		list_components= new JList();
+		list_components= new CustomJList();
 		parentWindow = m;
 		frameOptions = o;
 		if(m instanceof Wizard){
@@ -148,7 +149,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		if(list_components != null && listContainer!=null)
 			listContainer.remove(list_components);
 
-		isEmptyComponent();
+		updateJList();
 
 		listContainer.add(list_components);
 		list_components.addListSelectionListener(this);
@@ -166,7 +167,19 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		
 	}
 
-	abstract protected boolean isEmptyComponent();
+	
+	private boolean updateJList() 
+		{
+			if(componentNotNull()){
+				list_components = new CustomJList(Utils.extractNomiComponenti(alternativeComp.getOpzioni()));
+			return false;
+		}
+			else
+				list_components = new CustomJList();
+			return true;
+		}
+
+	abstract protected boolean componentNotNull();
 
 	abstract protected void upDownMgmt();
 	
@@ -236,6 +249,14 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 
 	abstract protected void removeElement(int i) ;
 
+	public ComponenteSemplice getNthComp(int i){
+		
+		return getComponente().getOpzione(i);
+		
+	}
+	
+
+	protected abstract ComponenteMolteplice getComponente();
 
 	@Override
 	public void handleMyEventClassEvent(

@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
+import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
 
 public class PannelloAlt extends PannelloGeneric {
@@ -100,21 +101,21 @@ public class PannelloAlt extends PannelloGeneric {
 		alternativeComp.cancellaOpzione(list_components.getSelectedIndices()[i]);
 	}
 
-	@Override
-	protected boolean isEmptyComponent() 
-		{
-			if(alternativeComp != null){
-				list_components = new JList(Utils.extractNomiComponenti(alternativeComp.getOpzioni()));
-			return false;
-		}
-			else
-				list_components = new JList();
-			return true;
-		}
+	
 
 	@Override
 	protected String addNewTitle() {
 		return ALTERNATIVE;
+	}
+
+	@Override
+	protected boolean componentNotNull() {
+		return alternativeComp != null;
+	}
+
+	@Override
+	protected ComponenteMolteplice getComponente() {
+		return alternativeComp;
 	}
 
 	
