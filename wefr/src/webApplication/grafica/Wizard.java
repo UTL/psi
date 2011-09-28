@@ -29,6 +29,7 @@ import java.awt.Font;
 import javax.swing.JList;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.TextListener;
 import java.awt.event.TextEvent;
 import java.awt.event.FocusAdapter;
@@ -62,6 +63,7 @@ import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
+import webApplication.grafica.TreePanel.AddAction;
 
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
@@ -121,6 +123,8 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 	private CustomFCText fcText;
 	
 	private Vector<ComponenteSemplice> componentiComposite;
+	
+	private AddAction addAction;
 	//private DefaultListModel componentiAlternative;
 	
 	//TODO come nel MainWindow, le tre stringhe tipi categorie e importanze andrebbero estratte
@@ -137,10 +141,15 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 	private Options frameOptions;
 
 	
-	/**
+	/*/**
 	 * Launch the application.
+<<<<<<< HEAD
 	 */
 	/*public static void main(String[] args) {
+=======
+	 
+	public static void main(String[] args) {
+>>>>>>> 47c82c340320c2c141336405e6ee2fb262197d2f
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -161,6 +170,8 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		//this.setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 		setTitle("Add element");
+		
+		addAction = MainWindow.albero.new AddAction();//inizializzo il listener per l'aggiunta di un nodo
 		
 		frameOptions= o;
 		fcImage = new CustomFCImage(frameOptions, this);
@@ -415,6 +426,10 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		btnDone_text = new JButton("Done");
 		
 		btnDone_text.addActionListener(this);
+		
+		//aggiungo il listener per l'effettiva aggiunta del nodo
+		addNodeAddingListener(btnDone_text);
+
 		btnDone_text.setActionCommand(DONE);
 		
 		btnDone_text.setEnabled(false);
@@ -547,6 +562,9 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		btnDone_link = new JButton("Done");
 		btnDone_link.setEnabled(false);
 		btnDone_link.addActionListener(this);
+		
+		addNodeAddingListener(btnDone_link);
+		
 		btnDone_link.setActionCommand(DONE_LINK);
 		
 		btnDone_link.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -628,6 +646,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		
 		btnDone_Image = new JButton("Done");
 		btnDone_Image.addActionListener(this);
+		addNodeAddingListener(btnDone_Image);
 		btnDone_Image.setActionCommand(DONE_IMG);
 		
 		btnDone_Image.setEnabled(false);
@@ -740,9 +759,9 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		panel_composite_s3.add(panel_12);
 		
 		button_doneComp = new JButton("Done");
-		button_doneComp.setEnabled(false);
+		button_doneComp.setEnabled(true);
 		button_doneComp.addActionListener(this);
-		
+		addNodeAddingListener(button_doneComp);
 		button_doneComp.setActionCommand(DONE);
 		
 		button_doneComp.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -829,6 +848,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		JButton button_doneAlt = new JButton("Done");
 		button_doneAlt.setEnabled(true);
 		button_doneAlt.addActionListener(this);
+		addNodeAddingListener(button_doneAlt);
 		button_doneAlt.setActionCommand(DONE);
 		
 		button_doneAlt.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -1111,7 +1131,9 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 			else if (e.getActionCommand().equals(BACK)){
 				tabbedPane.setSelectedIndex(0);
 			}
+
 			else if (e.getActionCommand().equals(DONE)){ //testo composite alternative
+
 				createAndDispose();
 			}
 			else if (e.getActionCommand().equals(BACK2)){
@@ -1173,7 +1195,28 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				panel_alt.setComponent(buildAlternative());
 				tabbedPane.setSelectedIndex(6);
 				}
-		}	
+
+		}
+
+		private void addNodeAddingListener(JButton button)	{
+			button.addFocusListener(new FocusListener()	{
+
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				addAction.putValue("Componente", buildNewComp());
+				addAction.putValue("ParentIndex", -1);
+			}
+
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				// non mi serve
+			}
+			
+			});
+			button.addActionListener(addAction);
+		}
+		
+
 }
 
 
