@@ -2,6 +2,7 @@ package webApplication.grafica;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -88,6 +89,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
 	public static final int TEXT = 2;
+	private JPanel properties;
 	
 	private JButton button_del;
 	
@@ -153,6 +155,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	 * 
 	 */
 	public MainWindow() {
+		
 		setTitle("EUD-MAMBA");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 728, 502);
@@ -180,7 +183,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		btnPaste.setBounds(261, 4, 30, 30);
 		panelButtonsBar.add(btnPaste);
 
-		JPanel properties = new JPanel();
+		properties = new JPanel();
 		JPanel presentation_panel = new JPanel();
 		JPanel id_panel = new JPanel();
 		
@@ -212,10 +215,29 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		popolaOggetti();
 
 	}
+	
+	private void detachProperties(){
+		try{
+			properties.getParent().remove(properties);
+		}
+		catch(NullPointerException e){}
+
+		
+		Container parentAlbero = albero.getParent();
+		parentAlbero.remove(albero);
+		albero.setBounds(15, 63, 300, 400);
+
+		parentAlbero.add(albero);
+		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
+		properties.repaint();
+		albero.repaint();
+		repaint();
+	}
 
 	private void initPanelTree() {
 		albero = new TreePanel();
 		albero.setBounds(15, 63, 222, 378);
+		
 		contentPane.add(albero);
 		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
 		albero.getTree().addTreeSelectionListener(this);
@@ -468,6 +490,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		panelButtonsBar.add(btnCopy);
 
 		JButton btnCut = new JButton("");
+		btnCut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				detachProperties();
+			}
+		});
 		btnCut.setToolTipText("Open");
 		btnCut.setBounds(228, 4, 30, 30);
 		panelButtonsBar.add(btnCut);
@@ -526,19 +553,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 
 	private void addNewWizard() {
-		//TODO agganciarci il wizard e non l'addnew
+		
 		//TODO andrebbe creata una classe e tolto il codice da qui
 
-		//setEnabled(false);
-		//setFocusable(false);
-		Wizard nuovo = new Wizard(frameOptions);
-		nuovo.addWindowListener(new WindowAdapter(){
-			@Override
-			public void windowClosing(WindowEvent e) {
-				setEnabled(true);
-				setFocusable(true);
-			}
-		});
+		
+		Wizard nuovo = new Wizard(this, frameOptions);
+		
 		nuovo.addEventListener(new MyEventClassListener(){
 
 			@Override
@@ -1053,13 +1073,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 			textField_Type.setText(type);
 
-			// TODO verificare che l'ordine sia giusto (che il numero restituito dal
-			// getenfasi corrisp a quello del menu a tendina)
+
 			comboBox_Emphasize.setSelectedIndex(selected.getEnfasi());
 			comboBox_Importance.setSelectedIndex(selected.getVisibilita());
 		}
 		
-		// TODO verificare se va
 		private void setFocusedName() {
 			if (focused != null)
 				focused.setNome(textField_Name.getText());

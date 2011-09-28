@@ -140,7 +140,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -151,13 +151,14 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the frame.
 	 */
-	public Wizard(Options o) {
-		this.setModalityType(ModalityType.APPLICATION_MODAL);
+	public Wizard(MainWindow m, Options o) {
+		super(m, ModalityType.APPLICATION_MODAL);
+		//this.setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 		setTitle("Add element");
 		
@@ -1110,7 +1111,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 			else if (e.getActionCommand().equals(BACK)){
 				tabbedPane.setSelectedIndex(0);
 			}
-			else if (e.getActionCommand().equals(DONE)){
+			else if (e.getActionCommand().equals(DONE)){ //testo composite alternative
 				createAndDispose();
 			}
 			else if (e.getActionCommand().equals(BACK2)){
@@ -1120,12 +1121,12 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				loadTextAction();
 			}
 			else if (e.getActionCommand().equals(DONE_LINK)){
-				lnk= new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(),textField_url.getText(), textField_linktext.getText());
+				//lnk= new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(),textField_url.getText(), textField_linktext.getText());
 				createAndDispose();
 			}
 
 			else if (e.getActionCommand().equals(DONE_IMG)){
-				img = new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(),emph.getSelectedIndex(), textField_imagepath.getText());
+				//img = new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(),emph.getSelectedIndex(), textField_imagepath.getText());
 				createAndDispose();
 			}
 			else if(e.getActionCommand().equals(LOAD_IMG)){
@@ -1172,10 +1173,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				panel_alt.setComponent(buildAlternative());
 				tabbedPane.setSelectedIndex(6);
 				}
-		}
-
-		
-		
+		}	
 }
 
 

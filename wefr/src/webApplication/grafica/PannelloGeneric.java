@@ -199,10 +199,10 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 			
 		else
 			{
-			parentWindow.setEnabled(false);
+			//parentWindow.setEnabled(false);
 			AddNew nuovo = new AddNew((Window)this.getTopLevelAncestor(),frameOptions, addNewTitle());
 
-			nuovo.addWindowListener(this);
+			//nuovo.addWindowListener(this);
 			nuovo.addEventListener(this);
 
 			nuovo.setVisible(true);
