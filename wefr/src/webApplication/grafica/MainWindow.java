@@ -226,12 +226,16 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		Container parentAlbero = albero.getParent();
 		parentAlbero.remove(albero);
 		albero.setBounds(15, 63, 300, 400);
-
+		albero.setSize( 300, 400);
 		parentAlbero.add(albero);
 		albero.setLayout(new BoxLayout(albero, BoxLayout.X_AXIS));
+		
 		properties.repaint();
+		parentAlbero.repaint();
+		
 		albero.repaint();
 		repaint();
+		
 	}
 
 	private void initPanelTree() {

@@ -147,16 +147,26 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 		
 		if(list_components != null && listContainer!=null)
 			listContainer.remove(list_components);
-		
-		checkEmptyComponent();
-		
+
+		isEmptyComponent();
+
 		listContainer.add(list_components);
 		list_components.addListSelectionListener(this);
-		
+
 		listContainer.repaint();
+
+		if(this.getTopLevelAncestor() instanceof Wizard){
+			((Wizard) this.getTopLevelAncestor()).manageDoneButton(list_components.getModel().getSize()>0);
+		}
+		
+		if(list_components.getModel().getSize()==0)
+			list_components.setToolTipText("At least one element is needed, click \"Add new\" or \"Add existing\" to add a new one");
+		
+		
+		
 	}
 
-	abstract protected void checkEmptyComponent();
+	abstract protected boolean isEmptyComponent();
 
 	abstract protected void upDownMgmt();
 	

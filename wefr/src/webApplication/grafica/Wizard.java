@@ -93,18 +93,19 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 	private JTabbedPane tabbedPane;
 	private JButton btnDone_text;
 	private JTextArea text;
-	private JButton button;
-	private JButton button_2;
+	private JButton button_next_s1;
+	private JButton button_next_s2;
 	private JButton button_doneComp;
 	private JButton btnDone_link;
 	private JTextField textField_imagepath;
 	private JButton btnDone_Image;
-	private TextField category;
+	private JTextField category;
 	private JComboBox impo;
 	private JComboBox emph;
 	private TextField textField_url;
 	private TextField textField_linktext;
 	private AddNew myAddNew;
+	private JButton button_doneAlt;
 	
 	PannelloAlt panel_alt;
 	PannelloComp panel_comp;
@@ -171,6 +172,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		setResizable(false);
 		setTitle("Add element");
 		
+		
 		addAction = MainWindow.albero.new AddAction();//inizializzo il listener per l'aggiunta di un nodo
 		
 		frameOptions= o;
@@ -214,21 +216,21 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		panel_1.setBounds(10, 261, 446, 49);
 		panel.add(panel_1);
 		
-		button = new JButton("Next");
-		button.addActionListener(this);
-		button.setActionCommand(NEXT1);
+		button_next_s1 = new JButton("Next");
+		button_next_s1.addActionListener(this);
+		button_next_s1.setActionCommand(NEXT1);
 				
 				
-		button.setBounds(375, 11, 66, 27);
-		panel_1.add(button);
+		button_next_s1.setBounds(375, 11, 66, 27);
+		panel_1.add(button_next_s1);
 		
-		JButton button_1 = new JButton("Exit");
-		button_1.addActionListener(this);
-		button_1.setActionCommand(EXIT);
+		JButton button_exit_s1 = new JButton("Exit");
+		button_exit_s1.addActionListener(this);
+		button_exit_s1.setActionCommand(EXIT);
 		
 		
-		button_1.setBounds(10, 11, 66, 27);
-		panel_1.add(button_1);
+		button_exit_s1.setBounds(10, 11, 66, 27);
+		panel_1.add(button_exit_s1);
 		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.BLACK);
@@ -291,19 +293,13 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		tabbedPane.addTab("2", null, panel_2, null);
 		panel_2.setLayout(null);
 		
-		category = new TextField();
-		category.addTextListener(new TextListener() {
-			public void textValueChanged(TextEvent e) {
-				if (category.getText().equalsIgnoreCase(""))
-					button_2.setEnabled(false);
-				else if (category.getText().matches(" * "))
-					     button_2.setEnabled(false);
-				else button_2.setEnabled(true);
-			}
-		});
+		
+		category = new JTextField();
 		category.setBounds(180, 92, 174, 22);
 		category.setText("Category0");
 		panel_2.add(category);
+		category.getDocument().addDocumentListener(this);
+		
 		
 		impo = new JComboBox(categorie);
 		impo.setBounds(180, 192, 174, 20);
@@ -321,28 +317,28 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		panel_3.setBounds(10, 261, 446, 49);
 		panel_2.add(panel_3);
 		
-		button_2 = new JButton("Next");
-		button_2.addActionListener(this);
-		button_2.setActionCommand(NEXT2);
+		button_next_s2 = new JButton("Next");
+		button_next_s2.addActionListener(this);
+		button_next_s2.setActionCommand(NEXT2);
 		
-		button_2.setBounds(375, 11, 66, 27);
-		panel_3.add(button_2);
+		button_next_s2.setBounds(375, 11, 66, 27);
+		panel_3.add(button_next_s2);
 		
-		JButton button_3 = new JButton("Exit");
-		button_3.addActionListener(this);
-		button_3.setActionCommand(EXIT);
+		JButton button_exit_s2 = new JButton("Exit");
+		button_exit_s2.addActionListener(this);
+		button_exit_s2.setActionCommand(EXIT);
 		
 		
 		
-		button_3.setBounds(10, 11, 66, 27);
-		panel_3.add(button_3);
+		button_exit_s2.setBounds(10, 11, 66, 27);
+		panel_3.add(button_exit_s2);
 		
-		JButton btnBack = new JButton("Back");
-		btnBack.addActionListener(this);
-		btnBack.setActionCommand(BACK);
+		JButton btnBack_s2 = new JButton("Back");
+		btnBack_s2.addActionListener(this);
+		btnBack_s2.setActionCommand(BACK);
 		
-		btnBack.setBounds(299, 11, 66, 27);
-		panel_3.add(btnBack);
+		btnBack_s2.setBounds(299, 11, 66, 27);
+		panel_3.add(btnBack_s2);
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setForeground(Color.BLACK);
@@ -437,21 +433,21 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		btnDone_text.setBounds(375, 11, 66, 27);
 		panel_5.add(btnDone_text);
 		
-		JButton button_5 = new JButton("Exit");
-		button_5.addActionListener(this);
-		button_5.setActionCommand(EXIT);
+		JButton button_exit_text = new JButton("Exit");
+		button_exit_text.addActionListener(this);
+		button_exit_text.setActionCommand(EXIT);
 		
 		
-		button_5.setBounds(10, 11, 66, 27);
-		panel_5.add(button_5);
+		button_exit_text.setBounds(10, 11, 66, 27);
+		panel_5.add(button_exit_text);
 		
-		JButton button_6 = new JButton("Back");
-		button_6.addActionListener(this);
-		button_6.setActionCommand(BACK2);
+		JButton button_back_text = new JButton("Back");
+		button_back_text.addActionListener(this);
+		button_back_text.setActionCommand(BACK2);
 		
 		
-		button_6.setBounds(299, 11, 66, 27);
-		panel_5.add(button_6);
+		button_back_text.setBounds(299, 11, 66, 27);
+		panel_5.add(button_back_text);
 		
 		JButton btnImportFromFile = new JButton("Import from file");
 		btnImportFromFile.addActionListener(this);
@@ -461,16 +457,11 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		panel_4.add(btnImportFromFile);
 		
 		text = new JTextArea();
-		text.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (text.getText().equalsIgnoreCase(""))
-					btnDone_text.setEnabled(false);
-				else if (text.getText().matches("[ \n]*"))
-				     btnDone_text.setEnabled(false);
-				else btnDone_text.setEnabled(true);
-			}
-		});
+		text.getDocument().addDocumentListener(this);
+		
+		Utils.redify(text,Utils.isBlank(text));
+		btnDone_text.setEnabled(!Utils.isBlank(text));
+		
 		JScrollPane scrollingArea = new JScrollPane(text);
 		scrollingArea.setBounds(25, 89, 423, 124);
 		panel_4.add(scrollingArea);
@@ -571,20 +562,20 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		btnDone_link.setBounds(375, 11, 66, 27);
 		panel_7.add(btnDone_link);
 		
-		JButton button_8 = new JButton("Exit");
-		button_8.addActionListener(this);
-		button_8.setActionCommand(EXIT);
+		JButton button_exit_link = new JButton("Exit");
+		button_exit_link.addActionListener(this);
+		button_exit_link.setActionCommand(EXIT);
 		
-		button_8.setBounds(10, 11, 66, 27);
-		panel_7.add(button_8);
+		button_exit_link.setBounds(10, 11, 66, 27);
+		panel_7.add(button_exit_link);
 		
-		JButton button_9 = new JButton("Back");
-		button_9.addActionListener(this);
-		button_9.setActionCommand(BACK2);
+		JButton button_back_link = new JButton("Back");
+		button_back_link.addActionListener(this);
+		button_back_link.setActionCommand(BACK2);
 		
 		
-		button_9.setBounds(299, 11, 66, 27);
-		panel_7.add(button_9);
+		button_back_link.setBounds(299, 11, 66, 27);
+		panel_7.add(button_back_link);
 		
 		JLabel label_3 = new JLabel("Step:");
 		label_3.setBounds(27, 21, 46, 14);
@@ -654,18 +645,18 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		btnDone_Image.setBounds(375, 11, 66, 27);
 		panel_9.add(btnDone_Image);
 		
-		JButton button_11 = new JButton("Exit");
-		button_11.addActionListener(this);
-		button_11.setActionCommand(EXIT);
-		button_11.setBounds(10, 11, 66, 27);
-		panel_9.add(button_11);
+		JButton button_exit_image = new JButton("Exit");
+		button_exit_image.addActionListener(this);
+		button_exit_image.setActionCommand(EXIT);
+		button_exit_image.setBounds(10, 11, 66, 27);
+		panel_9.add(button_exit_image);
 		
-		JButton button_12 = new JButton("Back");
-		button_12.addActionListener(this);
-		button_12.setActionCommand(BACK2);
+		JButton button_back_image = new JButton("Back");
+		button_back_image.addActionListener(this);
+		button_back_image.setActionCommand(BACK2);
 		
-		button_12.setBounds(299, 11, 66, 27);
-		panel_9.add(button_12);
+		button_back_image.setBounds(299, 11, 66, 27);
+		panel_9.add(button_back_image);
 		
 		JLabel lblFilePath = new JLabel("File path:");
 		lblFilePath.setBounds(87, 146, 59, 14);
@@ -768,19 +759,19 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		button_doneComp.setBounds(375, 11, 66, 27);
 		panel_12.add(button_doneComp);
 		
-		JButton button_7 = new JButton("Exit");
-		button_7.addActionListener(this);
-		button_7.setActionCommand(EXIT);
-		button_7.setBounds(10, 11, 66, 27);
-		panel_12.add(button_7);
+		JButton button_exit_comp = new JButton("Exit");
+		button_exit_comp.addActionListener(this);
+		button_exit_comp.setActionCommand(EXIT);
+		button_exit_comp.setBounds(10, 11, 66, 27);
+		panel_12.add(button_exit_comp);
 		
-		JButton button_10 = new JButton("Back");
-		button_10.addActionListener(this);
-		button_10.setActionCommand(BACK2);
+		JButton button_back_comp = new JButton("Back");
+		button_back_comp.addActionListener(this);
+		button_back_comp.setActionCommand(BACK2);
 		
 		
-		button_10.setBounds(299, 11, 66, 27);
-		panel_12.add(button_10);
+		button_back_comp.setBounds(299, 11, 66, 27);
+		panel_12.add(button_back_comp);
 		
 		JSeparator separator_5 = new JSeparator();
 		separator_5.setForeground(Color.BLACK);
@@ -845,7 +836,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		panel_13.setBounds(10, 259, 446, 49);
 		panel_11.add(panel_13);
 		
-		JButton button_doneAlt = new JButton("Done");
+		button_doneAlt = new JButton("Done");
 		button_doneAlt.setEnabled(true);
 		button_doneAlt.addActionListener(this);
 		addNodeAddingListener(button_doneAlt);
@@ -855,19 +846,19 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		button_doneAlt.setBounds(375, 11, 66, 27);
 		panel_13.add(button_doneAlt);
 		
-		JButton button_14 = new JButton("Exit");
-		button_14.addActionListener(this);
-		button_14.setActionCommand(EXIT);
+		JButton button_exit_alt = new JButton("Exit");
+		button_exit_alt.addActionListener(this);
+		button_exit_alt.setActionCommand(EXIT);
 		
-		button_14.setBounds(10, 11, 66, 27);
-		panel_13.add(button_14);
+		button_exit_alt.setBounds(10, 11, 66, 27);
+		panel_13.add(button_exit_alt);
 		
-		JButton button_15 = new JButton("Back");
-		button_15.addActionListener(this);
-		button_15.setActionCommand(BACK2);
+		JButton button_back_alt = new JButton("Back");
+		button_back_alt.addActionListener(this);
+		button_back_alt.setActionCommand(BACK2);
 		
-		button_15.setBounds(299, 11, 66, 27);
-		panel_13.add(button_15);
+		button_back_alt.setBounds(299, 11, 66, 27);
+		panel_13.add(button_back_alt);
 		
 		JSeparator separator_6 = new JSeparator();
 		separator_6.setForeground(Color.BLACK);
@@ -1042,24 +1033,9 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				}
 		}
 		
-		private void redify(JTextComponent toRed, boolean b){
-			if(b){
-				toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo rosso
-				
-			}
-			else {
-				toRed.setBorder(new LineBorder(new Color(184, 207, 229), 1, true));//bordo normale
-				
-			}
-			manageTooltips(toRed, b);
-				
-		}
 		
-		private boolean isBlank(JTextComponent toCheck){
-			if (toCheck.getText().trim().length()>0)
-				return false;
-			return true;
-		}
+		
+		
 		
 
 		private void manageTooltips(Component component, boolean b) {
@@ -1100,17 +1076,29 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				imageUpdate();
 			}
 			else if(name.getDocument()==e.getDocument() ){
-				redify(name,isBlank(name));
-				manageTooltips(name, isBlank(name));
-				button.setEnabled(!isBlank(name));
+				Utils.redify(name,Utils.isBlank(name));
+				manageTooltips(name, Utils.isBlank(name));
+				button_next_s1.setEnabled(!Utils.isBlank(name));
 				
 			}
+			else if(text.getDocument()==e.getDocument()){
+				Utils.redify(text,Utils.isBlank(text));
+				btnDone_text.setEnabled(!Utils.isBlank(text));
+				
+			}
+			else if(category.getDocument()==e.getDocument()){
+				Utils.redify(category,Utils.isBlank(category));
+				button_next_s2.setEnabled(!Utils.isBlank(category));
+			}
+			
 		}
+		
+
 
 		private void imageUpdate() {
 			updateImagePath();
-			redify(textField_imagepath,isBlank(textField_imagepath));
-			manageTooltips(textField_imagepath, isBlank(textField_imagepath));
+			Utils.redify(textField_imagepath,Utils.isBlank(textField_imagepath));
+			manageTooltips(textField_imagepath, Utils.isBlank(textField_imagepath));
 		}
 
 		@Override
@@ -1186,7 +1174,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				tabbedPane.setSelectedIndex(3);
 			else if (choice_type.getSelectedItem().equals(tipi[1]))
 			    tabbedPane.setSelectedIndex(4);
-			else if (choice_type.getSelectedItem().equals(tipi[4])){
+			else if (choice_type.getSelectedItem().equals(tipi[4])){ // composite
 				
 				panel_comp.setComponent(buildComposite());
 				tabbedPane.setSelectedIndex(5);
@@ -1216,6 +1204,14 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 			button.addActionListener(addAction);
 		}
 		
+		void manageDoneButton(boolean enable){
+			 if (choice_type.getSelectedItem().equals(tipi[3]))
+				 button_doneAlt.setEnabled(enable);
+
+			 else if (choice_type.getSelectedItem().equals(tipi[4]))
+				 button_doneComp.setEnabled(enable);
+				 
+		}
 
 }
 

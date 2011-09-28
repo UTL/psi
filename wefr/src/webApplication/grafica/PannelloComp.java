@@ -86,13 +86,15 @@ public class PannelloComp extends PannelloGeneric {
 	}
 
 	@Override
-	protected void checkEmptyComponent() {
+	protected boolean isEmptyComponent() {
 		
-			if(compostoComp!= null)
+			if(compostoComp!= null){
 				list_components = new JList(Utils.extractNomiComponenti(compostoComp.getOpzioni()));
+				return false;
+			}
 			else
 				list_components = new JList();
-		
+			return true;
 		
 	}
 

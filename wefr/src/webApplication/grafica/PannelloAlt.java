@@ -101,12 +101,15 @@ public class PannelloAlt extends PannelloGeneric {
 	}
 
 	@Override
-	protected void checkEmptyComponent() 
+	protected boolean isEmptyComponent() 
 		{
-			if(alternativeComp != null)
+			if(alternativeComp != null){
 				list_components = new JList(Utils.extractNomiComponenti(alternativeComp.getOpzioni()));
+			return false;
+		}
 			else
 				list_components = new JList();
+			return true;
 		}
 
 	@Override

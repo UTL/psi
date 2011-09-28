@@ -172,8 +172,8 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		
 		enabler(panel_text);
 		
-		redify(textField_name,isBlank(textField_name));
-		redify(textField_category,isBlank(textField_category));
+		redify(textField_name,Utils.isBlank(textField_name));
+		redify(textField_category,Utils.isBlank(textField_category));
 		updateAddBtn();
 		
 		 MultiLineToolTip tip = new MultiLineToolTip();
@@ -415,14 +415,14 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 			scrollingArea.getHorizontalScrollBar().setEnabled(enable);
 			scrollingArea.getVerticalScrollBar().setEnabled(enable);
 			scrollingArea.getViewport().getView().setEnabled(enable);
-			manageTooltips(textArea, isBlank(textArea));
+			manageTooltips(textArea, Utils.isBlank(textArea));
 		}
 		if (figlio instanceof javax.swing.JTextField || figlio instanceof javax.swing.JTextArea){
 			if(enable){
 				if(figlio == textField_url)
-					redify((JTextComponent) figlio,isBlank((JTextComponent) figlio)||errorUrl());
+					redify((JTextComponent) figlio,Utils.isBlank((JTextComponent) figlio)||errorUrl());
 				else
-					redify((JTextComponent) figlio,isBlank((JTextComponent) figlio));
+					redify((JTextComponent) figlio,Utils.isBlank((JTextComponent) figlio));
 				figlio.setBackground(new Color(255, 255, 255));
 				}
 			else{
@@ -508,12 +508,13 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 
 	private void changeEvent(DocumentEvent e) {
 		if(e.getDocument()== textField_url.getDocument())
-			redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument())))||errorUrl());
+			redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument())))||errorUrl());
 		else if(e.getDocument()==textField_imagePath.getDocument()){
 			checkPath();
 		}
 		else
-			redify(fromDocToJComp(e.getDocument()),isBlank((fromDocToJComp(e.getDocument()))));
+			redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument()))));
+		
 		updateAddBtn();
 	}
 
@@ -533,11 +534,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		return null;
 	}
 	
-	private boolean isBlank(JTextComponent toCheck){
-		if (toCheck.getText().trim().length()>0)
-			return false;
-		return true;
-	}
+	
 	
 	
 	private boolean nameExists(){
@@ -547,16 +544,16 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 	
 	private boolean erroriPresenti(){
 		boolean result;
-		result=isBlank(textField_name) || nameExists();
-		result= result || isBlank(textField_category);
+		result=Utils.isBlank(textField_name) || nameExists();
+		result= result || Utils.isBlank(textField_category);
 		if (rdbtnImage.isSelected())
-			result= result || isBlank(textField_imagePath) || fileError();
+			result= result || Utils.isBlank(textField_imagePath) || fileError();
 		
 		else if
 			(rdbtnLink.isSelected())
-			result= result || isBlank(textField_linkText) || isBlank(textField_url) || errorUrl();
+			result= result || Utils.isBlank(textField_linkText) || Utils.isBlank(textField_url) || errorUrl();
 		else 
-			result= result || isBlank(textArea);
+			result= result || Utils.isBlank(textArea);
 		return result;	
 		
 	}

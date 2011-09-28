@@ -1,11 +1,14 @@
 package webApplication.grafica;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.border.LineBorder;
+import javax.swing.text.JTextComponent;
 
 import webApplication.business.ComponenteSemplice;
 
@@ -86,5 +89,24 @@ public class Utils {
 			b_down.setEnabled(true);
 			b_up.setEnabled(true);
 		}
+	}
+	
+	public static boolean isBlank(JTextComponent toCheck){
+		if (toCheck.getText().trim().length()>0)
+			return false;
+		return true;
+	}
+	
+	public static boolean redify(JTextComponent toRed, boolean b){
+		if(b){
+			toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo rosso
+			
+		}
+		else {
+			toRed.setBorder(new LineBorder(new Color(184, 207, 229), 1, true));//bordo normale
+			
+		}
+		
+		return b;
 	}
 }
