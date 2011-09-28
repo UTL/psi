@@ -4,6 +4,7 @@ import java.awt.Container;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JList;
+import javax.swing.JToolTip;
 
 import webApplication.business.Componente;
 
@@ -35,6 +36,13 @@ public class CustomJList extends JList{
 		return null;
 		
 	}
+	
+	@Override
+	public JToolTip createToolTip() {
+        MultiLineToolTip tip = new MultiLineToolTip();
+        tip.setComponent(this);
+        return tip;
+      }
 
 	private Container getPannelloGeneric(Container c) {
 		
