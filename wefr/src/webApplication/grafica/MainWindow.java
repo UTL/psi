@@ -66,8 +66,9 @@ import webApplication.grafica.TreePanel.UndoAction;
 
 import javax.swing.BoxLayout;
 
-public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener/*, ActionListener*/ {
+public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener, ActionListener {
 
+	private static final String GENWEBSITE = "genwebsite";
 	private static final boolean WINDOWBUILDER = false;
 	private static final String DELNODE = "Delnode";
 	/**
@@ -538,6 +539,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		button_del.setEnabled(false);
 
 		JButton btnGenerateWebsite = new JButton("GENERATE WEBSITE");
+		btnGenerateWebsite.addActionListener(this);
+		btnGenerateWebsite.setActionCommand(GENWEBSITE);
 		
 		btnGenerateWebsite.setToolTipText("Open");
 		btnGenerateWebsite.setBounds(401, 4, 187, 30);
@@ -1268,6 +1271,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 	@Override
 	public void windowOpened(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand()==GENWEBSITE){
+			XmlGenerator.generateXML(albero.getComponenti());
+		}
 		
 	}
 }

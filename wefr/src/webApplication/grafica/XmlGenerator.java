@@ -108,7 +108,8 @@ public class XmlGenerator {
 		String str=((Immagine)moduli.get(i)).getPath();
 		int pos=str.lastIndexOf("\\");
 		str=str.substring(pos+1);
-		Output.println(" <Value>./image/"+str+"</Value>");
+		Output.println(" <Value>"+str+"</Value>");
+		//ho messo il path assoluto invece che Output.println(" <Value>./image/"+str+"</Value>");
 	}
 
 	protected static void printGeneric(PrintStream Output,Vector<Componente> moduli, int i) {
