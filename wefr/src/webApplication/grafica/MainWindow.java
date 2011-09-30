@@ -12,7 +12,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -69,6 +68,7 @@ import javax.swing.BoxLayout;
 
 public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener/*, ActionListener*/ {
 
+	private static final boolean WINDOWBUILDER = false;
 	private static final String DELNODE = "Delnode";
 	/**
 	 * 
@@ -471,22 +471,26 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		Icon disabledIcon = new ImageIcon(BASEPATH+DISUNDOICON);
 		btnUndo = new JButton(enabledIcon);
 		btnUndo.setDisabledIcon(disabledIcon);
-		//btnUndo.setEnabled(false); //TODO da decommentare quando ci sarà le gestione dei pulsanti
+		//btnUndo.setEnabled(false); //TODO da decommentare quando ci sarï¿½ le gestione dei pulsanti
 		btnUndo.setToolTipText("Undo");
 		btnUndo.setBounds(120, 4, 30, 30);
-		UndoAction undoAction = albero.new UndoAction();
-		btnUndo.addActionListener(undoAction);
+		if(WINDOWBUILDER){
+			UndoAction undoAction = albero.new UndoAction();
+			btnUndo.addActionListener(undoAction);
+		}
 		panelButtonsBar.add(btnUndo);
 
 		enabledIcon = new ImageIcon(BASEPATH+ENREDOICON);
 		disabledIcon = new ImageIcon(BASEPATH+DISREDOICON);
 		JButton btnRedo = new JButton(enabledIcon);
 		btnRedo.setDisabledIcon(disabledIcon);
-		//btnRedo.setEnabled(false); //TODO da decommentare quando ci sarà le gestione dei pulsanti
+		//btnRedo.setEnabled(false); //TODO da decommentare quando ci sarï¿½ le gestione dei pulsanti
 		btnRedo.setToolTipText("Redo");
 		btnRedo.setBounds(153, 4, 30, 30);
-		RedoAction redoAction = albero.new RedoAction();
-		btnRedo.addActionListener(redoAction);
+		if(WINDOWBUILDER){
+			RedoAction redoAction = albero.new RedoAction();
+			btnRedo.addActionListener(redoAction);
+		}
 		panelButtonsBar.add(btnRedo);
 
 		JButton btnCopy = new JButton("");
@@ -525,8 +529,10 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		button_del.setToolTipText("Open");
 		button_del.setBounds(346, 4, 30, 30);
 		panelButtonsBar.add(button_del);
-		RemoveAction remAction = albero.new RemoveAction();
-		button_del.addActionListener(remAction);
+		if(WINDOWBUILDER){
+			RemoveAction remAction = albero.new RemoveAction();
+			button_del.addActionListener(remAction);
+		}
 		//button_del.addActionListener(this);
 		//button_del.setActionCommand(DELNODE);
 		button_del.setEnabled(false);
