@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.EventObject;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -116,6 +117,11 @@ public class PannelloAlt extends PannelloGeneric {
 	@Override
 	protected ComponenteMolteplice getComponente() {
 		return alternativeComp;
+	}
+
+	@Override
+	protected Vector<ComponenteSemplice> getOpzioni() {
+		return alternativeComp.getOpzioni();
 	}
 
 	

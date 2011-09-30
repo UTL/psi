@@ -66,7 +66,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 	static final String NAME = "Name of the new element";
 	static final String NAME_EMPTY = "It's mandatory to fill the name field";
 	
-	static final String CATE = "Category of the new element";
+	static final String CATE = "Category of the element";
 	static final String CATE_EMPTY = "It's mandatory to fill the category field";
 	
 	static final String URL = "URL of the link";
@@ -127,6 +127,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 	
 	private Options frameOptions;
 	private AddAction addAction;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -471,8 +472,11 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		if (component == textField_name){
 			if(b)
 				textField_name.setToolTipText(NAME_EMPTY);
+			else if(nameExists())
+				textField_name.setToolTipText(MainWindow.NAME_EXISTING);
 			else
 				textField_name.setToolTipText(NAME);
+			
 		}
 		else if(component == textField_category){
 			if(b)
@@ -512,6 +516,10 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		else if(e.getDocument()==textField_imagePath.getDocument()){
 			checkPath();
 		}
+		else if(e.getDocument()==textField_name.getDocument()){
+			Utils.redify(textField_name,Utils.isBlank(textField_name)||nameExists());
+			manageTooltips(textField_name, Utils.isBlank(textField_name));
+		}
 		else
 			redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument()))));
 		
@@ -538,8 +546,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 	
 	
 	private boolean nameExists(){
-		//TODO scrivere la funzione
-		return false;
+		return(Wizard.nameExistsAll(textField_name.getText()));
 	}
 	
 	private boolean erroriPresenti(){
@@ -730,6 +737,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		
 	}  
 
+	
 }
 
 

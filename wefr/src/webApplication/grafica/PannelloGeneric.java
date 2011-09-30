@@ -101,7 +101,7 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	void moveAlternativeElements(int upOrDown) {
 		int shift;
 		
-		Vector<ComponenteSemplice> listaAlternative = alternativeComp.getOpzioni();
+		Vector<ComponenteSemplice> listaAlternative = getOpzioni();
 		int i;
 		int[] toMove = list_components.getSelectedIndices();
 		
@@ -171,13 +171,15 @@ public abstract class PannelloGeneric extends JPanel implements ListSelectionLis
 	private boolean updateJList() 
 		{
 			if(componentNotNull()){
-				list_components = new CustomJList(Utils.extractNomiComponenti(alternativeComp.getOpzioni()));
+				list_components = new CustomJList(Utils.extractNomiComponenti(getOpzioni()));
 			return false;
 		}
 			else
 				list_components = new CustomJList();
 			return true;
 		}
+
+	protected abstract Vector<ComponenteSemplice> getOpzioni();
 
 	abstract protected boolean componentNotNull();
 

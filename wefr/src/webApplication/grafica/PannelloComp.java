@@ -3,6 +3,7 @@ package webApplication.grafica;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -102,6 +103,11 @@ public class PannelloComp extends PannelloGeneric {
 	@Override
 	protected ComponenteMolteplice getComponente() {
 		return compostoComp;
+	}
+
+	@Override
+	protected Vector<ComponenteSemplice> getOpzioni() {
+		return compostoComp.getOpzioni();
 	}
 
 	

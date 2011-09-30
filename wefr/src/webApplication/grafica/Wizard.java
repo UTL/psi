@@ -70,7 +70,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 	 */
 	private static final long serialVersionUID = -8706297359676605479L;
 	private JPanel contentPane;
-	private JTextField name = new JTextField();
+	private static JTextField name = new JTextField();
 	private JComboBox choice_type;
 	private JTabbedPane tabbedPane;
 	private JButton btnDone_text;
@@ -132,8 +132,9 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		setResizable(false);
 		setTitle("Add element");
 		
-		
-		addAction = MainWindow.albero.new AddAction();//inizializzo il listener per l'aggiunta di un nodo
+		if(MainWindow.WINDOWBUILDER){
+			addAction = MainWindow.albero.new AddAction();//inizializzo il listener per l'aggiunta di un nodo
+		}
 		
 		frameOptions= o;
 		fcImage = new CustomFCImage(frameOptions, this);
@@ -478,7 +479,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		lblLinkTarget.setBounds(132, 121, 66, 14);
 		panel_6.add(lblLinkTarget);
 		
-		textField_url = new TextField();
+		textField_url = new TextField("http://");
 		textField_url.setBounds(204, 113, 174, 22);
 		panel_6.add(textField_url);
 		
@@ -1010,6 +1011,8 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 					name.setToolTipText(AddNew.NAME_EMPTY);
 				else
 					name.setToolTipText(AddNew.NAME);
+				if (MainWindow.nameExistsAll(name.getText()))
+					name.setToolTipText(MainWindow.NAME_EXISTING);
 				}
 			}
 
@@ -1036,9 +1039,9 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				imageUpdate();
 			}
 			else if(name.getDocument()==e.getDocument() ){
-				Utils.redify(name,Utils.isBlank(name));
+				Utils.redify(name,Utils.isBlank(name)||MainWindow.nameExistsAll(name.getText()));
 				manageTooltips(name, Utils.isBlank(name));
-				button_next_s1.setEnabled(!Utils.isBlank(name));
+				button_next_s1.setEnabled(!Utils.isBlank(name) && !MainWindow.nameExistsAll(name.getText()));
 				
 			}
 			else if(text.getDocument()==e.getDocument()){
@@ -1172,7 +1175,13 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				 button_doneComp.setEnabled(enable);
 				 
 		}
-
+		
+		public static boolean nameExistsAll(String s){
+			return MainWindow.nameExistsAll(s)|| s.equals(name.getText());
+			
+		}
+		
+		
 }
 
 

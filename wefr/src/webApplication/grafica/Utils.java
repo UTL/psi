@@ -109,4 +109,9 @@ public class Utils {
 		
 		return b;
 	}
+	
+	public static boolean checkAndRedify(JTextComponent toRed){
+		redify(toRed, isBlank(toRed));
+		return isBlank(toRed);
+	}
 }

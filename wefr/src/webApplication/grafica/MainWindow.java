@@ -66,10 +66,10 @@ import webApplication.grafica.TreePanel.UndoAction;
 
 import javax.swing.BoxLayout;
 
-public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener, ActionListener {
+public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener, ActionListener, DocumentListener {
 
 	private static final String GENWEBSITE = "genwebsite";
-	private static final boolean WINDOWBUILDER = false;
+	public static final boolean WINDOWBUILDER = true;
 	private static final String DELNODE = "Delnode";
 	/**
 	 * 
@@ -89,9 +89,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private static JPanel panel_composite;
 	private static PannelloAlt pannello_alterplus;
 	private static PannelloComp pannello_comp;
-	private static JPanel errorePath;
-	private static JPanel erroreTestoLink;
-	private static JPanel erroreUrl;
 	private static JButton btnUndo;
 	public static final int LOADSAVE = 0;
 	public static final int IMAGE = 1;
@@ -103,7 +100,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	
 	
 	private static Options frameOptions  = new Options();
-	
+	public static final String NAME_EXISTING = "Exists another element with the same name";
 	private CustomFCSave fcSave = new CustomFCSave(frameOptions, this);
 	private CustomFCLoad fcLoad = new CustomFCLoad(frameOptions, this);
 	private CustomFCImage fcImage=new CustomFCImage(frameOptions, this);
@@ -113,7 +110,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private static Immagine focusedImg;
 	private static Link focusedLnk;
 	private static final String URL_REGEX =
-            "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
+			"^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
     private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
 	
 	
@@ -201,6 +198,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		genProperties= this.new GenericProperties(presentation_panel, id_panel); //Popola i JPanel dall'inner class
 		
 		
+		
+		
+		
 		initContentPanel(properties);
 
 		initPanelImage();
@@ -266,18 +266,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		editorPane_text = new JTextArea();
 		JScrollPane scrollingArea = new JScrollPane(editorPane_text);
 		scrollingArea.setBounds(12, 32, 408, 156);
-		editorPane_text.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				updateTextContent();
-			}
-			public void removeUpdate(DocumentEvent e) {
-				updateTextContent();
-			}
-			public void insertUpdate(DocumentEvent e) {
-				updateTextContent();
-
-			}
-		});
+		editorPane_text.getDocument().addDocumentListener(this);
 		
 		//editorPane_text.setBounds(12, 32, 408, 156);
 		panel_text.add(scrollingArea);
@@ -294,21 +283,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		
 
 		textField_linktext = new JTextField();
-		textField_linktext.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-
-				updateLinkText();
-			}
-			public void removeUpdate(DocumentEvent e) {
-				updateLinkText();
-				// text was deleted
-			}
-			public void insertUpdate(DocumentEvent e) {
-				updateLinkText();
-
-				// text was inserted
-			}
-		});
+		textField_linktext.getDocument().addDocumentListener(this);
 		
 		textField_linktext.setColumns(10);
 		textField_linktext.setBounds(93, 12, 313, 19);
@@ -320,33 +295,10 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		
 		textField_url = new JTextField();
 		
-		textField_url.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				updateLinkUrl();
-			}
-			public void removeUpdate(DocumentEvent e) {
-				updateLinkUrl();
-			}
-			public void insertUpdate(DocumentEvent e) {
-				updateLinkUrl();
-
-			}
-		});
+		textField_url.getDocument().addDocumentListener(this);
 		textField_url.setColumns(10);
 		textField_url.setBounds(93, 45, 313, 19);
 		panel_link.add(textField_url);
-		
-		erroreTestoLink = new JPanel();
-		erroreTestoLink.setBorder(new LineBorder(Color.RED));
-		erroreTestoLink.setToolTipText("");
-		erroreTestoLink.setBounds(90, 9, 319, 24);
-		panel_link.add(erroreTestoLink);
-		
-		erroreUrl = new JPanel();
-		erroreUrl.setBorder(new LineBorder(Color.RED));
-		erroreUrl.setToolTipText("");
-		erroreUrl.setBounds(90, 42, 319, 24);
-		panel_link.add(erroreUrl);
 	}
 
 	private void initPanelAlternative() {
@@ -389,21 +341,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				
 		textField_imagepath = new JTextField();
 		textField_imagepath.setToolTipText("Path of the image file");
-		textField_imagepath.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				
-				updateImagePath();
-			}
-			public void removeUpdate(DocumentEvent e) {
-				updateImagePath();
-			// text was deleted
-			}
-			public void insertUpdate(DocumentEvent e) {
-				updateImagePath();
-
-			// text was inserted
-			}
-			});
+		textField_imagepath.getDocument().addDocumentListener(this);
 		
 		textField_imagepath.setBounds(22, 42, 292, 22);
 		panel_image.add(textField_imagepath);
@@ -419,12 +357,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		});
 		button_browseImg.setBounds(331, 39, 89, 29);
 		panel_image.add(button_browseImg);
-		
-		errorePath = new JPanel();
-		errorePath.setToolTipText("The file doesn't exist or is not readable");
-		errorePath.setBorder(new LineBorder(Color.RED));
-		errorePath.setBounds(19, 38, 300, 30);
-		panel_image.add(errorePath);
 	}
 
 	private void initPanelButtonsBar(JPanel panelButtonsBar) {
@@ -737,46 +669,13 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			focusedTxt.setTesto(editorPane_text.getText());
 	}
 	
-	private boolean checkLinkText(){
-		//TODO bisognerebbe controllare i caratteri da escapare
-		if(textField_linktext.getText().trim().length()!=0){
-			textField_linktext.setToolTipText("Text of the link"); //TODO tooltip inutile al 100%
-			erroreTestoLink.setVisible(false);
-			return true;
-		}
-		else {
-			erroreTestoLink.setVisible(true); 
-			textField_linktext.setToolTipText("Link text can't be empty");
-		}
-		return false;
-	}
 	
-	private void updateLinkText(){
-		if(focusedLnk!= null)
-			focusedLnk.setTesto(textField_linktext.getText());
-		checkLinkText();
-			//TODO sarebbe bello sollevare un'eccezione ogni volta che questo if non si verifica (e anche per tutti gli altri metodi di update)
-		}
 	
-	private void updateLinkUrl(){
-		if(focusedLnk!= null)
-			focusedLnk.setUri(textField_url.getText());
-		checkLinkUrl();
-
-	}
 	
-	private boolean checkLinkUrl(){
-		if(isUrlCorrect(textField_url.getText())){
-			erroreUrl.setVisible(false);
-			textField_url.setToolTipText("URL of the link");
-			return true;
-		}
-		else {
-			erroreUrl.setVisible(true);
-			textField_url.setToolTipText("The URL is not correct");
-		}
-		return false;
-	}
+	
+	
+	
+	
 	
 	private boolean isUrlCorrect(String text) {
 		//TODO serve una regex per controllare le url!
@@ -787,24 +686,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 
 
-	private void updateImagePath() {
-		if(focusedImg!= null)
-			focusedImg.setPath(textField_imagepath.getText());
-		checkImagePath();
-	}
+	
 
-	private boolean checkImagePath() {
-		if(isPathCorrect(textField_imagepath.getText())){
-			errorePath.setVisible(false);
-			textField_imagepath.setToolTipText("Path of the image file");
-			return true;
-		}
-		else {
-			errorePath.setVisible(true);
-			textField_imagepath.setToolTipText("The file doesn't exist or is not readable");
-		}
-		return false;
-	}
 	
 	
 	public static boolean isPathCorrect(String path){
@@ -813,6 +696,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		if(daControllare.isFile() && daControllare.canRead())
 			return true;
 		return false;
+		//textField_imagepath.setToolTipText("The file doesn't exist or is not readable");
+		//textField_imagepath.setToolTipText("Path of the image file");
 	}
 	
 	private void boldify(JButton button) {
@@ -1003,6 +888,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 	
 	class GenericProperties implements ActionListener, DocumentListener{
+		
+		private static final String TYPE = "Type:";
+		private static final String NAME2 = "Name:";
+		private static final String IMPORTANCE = "Importance:";
+		private static final String EMPHASIZE = "Emphasize:";
+		private static final String CATEGORY = "Category:";
 		private  JTextField textField_Name;
 		private  JTextField textField_Type;
 		private  JTextField textField_Category;
@@ -1010,6 +901,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		private  JComboBox comboBox_Emphasize;
 		private final static String IMP = "imp";
 		private final static String EMP = "emp";
+		private JLabel lblNameExisting;
 		
 		public GenericProperties(JPanel presentation_panel, JPanel id_panel){
 			buildIdPanel(id_panel);
@@ -1045,26 +937,29 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		}
 
 		private void initPresentationJLabels(JPanel presentation_panel) {
-			JLabel lblCategory = new JLabel("Category:");
+			JLabel lblCategory = new JLabel(CATEGORY);
 			lblCategory.setBounds(12, 24, 81, 15);
 			presentation_panel.add(lblCategory);
 
-			JLabel lblEmphasize = new JLabel("Emphasize:");
+			JLabel lblEmphasize = new JLabel(EMPHASIZE);
 			lblEmphasize.setBounds(12, 54, 81, 14);
 			presentation_panel.add(lblEmphasize);
 			
-			JLabel lblImportance = new JLabel("Importance:");
+			JLabel lblImportance = new JLabel(IMPORTANCE);
 			lblImportance.setBounds(12, 86, 97, 15);
 			presentation_panel.add(lblImportance);
 		}
 
 		private void buildIdPanel(JPanel id_panel) {
-			JLabel lblName = new JLabel("Name:");
+			JLabel lblName = new JLabel(NAME2);
 			lblName.setBounds(12, 40, 51, 15);
 			id_panel.add(lblName);
-
+			
 			textField_Name = new JTextField();
 			textField_Name.setToolTipText("name");
+			textField_Name.getDocument().addDocumentListener(this);
+			
+			
 			
 			// TODO mettere check che il nome non sia gia' esistente
 			textField_Name.getDocument().addDocumentListener(this);
@@ -1072,7 +967,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			id_panel.add(textField_Name);
 			textField_Name.setColumns(10);
 
-			JLabel lblType = new JLabel("Type:");
+			JLabel lblType = new JLabel(TYPE);
 			lblType.setBounds(12, 70, 51, 15);
 			id_panel.add(lblType);
 
@@ -1128,28 +1023,38 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		@Override
 		public void changedUpdate(DocumentEvent arg0) {
 			manageDocumentEvent(arg0);
-				
-			
 		}
 
 		@Override
 		public void insertUpdate(DocumentEvent arg0) {
-			manageDocumentEvent(arg0);
-			
+			manageDocumentEvent(arg0);		
 		}
 
 		@Override
 		public void removeUpdate(DocumentEvent arg0) {
-			manageDocumentEvent(arg0);
-			
+			manageDocumentEvent(arg0);		
 		}
 		
 		private void manageDocumentEvent(DocumentEvent arg0) {
-			if(arg0.getDocument()==textField_Category.getDocument())
+			if(arg0.getDocument()==textField_Category.getDocument()){
+				if( Utils.isBlank(textField_Category))
+					textField_Category.setToolTipText(AddNew.CATE_EMPTY);
+				else
+					textField_Category.setToolTipText(AddNew.CATE);
 				setFocusedCategory();
+				Utils.checkAndRedify(textField_Category);
+			}
 			else if(arg0.getDocument()==textField_Name.getDocument()){
 				setFocusedName();
+				Utils.redify(textField_Name, Utils.isBlank(textField_Name)|| nameExists(textField_Name.getText()));
 				albero.getTree().repaint();
+				if( Utils.isBlank(textField_Name))
+					textField_Name.setToolTipText("The name field cannot be left empty");
+				else if(nameExists(textField_Name.getText())){
+					textField_Name.setToolTipText(NAME_EXISTING);
+				} else
+					textField_Name.setToolTipText("Name of the element");
+				//nameExists();
 			}
 		}
 		
@@ -1280,6 +1185,104 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			XmlGenerator.generateXML(albero.getComponenti());
 		}
 		
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		changeEvent(e);
+		
+	}
+
+	
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		changeEvent(e);
+		
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		changeEvent(e);
+
+	}
+
+	private void changeEvent(DocumentEvent e) {
+		if(e.getDocument()== textField_imagepath.getDocument()){
+			Utils.redify(textField_imagepath, !isPathCorrect(textField_imagepath.getText()));
+			if(focusedImg!= null)
+				focusedImg.setPath(textField_imagepath.getText());	
+			if(!isPathCorrect(textField_imagepath.getText()))
+				textField_imagepath.setToolTipText(AddNew.PATH);
+			else
+				textField_imagepath.setToolTipText(AddNew.PATH_ERROR);
+		}
+		else if(e.getDocument()== textField_linktext.getDocument()){
+			Utils.checkAndRedify(textField_linktext);
+			if(focusedLnk!= null)
+				focusedLnk.setTesto(textField_linktext.getText());
+			if(Utils.isBlank(textField_linktext))
+				textField_linktext.setToolTipText(AddNew.TEXT_EMPTY);
+			else
+				textField_linktext.setToolTipText(AddNew.TEXT);
+				
+		}
+		else if(e.getDocument()== editorPane_text.getDocument()){
+			Utils.checkAndRedify(editorPane_text);
+			updateTextContent();
+			if(Utils.isBlank(editorPane_text))
+				editorPane_text.setToolTipText(AddNew.TEXT_EMPTY);
+			else
+				editorPane_text.setToolTipText(AddNew.TEXT);
+		}
+		else if(e.getDocument()==textField_url.getDocument()){
+			Utils.redify(textField_url, !isUrlCorrect(textField_url.getText()));
+			updateLinkUrl();
+			if(!isUrlCorrect(textField_url.getText()))
+				textField_url.setToolTipText(AddNew.URL_EMPTY);
+			else
+				textField_url.setToolTipText(AddNew.URL);
+		}
+		
+
+
+	}
+	private void updateLinkUrl(){
+		if(focusedLnk!= null)
+			focusedLnk.setUri(textField_url.getText());
+		checkLinkUrl();
+	}
+
+	private boolean checkLinkUrl(){
+		if(isUrlCorrect(textField_url.getText())){
+
+			textField_url.setToolTipText("URL of the link");
+			return true;
+		}
+		else {
+
+			textField_url.setToolTipText("The URL is not correct");
+		}
+		return false;
+	}
+
+	private static boolean nameExists(String input){
+
+		for (int i=0; i<albero.getComponenti().size(); i++){
+			//scorro tutti gli elementi tranne quello selezionato
+			if (input.equals(albero.getComponenti().get(i).getNome()) && albero.getComponenti().get(i) != (Componente)(((DefaultMutableTreeNode) albero.getTree().getLastSelectedPathComponent()).getUserObject()))
+				return true;
+		}
+		return false;
+
+	}
+	
+	public static boolean nameExistsAll(String input){
+		for (int i=0; i<albero.getComponenti().size(); i++){
+			//scorro tutti gli elementi
+			if (input.equals(albero.getComponenti().get(i).getNome()))
+				return true;
+		}
+		return false;
 	}
 }
 
