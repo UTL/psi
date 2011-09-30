@@ -164,7 +164,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		choice_type.setBounds(181, 165, 174, 20);
 		panel.add(choice_type);
 		
-		name.setText("Element0"); //TODO mettere default incrementale
+		name.setText(setDefaultName()); //TODO mettere default incrementale
 		name.getDocument().addDocumentListener(this);
 		
 		name.setBounds(181, 106, 174, 22);
@@ -874,6 +874,11 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 		panel_34.add(label_26);
 		
 		
+	}
+
+
+	protected String setDefaultName() {
+		return "Element0";
 	}
 	
 

@@ -202,12 +202,12 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 	}
 
 	private void buildGenericFields() {
-		textField_category = new JTextField();
+		textField_category = new JTextField("Category0");
 		textField_category.setColumns(10);
 		textField_category.setBounds(229, 36, 114, 19);
 		contentPane.add(textField_category);
 		
-		textField_name = new JTextField();
+		textField_name = new JTextField(setDefaultName());
 		textField_name.setToolTipText(NAME);
 		textField_name.setColumns(10);
 		textField_name.setBounds(229, 11, 114, 19);
@@ -220,6 +220,10 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		JLabel category = new JLabel(CATEGORY);
 		category.setBounds(119, 38, 81, 15);
 		contentPane.add(category);
+	}
+
+	protected String setDefaultName() {
+		return "Element0";
 	}
 
 	private void addDocumentListeners() {
@@ -287,11 +291,11 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		rdbtnImage.addActionListener(this);
 		
 		rdbtnText.setActionCommand(RDBTN_TEXT);
-		rdbtnImage.addActionListener(this);
+		rdbtnText.addActionListener(this);
 		
 		
 		rdbtnLink.setActionCommand(RDBTN_LINK);
-		rdbtnImage.addActionListener(this);
+		rdbtnLink.addActionListener(this);
 
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdbtnImage);
