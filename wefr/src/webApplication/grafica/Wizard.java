@@ -1017,7 +1017,7 @@ public class Wizard extends JDialog implements DocumentListener , ActionListener
 				else
 					name.setToolTipText(AddNew.NAME);
 				if (MainWindow.nameExistsAll(name.getText()))
-					name.setToolTipText(MainWindow.NAME_EXISTING);
+					name.setToolTipText(AddNew.NAME_EXISTING);
 				}
 			}
 

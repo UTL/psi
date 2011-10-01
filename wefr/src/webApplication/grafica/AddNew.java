@@ -65,6 +65,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 	static final String IMPORT_BTN = "Import from file";
 	static final String NAME = "Name of the new element";
 	static final String NAME_EMPTY = "It's mandatory to fill the name field";
+	public static final String NAME_EXISTING = "Another element with the same name alredy existing";
 	
 	static final String CATE = "Category of the element";
 	static final String CATE_EMPTY = "It's mandatory to fill the category field";
@@ -172,8 +173,9 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		addDocumentListeners();
 		
 		enabler(panel_text);
+		textField_name.setText(setDefaultName());
 		
-		redify(textField_name,Utils.isBlank(textField_name));
+		//redify(textField_name,Utils.isBlank(textField_name));
 		redify(textField_category,Utils.isBlank(textField_category));
 		updateAddBtn();
 		
@@ -207,7 +209,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 		textField_category.setBounds(229, 36, 114, 19);
 		contentPane.add(textField_category);
 		
-		textField_name = new JTextField(setDefaultName());
+		textField_name = new JTextField();
 		textField_name.setToolTipText(NAME);
 		textField_name.setColumns(10);
 		textField_name.setBounds(229, 11, 114, 19);
@@ -477,7 +479,7 @@ public class AddNew extends JDialog implements DocumentListener, FocusListener ,
 			if(b)
 				textField_name.setToolTipText(NAME_EMPTY);
 			else if(nameExists())
-				textField_name.setToolTipText(MainWindow.NAME_EXISTING);
+				textField_name.setToolTipText(NAME_EXISTING);
 			else
 				textField_name.setToolTipText(NAME);
 			

@@ -71,7 +71,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private static final int SHOW_EMPTY = 523;
 	private static final int SHOW_PROPERTIES = 231;
 	private static final String GENWEBSITE = "genwebsite";
-	public static final boolean WINDOWBUILDER = true;
+	public static final boolean WINDOWBUILDER = false;
 	private static final String DELNODE = "Delnode";
 	/**
 	 * 
@@ -104,7 +104,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	
 	
 	private static Options frameOptions  = new Options();
-	public static final String NAME_EXISTING = "Exists another element with the same name";
+	
 	private CustomFCSave fcSave = new CustomFCSave(frameOptions, this);
 	private CustomFCLoad fcLoad = new CustomFCLoad(frameOptions, this);
 	private CustomFCImage fcImage=new CustomFCImage(frameOptions, this);
@@ -187,7 +187,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		initPanelButtonsBar(panelButtonsBar);
 		
 		JButton btnPaste = new JButton("");
-		btnPaste.setToolTipText("Open");
+		btnPaste.setToolTipText("Paste");
 		btnPaste.setBounds(261, 4, 30, 30);
 		panelButtonsBar.add(btnPaste);
 
@@ -458,7 +458,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		btnCopy.setEnabled(false);
 		
 		btnCopy.setIcon(new ImageIcon("/home/enrico/Documenti/PSI/icons/list-add-md.png"));
-		btnCopy.setToolTipText("Open");
+		btnCopy.setToolTipText("Cut");
 		btnCopy.setBounds(195, 4, 30, 30);
 		panelButtonsBar.add(btnCopy);
 
@@ -468,7 +468,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				detachProperties();
 			}
 		});
-		btnCut.setToolTipText("Open");
+		btnCut.setToolTipText("Copy");
 		btnCut.setBounds(228, 4, 30, 30);
 		panelButtonsBar.add(btnCut);
 
@@ -481,13 +481,13 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		
 		
 		//addButton.setIcon(new ImageIcon(MainWindow.class.getResource("/webApplication/grafica/add_icon.gif")));
-		btnAdd.setToolTipText("Open");
+		btnAdd.setToolTipText("Add");
 		btnAdd.setBounds(313, 4, 30, 30);
 		panelButtonsBar.add(btnAdd);
 
 		button_del = new JButton("");
 		//button_8.setIcon(new ImageIcon(MainWindow.class.getResource("/com/sun/java/swing/plaf/gtk/resources/gtk-cancel-4.png")));
-		button_del.setToolTipText("Open");
+		button_del.setToolTipText("Delete");
 		button_del.setBounds(346, 4, 30, 30);
 		panelButtonsBar.add(button_del);
 		if(WINDOWBUILDER){
@@ -502,7 +502,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		btnGenerateWebsite.addActionListener(this);
 		btnGenerateWebsite.setActionCommand(GENWEBSITE);
 		
-		btnGenerateWebsite.setToolTipText("Open");
+		btnGenerateWebsite.setToolTipText("Delete");
 		btnGenerateWebsite.setBounds(401, 4, 187, 30);
 		boldify(btnGenerateWebsite);
 		panelButtonsBar.add(btnGenerateWebsite);
@@ -1109,7 +1109,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				if( Utils.isBlank(textField_Name))
 					textField_Name.setToolTipText("The name field cannot be left empty");
 				else if(nameExists(textField_Name.getText())){
-					textField_Name.setToolTipText(NAME_EXISTING);
+					textField_Name.setToolTipText(AddNew.NAME_EXISTING);
 				} else
 					textField_Name.setToolTipText("Name of the element");
 				//nameExists();
@@ -1152,7 +1152,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 
 	private void newAction(){
-		//TODO creare nuovo JTree
+		albero.clear();
+		showProperties();
 	}
 
 	private void loadAction(){
@@ -1170,6 +1171,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				albero.clear();
 				albero.setComponenti(temp);
 				aStream.close();
+				showProperties();
 			} catch (FileNotFoundException e) {
 				JOptionPane.showMessageDialog(this, "File "+fcLoad.getFile().getName()+" not found",
 					    "Unexpected error",
