@@ -68,6 +68,8 @@ import javax.swing.BoxLayout;
 
 public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, MyEventClassListener, ActionListener, DocumentListener {
 
+	private static final int SHOW_EMPTY = 523;
+	private static final int SHOW_PROPERTIES = 231;
 	private static final String GENWEBSITE = "genwebsite";
 	public static final boolean WINDOWBUILDER = true;
 	private static final String DELNODE = "Delnode";
@@ -86,6 +88,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private static JTextArea editorPane_text;
 	private static JTextField textField_imagepath;
 	private static JPanel content_panel;
+	private JPanel empty_properties;
+	private JPanel empty_select ;
 	private static JPanel panel_composite;
 	private static PannelloAlt pannello_alterplus;
 	private static PannelloComp pannello_comp;
@@ -191,9 +195,31 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		JPanel presentation_panel = new JPanel();
 		JPanel id_panel = new JPanel();
 		
-		initEmptyPanels(properties, presentation_panel,id_panel ); //Crea i JPanel vuoti
+		initPropertiesPanels(properties, presentation_panel,id_panel ); //Crea i JPanel vuoti
 		
-		contentPane.add(properties);
+		empty_properties = new JPanel();
+		empty_properties.setBorder(new TitledBorder(null, " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		empty_properties.setBounds(249, 49, 466, 392);
+		empty_properties.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+
+		
+		empty_select = new JPanel();
+		setEmptyProperties();
+		empty_properties.setLayout(null);
+		
+		
+		empty_select.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 0, true), "Select an element to show properties", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+
+		//panel_1.setBorder(new TitledBorder(null, "Select an element to show properties", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		empty_select.setLayout(null);
+		empty_select.setBounds(89, 102, 299, 65);
+		
+		empty_properties.add(empty_select);
+		showProperties();
+		
+		
+		
+		//contentPane.add(properties);
 		
 		genProperties= this.new GenericProperties(presentation_panel, id_panel); //Popola i JPanel dall'inner class
 		
@@ -222,6 +248,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		popolaOggetti();
 
 	}
+	
+	
 	
 	private void detachProperties(){
 		try{
@@ -479,11 +507,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		boldify(btnGenerateWebsite);
 		panelButtonsBar.add(btnGenerateWebsite);
 	}
-	private void initEmptyPanels(JPanel properties,JPanel presentation_panel, JPanel id_panel ) {
+	private void initPropertiesPanels(JPanel properties,JPanel presentation_panel, JPanel id_panel ) {
 		
-		properties.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		properties.setLayout(null);
-		properties.setBounds(249, 49, 466, 392);
+		initBigEmptyPanel(properties);
 		
 		presentation_panel.setBorder(new TitledBorder(new LineBorder(new Color(
 				184, 207, 229)), " Presentation ", TitledBorder.LEADING,
@@ -499,6 +525,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				new Color(51, 51, 51)));
 		id_panel.setLayout(null);
 		
+	}
+
+	protected void initBigEmptyPanel(JPanel properties) {
+		properties.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Properties ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		properties.setLayout(null);
+		properties.setBounds(249, 49, 466, 392);
 	}
 
 	private void addNewWizard() {
@@ -608,6 +640,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 
 	public void setFocus(Componente selected){
+		showProperties();
 		if (selected.getType().equals(Testo.TEXTTYPE))
 			setFocus((Testo)selected);
 		else if (selected.getType().equals(Immagine.IMAGETYPE))
@@ -619,7 +652,32 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		else if (selected.getType().equals(Link.LINKTYPE))
 			setFocus((Link)selected);
 	}
-	
+
+	private void showProperties() {
+		
+		if(albero.getTree().isSelectionEmpty()){
+			contentPane.remove(properties);
+			setEmptyProperties();
+			contentPane.repaint();
+		}
+		else {
+			contentPane.remove(empty_properties);
+			contentPane.add(properties);
+			contentPane.repaint();
+		}
+	}
+
+	private void setEmptyProperties() {
+		if(albero.getComponenti().size() == 0)
+			empty_select.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 0, true), "              No elements to show", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+		else 
+			empty_select.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 0, true), "Select an element to show its properties", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+
+		contentPane.add(empty_properties);
+	}
+
+
+
 	private void setFocus(Immagine selected) {
 		unFocus();
 		focusedImg = selected;
@@ -709,7 +767,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-		
+		showProperties();
 		JTree tree = albero.getTree();
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
 		if (node == null || node.isRoot())	{
