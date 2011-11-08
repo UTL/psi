@@ -12,7 +12,8 @@ import java.util.Vector;
  * 
  * @author Landi Jessica & Miglioranzi Marco
  */
-public class ComponenteAlternative extends ComponenteMolteplice implements Serializable {
+public class ComponenteAlternative extends ComponenteMolteplice implements
+		Serializable {
 	/**
 	 * 
 	 */
@@ -27,8 +28,8 @@ public class ComponenteAlternative extends ComponenteMolteplice implements Seria
 		opzioni = new Vector<ComponenteSemplice>();
 	}
 
-	public void aggiornaOrdine()	{
-		//TODO pensare a come cambiare l'ordine degli elementi nel vector 
+	public void aggiornaOrdine() {
+		// TODO pensare a come cambiare l'ordine degli elementi nel vector
 	}
-	
+
 }

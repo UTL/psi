@@ -125,33 +125,33 @@ public abstract class Componente implements Serializable, Cloneable {
 		return enfasi;
 
 	}
-	
-	public String toString()	{
+
+	public String toString() {
 		return nome;
 	}
-	
-	public String getType()	{
+
+	public String getType() {
 		return type;
 	}
-	
-	public void setType(String t)	{
+
+	public void setType(String t) {
 		type = t;
 	}
-	
-	public Componente clone()	{
+
+	public Componente clone() {
 		try {
 			return (Componente) super.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
 		return null;
-		
+
 	}
-	
-	public boolean isSimple()	{
-		if ((this.getType()==ComponenteAlternative.ALTERNATIVETYPE) || (this.getType()==ComponenteComposto.COMPOSTOTYPE))
+
+	public boolean isSimple() {
+		if ((this.getType().equals(ComponenteAlternative.ALTERNATIVETYPE)) || (this.getType().equals(ComponenteComposto.COMPOSTOTYPE)))
 			return false;
 		return true;
 	}
-	
+
 }

@@ -1,6 +1,7 @@
 package webApplication.business;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Vector;
 
 public class ComponenteMolteplice extends Componente implements Serializable {
@@ -14,19 +15,19 @@ public class ComponenteMolteplice extends Componente implements Serializable {
 	public ComponenteMolteplice(String n, String c, int v, int e, String tp) {
 		super(n, c, v, e, tp);
 	}
-	
-	
+
 	public Vector<ComponenteSemplice> getOpzioni() {
 		return opzioni;
 	}
-	
+
 	/**
 	 * Metodo per l'aggiunta di una nuova alternativa al vettore di alternative
 	 * 
 	 * @param c
 	 */
-	public void aggiungiOpzione(ComponenteSemplice c) {
-		opzioni.add(c);
+	public void aggiungiOpzione(ComponenteSemplice c, int i) {
+		opzioni.add(i, c);
+//		opzioni.add(c);
 	}
 
 	/**
@@ -35,7 +36,7 @@ public class ComponenteMolteplice extends Componente implements Serializable {
 	 * @param i
 	 */
 	public void cancellaOpzione(int i) {
-		opzioni.remove(i);
+		opzioni.removeElementAt(i);
 	}
 
 	/**
@@ -70,5 +71,10 @@ public class ComponenteMolteplice extends Componente implements Serializable {
 			}
 		}
 		return c;
+	}
+
+	public void spostaOpzione(ComponenteSemplice comp, int gap) {
+		Collections.swap(opzioni, opzioni.indexOf(comp), opzioni.indexOf(comp)
+				+ gap);
 	}
 }

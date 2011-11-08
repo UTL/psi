@@ -12,7 +12,8 @@ package webApplication.business;
 import java.io.Serializable;
 import java.util.Vector;
 
-public class ComponenteComposto extends ComponenteMolteplice implements Serializable {
+public class ComponenteComposto extends ComponenteMolteplice implements
+		Serializable {
 
 	/**
 	 * 

@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 
@@ -13,74 +13,126 @@ import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
 
 /**
- * L'oggetto per l'undo di una azione di modifica della priorità di un nodo appartenente ad un componente Alternative
+ * L'oggetto per l'undo di una azione di modifica della priorità di un nodo
+ * appartenente ad un componente Alternative
+ * 
  * @author Andrea
- *
+ * 
  */
 public class UndoableChangePriority extends AbstractUndoableEdit {
-	private DefaultTreeModel model;
-	private DefaultMutableTreeNode parent;
-	private int oldIndex;
-	private int gap;
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -364657303250331099L;
 
+	public static final String PRESENTATIONNAME = "Priority Change";
+
+	private JTree tree;
+	private DefaultTreeModel model;
+	private int parentIndex;
+	private int[] oldIndexes;
+	private int gap;
+
 	/**
 	 * Il costruttore di base
-	 * @param t		L'albero
-	 * @param p		Il genitore
-	 * @param oi	Il vecchio indice
-	 * @param g		L'entità dello spostamento
+	 * 
+	 * @param t
+	 *            L'albero
+	 * @param pi
+	 *            L'indice del genitore
+	 * @param oi
+	 *            Il vecchio indice
+	 * @param g
+	 *            L'entità dello spostamento
 	 */
-	UndoableChangePriority(JTree t, DefaultMutableTreeNode p, int oi, int g) {
+	public UndoableChangePriority(JTree t, int pi, int[] oi, int g) {
+		tree = t;
 		model = (DefaultTreeModel) t.getModel();
-		parent = p;
-		oldIndex=oi;
-		gap=g;
+		parentIndex = pi;
+		oldIndexes = oi;
+		gap = g;
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#undo()
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public void undo() throws CannotUndoException	{
-		Vector<ComponenteSemplice> opzioni = ((ComponenteMolteplice)parent.getUserObject()).getOpzioni();
-		Collections.swap(opzioni, oldIndex, oldIndex+gap);
-		model.insertNodeInto((DefaultMutableTreeNode) parent.getChildAt(oldIndex+gap), parent, oldIndex);
-		model.removeNodeFromParent((DefaultMutableTreeNode) parent.getChildAt(oldIndex+gap));
+	public void undo() throws CannotUndoException {
+		DisabledNode parent = (DisabledNode) ((DisabledNode) model.getRoot()).getChildAt(parentIndex);
+		// NOTA: nel caso di undo le operazioni di swap vanno fatte in ordine
+		// inverso rispetto a quanto fatto nel cambio iniziale
+		// dato che giustamente e l'operazione inversa
+		if (gap < 0) {
+			for (int i = (oldIndexes.length - 1); i >= 0; i--) {
+				swappaNodi(parent, i);
+			}
+		} else {
+			for (int i = 0; i < oldIndexes.length; i++) {
+				swappaNodi(parent, i);
+			}
+		}
+		// workaround: per fare in modo che la lista si aggiorni cancello la
+		// selezione e riseleziono l'elemento
+		tree.clearSelection();
+		tree.setSelectionPath(new TreePath(parent.getPath()));
+		tree.expandPath(new TreePath(parent.getPath()));
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#redo()
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public void redo() throws CannotUndoException	{
-		Vector<ComponenteSemplice> opzioni = ((ComponenteMolteplice)parent.getUserObject()).getOpzioni();
-		Collections.swap(opzioni, oldIndex, oldIndex+gap);
-		model.insertNodeInto((DefaultMutableTreeNode) parent.getChildAt(oldIndex), parent, oldIndex+gap);
-		model.removeNodeFromParent((DefaultMutableTreeNode) parent.getChildAt(oldIndex));
+	public void redo() throws CannotUndoException {
+		DisabledNode parent = (DisabledNode) ((DisabledNode) model.getRoot()).getChildAt(parentIndex);
+		// NOTA: nel redo l'ordine delle operazioni di swap torna "normale"
+		if (gap < 0) {
+			for (int i = 0; i < oldIndexes.length; i++) {
+				swappaNodi(parent, i);
+			}
+		} else {
+			for (int i = (oldIndexes.length - 1); i >= 0; i--) {
+				swappaNodi(parent, i);
+			}
+		}
+		// workaround: per fare in modo che la lista si aggiorni cancello la
+		// selezione e riseleziono l'elemento
+		tree.clearSelection();
+		tree.setSelectionPath(new TreePath(parent.getPath()));
+		tree.expandPath(new TreePath(parent.getPath()));
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#canUndo()
+
+	/**
+	 * Sposta un nodo nell'elenco degli elementi interni del genitore
+	 * 
+	 * @param p	Il genitore
+	 * @param i	L'indice del nodo da spostare
 	 */
-	public boolean canUndo()	{
+	private void swappaNodi(DisabledNode p, int i) {
+		Vector<ComponenteSemplice> opzioni = ((ComponenteMolteplice) p.getUserObject()).getOpzioni();
+		Collections.swap(opzioni, oldIndexes[i], oldIndexes[i] + gap);
+		DisabledNode n = (DisabledNode) p.getChildAt(oldIndexes[i] + gap);
+		model.removeNodeFromParent(n);
+		model.insertNodeInto(n, p, oldIndexes[i]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean canUndo() {
 		return true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#canRedo()
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public boolean canRedo()	{
+	public boolean canRedo() {
 		return true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#getPresentationName()
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public String getPresentationName()	{
-		return "Priority Change";
+	public String getPresentationName() {
+		return PRESENTATIONNAME;
 	}
-	
+
 }

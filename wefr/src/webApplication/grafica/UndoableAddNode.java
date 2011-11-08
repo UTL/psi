@@ -1,8 +1,13 @@
 package webApplication.grafica;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -13,8 +18,9 @@ import webApplication.business.ComponenteSemplice;
 
 /**
  * L'oggetto per l'undo di una azione di aggiunta di un nodo all'albero
+ * 
  * @author Andrea
- *
+ * 
  */
 public class UndoableAddNode extends AbstractUndoableEdit {
 
@@ -22,101 +28,138 @@ public class UndoableAddNode extends AbstractUndoableEdit {
 	 * 
 	 */
 	private static final long serialVersionUID = 5324954463054904036L;
-	
+
+	public static final String PRESENTATIONNAME = "Node Added";
+
 	private JTree tree;
 	private Componente nodeComp;
 	private int parentIndex;
 	private int index;
-	
+	private HashMap<Integer, Integer> movingNodes;
+
 	/**
 	 * Il costruttore di base
-	 * @param t	L'albero
-	 * @param n	Il componente
-	 * @param p	L'indice del genitore
-	 * @param i	L'indice del nodo
+	 * 
+	 * @param t
+	 *            L'albero
+	 * @param n
+	 *            Il componente
+	 * @param p
+	 *            L'indice del genitore
+	 * @param i
+	 *            L'indice del nodo
 	 */
-	UndoableAddNode(JTree t, Componente n, int p, int i)	{
-		tree=t;
-		nodeComp=n;
-		parentIndex=p;
-		index=i;
+	public UndoableAddNode(JTree t, Componente n, int p, int i, HashMap<Integer, Integer> mvn) {
+		tree = t;
+		nodeComp = n;
+		parentIndex = p;
+		index = i;
+		movingNodes = mvn;
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#undo()
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public void undo() throws CannotUndoException	{
+	public void undo() throws CannotUndoException {
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-		DefaultMutableTreeNode parent = findParent();
-		DefaultMutableTreeNode node;
-		if (parentIndex == -1)	{
-			parent = (DefaultMutableTreeNode) model.getRoot();
-		}	else	{
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-			parent=(DefaultMutableTreeNode) root.getChildAt(parentIndex);
+		DisabledNode parent = findParent();
+		DisabledNode node;
+		if (parentIndex == -1) {
+			parent = (DisabledNode) model.getRoot();
+		} else {
+			DisabledNode root = (DisabledNode) model
+					.getRoot();
+			parent = (DisabledNode) root.getChildAt(parentIndex);
 		}
-		node = (DefaultMutableTreeNode) parent.getChildAt(index);
-		model.removeNodeFromParent(node);
-		if (!(parent.isRoot()) && (!((Componente)parent.getUserObject()).isSimple()))	{
-			ComponenteMolteplice parentComp = (ComponenteMolteplice)parent.getUserObject();
+		node = (DisabledNode) parent.getChildAt(index);
+		if (movingNodes != null) {
+			Set<Integer> set = movingNodes.keySet();
+			Iterator<Integer> it = set.iterator();
+			while (it.hasNext()) {
+				int newIndex = it.next();
+				ComponenteSemplice comp = (ComponenteSemplice) ((ComponenteSemplice) ((DisabledNode) node.getChildAt(newIndex)).getUserObject()).clone();
+				model.insertNodeInto(new DisabledNode(comp), (DisabledNode) model.getRoot(), movingNodes.get(newIndex));
+			}
+		}
+		model.removeNodeFromParent(node); // se era un nodo composto automaticamente sono deletati anche i suoi figli
+		if (!(parent.isRoot()) && (!((Componente) parent.getUserObject()).isSimple())) {
+			ComponenteMolteplice parentComp = (ComponenteMolteplice) parent.getUserObject();
 			parentComp.cancellaOpzione(index);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#redo()
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public void redo() throws CannotRedoException	{
+	public void redo() throws CannotRedoException {
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-		DefaultMutableTreeNode parent = findParent();
-		DefaultMutableTreeNode node = new DefaultMutableTreeNode(nodeComp);
-		if (parentIndex == -1)	{
-			parent = (DefaultMutableTreeNode) model.getRoot();
-		}	else	{
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-			parent=(DefaultMutableTreeNode) root.getChildAt(parentIndex);
+		DisabledNode parent = findParent();
+		DisabledNode node = new DisabledNode(nodeComp);
+		if (parentIndex == -1) {
+			parent = (DisabledNode) model.getRoot();
+		} else {
+			DisabledNode root = (DisabledNode) model.getRoot();
+			parent = (DisabledNode) root.getChildAt(parentIndex);
+		}
+		if (movingNodes != null) {
+			System.out.println("Sono dentro");
+			Object[] valori = movingNodes.values().toArray();
+			Arrays.sort(valori);
+			for (int i = movingNodes.size() - 1; i >= 0; i--) {
+				model.removeNodeFromParent((DisabledNode) ((DisabledNode) model.getRoot()).getChildAt((Integer) valori[i]));
+			}
 		}
 		model.insertNodeInto(node, parent, index);
-		if (!(parent.isRoot()) && (!((Componente)parent.getUserObject()).isSimple()))	{
-			ComponenteMolteplice parentComp = (ComponenteMolteplice)parent.getUserObject();			
-			parentComp.aggiungiOpzione((ComponenteSemplice) node.getUserObject());
+		if (!(parent.isRoot()) && (!((Componente) parent.getUserObject()).isSimple())) {
+			ComponenteMolteplice parentComp = (ComponenteMolteplice) parent.getUserObject();
+			parentComp.aggiungiOpzione((ComponenteSemplice) node.getUserObject(), index);
 		}
+		// se era un nodo composto riaggiungo anche i suoi elementi
+		if (!(nodeComp.isSimple())) {
+			ComponenteMolteplice moltCompNode = (ComponenteMolteplice) nodeComp;
+			for (int i = 0; i < moltCompNode.getOpzioni().size(); i++) {
+				model.insertNodeInto(new DisabledNode(moltCompNode.getOpzione(i)), node, i);
+			}
+		}
+		tree.setSelectionPath(new TreePath(node.getPath()));
+		tree.expandPath(new TreePath(node.getPath()));
 	}
-	
+
 	/**
 	 * Cerca il genitore del nodo salvato nel campo nodeComp
-	 * @return	Il genitore
+	 * 
+	 * @return Il genitore
 	 */
-	private DefaultMutableTreeNode findParent()	{
+	private DisabledNode findParent() {
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-		if ((!nodeComp.isSimple()) || (parentIndex==-1))	{
-			return (DefaultMutableTreeNode) model.getRoot();
-		}
-		else	{
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-			return (DefaultMutableTreeNode) root.getChildAt(parentIndex);
+		if ((!nodeComp.isSimple()) || (parentIndex == -1)) {
+			return (DisabledNode) model.getRoot();
+		} else {
+			DisabledNode root = (DisabledNode) model
+					.getRoot();
+			return (DisabledNode) root.getChildAt(parentIndex);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#canUndo()
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public boolean canUndo()	{
+	public boolean canUndo() {
 		return true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#canRedo()
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public boolean canRedo()	{
+	public boolean canRedo() {
 		return true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.undo.AbstractUndoableEdit#getPresentationName()
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public String getPresentationName()	{
-		return "Add Node";
+	public String getUndoPresentationName() {
+		return PRESENTATIONNAME;
 	}
 
 }

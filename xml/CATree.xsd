@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:ca="http://musium.org/catree"
+	targetNamespace="http://musium.org/catree"
+	elementFormDefault="qualified">
+	<!-- definizione del nodo radice -->
+	<xs:element name="CARoot">
+		<xs:complexType>
+			<xs:sequence>
+				<!-- attributi -->
+				<xs:element name="ID" type="xs:string" maxOccurs="1" minOccurs="1"/>
+				<xs:element name="Type" type="ca:CAandxor" fixed="AND" maxOccurs="1" minOccurs="1"/>
+				<xs:element name="Necessity" type="ca:CAZeroOne" fixed="1.0" maxOccurs="1" minOccurs="1"/>
+				<xs:element name="Relevance" type="ca:CAZeroOne" fixed="1.0" maxOccurs="1" minOccurs="1"/>
+				<!-- nodi figli -->
+				<xs:choice minOccurs="1" maxOccurs="unbounded">
+					<xs:element name="ECI" type="ca:ECIType"/>
+					<xs:element name="CINode" type="ca:CINodeType"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- definizione del nodo intermedio -->
+	<xs:complexType name="CINodeType">
+		<xs:sequence>
+			<!-- attributi -->
+			<xs:element name="ID" type="xs:string" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="Type" type="ca:CAandxor" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="Necessity" type="ca:CAZeroOne" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Relevance" type="ca:CAZeroOne" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Coverage" type="ca:CAZeroOne" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Category" type="xs:string" maxOccurs="1" minOccurs="0"/>
+			<!-- nodi figli -->
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element name="ECI" type="ca:ECIType"/>
+				<xs:element name="CINode" type="ca:CINodeType"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- definizione del nodo foglia -->
+	<xs:complexType name="ECIType">
+		<xs:all>
+			<xs:element name="ID" type="xs:string" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="Type" type="ca:typeOfECI" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="Necessity" type="ca:CAZeroOne" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Relevance" type="ca:CAZeroOne" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Coverage" type="ca:CAZeroOne" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Category" type="xs:string" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Char_count" type="xs:integer" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Width" type="xs:integer" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Height" type="xs:integer" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="Stretch" type="xs:boolean" maxOccurs="1" minOccurs="0"/> 
+			<xs:element name="Value" type="xs:string" maxOccurs="1" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	<!-- definizione del tipo "CAZeroOne" (decimale compreso tra 0 e 1)-->
+	<xs:simpleType name="CAZeroOne">
+		<xs:restriction base="xs:decimal">
+			<xs:maxInclusive value="1"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- definizione del tipo "CAandxor" -->
+	<xs:simpleType name="CAandxor">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AND"/>
+			<xs:enumeration value="XOR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- definizione del tipo "typeOfECI" (tipologia del nodo foglia) -->
+	<xs:simpleType name="typeOfECI">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Text"/>
+			<xs:enumeration value="Image"/>
+			<xs:enumeration value="Link"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

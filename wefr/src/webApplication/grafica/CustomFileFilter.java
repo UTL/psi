@@ -4,36 +4,30 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
-
 public abstract class CustomFileFilter extends FileFilter {
-	
+
 	public boolean accept(File f) {
-        if (f.isDirectory()) {
-            return true;
-        }
-
-        String extension = Utils.getExtension(f);
-        if (extension != null) {
-            return extensions(extension);
-        }
-
-        return false;
-    }
-
-	protected abstract boolean extensions(String extension);
-	/*{
-		if (extension.equals(Utils.tiff) ||
-		    extension.equals(Utils.tif) ||
-		    extension.equals(Utils.gif) ||
-		    extension.equals(Utils.jpeg) ||
-		    extension.equals(Utils.jpg) ||
-		    extension.equals(Utils.png)) {
-		        return true;
-		} else {
-		    return false;
+		if (f.isDirectory()) {
+			return true;
 		}
-	}*/
+		String extension = getExtension(f);
+		if (extension != null) {
+			return validExtension(extension);
+		}
+		return false;
+	}
 
-    //The description of this filter
-    public abstract String getDescription(); 
+	public static String getExtension(File f) {
+		String ext = null;
+		String s = f.getName();
+		int i = s.lastIndexOf('.');
+		if ((i > 0) && (i < s.length() - 1)) {
+			ext = s.substring(i + 1).toLowerCase();
+		}
+		return ext;
+	}
+
+	protected abstract boolean validExtension(String extension);
+
+	public abstract String getDescription();
 }

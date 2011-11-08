@@ -1,133 +1,178 @@
 package webApplication.grafica;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.util.EventObject;
+import java.util.Collections;
 import java.util.Vector;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import webApplication.business.Componente;
-import webApplication.business.ComponenteAlternative;
-import webApplication.business.ComponenteComposto;
-import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
 
-public class PannelloAlt extends PannelloGeneric {
+/**
+ * Il pannello per la visualizzazione del contenuto di un elemento di tipo
+ * Composite
+ * 
+ * @author Andrea
+ */
+public class PannelloAlt extends PannelloComp implements ListSelectionListener {
 
-	private static final String ALTERNATIVE = "Alternative";
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2009369529793525573L;
 
-	/*
-	 * @wbp.parser.constructor
-	 */
+	protected JButton bottUp;
+	protected JButton bottDown;
+
+	private static final String UPTOOLTIP = "Click here to increase the priority of selected elements";
+	private static final String UPICON = "up.png";
+	private static final String DISUPICON = "disup.png";
+	protected static final String UPCOMMAND = "Up";
+	private static final String DOWNTOOLTIP = "Click here to decrease the priority of selected elements";
+	private static final String DOWNICON = "down.png";
+	private static final String DISDOWNICON = "disdown.png";
+	protected static final String DOWNCOMMAND = "Down";
+
+	private static final int BTNMOVESIZE = 46;;
+
 	/**
-	 * @wbp.parser.constructor
+	 * Crea il pannello ed i relativi campi
+	 * 
+	 * @param isWizard
+	 *            True se la finestra che richiama questo elemento e il Wizard,
+	 *            False viceversa
 	 */
-	public PannelloAlt(Component m, Options o) {
-		super(m, o);
-		// TODO Auto-generated constructor stub
-	}
+	public PannelloAlt(boolean isWizard) {
+		super(isWizard);
 
-	public PannelloAlt(Component m, ComponenteAlternative c, Options o) {
-		super(m, c, o);
-		// TODO Auto-generated constructor stub
-	}
+		Icon enabledIcon = new ImageIcon(MainWindow.BASEPATH + UPICON);
+		Icon disabledIcon = new ImageIcon(MainWindow.BASEPATH + DISUPICON);
+		bottUp = new JButton(enabledIcon);
+		bottUp.setDisabledIcon(disabledIcon);
+		bottUp.setActionCommand(UPCOMMAND);
+		bottUp.setToolTipText(UPTOOLTIP);
+		bottUp.setBounds(super.scrollPane.getX(), super.scrollPane.getY(), BTNMOVESIZE, BTNMOVESIZE);
+		bottUp.setEnabled(false);
+		if (isWizard) {
+			bottUp.addActionListener(this);
+		} else {
+			bottUp.addActionListener(MainWindow.eventDispatcher);
+		}
+		add(bottUp);
 
+		enabledIcon = new ImageIcon(MainWindow.BASEPATH + DOWNICON);
+		disabledIcon = new ImageIcon(MainWindow.BASEPATH + DISDOWNICON);
+		bottDown = new JButton(enabledIcon);
+		bottDown.setDisabledIcon(disabledIcon);
+		bottDown.setActionCommand(DOWNCOMMAND);
+		bottDown.setToolTipText(DOWNTOOLTIP);
+		bottDown.setBounds(super.scrollPane.getX(), bottUp.getY() + super.scrollPane.getHeight() - (BTNMOVESIZE + 1), BTNMOVESIZE, BTNMOVESIZE);
+		bottDown.setEnabled(false);
+		if (isWizard) {
+			bottDown.addActionListener(this);
+		} else {
+			bottDown.addActionListener(MainWindow.eventDispatcher);
+		}
+		add(bottDown);
+		list_components.getSelectionModel().addListSelectionListener(this);
+
+		int newX = super.scrollPane.getX() + bottUp.getX() + bottUp.getWidth() + 4;
+		super.scrollPane.setBounds(newX, super.scrollPane.getY(), super.scrollPane.getWidth() - newX, super.scrollPane.getHeight());
+		super.delete.setBounds(newX, super.delete.getY(), super.delete.getWidth(), super.delete.getHeight());
+	}
 	
-	@Override
-	protected void buildPanel() {
-		//TODO cambiare le icone terribili dei bottoni up e down
-
-		
-				bott_up.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						moveAlternativeElements(MainWindow.MOVE_UP);}});
-				this.setLayout(null);
-				bott_up.setToolTipText("Click here to increase the priority of selected element");
-				this.add(bott_up);
-
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setBounds(70, 4, 350, 149);
-				this.add(scrollPane);
-				
-				scrollPane.setViewportView(list_components);
-
-				bott_down.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						moveAlternativeElements(MainWindow.MOVE_DOWN);
-				}});
-				bott_down.setToolTipText("Click here to decrease the priority of selected element");
-				this.add(bott_down);
-				
-				this.add(bott_del);
-				this.add(bott_addExist);
-
-				
-				button_addNewAlter.setBounds(322, 165, 98, 27);
-				this.add(button_addNewAlter);
-
+	protected void moveElements(int[] indici, int gap) {
+		Vector<ComponenteSemplice> opzioni = getOpzioni();
+		if (gap==-1) {
+			for (int i = 0; i < indici.length; i++) {
+				Collections.swap(opzioni, indici[i], indici[i] - 1);
+				if (isWizard) {
+					if ((newIndexes.contains(indici[i])) && (newIndexes.contains(indici[i] - 1))) {
+						Collections.swap(newIndexes, newIndexes.indexOf(indici[i]), newIndexes.indexOf(indici[i] - 1));
+					} else if (newIndexes.contains(indici[i])) {
+						int index = newIndexes.indexOf(indici[i]);
+						newIndexes.set(index, indici[i] - 1);
+					} else if (newIndexes.contains(indici[i] - 1)) {
+						int index = newIndexes.indexOf(indici[i] - 1);
+						newIndexes.set(index, indici[i]);
+					}
+				}
+				indici[i] = indici[i] - 1;
+			}
+		} else {
+			for (int i = (indici.length - 1); i >= 0; i--) {
+				Collections.swap(opzioni, indici[i], indici[i] + 1);
+				if (isWizard) {
+					if ((newIndexes.contains(indici[i])) && (newIndexes.contains(indici[i] + 1))) {
+						Collections.swap(newIndexes, newIndexes.indexOf(indici[i]), newIndexes.indexOf(indici[i] + 1));
+					} else if (newIndexes.contains(indici[i])) {
+						int index = newIndexes.indexOf(indici[i]);
+						newIndexes.set(index, indici[i] + 1);
+					} else if (newIndexes.contains(indici[i] + 1)) {
+						int index = newIndexes.indexOf(indici[i] + 1);
+						newIndexes.set(index, indici[i]);
+					}
+				}
+				indici[i] = indici[i] + 1;
+			}
+		}
+		setOpzioni(opzioni);
+		list_components.setSelectedIndices(indici);
 	}
 
-	@Override
-	protected void upDownMgmt() {
-		Utils.buttonUpDownMgmt(list_components, bott_up, bott_down);
+	/**
+	 * {@inheritDoc}
+	 */
+	public void valueChanged(ListSelectionEvent e) {
+		// gestisce il pulsante delete
+		super.valueChanged(e);
 
+		// gestisce i pulsanti di up e down
+		if (list_components.isSelectionEmpty()) {
+			bottUp.setEnabled(false);
+			bottDown.setEnabled(false);
+		} else {
+			int num_elem = list_components.getModel().getSize();
+			int max_selected = list_components.getMaxSelectionIndex();
+			int min_selected = list_components.getMinSelectionIndex();
+
+			if (num_elem < 2 || max_selected == -1 || (min_selected == 0 && max_selected == num_elem - 1)) {
+				bottDown.setEnabled(false);
+				bottUp.setEnabled(false);
+			} else if (min_selected == 0) {
+				bottDown.setEnabled(true);
+				bottUp.setEnabled(false);
+			} else if (max_selected == num_elem - 1) {
+				bottDown.setEnabled(false);
+				bottUp.setEnabled(true);
+			} else {
+				bottDown.setEnabled(true);
+				bottUp.setEnabled(true);
+			}
+		}
 	}
 
-	@Override
-	protected void addCSempl(ComponenteSemplice componente) {
-		((ComponenteAlternative)alternativeComp).aggiungiOpzione(componente);
-
+	/**
+	 * {@inheritDoc}
+	 */
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals(UPCOMMAND)) {
+			int[] indici = list_components.getSelectedIndices();
+			moveElements(indici, -1);
+		} else if (e.getActionCommand().equals(DOWNCOMMAND)) {
+			int[] indici = list_components.getSelectedIndices();
+			moveElements(indici, +1);
+		} else if (e.getActionCommand().equals(PannelloComp.ADDNEWACTION)) {
+			super.actionPerformed(e);
+		} else if (e.getActionCommand().equals(PannelloComp.ADDEXISTACTION)) {
+			super.actionPerformed(e);
+		} else if (e.getActionCommand().equals(PannelloComp.DELETEACTION)) {
+			super.actionPerformed(e);
+		}
 	}
-
-	@Override
-	protected void assignComponent(Componente c) {
-		
-		if (c.getType()==ComponenteAlternative.ALTERNATIVETYPE)
-			alternativeComp = (ComponenteAlternative) c;
-		else ; //FIXME qua andrebbe sollevata un'eccezione
-	}
-
-	@Override
-	protected void removeElement(int i) {
-		alternativeComp.cancellaOpzione(list_components.getSelectedIndices()[i]);
-	}
-
-	
-
-	@Override
-	protected String addNewTitle() {
-		return ALTERNATIVE;
-	}
-
-	@Override
-	protected boolean componentNotNull() {
-		return alternativeComp != null;
-	}
-
-	@Override
-	protected ComponenteMolteplice getComponente() {
-		return alternativeComp;
-	}
-
-	@Override
-	protected Vector<ComponenteSemplice> getOpzioni() {
-		return alternativeComp.getOpzioni();
-	}
-
-	
-
-
-		
-	
 
 }

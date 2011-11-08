@@ -1,1203 +1,692 @@
 package webApplication.grafica;
 
-import java.awt.Component;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.TextField;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
-import javax.swing.border.LineBorder;
 import java.awt.Color;
-
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.TextListener;
-import java.awt.event.TextEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.awt.event.ActionListener;
 import java.util.Vector;
 
-import javax.swing.border.EtchedBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
-import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
-import webApplication.grafica.TreePanel.AddAction;
 
-import java.awt.SystemColor;
-import java.awt.event.ActionListener;
+public class Wizard extends JDialog implements ActionListener {
 
-public class Wizard extends JDialog implements DocumentListener , ActionListener {
-
-	private static final String LOAD_IMG = "browseImg";
-
-	private static final String DONE_IMG = "done image";
-
-	private static final String DONE_LINK = "donelinl";
-	private static final String LOAD_TEXT = "load file";
-	private static final String BACK2 = "back334234";
-	private static final String DONE = "done";
-	private static final String BACK = "Backkk21";
-
-	private static final String NEXT2 = "Next234";
-	private static final String EXIT = "Exit1243";
-	private static final String NEXT1 = "Next1";
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8706297359676605479L;
-	private JPanel contentPane;
-	private static JTextField name = new JTextField();
-	private JComboBox choice_type;
-	private JTabbedPane tabbedPane;
-	private JButton btnDone_text;
-	private JTextArea text;
-	private JButton button_next_s1;
-	private JButton button_next_s2;
-	private JButton button_doneComp;
-	private JButton btnDone_link;
-	private JTextField textField_imagepath;
-	private JButton btnDone_Image;
-	private JTextField category;
-	private JComboBox impo;
-	private JComboBox emph;
-	private TextField textField_url;
-	private TextField textField_linktext;
-	private AddNew myAddNew;
-	private JButton button_doneAlt;
-	
-	PannelloAlt panel_alt;
-	PannelloComp panel_comp;
-	
-	private JPanel panel_composite_s3;
-	
-	private Immagine focusedImg;
-	
-	private Immagine img;
-	private Link lnk;
-	private Testo txt;
-	private ComponenteAlternative alt;
-	private ComponenteComposto cmp;
-	
-	private CustomFCImage fcImage;
-	private CustomFCText fcText;
-	
-	private Vector<ComponenteSemplice> componentiComposite;
-	
-	private AddAction addAction;
-	//private DefaultListModel componentiAlternative;
-	
-	//TODO come nel MainWindow, le tre stringhe tipi categorie e importanze andrebbero estratte
-	private final static String TESTO = "Text";
-	private final static String IMAGE ="Image";
-	private final static String LINK ="Link";
-	private final static String ALT = "Alternative";
-	private final static String COMP = "Composite";
-	private final static String[] tipi= {TESTO,IMAGE,LINK,ALT,COMP};
 
-	private static final String[] categorie = { "Necessary", "Indifferent", "Expendable"}; //FIXME Andrebbero rese globali per tutte le classi??
-	private static final String[] importanze = { "Greatly", "Normally", "Not at all"}; //FIXME Andrebbero rese globali per tutte le classi?? 
-	private static final boolean CREATENEWCOMP = false;
-	private Options frameOptions;
+	protected boolean returnValue = false;
+
+	private static final String BASEELEMENTNAME = "Element";
+	private static int count = 0;// TODO spostare nel MainWindow
+
+	private static final String BASETITLE = "Create new element";
+
+	private static JPanel contentPane;
+	private static JTabbedPane tabbedPane;
+	protected static JTextField name;
+	private static JTextField category;
+	private static JComboBox choice_type;
+	private static JComboBox choice_emphasis;
+	private static JComboBox choice_visibility;
+
+	private PannelloText pannelloText;
+	private PannelloImage pannelloImage;
+	private PannelloLink pannelloLink;
+	private PannelloAlt pannelloAlt;
+	private PannelloComp pannelloComp;
+
+	private static JButton btnExit;
+	private static JButton btnBack;
+	private static JButton btnNext;
+	private static JButton btnDone;
+
+	// TAB TITLE & ICON & TOOLTIP
+	private static final String FIRSTSTEPTITLE = "1. Identification";
+	private static final String FIRSTSTEPTOOLTIP = "Specify the name and type of the element";
+
+	private static final String SECONDSTEPTITLE = "2. Presentation";
+	private static final String SECONDSTEPTOOLTIP = "Specify visualization properties of the element";
+
+	private static final String THIRDSTEPTITLE = "3. Content";
+	private static final String THIRDSTEPTOOLTIP = "Specify what the element represents";
+
+	// BUTTONS
+	private static final String NEXTTEXT = "Next";
+	private static final String EXITTEXT = "Cancel";
+	private static final String BACKTEXT = "Back";
+	private static final String DONETEXT = "Done";
+	private static final String NEXTACTION = "Next";
+	private static final String EXITACTION = "Cancel";
+	private static final String BACKACTION = "Back";
+	protected static final String DONEACTION = "Done";
+
+	private final static String[] tipi = { Testo.TEXTTYPE, Immagine.IMAGETYPE,
+			Link.LINKTYPE, ComponenteAlternative.ALTERNATIVETYPE,
+			ComponenteComposto.COMPOSTOTYPE };
 
 	/**
 	 * Create the frame.
 	 */
-	public Wizard(MainWindow m, Options o) {
-		super(m, ModalityType.APPLICATION_MODAL);
-		//this.setModalityType(ModalityType.APPLICATION_MODAL);
+	public Wizard(JFrame owner) {
+		super(owner, ModalityType.APPLICATION_MODAL);
 		setResizable(false);
-		setTitle("Add element");
-		
-		if(MainWindow.WINDOWBUILDER){
-			addAction = MainWindow.albero.new AddAction();//inizializzo il listener per l'aggiunta di un nodo
-		}
-		
-		frameOptions= o;
-		fcImage = new CustomFCImage(frameOptions, this);
-		fcText=new CustomFCText(frameOptions, this);
-		
-		//TODO mettere input da history (magari con un metodo)
-		
+		setTitle(BASETITLE);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 477, 354);
+		setBounds(100, 100, 477, 374);
+
+		// centro la finestra
+		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension ownerDim = owner.getSize();
+		int w = getWidth();
+		int h = getHeight();
+		setLocation((screenDim.width - ownerDim.width) / 2 + (ownerDim.width - w) / 2, (screenDim.height - ownerDim.height) / 2	+ (ownerDim.height - h) / 2);
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new LineBorder(new Color(0, 0, 0)));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setEnabled(false);
-		tabbedPane.setBorder(null);
-		tabbedPane.setBounds(0, 0, 471, 326);
+
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP,
+				JTabbedPane.WRAP_TAB_LAYOUT);
+		tabbedPane.setBounds(0, 0, 471, 374);
 		contentPane.add(tabbedPane);
-		
-		JPanel panel = new JPanel();
-		panel.setBorder(null);
-		tabbedPane.addTab("1", null, panel, null);
-		panel.setLayout(null);
-		
+
+		// Primo Tabbed Panel
+		JPanel firstStep = new JPanel();
+		firstStep.setLayout(null);
+		tabbedPane.addTab(FIRSTSTEPTITLE, null, firstStep, FIRSTSTEPTOOLTIP);
+
+		createBreadCumb(firstStep, 1);
+
+		JLabel lblName = new JLabel("Name:");
+		lblName.setBounds(125, 109, 46, 14);
+		firstStep.add(lblName);
+
+		name = new JTextField(setDefaultName());
+		name.setBounds(181, 106, 174, 22);
+		// name.setText(setDefaultName());
+		// TODO aggiungere il document listener
+		firstStep.add(name);
+
+		JLabel lblType = new JLabel("Type:");
+		lblType.setBounds(130, 168, 46, 14);
+		firstStep.add(lblType);
+
 		choice_type = new JComboBox(tipi);
 		choice_type.setBounds(181, 165, 174, 20);
-		panel.add(choice_type);
-		
-		name.setText(setDefaultName()); //TODO mettere default incrementale
-		name.getDocument().addDocumentListener(this);
-		
-		name.setBounds(181, 106, 174, 22);
-		panel.add(name);
-		
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_1.setLayout(null);
-		panel_1.setBounds(10, 261, 446, 49);
-		panel.add(panel_1);
-		
-		button_next_s1 = new JButton("Next");
-		button_next_s1.addActionListener(this);
-		button_next_s1.setActionCommand(NEXT1);
-				
-				
-		button_next_s1.setBounds(375, 11, 66, 27);
-		panel_1.add(button_next_s1);
-		
-		JButton button_exit_s1 = new JButton("Exit");
-		button_exit_s1.addActionListener(this);
-		button_exit_s1.setActionCommand(EXIT);
-		
-		
-		button_exit_s1.setBounds(10, 11, 66, 27);
-		panel_1.add(button_exit_s1);
-		
+		firstStep.add(choice_type);
+
+		createButtonsBar(firstStep, 1);
+
+		// Secondo Tabbed Panel
+		JPanel secondStep = new JPanel();
+		secondStep.setLayout(null);
+		tabbedPane.addTab(SECONDSTEPTITLE, null, secondStep, SECONDSTEPTOOLTIP);
+		tabbedPane.setEnabledAt(1, false);
+
+		createBreadCumb(secondStep, 2);
+
+		JLabel lblCategoryIdentifier = new JLabel("Category identifier:");
+		lblCategoryIdentifier.setBounds(56, 94, 108, 14);
+		secondStep.add(lblCategoryIdentifier);
+
+		category = new JTextField("Category0");
+		category.setBounds(181, 92, 174, 22);
+		category.setText("Category0");
+		secondStep.add(category);
+		// TODO aggiungere il document listener
+
+		JLabel lblImportance = new JLabel("Necessity:");
+		lblImportance.setBounds(105, 193, 108, 14);
+		secondStep.add(lblImportance);
+
+		choice_visibility = new JComboBox(MainWindow.necessity);
+		choice_visibility.setBounds(180, 192, 174, 20);
+		choice_visibility.setSelectedIndex(1);
+		secondStep.add(choice_visibility);
+
+		JLabel lblEnphasize = new JLabel("Emphasizes:");
+		lblEnphasize.setBounds(91, 144, 108, 14);// 195
+		secondStep.add(lblEnphasize);
+
+		choice_emphasis = new JComboBox(MainWindow.emphasis);
+		choice_emphasis.setBounds(180, 143, 174, 20);// 192
+		choice_emphasis.setSelectedIndex(1);
+		secondStep.add(choice_emphasis);
+
+		createButtonsBar(secondStep, 2);
+
+		// Terzo Tabbed Panel
+		JPanel thirdStep = new JPanel();
+		thirdStep.setLayout(null);
+		tabbedPane.addTab(THIRDSTEPTITLE, null, thirdStep, THIRDSTEPTOOLTIP);
+		tabbedPane.setEnabledAt(2, false);
+	}
+
+	// TODO spostare nel MainWindow
+	protected String setDefaultName() {
+		// FIXME Non ancora funzionante: count deve essere messo in MainWindow e
+		// devo incrementarlo solo quando creo un elemento con il nome di
+		// default
+		String defaultName = BASEELEMENTNAME + count;
+		return defaultName;
+	}
+
+	private void createBreadCumb(JPanel panel, int currentStep) {
+		JLabel lblStep = new JLabel("Step: ");
+		lblStep.setBounds(26, 21, 46, 14);
+		panel.add(lblStep);
+
+		JPanel stepOneIndicator = new JPanel();
+		if (currentStep == 1) {
+			stepOneIndicator.setBackground(Color.GREEN);
+			stepOneIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, Color.GREEN, null));
+		} else {
+			stepOneIndicator.setBackground(SystemColor.control);
+			stepOneIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		}
+		stepOneIndicator.setBounds(61, 7, 46, 43);
+		panel.add(stepOneIndicator);
+		stepOneIndicator.setLayout(null);
+
+		JLabel one = new JLabel("1");
+		one.setHorizontalAlignment(SwingConstants.CENTER);
+		one.setBounds(10, 0, 26, 43);
+		one.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		stepOneIndicator.add(one);
+
+		JPanel stepTwoIndicator = new JPanel();
+		if (currentStep == 2) {
+			stepTwoIndicator.setBackground(Color.GREEN);
+			stepTwoIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, Color.GREEN, null));
+		} else {
+			stepTwoIndicator.setBackground(SystemColor.control);
+			stepTwoIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		}
+		stepTwoIndicator.setLayout(null);
+		stepTwoIndicator.setBounds(117, 7, 46, 43);
+		panel.add(stepTwoIndicator);
+
+		JLabel two = new JLabel("2");
+		two.setHorizontalAlignment(SwingConstants.CENTER);
+		two.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		two.setBounds(10, 0, 26, 43);
+		stepTwoIndicator.add(two);
+
+		JPanel stepThreeIndicator = new JPanel();
+		if (currentStep == 3) {
+			stepThreeIndicator.setBackground(Color.GREEN);
+			stepThreeIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, Color.GREEN, null));
+		} else {
+			stepThreeIndicator.setBackground(SystemColor.control);
+			stepThreeIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		}
+		stepThreeIndicator.setLayout(null);
+		stepThreeIndicator.setBounds(173, 7, 46, 43);
+		panel.add(stepThreeIndicator);
+
+		JLabel three = new JLabel("3");
+		three.setHorizontalAlignment(SwingConstants.CENTER);
+		three.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		three.setBounds(10, 0, 26, 43);
+		stepThreeIndicator.add(three);
+
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.BLACK);
 		separator.setBounds(10, 54, 446, 2);
 		panel.add(separator);
-		
-		JLabel lblName = new JLabel("Name:");
-		lblName.setBounds(129, 109, 46, 14);
-		panel.add(lblName);
-		
-		JLabel lblType = new JLabel("Type:");
-		lblType.setBounds(130, 168, 46, 14);
-		panel.add(lblType);
-		
-		JLabel lblStep = new JLabel("Step:");
-		lblStep.setBounds(26, 21, 46, 14);
-		panel.add(lblStep);
-		
-		JPanel panel_14 = new JPanel();
-		panel_14.setBorder(new EtchedBorder(EtchedBorder.RAISED, Color.WHITE, null));
-		panel_14.setBackground(Color.WHITE);
-		panel_14.setBounds(61, 7, 46, 43);
-		panel.add(panel_14);
-		panel_14.setLayout(null);
-		
-		JLabel label_6 = new JLabel("1");
-		label_6.setHorizontalAlignment(SwingConstants.CENTER);
-		label_6.setBounds(10, 0, 26, 43);
-		label_6.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panel_14.add(label_6);
-		
-		JPanel panel_15 = new JPanel();
-		panel_15.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_15.setLayout(null);
-		panel_15.setBackground(SystemColor.control);
-		panel_15.setBounds(117, 7, 46, 43);
-		panel.add(panel_15);
-		
-		JLabel label_7 = new JLabel("2");
-		label_7.setHorizontalAlignment(SwingConstants.CENTER);
-		label_7.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_7.setBounds(10, 0, 26, 43);
-		panel_15.add(label_7);
-		
-		JPanel panel_16 = new JPanel();
-		panel_16.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_16.setLayout(null);
-		panel_16.setBackground(SystemColor.control);
-		panel_16.setBounds(173, 7, 46, 43);
-		panel.add(panel_16);
-		
-		JLabel label_8 = new JLabel("3");
-		label_8.setHorizontalAlignment(SwingConstants.CENTER);
-		label_8.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_8.setBounds(10, 0, 26, 43);
-		panel_16.add(label_8);
-		name.getText();
-		
-		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("2", null, panel_2, null);
-		panel_2.setLayout(null);
-		
-		
-		category = new JTextField();
-		category.setBounds(180, 92, 174, 22);
-		category.setText("Category0");
-		panel_2.add(category);
-		category.getDocument().addDocumentListener(this);
-		
-		
-		impo = new JComboBox(categorie);
-		impo.setBounds(180, 192, 174, 20);
-		panel_2.add(impo);
-		impo.setSelectedIndex(1);
-		
-		emph = new JComboBox(importanze);
-		emph.setBounds(180, 143, 174, 20);
-		panel_2.add(emph);
-		emph.setSelectedIndex(1);
-		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_3.setLayout(null);
-		panel_3.setBounds(10, 261, 446, 49);
-		panel_2.add(panel_3);
-		
-		button_next_s2 = new JButton("Next");
-		button_next_s2.addActionListener(this);
-		button_next_s2.setActionCommand(NEXT2);
-		
-		button_next_s2.setBounds(375, 11, 66, 27);
-		panel_3.add(button_next_s2);
-		
-		JButton button_exit_s2 = new JButton("Exit");
-		button_exit_s2.addActionListener(this);
-		button_exit_s2.setActionCommand(EXIT);
-		
-		
-		
-		button_exit_s2.setBounds(10, 11, 66, 27);
-		panel_3.add(button_exit_s2);
-		
-		JButton btnBack_s2 = new JButton("Back");
-		btnBack_s2.addActionListener(this);
-		btnBack_s2.setActionCommand(BACK);
-		
-		btnBack_s2.setBounds(299, 11, 66, 27);
-		panel_3.add(btnBack_s2);
-		
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setForeground(Color.BLACK);
-		separator_1.setBounds(10, 54, 446, 2);
-		panel_2.add(separator_1);
-		
-		JLabel lblCategoryIdentifier = new JLabel("Category identifier:");
-		lblCategoryIdentifier.setBounds(56, 95, 108, 14);
-		panel_2.add(lblCategoryIdentifier);
-		
-		JLabel lblEmphasize = new JLabel("Emphasize:");
-		lblEmphasize.setBounds(97, 146, 108, 14);
-		panel_2.add(lblEmphasize);
-		
-		JLabel lblImportance = new JLabel("Importance:");
-		lblImportance.setBounds(93, 195, 108, 14);
-		panel_2.add(lblImportance);
-		
-		JLabel label_1 = new JLabel("Step:");
-		label_1.setBounds(25, 21, 46, 14);
-		panel_2.add(label_1);
-		
-		JPanel panel_17 = new JPanel();
-		panel_17.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_17.setBackground(SystemColor.control);
-		panel_17.setBounds(60, 6, 46, 43);
-		panel_2.add(panel_17);
-		panel_17.setLayout(null);
-		
-		JLabel label_9 = new JLabel("1");
-		label_9.setBounds(10, 0, 26, 43);
-		label_9.setHorizontalAlignment(SwingConstants.CENTER);
-		label_9.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panel_17.add(label_9);
-		
-		JPanel panel_18 = new JPanel();
-		panel_18.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_18.setBackground(SystemColor.menu);
-		panel_18.setBounds(173, 6, 46, 43);
-		panel_2.add(panel_18);
-		panel_18.setLayout(null);
-		
-		JLabel label_10 = new JLabel("3");
-		label_10.setBounds(10, 0, 26, 43);
-		label_10.setHorizontalAlignment(SwingConstants.CENTER);
-		label_10.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panel_18.add(label_10);
-		
-		JPanel panel_19 = new JPanel();
-		panel_19.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_19.setBackground(SystemColor.text);
-		panel_19.setBounds(116, 6, 46, 43);
-		panel_2.add(panel_19);
-		panel_19.setLayout(null);
-		
-		JLabel label_11 = new JLabel("2");
-		label_11.setBounds(10, 0, 26, 43);
-		label_11.setHorizontalAlignment(SwingConstants.CENTER);
-		label_11.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panel_19.add(label_11);
-		
-		JPanel panel_4 = new JPanel();
-		tabbedPane.addTab("3t", null, panel_4, null);
-		panel_4.setLayout(null);
-		
-		JLabel lblEnterText = new JLabel("Enter text:");
-		lblEnterText.setBounds(25, 69, 94, 14);
-		panel_4.add(lblEnterText);
-		
-		JSeparator separator_2 = new JSeparator();
-		separator_2.setForeground(Color.BLACK);
-		separator_2.setBounds(10, 54, 446, 2);
-		panel_4.add(separator_2);
-		
-		JPanel panel_5 = new JPanel();
-		panel_5.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_5.setLayout(null);
-		panel_5.setBounds(10, 261, 446, 49);
-		panel_4.add(panel_5);
-		
-		btnDone_text = new JButton("Done");
-		
-		btnDone_text.addActionListener(this);
-		
-		//aggiungo il listener per l'effettiva aggiunta del nodo
-		addNodeAddingListener(btnDone_text);
-
-		btnDone_text.setActionCommand(DONE);
-		
-		btnDone_text.setEnabled(false);
-		btnDone_text.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnDone_text.setBounds(375, 11, 66, 27);
-		panel_5.add(btnDone_text);
-		
-		JButton button_exit_text = new JButton("Exit");
-		button_exit_text.addActionListener(this);
-		button_exit_text.setActionCommand(EXIT);
-		
-		
-		button_exit_text.setBounds(10, 11, 66, 27);
-		panel_5.add(button_exit_text);
-		
-		JButton button_back_text = new JButton("Back");
-		button_back_text.addActionListener(this);
-		button_back_text.setActionCommand(BACK2);
-		
-		
-		button_back_text.setBounds(299, 11, 66, 27);
-		panel_5.add(button_back_text);
-		
-		JButton btnImportFromFile = new JButton("Import from file");
-		btnImportFromFile.addActionListener(this);
-		btnImportFromFile.setActionCommand(LOAD_TEXT);
-		
-		btnImportFromFile.setBounds(25, 223, 171, 27);
-		panel_4.add(btnImportFromFile);
-		
-		text = new JTextArea();
-		text.getDocument().addDocumentListener(this);
-		
-		Utils.redify(text,Utils.isBlank(text));
-		btnDone_text.setEnabled(!Utils.isBlank(text));
-		
-		JScrollPane scrollingArea = new JScrollPane(text);
-		scrollingArea.setBounds(25, 89, 423, 124);
-		panel_4.add(scrollingArea);
-		
-		JLabel label_2 = new JLabel("Step:");
-		label_2.setBounds(25, 21, 46, 14);
-		panel_4.add(label_2);
-		
-		JPanel panel_20 = new JPanel();
-		panel_20.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_20.setLayout(null);
-		panel_20.setBackground(SystemColor.control);
-		panel_20.setBounds(60, 6, 46, 43);
-		panel_4.add(panel_20);
-		
-		JLabel label_12 = new JLabel("1");
-		label_12.setHorizontalAlignment(SwingConstants.CENTER);
-		label_12.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_12.setBounds(10, 0, 26, 43);
-		panel_20.add(label_12);
-		
-		JPanel panel_21 = new JPanel();
-		panel_21.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_21.setLayout(null);
-		panel_21.setBackground(SystemColor.menu);
-		panel_21.setBounds(116, 6, 46, 43);
-		panel_4.add(panel_21);
-		
-		JLabel label_13 = new JLabel("2");
-		label_13.setHorizontalAlignment(SwingConstants.CENTER);
-		label_13.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_13.setBounds(10, 0, 26, 43);
-		panel_21.add(label_13);
-		
-		JPanel panel_22 = new JPanel();
-		panel_22.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_22.setLayout(null);
-		panel_22.setBackground(SystemColor.text);
-		panel_22.setBounds(173, 6, 46, 43);
-		panel_4.add(panel_22);
-		
-		JLabel label_14 = new JLabel("3");
-		label_14.setHorizontalAlignment(SwingConstants.CENTER);
-		label_14.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_14.setBounds(10, 0, 26, 43);
-		panel_22.add(label_14);
-		
-		JPanel panel_6 = new JPanel();
-		tabbedPane.addTab("3l", null, panel_6, null);
-		panel_6.setLayout(null);
-		
-		
-		JLabel lblLinkTarget = new JLabel("URL:");
-		lblLinkTarget.setBounds(132, 121, 66, 14);
-		panel_6.add(lblLinkTarget);
-		
-		textField_url = new TextField("http://");
-		textField_url.setBounds(204, 113, 174, 22);
-		panel_6.add(textField_url);
-		
-		textField_linktext = new TextField();
-		textField_linktext.addTextListener(new TextListener() {
-			public void textValueChanged(TextEvent arg0) {
-				if (textField_linktext.getText().equalsIgnoreCase(""))
-					btnDone_link.setEnabled(false);
-				else if (textField_linktext.getText().matches(" * "))
-					     btnDone_link.setEnabled(false);
-				else btnDone_link.setEnabled(true);
-			}
-		});
-		textField_linktext.setBounds(204, 158, 174, 22);
-		panel_6.add(textField_linktext);
-		
-		JLabel lblLinkText = new JLabel("Link text:");
-		lblLinkText.setBounds(132, 166, 66, 14);
-		panel_6.add(lblLinkText);
-		
-		JSeparator separator_3 = new JSeparator();
-		separator_3.setForeground(Color.BLACK);
-		separator_3.setBounds(10, 54, 446, 2);
-		panel_6.add(separator_3);
-		
-		JPanel panel_7 = new JPanel();
-		panel_7.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_7.setLayout(null);
-		panel_7.setBounds(10, 259, 446, 49);
-		panel_6.add(panel_7);
-		
-		btnDone_link = new JButton("Done");
-		btnDone_link.setEnabled(false);
-		btnDone_link.addActionListener(this);
-		
-		addNodeAddingListener(btnDone_link);
-		
-		btnDone_link.setActionCommand(DONE_LINK);
-		
-		btnDone_link.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnDone_link.setBounds(375, 11, 66, 27);
-		panel_7.add(btnDone_link);
-		
-		JButton button_exit_link = new JButton("Exit");
-		button_exit_link.addActionListener(this);
-		button_exit_link.setActionCommand(EXIT);
-		
-		button_exit_link.setBounds(10, 11, 66, 27);
-		panel_7.add(button_exit_link);
-		
-		JButton button_back_link = new JButton("Back");
-		button_back_link.addActionListener(this);
-		button_back_link.setActionCommand(BACK2);
-		
-		
-		button_back_link.setBounds(299, 11, 66, 27);
-		panel_7.add(button_back_link);
-		
-		JLabel label_3 = new JLabel("Step:");
-		label_3.setBounds(27, 21, 46, 14);
-		panel_6.add(label_3);
-		
-		JPanel panel_23 = new JPanel();
-		panel_23.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_23.setLayout(null);
-		panel_23.setBackground(SystemColor.control);
-		panel_23.setBounds(61, 6, 46, 43);
-		panel_6.add(panel_23);
-		
-		JLabel label_15 = new JLabel("1");
-		label_15.setHorizontalAlignment(SwingConstants.CENTER);
-		label_15.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_15.setBounds(10, 0, 26, 43);
-		panel_23.add(label_15);
-		
-		JPanel panel_24 = new JPanel();
-		panel_24.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_24.setLayout(null);
-		panel_24.setBackground(SystemColor.control);
-		panel_24.setBounds(117, 6, 46, 43);
-		panel_6.add(panel_24);
-		
-		JLabel label_16 = new JLabel("2");
-		label_16.setHorizontalAlignment(SwingConstants.CENTER);
-		label_16.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_16.setBounds(10, 0, 26, 43);
-		panel_24.add(label_16);
-		
-		JPanel panel_25 = new JPanel();
-		panel_25.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_25.setLayout(null);
-		panel_25.setBackground(SystemColor.text);
-		panel_25.setBounds(173, 6, 46, 43);
-		panel_6.add(panel_25);
-		
-		JLabel label_17 = new JLabel("3");
-		label_17.setHorizontalAlignment(SwingConstants.CENTER);
-		label_17.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_17.setBounds(10, 0, 26, 43);
-		panel_25.add(label_17);
-		
-		JPanel panel_8 = new JPanel();
-		tabbedPane.addTab("3i", null, panel_8, null);
-		panel_8.setLayout(null);
-		
-		JSeparator separator_4 = new JSeparator();
-		separator_4.setForeground(Color.BLACK);
-		separator_4.setBounds(10, 54, 446, 2);
-		panel_8.add(separator_4);
-		
-		JPanel panel_9 = new JPanel();
-		panel_9.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_9.setLayout(null);
-		panel_9.setBounds(10, 259, 446, 49);
-		panel_8.add(panel_9);
-		
-		btnDone_Image = new JButton("Done");
-		btnDone_Image.addActionListener(this);
-		addNodeAddingListener(btnDone_Image);
-		btnDone_Image.setActionCommand(DONE_IMG);
-		
-		btnDone_Image.setEnabled(false);
-		btnDone_Image.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnDone_Image.setBounds(375, 11, 66, 27);
-		panel_9.add(btnDone_Image);
-		
-		JButton button_exit_image = new JButton("Exit");
-		button_exit_image.addActionListener(this);
-		button_exit_image.setActionCommand(EXIT);
-		button_exit_image.setBounds(10, 11, 66, 27);
-		panel_9.add(button_exit_image);
-		
-		JButton button_back_image = new JButton("Back");
-		button_back_image.addActionListener(this);
-		button_back_image.setActionCommand(BACK2);
-		
-		button_back_image.setBounds(299, 11, 66, 27);
-		panel_9.add(button_back_image);
-		
-		JLabel lblFilePath = new JLabel("File path:");
-		lblFilePath.setBounds(87, 146, 59, 14);
-		panel_8.add(lblFilePath);
-		
-	    textField_imagepath = new JTextField();
-	    
-	    textField_imagepath.setToolTipText("Path of the image file");
-		textField_imagepath.getDocument().addDocumentListener(this);
-		
-		if(textField_imagepath.getText().equals(""));{//Serve a triggerare l'evento di change
-			textField_imagepath.setText("1");
-			textField_imagepath.setText(""); 
-		}
-		
-		textField_imagepath.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				updateImagePath();
-			}
-
-			
-		});
-	    
-		textField_imagepath.setBounds(150, 143, 174, 22);
-		panel_8.add(textField_imagepath);
-		
-		JButton btnBrowse = new JButton("Browse\r\n");
-		btnBrowse.addActionListener(this);
-		btnBrowse.setActionCommand(LOAD_IMG);
-		
-		
-		btnBrowse.setBounds(346, 139, 99, 29);
-		panel_8.add(btnBrowse);
-		
-		JLabel label_4 = new JLabel("Step:");
-		label_4.setBounds(23, 22, 46, 14);
-		panel_8.add(label_4);
-		
-		JPanel panel_26 = new JPanel();
-		panel_26.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_26.setLayout(null);
-		panel_26.setBackground(SystemColor.control);
-		panel_26.setBounds(61, 6, 46, 43);
-		panel_8.add(panel_26);
-		
-		JLabel label_18 = new JLabel("1");
-		label_18.setHorizontalAlignment(SwingConstants.CENTER);
-		label_18.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_18.setBounds(10, 0, 26, 43);
-		panel_26.add(label_18);
-		
-		JPanel panel_27 = new JPanel();
-		panel_27.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_27.setLayout(null);
-		panel_27.setBackground(SystemColor.control);
-		panel_27.setBounds(117, 6, 46, 43);
-		panel_8.add(panel_27);
-		
-		JLabel label_19 = new JLabel("2");
-		label_19.setHorizontalAlignment(SwingConstants.CENTER);
-		label_19.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_19.setBounds(10, 0, 26, 43);
-		panel_27.add(label_19);
-		
-		JPanel panel_28 = new JPanel();
-		panel_28.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_28.setLayout(null);
-		panel_28.setBackground(SystemColor.text);
-		panel_28.setBounds(173, 6, 46, 43);
-		panel_8.add(panel_28);
-		
-		JLabel label_20 = new JLabel("3");
-		label_20.setHorizontalAlignment(SwingConstants.CENTER);
-		label_20.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_20.setBounds(10, 0, 26, 43);
-		panel_28.add(label_20);
-		
-		panel_composite_s3 = new JPanel();
-		tabbedPane.addTab("3c", null, panel_composite_s3, null);
-		panel_composite_s3.setLayout(null);
-		
-		JPanel panel_12 = new JPanel();
-		panel_comp = new PannelloComp(this, frameOptions);
-		panel_comp.setLocation(6, 56);
-		panel_comp.setSize(436, 201);
-		panel_composite_s3.add(panel_comp);
-		panel_12.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_12.setLayout(null);
-		panel_12.setBounds(10, 259, 446, 49);
-		panel_composite_s3.add(panel_12);
-		
-		button_doneComp = new JButton("Done");
-		button_doneComp.setEnabled(true);
-		button_doneComp.addActionListener(this);
-		addNodeAddingListener(button_doneComp);
-		button_doneComp.setActionCommand(DONE);
-		
-		button_doneComp.setFont(new Font("Tahoma", Font.BOLD, 12));
-		button_doneComp.setBounds(375, 11, 66, 27);
-		panel_12.add(button_doneComp);
-		
-		JButton button_exit_comp = new JButton("Exit");
-		button_exit_comp.addActionListener(this);
-		button_exit_comp.setActionCommand(EXIT);
-		button_exit_comp.setBounds(10, 11, 66, 27);
-		panel_12.add(button_exit_comp);
-		
-		JButton button_back_comp = new JButton("Back");
-		button_back_comp.addActionListener(this);
-		button_back_comp.setActionCommand(BACK2);
-		
-		
-		button_back_comp.setBounds(299, 11, 66, 27);
-		panel_12.add(button_back_comp);
-		
-		JSeparator separator_5 = new JSeparator();
-		separator_5.setForeground(Color.BLACK);
-		separator_5.setBounds(10, 54, 446, 2);
-		panel_composite_s3.add(separator_5);
-		
-		JLabel lblStep_1 = new JLabel("Step:");
-		lblStep_1.setBounds(28, 21, 46, 14);
-		panel_composite_s3.add(lblStep_1);
-		
-		JPanel panel_29 = new JPanel();
-		panel_29.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel_29.setLayout(null);
-		panel_29.setBackground(SystemColor.control);
-		panel_29.setBounds(61, 6, 46, 43);
-		panel_composite_s3.add(panel_29);
-		
-		JLabel label_21 = new JLabel("1");
-		label_21.setHorizontalAlignment(SwingConstants.CENTER);
-		label_21.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_21.setBounds(10, 0, 26, 43);
-		panel_29.add(label_21);
-		
-		JPanel panel_30 = new JPanel();
-		panel_30.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_30.setLayout(null);
-		panel_30.setBackground(SystemColor.menu);
-		panel_30.setBounds(117, 6, 46, 43);
-		panel_composite_s3.add(panel_30);
-		
-		JLabel label_22 = new JLabel("2");
-		label_22.setHorizontalAlignment(SwingConstants.CENTER);
-		label_22.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_22.setBounds(10, 0, 26, 43);
-		panel_30.add(label_22);
-		
-		JPanel panel_31 = new JPanel();
-		panel_31.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_31.setLayout(null);
-		panel_31.setBackground(SystemColor.text);
-		panel_31.setBounds(173, 6, 46, 43);
-		panel_composite_s3.add(panel_31);
-		
-		JLabel label_23 = new JLabel("3");
-		label_23.setHorizontalAlignment(SwingConstants.CENTER);
-		label_23.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_23.setBounds(10, 0, 26, 43);
-		panel_31.add(label_23);
-		
-		JPanel panel_11 = new JPanel();
-		tabbedPane.addTab("3a", null, panel_11, null);
-		panel_11.setLayout(null);
-		
-		panel_alt = new PannelloAlt(this, frameOptions);
-		panel_alt.setSize(421, 193);
-		panel_alt.setLocation(25, 61);
-		panel_11.add(panel_alt);
-		
-		JPanel panel_13 = new JPanel();
-		panel_13.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_13.setLayout(null);
-		panel_13.setBounds(10, 259, 446, 49);
-		panel_11.add(panel_13);
-		
-		button_doneAlt = new JButton("Done");
-		button_doneAlt.setEnabled(true);
-		button_doneAlt.addActionListener(this);
-		addNodeAddingListener(button_doneAlt);
-		button_doneAlt.setActionCommand(DONE);
-		
-		button_doneAlt.setFont(new Font("Tahoma", Font.BOLD, 12));
-		button_doneAlt.setBounds(375, 11, 66, 27);
-		panel_13.add(button_doneAlt);
-		
-		JButton button_exit_alt = new JButton("Exit");
-		button_exit_alt.addActionListener(this);
-		button_exit_alt.setActionCommand(EXIT);
-		
-		button_exit_alt.setBounds(10, 11, 66, 27);
-		panel_13.add(button_exit_alt);
-		
-		JButton button_back_alt = new JButton("Back");
-		button_back_alt.addActionListener(this);
-		button_back_alt.setActionCommand(BACK2);
-		
-		button_back_alt.setBounds(299, 11, 66, 27);
-		panel_13.add(button_back_alt);
-		
-		JSeparator separator_6 = new JSeparator();
-		separator_6.setForeground(Color.BLACK);
-		separator_6.setBounds(10, 54, 446, 2);
-		panel_11.add(separator_6);
-		
-		JLabel label = new JLabel("Elements:");
-		label.setBounds(72, 64, 66, 14);
-		panel_11.add(label);
-		
-		JLabel label_5 = new JLabel("Step:");
-		label_5.setBounds(20, 21, 46, 14);
-		panel_11.add(label_5);
-		
-		JPanel panel_32 = new JPanel();
-		panel_32.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_32.setLayout(null);
-		panel_32.setBackground(SystemColor.control);
-		panel_32.setBounds(61, 6, 46, 43);
-		panel_11.add(panel_32);
-		
-		JLabel label_24 = new JLabel("1");
-		label_24.setHorizontalAlignment(SwingConstants.CENTER);
-		label_24.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_24.setBounds(10, 0, 26, 43);
-		panel_32.add(label_24);
-		
-		JPanel panel_33 = new JPanel();
-		panel_33.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_33.setLayout(null);
-		panel_33.setBackground(SystemColor.menu);
-		panel_33.setBounds(117, 6, 46, 43);
-		panel_11.add(panel_33);
-		
-		JLabel label_25 = new JLabel("2");
-		label_25.setHorizontalAlignment(SwingConstants.CENTER);
-		label_25.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_25.setBounds(10, 0, 26, 43);
-		panel_33.add(label_25);
-		
-		JPanel panel_34 = new JPanel();
-		panel_34.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_34.setLayout(null);
-		panel_34.setBackground(SystemColor.text);
-		panel_34.setBounds(173, 6, 46, 43);
-		panel_11.add(panel_34);
-		
-		JLabel label_26 = new JLabel("3");
-		label_26.setHorizontalAlignment(SwingConstants.CENTER);
-		label_26.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_26.setBounds(10, 0, 26, 43);
-		panel_34.add(label_26);
-		
-		
 	}
 
+	private void createButtonsBar(JPanel panel, int currentStep) {
+		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		buttonsPanel.setLayout(null);
+		buttonsPanel.setBounds(10, 263, 446, 49);
+		panel.add(buttonsPanel);
 
-	protected String setDefaultName() {
-		return "Element0";
-	}
-	
+		btnNext = new JButton(NEXTTEXT);
+		// button_next_s1.addActionListener(this);
+		btnNext.setActionCommand(NEXTACTION);
+		btnNext.addActionListener(this);
+		btnNext.setBounds(350, 11, 86, 27);
 
-	protected ComponenteComposto buildComposite() {
-		cmp = new ComponenteComposto(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
-		return cmp;
-	}
+		btnBack = new JButton(BACKTEXT);
+		btnBack.setActionCommand(BACKACTION);
+		btnBack.addActionListener(this);
+		btnBack.setBounds(260, 11, 86, 27);
 
-	protected ComponenteAlternative buildAlternative() {
-		alt = new ComponenteAlternative(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex());
-		return alt;
-	}
+		btnExit = new JButton(EXITTEXT);
+		btnExit.setActionCommand(EXITACTION);
+		btnExit.addActionListener(this);
+		btnExit.setBounds(10, 11, 86, 27);
+		buttonsPanel.add(btnExit);
 
-	private void chooseFile(int chooserValue, JFileChooser fc, JTextField target){
-		//TODO settare le cartelle di default
-		if (chooserValue == JFileChooser.APPROVE_OPTION) {
-            target.setText(fc.getSelectedFile().getAbsolutePath());
-        } 
+		btnDone = new JButton(DONETEXT);
+		btnDone.setActionCommand(DONEACTION);
+		btnDone.setFont(new Font(btnDone.getFont().getName(), Font.BOLD, btnDone.getFont().getSize() + 2));
+		btnDone.addActionListener(this);
+		btnDone.setBounds(350, 11, 86, 27);
 
-	}
-	
-	private void chooseFile(int chooserValue, JFileChooser fc, JTextArea target) throws IOException{
-		//TODO settare le cartelle di default
-		if (chooserValue == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
-			String letta = readFile(file);
-            target.setText(letta);
-            
-        } 
-
-	}
-	
-	public static String readFile (File file) throws IOException{
-		//FIXME se si prova a leggere il file /dev/zero va in loop infinito (la console continua a leggere e scrollare...)
-		 String letto = "";
-	     FileReader reader = new FileReader(file);
-	     while(true)
-	        { int x = reader.read(); // read restituisce un intero che vale -1 se il file è finito
-	          if (x == -1) break;     
-	          char c = (char) x;      
-	          letto = letto+c;
-	          System.out.println( letto+c);
-	        }
-	     return letto;
-	}
-	
-	 private ArrayList<MyEventClassListener> _listeners = new ArrayList<MyEventClassListener>();
-		
-	 public synchronized void addEventListener(MyEventClassListener listener)  {
-		 _listeners.add(listener);
-	 }
-	 public synchronized void removeEventListener(MyEventClassListener listener)   {
-		 _listeners.remove(listener);
-	 }
-	 
-	 private synchronized void fireEvent() {	
-			MyEventClass event = new MyEventClass(this);
-			Iterator<MyEventClassListener> i = _listeners.iterator();
-			while(i.hasNext())  {
-				((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
-			}
+		switch (currentStep) {
+		case 1:
+			buttonsPanel.add(btnNext);
+			break;
+		case 2:
+			buttonsPanel.add(btnNext);
+			buttonsPanel.add(btnBack);
+			break;
+		case 3:
+			buttonsPanel.add(btnDone);
+			buttonsPanel.add(btnBack);
+			break;
 		}
-	 
-	 
-	 
-	 private void updateImagePath() {
-			
-			if(focusedImg!= null)
-				focusedImg.setPath(textField_imagepath.getText());
-			checkImagePath();
-		}
-	 
-	 private boolean checkImagePath() {
-			if(isPathCorrect(textField_imagepath.getText())){
-				textField_imagepath.setToolTipText("Path of the image file");
-				btnDone_Image.setEnabled(true);
-				return true;
-			}
-			else {
-				textField_imagepath.setToolTipText("The file doesn't exist or is not readable");
-				btnDone_Image.setEnabled(false);
-			}
-			return false;
-		}
-	 
-		private boolean isPathCorrect(String path){
-			File daControllare = new File(path);
-			if(daControllare.isFile() && daControllare.canRead())
-				return true;
-			return false;
-		}
-		
-		private synchronized void fireEvent(boolean onlyDispose) {	
-			MyEventClass event = null;
-			if (onlyDispose == CREATENEWCOMP)
-				event = new MyEventClass(this, buildNewComp());
-			Iterator<MyEventClassListener> i = _listeners.iterator();
-			while(i.hasNext())  {
-				((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
-			}
-		}
+	}
 
-		private Componente buildNewComp() {
-			System.out.println("builder");
-			if(choice_type.getSelectedItem()==TESTO)
-				return new Testo(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), text.getText());
-			else if(choice_type.getSelectedItem()==IMAGE)
-				return new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), textField_imagepath.getText());			
-			else if(choice_type.getSelectedItem()==LINK)
-				return new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(), textField_url.getText(), textField_url.getText());
-			else if(choice_type.getSelectedItem()==ALT){
+	private void buildTextPanel() {
+		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
+		thirdPanel.removeAll();
 
-				return alt;
-			}
-			else {
-				
-				return cmp;
-				}
+		createBreadCumb(thirdPanel, 3);
+
+		// NOTA: per la history non ricreo l'elemento se ritorno a questo passo
+		// dopo essere tornato indietro
+		if (pannelloText == null) {
+			pannelloText = new PannelloText();
 		}
-		
-		
-		
-		
-		
+		pannelloText.setLocation(25, 61);
+		thirdPanel.add(pannelloText);
 
-		private void manageTooltips(Component component, boolean b) {
-			if (component == textField_imagepath){
-				if(b)
-					textField_imagepath.setToolTipText(AddNew.URL_EMPTY);
-				else
-					textField_imagepath.setToolTipText(AddNew.URL);
-				}
-			else if (component == name){
-				if(b)
-					name.setToolTipText(AddNew.NAME_EMPTY);
-				else
-					name.setToolTipText(AddNew.NAME);
-				if (MainWindow.nameExistsAll(name.getText()))
-					name.setToolTipText(AddNew.NAME_EXISTING);
+		createButtonsBar(thirdPanel, 3);
+	}
+
+	private void buildImagePanel() {
+		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
+		thirdPanel.removeAll();
+
+		createBreadCumb(thirdPanel, 3);
+
+		// NOTA: per la history non ricreo l'elemento se ritorno a questo passo
+		// dopo essere tornato indietro
+		if (pannelloImage == null) {
+			pannelloImage = new PannelloImage();
+		}
+		pannelloImage.setLocation(25, 61);
+		thirdPanel.add(pannelloImage);
+
+		createButtonsBar(thirdPanel, 3);
+	}
+
+	private void buildLinkPanel() {
+		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
+		thirdPanel.removeAll();
+
+		createBreadCumb(thirdPanel, 3);
+
+		if (pannelloLink == null) {
+			pannelloLink = new PannelloLink();
+		}
+		pannelloLink.setLocation(25, 61);
+		thirdPanel.add(pannelloLink);
+
+		createButtonsBar(thirdPanel, 3);
+	}
+
+	private void buildAlternativePanel() {
+		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
+		thirdPanel.removeAll();
+
+		createBreadCumb(thirdPanel, 3);
+
+		// NOTA: per la history non ricreo l'elemento se ritorno a questo passo
+		// dopo essere tornato indietro
+		if (pannelloAlt == null)
+			pannelloAlt = new PannelloAlt(true);
+		pannelloAlt.setLocation(25, 61);
+		thirdPanel.add(pannelloAlt);
+
+		createButtonsBar(thirdPanel, 3);
+	}
+
+	private void buildCompositePanel() {
+		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
+		thirdPanel.removeAll();
+
+		createBreadCumb(thirdPanel, 3);
+
+		// NOTA: per la history non ricreo l'elemento se ritorno a questo passo
+		// dopo essere tornato indietro
+		if (pannelloComp == null)
+			pannelloComp = new PannelloComp(true);
+		pannelloComp.setLocation(25, 61);
+		thirdPanel.add(pannelloComp);
+
+		createButtonsBar(thirdPanel, 3);
+	}
+
+	protected boolean showDialog() {
+		setVisible(true);
+		return returnValue;
+	}
+
+	protected Componente buildNewComponent() {
+		if (choice_type.getSelectedItem().equals(Testo.TEXTTYPE)) {
+			Testo newTesto = new Testo(name.getText(), category.getText(), choice_visibility.getSelectedIndex(), choice_emphasis.getSelectedIndex(), pannelloText.getText());
+			return newTesto;
+		} else if (choice_type.getSelectedItem().equals(Immagine.IMAGETYPE)) {
+			Immagine newImage = new Immagine(name.getText(), category.getText(), choice_visibility.getSelectedIndex(), choice_emphasis.getSelectedIndex(), pannelloImage.getPath());
+			return newImage;
+		} else if (choice_type.getSelectedItem().equals(Link.LINKTYPE)) {
+			Link newLink = new Link(name.getText(), category.getText(), choice_visibility.getSelectedIndex(), choice_emphasis.getSelectedIndex(), pannelloLink.getPath(),
+					pannelloLink.getText());
+			return newLink;
+		} else if (choice_type.getSelectedItem().equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+			ComponenteAlternative compAlt = new ComponenteAlternative(name.getText(), category.getText(), choice_visibility.getSelectedIndex(), choice_emphasis.getSelectedIndex());
+			compAlt.setOpzioni(pannelloAlt.getOpzioni());
+			return compAlt;
+		} else if (choice_type.getSelectedItem().equals(
+				ComponenteComposto.COMPOSTOTYPE)) {
+			ComponenteComposto compComp = new ComponenteComposto(name.getText(), category.getText(), choice_visibility.getSelectedIndex(), choice_emphasis.getSelectedIndex());
+			compComp.setOpzioni(pannelloComp.getOpzioni());
+			return compComp;
+		}
+		return null;
+	}
+
+	protected Vector<Integer> getOriginalIndexes() {
+		if (choice_type.getSelectedItem().equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+			return pannelloAlt.getOriginalIndexes();
+		} else if (choice_type.getSelectedItem().equals(ComponenteComposto.COMPOSTOTYPE)) {
+			return pannelloComp.getOriginalIndexes();
+		}
+		return null;
+	}
+
+	protected Vector<Integer> getNewIndexes() {
+		if (choice_type.getSelectedItem().equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+			return pannelloAlt.getNewIndexes();
+		} else if (choice_type.getSelectedItem().equals(ComponenteComposto.COMPOSTOTYPE)) {
+			return pannelloComp.getNewIndexes();
+		}
+		return null;
+	}
+
+	// FIXME Disabilitare i tab non correnti o disabilitare solo quelli non
+	// ancora affrontati?
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals(BACKACTION)) {
+			// gestisco il bottone Back
+			tabbedPane.setEnabledAt(tabbedPane.getSelectedIndex() - 1, true);
+			tabbedPane.setEnabledAt(tabbedPane.getSelectedIndex(), false);
+			tabbedPane.setSelectedIndex(tabbedPane.getSelectedIndex() - 1);
+		} else if (e.getActionCommand().equals(NEXTACTION)) {
+			// gestisco il bottone Next
+			tabbedPane.setEnabledAt(tabbedPane.getSelectedIndex() + 1, true);
+			tabbedPane.setEnabledAt(tabbedPane.getSelectedIndex(), false);
+			tabbedPane.setSelectedIndex(tabbedPane.getSelectedIndex() + 1);
+			if ((tabbedPane.getSelectedIndex()) == 2) {
+				if (tipi[choice_type.getSelectedIndex()].equals(Testo.TEXTTYPE)) {
+					buildTextPanel();
+				} else if (tipi[choice_type.getSelectedIndex()].equals(Immagine.IMAGETYPE)) {
+					buildImagePanel();
+				} else if (tipi[choice_type.getSelectedIndex()].equals(Link.LINKTYPE)) {
+					buildLinkPanel();
+				} else if (tipi[choice_type.getSelectedIndex()].equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+					buildAlternativePanel();
+				} else if (tipi[choice_type.getSelectedIndex()].equals(ComponenteComposto.COMPOSTOTYPE)) {
+					buildCompositePanel();
 				}
 			}
-
-		@Override
-		public void changedUpdate(DocumentEvent e) {
-			updateComponent(e);
-			
-		}
-		
-		@Override
-		public void insertUpdate(DocumentEvent e) {
-			updateComponent(e);
-			
-		}
-
-		@Override
-		public void removeUpdate(DocumentEvent e) {
-			updateComponent(e);
-			
-		}
-
-		private void updateComponent(DocumentEvent e) {
-			if(textField_imagepath.getDocument()==e.getDocument()){
-				imageUpdate();
-			}
-			else if(name.getDocument()==e.getDocument() ){
-				Utils.redify(name,Utils.isBlank(name)||MainWindow.nameExistsAll(name.getText()));
-				manageTooltips(name, Utils.isBlank(name));
-				button_next_s1.setEnabled(!Utils.isBlank(name) && !MainWindow.nameExistsAll(name.getText()));
-				
-			}
-			else if(text.getDocument()==e.getDocument()){
-				Utils.redify(text,Utils.isBlank(text));
-				btnDone_text.setEnabled(!Utils.isBlank(text));
-				
-			}
-			else if(category.getDocument()==e.getDocument()){
-				Utils.redify(category,Utils.isBlank(category));
-				button_next_s2.setEnabled(!Utils.isBlank(category));
-			}
-			
-		}
-		
-
-
-		private void imageUpdate() {
-			updateImagePath();
-			Utils.redify(textField_imagepath,Utils.isBlank(textField_imagepath));
-			manageTooltips(textField_imagepath, Utils.isBlank(textField_imagepath));
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (e.getActionCommand().equals(NEXT1)){
-				tabbedPane.setSelectedIndex(1);
-			}
-			
-			else if (e.getActionCommand().equals(EXIT)){
-				fireEvent();
-				dispose();
-			}
-			
-			else if (e.getActionCommand().equals(NEXT2)){
-				nextAction();
-			}
-			
-			else if (e.getActionCommand().equals(BACK)){
-				tabbedPane.setSelectedIndex(0);
-			}
-
-			else if (e.getActionCommand().equals(DONE)){ //testo composite alternative
-
-				createAndDispose();
-			}
-			else if (e.getActionCommand().equals(BACK2)){
-				tabbedPane.setSelectedIndex(1);
-			}
-			else if (e.getActionCommand().equals(LOAD_TEXT)){
-				loadTextAction();
-			}
-			else if (e.getActionCommand().equals(DONE_LINK)){
-				//lnk= new Link(name.getText(), category.getText(), impo.getSelectedIndex(), emph.getSelectedIndex(),textField_url.getText(), textField_linktext.getText());
-				createAndDispose();
-			}
-
-			else if (e.getActionCommand().equals(DONE_IMG)){
-				//img = new Immagine(name.getText(), category.getText(), impo.getSelectedIndex(),emph.getSelectedIndex(), textField_imagepath.getText());
-				createAndDispose();
-			}
-			else if(e.getActionCommand().equals(LOAD_IMG)){
-				fcImage.showDialog();
-				fcImage.setJTFPath(textField_imagepath);
-				btnDone_Image.setEnabled(true);
-			}
-
-
-		}
-
-		private void createAndDispose() {
-			fireEvent(CREATENEWCOMP);
+		} else if (e.getActionCommand().equals(EXITACTION)) {
+			// gestisco il bottone EXIT
+			dispose();
+		} else if (e.getActionCommand().equals(DONEACTION)) {
+			// gestisco il bottone Done
+			returnValue = true;
 			dispose();
 		}
 
-		protected void loadTextAction() {
-			try {
-				//TODO escapare caratteri speciali
-				fcText.showDialog();
-
-				if (fcText.getFile() != null){
-					String letto = Wizard.readFile(fcText.getFile());
-					if ( letto!= null && letto.length()>0)
-						text.setText(letto);
-				}
-			} catch (IOException e1) {
-			}
+		if (!((tabbedPane.getSelectedIndex()) == 0)) {
+			setTitle(BASETITLE + " - " + name.getText() + " ["+ choice_type.getSelectedItem() + "]");
+		} else {
+			setTitle(BASETITLE);
 		}
+	}
 
-		protected void nextAction() {
-			if (choice_type.getSelectedItem().equals(tipi[0]))
-				tabbedPane.setSelectedIndex(2);
-			else if (choice_type.getSelectedItem().equals(tipi[2]))
-				tabbedPane.setSelectedIndex(3);
-			else if (choice_type.getSelectedItem().equals(tipi[1]))
-			    tabbedPane.setSelectedIndex(4);
-			else if (choice_type.getSelectedItem().equals(tipi[4])){ // composite
-				
-				panel_comp.setComponent(buildComposite());
-				tabbedPane.setSelectedIndex(5);
-			}
-			else if (choice_type.getSelectedItem().equals(tipi[3])){ //alternative
-				panel_alt.setComponent(buildAlternative());
-				tabbedPane.setSelectedIndex(6);
-				}
+	/*
+	 * TODO Verificare tutto quando c'� qui sottoTODOTODOTODOTODOTODOTODOTODO
+	 * TODO
+	 */
+	/*
+	 * protected ComponenteComposto buildComposite() { cmp = new
+	 * ComponenteComposto(name.getText(), category.getText(),
+	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex());
+	 * return cmp; }
+	 * 
+	 * protected ComponenteAlternative buildAlternative() { alt = new
+	 * ComponenteAlternative(name.getText(), category.getText(),
+	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex());
+	 * return alt; }
+	 * 
+	 * private void chooseFile(int chooserValue, JFileChooser fc, JTextField
+	 * target){ //TODO settare le cartelle di default if (chooserValue ==
+	 * JFileChooser.APPROVE_OPTION) {
+	 * target.setText(fc.getSelectedFile().getAbsolutePath()); }
+	 * 
+	 * }
+	 * 
+	 * private void chooseFile(int chooserValue, JFileChooser fc, JTextArea
+	 * target) throws IOException{ //TODO settare le cartelle di default if
+	 * (chooserValue == JFileChooser.APPROVE_OPTION) { File file =
+	 * fc.getSelectedFile(); String letta = readFile(file);
+	 * target.setText(letta);
+	 * 
+	 * }
+	 * 
+	 * }
+	 * 
+	 * public static String readFile (File file) throws IOException{ //FIXME se
+	 * si prova a leggere il file /dev/zero va in loop infinito (la console
+	 * continua a leggere e scrollare...) String letto = ""; FileReader reader =
+	 * new FileReader(file); while(true) { int x = reader.read(); // read
+	 * restituisce un intero che vale -1 se il file è finito if (x == -1)
+	 * break; char c = (char) x; letto = letto+c; System.out.println( letto+c);
+	 * } return letto; }
+	 * 
+	 * private ArrayList<MyEventClassListener> _listeners = new
+	 * ArrayList<MyEventClassListener>();
+	 * 
+	 * public synchronized void addEventListener(MyEventClassListener listener)
+	 * { _listeners.add(listener); } public synchronized void
+	 * removeEventListener(MyEventClassListener listener) {
+	 * _listeners.remove(listener); }
+	 * 
+	 * private synchronized void fireEvent() { MyEventClass event = new
+	 * MyEventClass(this); Iterator<MyEventClassListener> i =
+	 * _listeners.iterator(); while(i.hasNext()) { ((MyEventClassListener)
+	 * i.next()).handleMyEventClassEvent(event); } }
+	 * 
+	 * private void updateImagePath() {
+	 * 
+	 * if(focusedImg!= null) focusedImg.setPath(textField_imagepath.getText());
+	 * checkImagePath(); }
+	 * 
+	 * private boolean checkImagePath() {
+	 * if(isPathCorrect(textField_imagepath.getText())){
+	 * textField_imagepath.setToolTipText("Path of the image file");
+	 * btnDone_Image.setEnabled(true); return true; } else {
+	 * textField_imagepath.
+	 * setToolTipText("The file doesn't exist or is not readable");
+	 * btnDone_Image.setEnabled(false); } return false; }
+	 * 
+	 * private boolean isPathCorrect(String path){ File daControllare = new
+	 * File(path); if(daControllare.isFile() && daControllare.canRead()) return
+	 * true; return false; }
+	 * 
+	 * private synchronized void fireEvent(boolean onlyDispose) { MyEventClass
+	 * event = null; if (onlyDispose == CREATENEWCOMP) event = new
+	 * MyEventClass(this, buildNewComp()); Iterator<MyEventClassListener> i =
+	 * _listeners.iterator(); while(i.hasNext()) { ((MyEventClassListener)
+	 * i.next()).handleMyEventClassEvent(event); } }
+	 * 
+	 * protected Componente buildNewComp() { System.out.println("builder");
+	 * if(choice_type.getSelectedItem()==Testo.TEXTTYPE) return new
+	 * Testo(name.getText(), category.getText(),
+	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex(),
+	 * text.getText()); else
+	 * if(choice_type.getSelectedItem()==Immagine.IMAGETYPE) return new
+	 * Immagine(name.getText(), category.getText(),
+	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex(),
+	 * textField_imagepath.getText()); else
+	 * if(choice_type.getSelectedItem()==Link.LINKTYPE) return new
+	 * Link(name.getText(), category.getText(),
+	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex(),
+	 * textField_url.getText(), textField_url.getText()); else
+	 * if(choice_type.getSelectedItem()==ComponenteAlternative.ALTERNATIVETYPE){
+	 * 
+	 * return alt; } else {
+	 * 
+	 * return cmp; } }
+	 * 
+	 * private void manageTooltips(Component component, boolean b) { if
+	 * (component == textField_imagepath){ if(b)
+	 * textField_imagepath.setToolTipText(AddNew.URL_EMPTY); else
+	 * textField_imagepath.setToolTipText(AddNew.URL); } else if (component ==
+	 * name){ if(b) name.setToolTipText(AddNew.NAME_EMPTY); else
+	 * name.setToolTipText(AddNew.NAME); if
+	 * (MainWindow.nameExistsAll(name.getText()))
+	 * name.setToolTipText(AddNew.NAME_EXISTING); } }
+	 * 
+	 * @Override public void changedUpdate(DocumentEvent e) {
+	 * updateComponent(e);
+	 * 
+	 * }
+	 * 
+	 * @Override public void insertUpdate(DocumentEvent e) { updateComponent(e);
+	 * 
+	 * }
+	 * 
+	 * @Override public void removeUpdate(DocumentEvent e) { updateComponent(e);
+	 * 
+	 * }
+	 * 
+	 * private void updateComponent(DocumentEvent e) {
+	 * if(textField_imagepath.getDocument()==e.getDocument()){ imageUpdate(); }
+	 * else if(name.getDocument()==e.getDocument() ){
+	 * Utils.redify(name,Utils.isBlank
+	 * (name)||MainWindow.nameExistsAll(name.getText())); manageTooltips(name,
+	 * Utils.isBlank(name)); button_next_s1.setEnabled(!Utils.isBlank(name) &&
+	 * !MainWindow.nameExistsAll(name.getText()));
+	 * 
+	 * } else if(text.getDocument()==e.getDocument()){
+	 * Utils.redify(text,Utils.isBlank(text));
+	 * btnDone_text.setEnabled(!Utils.isBlank(text));
+	 * 
+	 * } else if(category.getDocument()==e.getDocument()){
+	 * Utils.redify(category,Utils.isBlank(category));
+	 * button_next_s2.setEnabled(!Utils.isBlank(category)); }
+	 * 
+	 * }
+	 * 
+	 * 
+	 * 
+	 * private void imageUpdate() { updateImagePath();
+	 * Utils.redify(textField_imagepath,Utils.isBlank(textField_imagepath));
+	 * manageTooltips(textField_imagepath, Utils.isBlank(textField_imagepath));
+	 * }
+	 * 
+	 * public void oldActionPerformed(ActionEvent e) { if
+	 * (e.getActionCommand().equals(NEXT1)){ tabbedPane.setSelectedIndex(1); }
+	 * 
+	 * else if (e.getActionCommand().equals(EXIT)){ fireEvent(); dispose(); }
+	 * 
+	 * else if (e.getActionCommand().equals(NEXT2)){ nextAction(); }
+	 * 
+	 * else if (e.getActionCommand().equals(BACK)){
+	 * tabbedPane.setSelectedIndex(0); }
+	 * 
+	 * else if (e.getActionCommand().equals(DONE)){ //testo composite
+	 * alternative
+	 * 
+	 * createAndDispose(); } else if (e.getActionCommand().equals(BACK2)){
+	 * tabbedPane.setSelectedIndex(1); } else if
+	 * (e.getActionCommand().equals(LOAD_TEXT)){ loadTextAction(); } else if
+	 * (e.getActionCommand().equals(DONE_LINK)){ //lnk= new Link(name.getText(),
+	 * category.getText(), impo.getSelectedIndex(),
+	 * emph.getSelectedIndex(),textField_url.getText(),
+	 * textField_linktext.getText()); createAndDispose(); }
+	 * 
+	 * else if (e.getActionCommand().equals(DONE_IMG)){ //img = new
+	 * Immagine(name.getText(), category.getText(),
+	 * impo.getSelectedIndex(),emph.getSelectedIndex(),
+	 * textField_imagepath.getText()); createAndDispose(); } else
+	 * if(e.getActionCommand().equals(LOAD_IMG)){ /*fcImage.showDialog();
+	 * fcImage.setJTFPath(textField_imagepath); btnDone_Image.setEnabled(true);
+	 * }
+	 * 
+	 * 
+	 * }
+	 * 
+	 * private void createAndDispose() { fireEvent(CREATENEWCOMP); dispose(); }
+	 * 
+	 * protected void loadTextAction() { try { //TODO escapare caratteri
+	 * speciali fcText.showDialog();
+	 * 
+	 * if (fcText.getFile() != null){ String letto =
+	 * Wizard.readFile(fcText.getFile()); if ( letto!= null && letto.length()>0)
+	 * text.setText(letto); } } catch (IOException e1) { } }
+	 * 
+	 * protected void nextAction() { if
+	 * (choice_type.getSelectedItem().equals(tipi[0]))
+	 * tabbedPane.setSelectedIndex(2); else if
+	 * (choice_type.getSelectedItem().equals(tipi[2]))
+	 * tabbedPane.setSelectedIndex(3); else if
+	 * (choice_type.getSelectedItem().equals(tipi[1]))
+	 * tabbedPane.setSelectedIndex(4); else if
+	 * (choice_type.getSelectedItem().equals(tipi[4])){ // composite
+	 * 
+	 * panel_comp.setComponent(buildComposite());
+	 * tabbedPane.setSelectedIndex(5); } else if
+	 * (choice_type.getSelectedItem().equals(tipi[3])){ //alternative
+	 * panel_alt.setComponent(buildAlternative());
+	 * tabbedPane.setSelectedIndex(6); }
+	 * 
+	 * }
+	 * 
+	 * void manageDoneButton(boolean enable){ if
+	 * (choice_type.getSelectedItem().equals(tipi[3]))
+	 * button_doneAlt.setEnabled(enable);
+	 * 
+	 * else if (choice_type.getSelectedItem().equals(tipi[4]))
+	 * button_doneComp.setEnabled(enable);
+	 * 
+	 * }
+	 * 
+	 * public static boolean nameExistsAll(String s){ return
+	 * MainWindow.nameExistsAll(s)|| s.equals(name.getText());
+	 * 
+	 * }
+	 */
 
-		}
-
-		private void addNodeAddingListener(JButton button)	{
-			button.addFocusListener(new FocusListener()	{
-
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				addAction.putValue("Componente", buildNewComp());
-				addAction.putValue("ParentIndex", -1);
-			}
-
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				// non mi serve
-			}
-			
-			});
-			button.addActionListener(addAction);
-		}
-		
-		void manageDoneButton(boolean enable){
-			 if (choice_type.getSelectedItem().equals(tipi[3]))
-				 button_doneAlt.setEnabled(enable);
-
-			 else if (choice_type.getSelectedItem().equals(tipi[4]))
-				 button_doneComp.setEnabled(enable);
-				 
-		}
-		
-		public static boolean nameExistsAll(String s){
-			return MainWindow.nameExistsAll(s)|| s.equals(name.getText());
-			
-		}
-		
-		
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

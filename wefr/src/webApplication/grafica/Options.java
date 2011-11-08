@@ -1,12 +1,14 @@
 package webApplication.grafica;
 
-import java.awt.EventQueue;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -14,257 +16,215 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
 
-public class Options extends JDialog implements ActionListener{
-
-	private static final String TITLE = " Default directories ";
-
-	private static final String BROWSE = "Browse";
-
-	private static final String PATH_IMAGE = "Path of the image file";
-
-	private static final String DONE = "Done";
-
-	private static final String LOAD_SAVE_LBL = "Load and save:";
-
-	private static final String TEXT_LBL = "Text files:";
-
-	private static final String IMAGES = "Images:";
+public class Options extends JDialog implements ActionListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4742226718972158722L;
 
-	private static final String OPTIONS = "Options";
+	private static final String FRAMETITLE = "Options";
+	private static final String PANELTITLE = " Root directories for...";
 
-	private static final String DONE_ACT = "done";
+	private static final String BROWSE = "Browse";
+	private static final String DONE = "Save";
+	private static final String RESET = "Restore Defaults";
+	private static final String RESETTOOLTIP = "Resets all the path to the default values";
+	private static final String CANCEL = "Cancel";
+	private static final String PATH_IMAGE = "Enter the path where you usually keep your image files";
+	private static final String PATH_TEXT = "Enter the path where you usually keep your text files";
+	private static final String PATH_LOSA = "Enter the path where you usually keep your EUD-Mamba saved projects";
+	private static final String LOAD_SAVE_LBL = "Saved projects:";
+	private static final String TEXT_LBL = "Text files:";
+	private static final String IMAGES = "Image files:";
 
-	private static final String LOAD_ACT = "load";
+	private static final String RESET_ACT = "Reset";
+	private static final String CANCEL_ACT = "Cancel";
+	private static final String DONE_ACT = "Done_options";
+	private static final String LOAD_ACT = "load_options";
+	private static final String TEXT_ACT = "txt_act_options";
+	private static final String IMAGE_ACT = "img_options";
 
-	private static final String TEXT_ACT = "txt_act";
+	private static final String APPROVEBUTTONTEXT = "Select";
 
-	private static final String IMAGE_ACT = "img";
-	
 	private JPanel contentPane;
+	private JPanel panel_dirs;
 	private JTextField textField_defImgDir;
 	private JTextField textField_defTxtDir;
 	private JTextField textField_defSaveLoadDir;
-	//private String[] defaultDirectories= {"","",""};
-	private String defDirImage;
-	private String defDirText;
-	private String defDirLoadSave;
-	private JPanel panel_dirs;
-	
-	private CustomFCOptions fc = new CustomFCOptions(null, this);
-	
-	 private ArrayList<MyEventClassListener> _listeners = new ArrayList<MyEventClassListener>();
-	
-	 public synchronized void addEventListener(MyEventClassListener listener)  {
-		 _listeners.add(listener);
-	 }
-	 public synchronized void removeEventListener(MyEventClassListener listener)   {
-		 _listeners.remove(listener);
-	 }
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Options frame = new Options();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
-	public Options() {
+	public Options(JFrame owner) {
+		super(owner, ModalityType.APPLICATION_MODAL);
+
 		buildJDialog();
-		
+
+		// centra la finestra
+		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+		int w = getWidth();
+		int h = getHeight();
+		setLocation((screenDim.width - w) / 2, (screenDim.height - h) / 2);
+
 		buildFieldImage();
-		
+
 		buildFieldText();
-		
+
 		buildFieldSaveLoad();
-		
+
 		buildLabels();
-		
-		buildButtonDone();
-		
-		
+
+		buildButtons();
+
+		setVisible(true);
 	}
+
 	private void buildJDialog() {
 		setResizable(false);
-		setTitle(OPTIONS);
+		setTitle(FRAMETITLE);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 365);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		
+
 		panel_dirs = new JPanel();
-		panel_dirs.setBorder(new TitledBorder(null, TITLE, TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_dirs.setBounds(12, 0, 424, 218);
-		contentPane.add(panel_dirs);
+		panel_dirs.setBorder(new TitledBorder(null, PANELTITLE,
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_dirs.setBounds(11, 12, 424, 270);
 		panel_dirs.setLayout(null);
-		this.setModalityType(ModalityType.APPLICATION_MODAL);
+		contentPane.add(panel_dirs);
 	}
+
+	private void buildFieldImage() {
+		textField_defImgDir = new JTextField(MainWindow.defImageDir);
+		textField_defImgDir.setToolTipText(PATH_IMAGE);
+		textField_defImgDir.setBounds(15, 45, 292, 22);
+		panel_dirs.add(textField_defImgDir);
+
+		JButton btnBrowseDir = new JButton(BROWSE);
+		btnBrowseDir.addActionListener(this);
+		btnBrowseDir.setActionCommand(IMAGE_ACT);
+
+		btnBrowseDir.setBounds(324, 42, 89, 29);
+		panel_dirs.add(btnBrowseDir);
+	}
+
+	private void buildFieldText() {
+		textField_defTxtDir = new JTextField(MainWindow.defTextDir);
+		textField_defTxtDir.setToolTipText(PATH_TEXT);
+		textField_defTxtDir.setBounds(15, 110, 292, 22);
+		panel_dirs.add(textField_defTxtDir);
+		JButton btnBrowseDir_1 = new JButton(BROWSE);
+		btnBrowseDir_1.addActionListener(this);
+		btnBrowseDir_1.setActionCommand(TEXT_ACT);
+		btnBrowseDir_1.setBounds(324, 107, 89, 29);
+		panel_dirs.add(btnBrowseDir_1);
+	}
+
+	private void buildFieldSaveLoad() {
+		textField_defSaveLoadDir = new JTextField(MainWindow.defSLDir);
+		textField_defSaveLoadDir.setToolTipText(PATH_LOSA);
+		textField_defSaveLoadDir.setBounds(15, 178, 292, 22);
+		panel_dirs.add(textField_defSaveLoadDir);
+
+		JButton btnBrowseDir_2 = new JButton(BROWSE);
+		btnBrowseDir_2.addActionListener(this);
+		btnBrowseDir_2.setActionCommand(LOAD_ACT);
+
+		btnBrowseDir_2.setBounds(324, 175, 89, 29);
+		panel_dirs.add(btnBrowseDir_2);
+	}
+
 	private void buildLabels() {
 		JLabel lblImageDirectory = new JLabel(IMAGES);
 		lblImageDirectory.setBounds(15, 22, 131, 15);
 		panel_dirs.add(lblImageDirectory);
-		
+
 		JLabel lblTextFileDirectory = new JLabel(TEXT_LBL);
 		lblTextFileDirectory.setBounds(15, 87, 131, 15);
 		panel_dirs.add(lblTextFileDirectory);
-		
+
 		JLabel lblLoadAndSave = new JLabel(LOAD_SAVE_LBL);
 		lblLoadAndSave.setBounds(15, 155, 131, 15);
 		panel_dirs.add(lblLoadAndSave);
 	}
-	
-	private void buildButtonDone() {
-		JButton btnDone = new JButton("Done");
+
+	private void buildButtons() {
+		JButton btnReset = new JButton(RESET);
+		btnReset.addActionListener(this);
+		btnReset.setToolTipText(RESETTOOLTIP);
+		btnReset.setActionCommand(RESET_ACT);
+		btnReset.setBounds(15, 223, 130, 29);
+		panel_dirs.add(btnReset);
+
+		JButton btnCancel = new JButton(CANCEL);
+		btnCancel.addActionListener(this);
+		btnCancel.setActionCommand(CANCEL_ACT);
+		btnCancel.setBounds(235, 294, 89, 29);
+		contentPane.add(btnCancel);
+
+		JButton btnDone = new JButton(DONE);
 		boldify(btnDone);
 		btnDone.addActionListener(this);
 		btnDone.setActionCommand(DONE_ACT);
-		
-		btnDone.setBounds(347, 230, 89, 29);
+		btnDone.setBounds(344, 294, 89, 29);
 		contentPane.add(btnDone);
 	}
-	
-	private void buildFieldSaveLoad() {
-		textField_defSaveLoadDir = new JTextField();
-		textField_defSaveLoadDir.setEnabled(false);
-		textField_defSaveLoadDir.setToolTipText(PATH_IMAGE);
-		textField_defSaveLoadDir.setBounds(15, 178, 292, 22);
-		panel_dirs.add(textField_defSaveLoadDir);
-		
-		JButton btnBrowseDir_2 = new JButton(BROWSE);
-		btnBrowseDir_2.addActionListener(this);
-		btnBrowseDir_2.setActionCommand(LOAD_ACT);
-		
-		btnBrowseDir_2.setBounds(324, 175, 89, 29);
-		panel_dirs.add(btnBrowseDir_2);
-	}
-	
-	private void buildFieldText() {
-		textField_defTxtDir = new JTextField();
-		textField_defTxtDir.setEnabled(false);
-		textField_defTxtDir.setToolTipText(PATH_IMAGE);
-		textField_defTxtDir.setBounds(15, 110, 292, 22);
-		panel_dirs.add(textField_defTxtDir);
-		
-		JButton btnBrowseDir_1 = new JButton(BROWSE);
-		btnBrowseDir_1.addActionListener(this);
-		btnBrowseDir_1.setActionCommand(TEXT_ACT);
-		
-		btnBrowseDir_1.setBounds(324, 107, 89, 29);
-		panel_dirs.add(btnBrowseDir_1);
-	}
-	private void buildFieldImage() {
-		textField_defImgDir = new JTextField();
-		textField_defImgDir.setEnabled(false);
-		textField_defImgDir.setToolTipText("");
-		textField_defImgDir.setBounds(15, 45, 292, 22);
-		panel_dirs.add(textField_defImgDir);
-		
-		JButton btnBrowseDir = new JButton(BROWSE);
-		btnBrowseDir.addActionListener(this);
-		btnBrowseDir.setActionCommand(IMAGE_ACT);
-		
-		btnBrowseDir.setBounds(324, 42, 89, 29);
-		panel_dirs.add(btnBrowseDir);
-	}
-	
-	public String getDefDirImage(){
-		return defDirImage;
-	}
-	public String getDefDirText(){
-		return defDirText;
-	}
-	public String getDefDirLoadSave(){
-		return defDirLoadSave;
-	}
-	
-	
-	private void chooseFile(JTextField target, int dir){
-		fc.showDialog();
-		if (fc.getFilePath().length()>0){
-			if (dir == 0)
-				defDirImage =fc.getFilePath();
-			else if (dir == 1)
-				defDirText =fc.getFilePath();
-			else
-				defDirLoadSave = fc.getFilePath();
-			target.setText(fc.getFilePath());
-		}
-	}	
-	private synchronized void fireEvent() {	
-		MyEventClass event = new MyEventClass(this);
-		Iterator<MyEventClassListener> i = _listeners.iterator();
-		while(i.hasNext())  {
-			((MyEventClassListener) i.next()).handleMyEventClassEvent(event);
-		}
-	}
-	
-	public void windowLostFocus(WindowEvent evt) {
-		System.out.println("focus lost options");
-		requestFocusInWindow();
-		}
-	
-	private int closeOperation()	{
-		fireEvent();
-		setVisible(false);
-		dispose();
-		return 0;
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if(arg0.getActionCommand()==DONE_ACT)
-			closeOperation();
-		else if(arg0.getActionCommand()==LOAD_ACT)
-			chooseFile(textField_defSaveLoadDir, 2);
-		else if(arg0.getActionCommand()==TEXT_ACT)
-			chooseFile(textField_defTxtDir,1);
-		else if(arg0.getActionCommand()==IMAGE_ACT)
-			chooseFile(textField_defImgDir,0);
-	}
-	
-	protected String getImagePath(){
-		if(textField_defImgDir.getText().length()>0)
-			return textField_defImgDir.getText();
-		else return "";
-	}
-	
-	protected String getTextPath(){
-		if(textField_defTxtDir.getText().length()>0)
-			return textField_defTxtDir.getText();
-		else return "";
-	}
-	protected String getLoadSavePath(){
-		if(textField_defSaveLoadDir.getText().length()>0)
-			return textField_defSaveLoadDir.getText();
-		else return "";
-	}
-	
+
 	private void boldify(JButton button) {
 		Font newButtonFont = new Font(button.getFont().getName(), Font.BOLD, button.getFont().getSize() + 2);
 		button.setFont(newButtonFont);
 	}
-	
+
+	private void resetToDefault() {
+		textField_defImgDir.setText(MainWindow.DEFAULTVALUE);
+		textField_defTxtDir.setText(MainWindow.DEFAULTVALUE);
+		textField_defSaveLoadDir.setText(MainWindow.DEFAULTVALUE);
+	}
+
+	private void doneOperation() {
+		MainWindow.defImageDir = textField_defImgDir.getText();
+		MainWindow.defTextDir = textField_defTxtDir.getText();
+		MainWindow.defSLDir = textField_defSaveLoadDir.getText();
+		dispose();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals(RESET_ACT)) {
+			resetToDefault();
+		} else if (e.getActionCommand().equals(CANCEL_ACT)) {
+			dispose();
+		} else if (e.getActionCommand().equals(DONE_ACT)) {
+			doneOperation();
+		} else {
+			if (e.getActionCommand().equals(LOAD_ACT)) {
+				JFileChooser fc = new JFileChooser(MainWindow.defSLDir);
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int choice = fc.showDialog(this, APPROVEBUTTONTEXT);
+				if (choice == JFileChooser.APPROVE_OPTION) {
+					textField_defSaveLoadDir.setText(fc.getSelectedFile().getPath());
+				}
+			} else if (e.getActionCommand().equals(TEXT_ACT)) {
+				JFileChooser fc = new JFileChooser(MainWindow.defTextDir);
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int choice = fc.showDialog(this, APPROVEBUTTONTEXT);
+				if (choice == JFileChooser.APPROVE_OPTION) {
+					textField_defTxtDir.setText(fc.getSelectedFile().getPath());
+				}
+			} else if (e.getActionCommand().equals(IMAGE_ACT)) {
+				JFileChooser fc = new JFileChooser(MainWindow.defImageDir);
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int choice = fc.showDialog(this, APPROVEBUTTONTEXT);
+				if (choice == JFileChooser.APPROVE_OPTION) {
+					textField_defImgDir.setText(fc.getSelectedFile().getPath());
+				}
+			}
+		}
+	}
+
 }

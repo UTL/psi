@@ -104,14 +104,17 @@ public class Pagina implements Serializable {
 					.equals("webApplication.business.ComponenteAlternative")) {
 				for (int j = 0; j < ((ComponenteAlternative) moduli.get(i))
 						.getOpzioni().size(); j++) { // scorre tutte le
-															// sottoalternative
-															// dei moduli di
-															// tipo
-															// ComponenteAlternativo
-					if ((((ComponenteAlternative) moduli.get(i))
-							.getOpzioni().get(j).getNome()).equals(c
-							.getNome())) { // controlla l'univocità del nome
-											// nelle sottoAlternative
+														// sottoalternative
+														// dei moduli di
+														// tipo
+														// ComponenteAlternativo
+					if ((((ComponenteAlternative) moduli.get(i)).getOpzioni()
+							.get(j).getNome()).equals(c.getNome())) { // controlla
+																		// l'univocità
+																		// del
+																		// nome
+																		// nelle
+																		// sottoAlternative
 						unico = false;
 					}// if
 				}// for
@@ -158,17 +161,17 @@ public class Pagina implements Serializable {
 					.equals("webApplication.business.ComponenteAlternative")) {
 				for (int j = 0; j < ((ComponenteAlternative) moduli.get(i))
 						.getOpzioni().size(); j++) { // scorre tutte le
-															// sottoalternative
-															// dei moduli di
-															// tipo
-															// ComponenteAlternativo
-					if ((((ComponenteAlternative) moduli.get(i))
-							.getOpzioni().get(j).getNome()).equals(nome)) { // controlla
-																				// l'univocità
-																				// del
-																				// nome
-																				// nelle
-																				// sottoAlternative
+														// sottoalternative
+														// dei moduli di
+														// tipo
+														// ComponenteAlternativo
+					if ((((ComponenteAlternative) moduli.get(i)).getOpzioni()
+							.get(j).getNome()).equals(nome)) { // controlla
+																// l'univocità
+																// del
+																// nome
+																// nelle
+																// sottoAlternative
 						unico = false;
 					}// if
 				}// for
@@ -324,8 +327,8 @@ public class Pagina implements Serializable {
 
 						} else { // se ho altri sottocomponenti tolgo solo
 									// quello desiderato
-							((ComponenteComposto) moduli.get(i))
-									.getOpzioni().remove(j);
+							((ComponenteComposto) moduli.get(i)).getOpzioni()
+									.remove(j);
 
 						}
 					}// if
@@ -409,8 +412,8 @@ public class Pagina implements Serializable {
 						.equals("webApplication.business.ComponenteAlternative")) {
 					for (int j = 0; j < ((ComponenteAlternative) moduli.get(i))
 							.getOpzioni().size(); j++) { // ricerca tra le
-																// varie
-																// sottoAlternative
+															// varie
+															// sottoAlternative
 						if ((((ComponenteAlternative) moduli.get(i))
 								.getOpzioni().get(j).getNome()).equals(n)) {
 							cancellato = true;
