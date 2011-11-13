@@ -16,7 +16,6 @@ public class DisabledNode extends DefaultMutableTreeNode {
 	private boolean enabled;
 	private List<Problem> errors;
 	//TODO vettore degli errori presenti nel nodo->usi futuri
-//	private Vector errors;
 
 	public DisabledNode(Object obj) {
 		super(obj);

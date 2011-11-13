@@ -1,23 +1,11 @@
 package webApplication.grafica;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,8 +14,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -42,18 +28,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
@@ -338,185 +319,6 @@ public class MainWindow extends JFrame /*
 		contentPane.add(albero);
 	}
 
-	private static void popolaProperties(Testo selected) {
-		// genProperties.setGenerici(selected, "Text");
-		// editorPane_text.setText(selected.getTesto());
-		//
-		// setContentLayout(PANEL_TXT);
-	}
-
-	private static void popolaProperties(Immagine selected) {
-		// genProperties.setGenerici(selected, "Image");
-		// textField_imagepath.setText(selected.getPath());
-		//
-		// setContentLayout(PANEL_IMG);
-
-	}
-
-	private static void popolaProperties(Link selected) {
-		/*
-		 * genProperties.setGenerici(selected,"Link");
-		 * textField_url.setText(selected.getUri());
-		 * 
-		 * textField_linktext.setText(selected.getTesto());
-		 * 
-		 * setContentLayout(PANEL_LNK);
-		 */
-	}
-
-	private static void popolaProperties(ComponenteAlternative selected) {
-		/*
-		 * genProperties.setGenerici(selected, "Alternative");
-		 * 
-		 * //pannello_alterplus.setComponent(selected);
-		 * setContentLayout(PANEL_ALT);
-		 */
-
-	}
-
-	private static void popolaProperties(ComponenteComposto selected) {
-
-		/*
-		 * pannello_comp.setComponent(selected);
-		 * 
-		 * genProperties.setGenerici(selected,"Composite");
-		 * 
-		 * setContentLayout(PANEL_CMP);
-		 */
-
-	}
-
-	public static void setContentLayout(String panel) {
-		/*
-		 * CardLayout cl = (CardLayout)(content_panel.getLayout());
-		 * cl.show(content_panel, panel);
-		 */
-	}
-
-	// metodo per togliere il focus all'oggetto precedente
-	private static void unFocus() {
-		/*
-		 * focused = null; focusedTxt = null; focusedImg = null; focusedLnk =
-		 * null;
-		 */
-	}
-
-	public static void setFocus(Componente selected) {
-		/*
-		 * genProperties.removeListeners();
-		 * //genProperties.textField_Name.getDocument
-		 * ().removeDocumentListener(eventDispatcher); showProperties(); if
-		 * (selected.getType().equals(Testo.TEXTTYPE))
-		 * setFocus((Testo)selected); else if
-		 * (selected.getType().equals(Immagine.IMAGETYPE))
-		 * setFocus((Immagine)selected); else if
-		 * (selected.getType().equals(ComponenteComposto.COMPOSTOTYPE))
-		 * setFocus((ComponenteComposto)selected); else if
-		 * (selected.getType().equals(ComponenteAlternative.ALTERNATIVETYPE))
-		 * setFocus((ComponenteAlternative)selected); else if
-		 * (selected.getType().equals(Link.LINKTYPE)) setFocus((Link)selected);
-		 * genProperties.addListeners();
-		 * //genProperties.textField_Name.getDocument
-		 * ().addDocumentListener(eventDispatcher);
-		 */
-	}
-
-	protected static void showProperties() {
-		/*
-		 * if(albero.getTree().isSelectionEmpty()){
-		 * contentPane.remove(properties); setEmptyProperties();
-		 * contentPane.repaint(); } else { contentPane.remove(empty_properties);
-		 * contentPane.add(properties); contentPane.repaint(); }
-		 */
-	}
-
-	private static void setEmptyProperties() {
-		/*
-		 * if(albero.getComponenti().size() == 0) empty_select.setBorder(new
-		 * TitledBorder(new LineBorder(new Color(204, 204, 204), 0, true),
-		 * "              No elements to show", TitledBorder.LEADING,
-		 * TitledBorder.TOP, null, new Color(153, 153, 153))); else
-		 * empty_select.setBorder(new TitledBorder(new LineBorder(new Color(204,
-		 * 204, 204), 0, true), "Select an element to show its properties",
-		 * TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153,
-		 * 153)));
-		 * 
-		 * contentPane.add(empty_properties);
-		 */
-	}
-
-	private static void setFocus(Immagine selected) {
-		// unFocus();
-		// focusedImg = selected;
-		// setFocusGeneric(selected);
-		// popolaProperties(selected);
-
-	}
-
-	private static void setFocus(Testo selected) {
-		// unFocus();
-		// focusedTxt = selected;
-		// setFocusGeneric(selected);
-		// popolaProperties(selected);
-
-	}
-
-	private static void setFocus(Link selected) {
-		// unFocus();
-		// focusedLnk = selected;
-		// setFocusGeneric(selected);
-		// popolaProperties(selected);
-
-	}
-
-	private static void setFocus(ComponenteComposto selected) {
-		// unFocus();
-		// setFocusGeneric(selected);
-		// popolaProperties(selected);
-
-	}
-
-	private static void setFocus(ComponenteAlternative selected) {
-		// unFocus();
-		// setFocusGeneric(selected);
-		// popolaProperties(selected);
-
-	}
-
-	private static void setFocusGeneric(Componente comp) {
-		// focused = comp;
-	}
-
-	private void updateTextContent() {
-		// if (focusedTxt != null)
-		// focusedTxt.setTesto(editorPane_text.getText());
-	}
-
-	private boolean isUrlCorrect(String text) {
-		// //TODO serve una regex per controllare le url!
-		// Matcher urlMatcher = URL_PATTERN.matcher(text);
-		// if (!urlMatcher.matches()){
-		// return false;}
-		return true;
-	}
-
-	public static boolean isPathCorrect(String path) {
-		// //TODO fare prove con files e dir verificare che funzioni
-		// File daControllare = new File(path);
-		// if(daControllare.isFile() && daControllare.canRead())
-		// return true;
-		// return false;
-		// //textField_imagepath.setToolTipText("The file doesn't exist or is not readable");
-		// //textField_imagepath.setToolTipText("Path of the image file");
-		return true;
-	}
-
-	private void boldify(JButton button) {
-		// Font newButtonFont = new Font(button.getFont().getName(), Font.ITALIC
-		// + Font.BOLD, button.getFont().getSize() + 1);
-		// button.setFont(newButtonFont);
-	}
-
 	/**
 	 * Attiva/Disattiva la funzionalita Undo
 	 * 
@@ -606,8 +408,7 @@ public class MainWindow extends JFrame /*
 				path = path + "." + EUDFileFilter.EXTENSION;
 			}
 			try {
-				ObjectOutputStream outStream = new ObjectOutputStream(
-						new FileOutputStream(path));
+				ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(path));
 				outStream.writeObject(albero.getComponenti());
 				outStream.close();
 				setTitle(JFRAMETITLE + file.getName().substring(0, file.getName().lastIndexOf(".")));
@@ -627,30 +428,17 @@ public class MainWindow extends JFrame /*
 		int choice = fc.showOpenDialog(null);
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			try {
-				ObjectInputStream inStream = new ObjectInputStream(
-						new FileInputStream(fc.getSelectedFile()));
+				ObjectInputStream inStream = new ObjectInputStream(new FileInputStream(fc.getSelectedFile()));
 				Vector<Componente> temp = (Vector<Componente>) inStream.readObject();
-				setTitle(JFRAMETITLE
-						+ fc.getSelectedFile()
-								.getName()
-								.substring(
-										0,
-										fc.getSelectedFile().getName()
-												.lastIndexOf(".")));
+				setTitle(JFRAMETITLE + fc.getSelectedFile().getName().substring(0, fc.getSelectedFile().getName().lastIndexOf(".")));
 				initProjNum = 1;
+				//TODO caricare gli elementi del file
 			} catch (FileNotFoundException e) {
-				JOptionPane.showMessageDialog(this, "File "
-						+ fc.getSelectedFile().getName() + " not found",
-						"Unexpected error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "File " + fc.getSelectedFile().getName() + " not found", "Unexpected error", JOptionPane.ERROR_MESSAGE);
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(this, "The file \""
-						+ fc.getSelectedFile().getName()
-						+ "\"\n isn't a EUDMamba project or it is corrupted",
-						"Error loading data", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "The file \"" + fc.getSelectedFile().getName() + "\"\n isn't a EUDMamba project or it is corrupted", "Error loading data", JOptionPane.ERROR_MESSAGE);
 			} catch (ClassNotFoundException e) {
-				JOptionPane.showMessageDialog(this, "Error in reading file \""
-						+ fc.getSelectedFile().getName() + "\"\n",
-						"Error loading data", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Error in reading file \"" + fc.getSelectedFile().getName() + "\"\n", "Error loading data", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -792,8 +580,7 @@ public class MainWindow extends JFrame /*
 
 			mntmNew = new JMenuItem(NEW);
 			mntmNew.setActionCommand(TreePanel.NewAction.NEWCOMMAND);
-			mntmNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
-					InputEvent.CTRL_MASK));
+			mntmNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
 			mntmNew.addActionListener(eventDispatcher);
 			menuFile.add(mntmNew);
 
@@ -804,8 +591,7 @@ public class MainWindow extends JFrame /*
 
 			mntmSave = new JMenuItem(SAVE);
 			mntmSave.setActionCommand(MainWindow.SAVECOMMAND);
-			mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-					InputEvent.CTRL_MASK));
+			mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 			mntmSave.addActionListener(eventDispatcher);
 			menuFile.add(mntmSave);
 
@@ -813,8 +599,7 @@ public class MainWindow extends JFrame /*
 
 			mntmOptions = new JMenuItem(OPTIONS);
 			mntmOptions.setActionCommand(OPTIONSCOMMAND);
-			mntmOptions.setAccelerator(KeyStroke.getKeyStroke(
-					KeyEvent.VK_ENTER, InputEvent.ALT_MASK));
+			mntmOptions.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.ALT_MASK));
 			mntmOptions.addActionListener(eventDispatcher);
 			menuFile.add(mntmOptions);
 
@@ -830,16 +615,14 @@ public class MainWindow extends JFrame /*
 			add(mnEdit);
 
 			mntmUndo = new JMenuItem(UNDO);
-			mntmUndo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
-					InputEvent.CTRL_MASK));
+			mntmUndo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
 			mntmUndo.setActionCommand(TreePanel.UndoAction.UNDOCOMMAND);
 			mntmUndo.addActionListener(eventDispatcher);
 			mntmUndo.setEnabled(false);
 			mnEdit.add(mntmUndo);
 
 			mntmRedo = new JMenuItem(REDO);
-			mntmRedo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-					InputEvent.CTRL_MASK));
+			mntmRedo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK));
 			mntmRedo.setActionCommand(TreePanel.RedoAction.REDOCOMMAND);
 			mntmRedo.addActionListener(eventDispatcher);
 			mntmRedo.setEnabled(false);
@@ -848,28 +631,22 @@ public class MainWindow extends JFrame /*
 			mnEdit.add(new JSeparator());
 
 			mntmCut = new JMenuItem(CUT);
-			mntmCut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-					InputEvent.CTRL_MASK));
-			mntmCut.setActionCommand((String) TransferHandler.getCutAction()
-					.getValue(Action.NAME));
+			mntmCut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
+			mntmCut.setActionCommand((String) TransferHandler.getCutAction().getValue(Action.NAME));
 			mntmCut.addActionListener(eventDispatcher);
 			mntmCut.setEnabled(false);
 			mnEdit.add(mntmCut);
 
 			mntmCopy = new JMenuItem(COPY);
-			mntmCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-					InputEvent.CTRL_MASK));
-			mntmCopy.setActionCommand((String) TransferHandler.getCopyAction()
-					.getValue(Action.NAME));
+			mntmCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
+			mntmCopy.setActionCommand((String) TransferHandler.getCopyAction().getValue(Action.NAME));
 			mntmCopy.addActionListener(eventDispatcher);
 			mntmCopy.setEnabled(false);
 			mnEdit.add(mntmCopy);
 
 			mntmPaste = new JMenuItem(PASTE);
-			mntmPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-					InputEvent.CTRL_MASK));
-			mntmPaste.setActionCommand((String) TransferHandler
-					.getPasteAction().getValue(Action.NAME));
+			mntmPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK));
+			mntmPaste.setActionCommand((String) TransferHandler.getPasteAction().getValue(Action.NAME));
 			mntmPaste.addActionListener(eventDispatcher);
 			mntmPaste.setEnabled(false);
 			mnEdit.add(mntmPaste);
@@ -882,8 +659,7 @@ public class MainWindow extends JFrame /*
 			mnEdit.add(mntmAdd);
 
 			mntmDel = new JMenuItem(DELETE);
-			mntmDel.setAccelerator(KeyStroke
-					.getKeyStroke(KeyEvent.VK_DELETE, 0));
+			mntmDel.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 			mntmDel.setActionCommand(TreePanel.RemoveAction.REMOVECOMMAND);
 			mntmDel.addActionListener(eventDispatcher);
 			mntmDel.setEnabled(false);
@@ -901,8 +677,7 @@ public class MainWindow extends JFrame /*
 
 		private ButtonsBar() {
 			setBounds(5, 0, 710, 37);
-			setBorder(new TitledBorder(null, "", TitledBorder.LEADING,
-					TitledBorder.TOP, null, null));
+			setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			setLayout(null);
 
 			Icon enabledIcon = new ImageIcon(BASEPATH + NEWICON);
@@ -958,8 +733,7 @@ public class MainWindow extends JFrame /*
 			btnCopy.setEnabled(false);
 			btnCopy.setToolTipText("Copy");
 			btnCopy.setBounds(195, 4, 30, 30);
-			btnCopy.setActionCommand((String) TransferHandler.getCopyAction()
-					.getValue(Action.NAME));
+			btnCopy.setActionCommand((String) TransferHandler.getCopyAction().getValue(Action.NAME));
 			btnCopy.addActionListener(eventDispatcher);
 			add(btnCopy);
 
@@ -967,8 +741,7 @@ public class MainWindow extends JFrame /*
 			disabledIcon = new ImageIcon(BASEPATH + DISCUTICON);
 			btnCut = new JButton(enabledIcon);
 			btnCut.setDisabledIcon(disabledIcon);
-			btnCut.setActionCommand((String) TransferHandler.getCutAction()
-					.getValue(Action.NAME));
+			btnCut.setActionCommand((String) TransferHandler.getCutAction().getValue(Action.NAME));
 			btnCut.setEnabled(false);
 			btnCut.setToolTipText("Cut");
 			btnCut.setBounds(228, 4, 30, 30);
@@ -979,8 +752,7 @@ public class MainWindow extends JFrame /*
 			disabledIcon = new ImageIcon(BASEPATH + DISPASTEICON);
 			btnPaste = new JButton(enabledIcon);
 			btnPaste.setDisabledIcon(disabledIcon);
-			btnPaste.setActionCommand((String) TransferHandler.getPasteAction()
-					.getValue(Action.NAME));
+			btnPaste.setActionCommand((String) TransferHandler.getPasteAction().getValue(Action.NAME));
 			btnPaste.setEnabled(false);
 			btnPaste.setToolTipText("Paste");
 			btnPaste.setBounds(261, 4, 30, 30);
@@ -1067,9 +839,7 @@ public class MainWindow extends JFrame /*
 
 		protected PropertiesPanel() {
 			super();
-			setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229),
-					1, true), TITLE, TitledBorder.LEADING, TitledBorder.TOP,
-					null, new Color(51, 51, 51)));
+			setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), TITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 			setLayout(null);
 			setBounds(249, 49, 466, 392);
 			setToolTipText(EMPTYSELECTIONTOOLTIP);
@@ -1086,8 +856,7 @@ public class MainWindow extends JFrame /*
 			empty_panel = new JPanel();
 			empty_panel.setBounds(113, 181, 240, 30);
 			JLabel emptyAdvice = new JLabel(EMPTYSELECTION);
-			emptyAdvice.setEnabled(false);// Nessuna utilità pratica ma solo per
-											// il colore
+			emptyAdvice.setEnabled(false);
 			empty_panel.add(emptyAdvice);
 		}
 
@@ -1271,26 +1040,5 @@ public class MainWindow extends JFrame /*
 		}
 
 	}
-
-	// TODO era la verifica degli errori
-//	protected void manageDocumentEvent(DocumentEvent arg0) {
-//		if(arg0.getDocument()==textField_Category.getDocument()){
-//			if(Utils.isBlank(textField_Category))
-//				textField_Category.setToolTipText(AddNew.CATE_EMPTY);
-//			else
-//				textField_Category.setToolTipText(AddNew.CATE);
-//		Utils.checkAndRedify(textField_Category);
-//		} else if(arg0.getDocument()==textField_Name.getDocument()) {
-//			Utils.redify(textField_Name, Utils.isBlank(textField_Name)|| nameExists(textField_Name.getText()));
-//			albero.getTree().repaint();
-//			if( Utils.isBlank(textField_Name))
-//				textField_Name.setToolTipText("The name field cannot be left empty");
-//			else if(nameExists(textField_Name.getText())) {
-//				textField_Name.setToolTipText(AddNew.NAME_EXISTING);
-//			} else
-//				textField_Name.setToolTipText("Name of the element"); //nameExists();
-//		}
-//	}
-
 
 }

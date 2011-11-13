@@ -1,40 +1,16 @@
 package webApplication.grafica;
 
-import java.awt.Image;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
+import javax.xml.bind.MarshalException;
+import org.xml.sax.SAXParseException;
 
-import org.xml.sax.SAXException;
-
-import webApplication.business.Componente;
-import webApplication.business.ComponenteAlternative;
-import webApplication.business.ComponenteMolteplice;
-import webApplication.business.ComponenteSemplice;
-import webApplication.business.Immagine;
-import webApplication.business.Link;
-import webApplication.business.Testo;
-import webApplication.xml.CARoot;
-import webApplication.xml.CAandxor;
-import webApplication.xml.CINodeType;
-import webApplication.xml.ECIType;
-import webApplication.xml.ObjectFactory;
-import webApplication.xml.TypeOfECI;
 import webApplication.xml.XMLMarshaller;
 
 /**
@@ -43,8 +19,6 @@ import webApplication.xml.XMLMarshaller;
  *
  */
 public class XMLGenerator {
-	
-	//FIXME probabile: spostare la logica dentro il pacchetto di generazione dell'xml e tenere la parte grafica qui?
 	
 	private static final String FILENAME = "fileCA.xml";
 	private static final String JOPTIONPANETITLE = "File existing";
@@ -67,29 +41,37 @@ public class XMLGenerator {
 	 * 				-5= close outputstream related exception
 	 */
 	protected int generateXML() {
-//		try {
-			File file = new File(FILENAME);
-			if (file.exists()) {
-				int choice = JOptionPane.showConfirmDialog(owner, FILEEXISTINGMESSAGE, JOPTIONPANETITLE, JOptionPane.YES_NO_OPTION);
-				if (choice == JOptionPane.NO_OPTION) {
-					return -1;
-				}
+		File file = new File(FILENAME);
+		if (file.exists()) {
+			int choice = JOptionPane.showConfirmDialog(owner, FILEEXISTINGMESSAGE, JOPTIONPANETITLE, JOptionPane.YES_NO_OPTION);
+			if (choice == JOptionPane.NO_OPTION) {
+				return -1;
 			}
-			XMLMarshaller marshaller = new XMLMarshaller(MainWindow.albero.getTree(), file);
-			marshaller.execute();
-//		} catch (JAXBException e) {
-//			e.printStackTrace();
-//			return -2;
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//			return -3;
-//		} catch (SAXException e) {
-//			e.printStackTrace();
-//			return -4;
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return -5;
-//		}
+		}
+		XMLMarshaller marshaller = new XMLMarshaller(MainWindow.albero.getTree(), file);
+		marshaller.execute();
+		try {
+			marshaller.get();
+		} catch (InterruptedException e) {
+			System.out.println("Classe causa interrupt: "+e.getMessage());
+		} catch (ExecutionException e) {
+			System.out.println("Classe: "+e.getCause().getClass());
+			if (e.getCause().getClass().equals(SAXParseException.class)) {
+				System.out.println("Errore del parser");
+			} else if (e.getCause().getClass().equals(MarshalException.class)) {
+				System.out.println("Errore di validazione");
+				return -4;
+			} else if (e.getCause().getClass().equals(JAXBException.class)) {
+				System.out.println("Errore inaspettato durante il marshalling");
+				return -2;
+			} else if (e.getCause().getClass().equals(FileNotFoundException.class)) {
+				System.out.println("Errore outputstream");
+				return -3;
+			} else if (e.getCause().getClass().equals(IOException.class)) {
+				System.out.println("Non posso chiudere lo stream");
+				return -5;
+			}
+		}
 		return 0;
 	}
 
