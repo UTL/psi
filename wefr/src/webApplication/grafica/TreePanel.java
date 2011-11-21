@@ -31,6 +31,7 @@ import javax.swing.undo.UndoableEditSupport;
 import webApplication.business.Componente;
 import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
+import webApplication.errors.ProblemManager;
 
 /**
  * Il pannello contenente l'albero
@@ -52,6 +53,8 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	private JTree tree;
 	private TreeTransferHandler th;
 
+	private ProblemManager problemManager;
+	
 	private UndoableEditSupport undoSupport;
 	private UndoManager undoManager;
 
@@ -92,6 +95,9 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 		JScrollPane scrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
 
+		//inizializzo il gestore degli errori
+		problemManager = new ProblemManager();
+		
 		// inizializzo il gestore delle azioni di undo/redo
 		undoManager = new UndoManager();
 		undoManager.setLimit(LIMITUNDO);
