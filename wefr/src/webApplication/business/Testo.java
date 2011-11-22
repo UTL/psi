@@ -18,7 +18,7 @@ public class Testo extends ComponenteSemplice implements Serializable {
 	 */
 	private static final long serialVersionUID = 4128305818045516427L;
 	private String testo;
-	public static String TEXTTYPE = "Testo";
+	public static String TEXTTYPE = "Text";
 
 	/**
 	 * Costruttore del componente semplice di tipo Testo

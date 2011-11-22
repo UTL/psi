@@ -824,7 +824,7 @@ public class MainWindow extends JFrame /*
 		private static final String CATEGORYTOOLTIP = "The category at which the element belongs";
 		private static final String TYPE = "Type:";
 		private static final String TYPETOOLTIP = "The type of the element";
-		private static final String IMPORTANCE = "Importance:";
+		private static final String IMPORTANCE = "Necessity:";
 		private static final String IMPORTANCETOOLTIP = "How much this element is necessary";
 		private static final String EMPHASIS = "Emphasizes:";
 		private static final String EMPHASISTOOLTIP = "How much emphasis has the element";

@@ -19,7 +19,7 @@ public class Immagine extends ComponenteSemplice implements Serializable {
 	 */
 	private static final long serialVersionUID = -2184659453061615158L;
 	private String path;
-	public static String IMAGETYPE = "Immagine";
+	public static String IMAGETYPE = "Image";
 
 	/**
 	 * Costruttore del componente semplice di tipo Immagine
