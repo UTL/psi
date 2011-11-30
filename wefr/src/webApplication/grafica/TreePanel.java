@@ -31,7 +31,6 @@ import javax.swing.undo.UndoableEditSupport;
 import webApplication.business.Componente;
 import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
-import webApplication.errors.ProblemManager;
 
 /**
  * Il pannello contenente l'albero
@@ -52,8 +51,6 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	private DefaultTreeModel model;
 	private JTree tree;
 	private TreeTransferHandler th;
-
-	private ProblemManager problemManager;
 	
 	private UndoableEditSupport undoSupport;
 	private UndoManager undoManager;
@@ -75,16 +72,16 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 		tree = new JTree(model);
 		tree.setShowsRootHandles(false); // rende visibile il nodo root
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); // solo un nodo alla volta e selezionabile
-		tree.setCellRenderer(new CustomCellRenderer());
+//		tree.setCellRenderer(new CustomCellRenderer());
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(th);
 
-		// NOTA: TreeWillExpandListener ascolta la volontà di
+		// NOTA: TreeWillExpandListener ascolta la volontï¿½ di
 		// collassare/espandere prima che l'azione sia realmente compiuta e
 		// posso quindi fermarla
-		//TODO vedere perchè a volte non funziona
-		tree.addTreeWillExpandListener(this); // il listener per catturare la volontà di collassare/espandere un elemento
+		//TODO vedere perchï¿½ a volte non funziona
+		tree.addTreeWillExpandListener(this); // il listener per catturare la volontï¿½ di collassare/espandere un elemento
 		
 		tree.setEditable(false); // fa in modo che l'albero non sia editabile
 		tree.setAutoscrolls(true);
@@ -94,9 +91,6 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 		// pannello contenente il tree
 		JScrollPane scrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
-
-		//inizializzo il gestore degli errori
-		problemManager = new ProblemManager();
 		
 		// inizializzo il gestore delle azioni di undo/redo
 		undoManager = new UndoManager();
@@ -173,7 +167,7 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	 * @param tree	L'albero
 	 */
 	private void setMappings(JTree tree) {
-		// NOTA: non ho più bisogno di settare la mappa dato che è codata nello
+		// NOTA: non ho piï¿½ bisogno di settare la mappa dato che ï¿½ codata nello
 		// shortcut degli elementi del menu.
 		// Dovrei farlo solo se non ho acceleratori settati.
 		// Passo ridondante visto che sono azioni settate nei menuitem 
@@ -199,9 +193,9 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	}
 
 	/**
-	 * Verifica se l'albero è vuoto
+	 * Verifica se l'albero ï¿½ vuoto
 	 * 
-	 * @return True o False a seconda se l'albero è vuoto o no
+	 * @return True o False a seconda se l'albero ï¿½ vuoto o no
 	 */
 	public boolean isEmpty() {
 		if ((((DisabledNode) model.getRoot()).getChildCount()) != 0) {
@@ -211,11 +205,11 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	}
 
 	/**
-	 * Verifica se un nome è già usato nell'albero
+	 * Verifica se un nome ï¿½ giï¿½ usato nell'albero
 	 * 
 	 * @param name
 	 *            Il nome da verificare
-	 * @return True o False a seconda se il nome è già stato usato o meno
+	 * @return True o False a seconda se il nome ï¿½ giï¿½ stato usato o meno
 	 */
 	public boolean nameExists(String name) {
 		for (int i = 0; i < rootNode.getChildCount(); i++) {
@@ -227,13 +221,13 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	}
 
 	/**
-	 * Verifica se un nome è già stato usato in un nodo specifico
+	 * Verifica se un nome ï¿½ giï¿½ stato usato in un nodo specifico
 	 * 
 	 * @param name
 	 *            Il nome da verificare
 	 * @param node
 	 *            Il nodo in cui verificare
-	 * @return True o False a seconda se il nome è già stato usato o meno
+	 * @return True o False a seconda se il nome ï¿½ giï¿½ stato usato o meno
 	 */
 	private boolean nameExists(String name, DisabledNode node) {
 		Componente comp = (Componente) node.getUserObject();
@@ -346,6 +340,35 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 		}
 		tree.expandPath(new TreePath(rootNode.getPath()));
 	}
+	
+	/**
+	 * @return
+	 */
+	protected boolean isCorrect() {
+		return isCorrectChilds(rootNode);
+
+	}
+
+	private boolean isCorrectChilds(DisabledNode node) {
+		for (int i=0; i<node.getChildCount(); i++) {
+			if (!isCorrect((DisabledNode)node.getChildAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean isCorrect(DisabledNode node) {
+		if (!node.isCorrect) {
+			return false;
+		}
+		if (!((Componente)node.getUserObject()).isSimple()) {
+			if (!isCorrectChilds(node)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -354,8 +377,8 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 			throws ExpandVetoException {
 		// Faccio in modo che la root non sia collassabile
 		if (e.getPath().getPathCount() == 1) {
-			// Il path è un "array" contenente gli elementi a partire dalla
-			// root: se c'è un solo elemento l'elemento è solo la root
+			// Il path ï¿½ un "array" contenente gli elementi a partire dalla
+			// root: se c'ï¿½ un solo elemento l'elemento ï¿½ solo la root
 			throw new ExpandVetoException(e); // questa eccezione fa si che non avvenga il collasso
 		}
 	}
@@ -485,10 +508,10 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 		public static final String REMOVECOMMAND = "Remove";
 
 		/**
-		 * Il costruttore setta l'azione di default NOTA: una remove può avere
+		 * Il costruttore setta l'azione di default NOTA: una remove puï¿½ avere
 		 * come target o il nodo selezionato sull'albero o, per i nodi
 		 * molteplici un nodo selezionato nel pannello di riepilogo. Per default
-		 * il nodo da eliminare è quello selezionato sull'albero
+		 * il nodo da eliminare ï¿½ quello selezionato sull'albero
 		 */
 		public RemoveAction() {
 			super();
@@ -502,7 +525,7 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 			TreePath currentSelection = tree.getSelectionPath();
 			DisabledNode currentNode;
 			if (getValue(INDEXES) == null) {
-				// indici = null indica che il nodo da rimuovere è
+				// indici = null indica che il nodo da rimuovere ï¿½
 				// quello selezionato sull'albero
 				currentNode = (DisabledNode) (currentSelection.getLastPathComponent());
 				delete(currentSelection, currentNode);
@@ -526,13 +549,13 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 		 */
 		private void delete(TreePath currentSelection, DisabledNode nodeToRemove) {
 			/*
-			 * NOTA: il nodo selezionato sull'albero NON è sempre il nodo da
-			 * rimuovere se si considera ad esempio il pannello delle proprietà
+			 * NOTA: il nodo selezionato sull'albero NON ï¿½ sempre il nodo da
+			 * rimuovere se si considera ad esempio il pannello delle proprietï¿½
 			 * di un elemento molteplice, ad esempio, il nodo selezionato
-			 * nell'albero è l'elemento molteplice ma è possibile rimuovere uno
-			 * dei suoi figli selezionandolo nella lista delle proprietà. In
-			 * questo caso, la currentSelection è l'elemento molteplice, ma il
-			 * currentNode sarà il nodo figlio, e sarà quest'ultimo da rimuovere
+			 * nell'albero ï¿½ l'elemento molteplice ma ï¿½ possibile rimuovere uno
+			 * dei suoi figli selezionandolo nella lista delle proprietï¿½. In
+			 * questo caso, la currentSelection ï¿½ l'elemento molteplice, ma il
+			 * currentNode sarï¿½ il nodo figlio, e sarï¿½ quest'ultimo da rimuovere
 			 */
 			DisabledNode parent = (DisabledNode) nodeToRemove.getParent();
 			int parentIndex;
@@ -557,8 +580,8 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	 * 
 	 */
 	public class CopyAction extends AbstractAction {
-		// NOTA: una CopyAction è fondamentalmente una AddAction ma l'elemento
-		// inserito è una copia di quello esistente
+		// NOTA: una CopyAction ï¿½ fondamentalmente una AddAction ma l'elemento
+		// inserito ï¿½ una copia di quello esistente
 		// infatti le tengo separate per "comprensione" ma in pratica uso sempre
 		// la AddAction
 		/**
@@ -647,7 +670,7 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	}
 
 	/**
-	 * Ascolta la modifica della priorità degli elementi all'interno di un
+	 * Ascolta la modifica della prioritï¿½ degli elementi all'interno di un
 	 * Alternative
 	 * 
 	 * @author Andrea

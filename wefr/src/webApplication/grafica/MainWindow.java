@@ -236,7 +236,7 @@ public class MainWindow extends JFrame /*
 												// costruttore ascolta eventi
 												// modifica selezione
 												// dell'albero
-
+		
 		// setta la barra del menu
 		setJMenuBar(new MenuPanel()); // aggiungo la menubar
 
@@ -245,6 +245,8 @@ public class MainWindow extends JFrame /*
 
 		properties = new PropertiesPanel();
 		contentPane.add(properties);
+		
+		MainWindow.albero.getTree().setCellRenderer(new CustomCellRenderer());
 
 		// TODO controllare da qui in poi
 		/*
@@ -782,7 +784,7 @@ public class MainWindow extends JFrame /*
 			disabledIcon = new ImageIcon(BASEPATH + DISREMOVEICON);
 			btnGenXML = new JButton("Testo di prova", enabledIcon);
 			btnGenXML.setDisabledIcon(disabledIcon);
-			btnGenXML.setEnabled(true);//TODO disabilitare di default!
+			btnGenXML.setEnabled(false);//TODO disabilitare di default!
 			btnGenXML.setActionCommand(GENERATEXMLCOMMAND);
 			btnGenXML.setToolTipText("Export to XML");
 			btnGenXML.setBounds(401, 4, 187, 30);

@@ -82,7 +82,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		redoAction = panel.new RedoAction();
 		undoManager = panel.getUndoManager();
 		// NOTA: non ho bisogno di gestire le azioni di copia/incolla/paste dato
-		// che il TransferHandler le gestisce giù autonomamente
+		// che il TransferHandler le gestisce giï¿½ autonomamente
 
 		// mi metto in ascolto per capire quando abilitare il bottone di paste
 		((TreeTransferHandler) panel.getTree().getTransferHandler()).getClipboard().addFlavorListener(this);
@@ -326,6 +326,9 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		// gestisco l'attivazione di Undo e Redo
 		MainWindow.undoState(undoManager.canUndo());
 		MainWindow.redoState(undoManager.canRedo());
+		
+		MainWindow.albero.revalidate();
+//		MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
 	}
 
 	/**
@@ -375,11 +378,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			changeFieldAction.putValue(TreePanel.ChangeFieldAction.OLDVALUE, ((Link)selectedNode.getUserObject()).getTesto());
 			changeFieldAction.putValue(TreePanel.ChangeFieldAction.NEWVALUE, (MainWindow.properties.pannelloLink.getText()));
 			changeFieldAction.actionPerformed(new ActionEvent(MainWindow.properties.pannelloLink.urlText, ActionEvent.ACTION_PERFORMED,""));
-		}
-		MainWindow.albero.getTree().repaint();
-		
-		//TODO gestione errori
-//		MainWindow.genProperties.manageDocumentEvent(e);
+		}	
 	}
 
 	/**

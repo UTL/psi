@@ -72,26 +72,9 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		DisabledNode node = (DisabledNode) value;
 		if (node != tree.getModel().getRoot()) {
-			try {
-				TreePanel panel = (TreePanel) (((tree.getParent()).getParent()).getParent());
-				// Recupero il path degli elementi con quel nome
-				Vector<TreePath> elPath = panel.getPathForName((((Componente) node.getUserObject()).getNome()));
-				if (elPath.size() != 1) {
-					// Se ho un solo elemento con quel nome, l'elemento è "node" quindi non lo considero
-					if (elPath.contains(new TreePath(node.getPath()))) {
-						// Se il path di node è tra quelli con nome non
-						// consentito setto l'icona di errore e setto il tooltip
-						setIcon(errorIcon);
-						setToolTipText(ERRORTOOLTIPTEXT);
-						return this;
-					}
-				} else if ((!((Componente) node.getUserObject()).isSimple()) && (((ComponenteMolteplice) node.getUserObject()).getOpzioni().size() < 2)) {
-					setIcon(warningIcon);
-					setToolTipText(WARNINGTOOLTIPTEXT);
-					return this;
-				}
-			} catch (NullPointerException e) {
-			} catch (ClassCastException e) {
+			if (hasError(tree, node)) {
+				node.isCorrect = false;
+				return this;
 			}
 			Componente comp = (Componente) node.getUserObject();
 			// Java SE6 non supporta lo switch con String solo da Java SE 7
@@ -100,7 +83,6 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 				setIcon(textIcon);
 			} else if (objType.equals(Immagine.IMAGETYPE)) {
 				setIcon(imageIcon);
-				;
 			} else if (objType.equals(Link.LINKTYPE)) {
 				setIcon(linkIcon);
 			} else if (objType.equals(ComponenteComposto.COMPOSTOTYPE)) {
@@ -117,7 +99,37 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			setIcon(homeIcon);
 			setToolTipText(null);// fa in modo che il tooltip sparica spostandosi da un nodo con errore/warning
 		}
+		node.isCorrect = true;
+		MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
 		return this;
+	}
+
+	private boolean hasError(JTree tree, DisabledNode node) {
+		try {
+			TreePanel panel = (TreePanel) (((tree.getParent()).getParent()).getParent());
+			// Recupero il path degli elementi con quel nome
+			Vector<TreePath> elPath = panel.getPathForName((((Componente) node.getUserObject()).getNome()));
+			if (elPath.size() != 1) {
+				// Se ho un solo elemento con quel nome, l'elemento ï¿½ "node" quindi non lo considero
+				if (elPath.contains(new TreePath(node.getPath()))) {
+					// Se il path di node ï¿½ tra quelli con nome non
+					// consentito setto l'icona di errore e setto il tooltip
+					setIcon(errorIcon);
+					setToolTipText(ERRORTOOLTIPTEXT);
+					return true;
+				}
+			} else if ((!((Componente) node.getUserObject()).isSimple()) && (((ComponenteMolteplice) node.getUserObject()).getOpzioni().size() < 1)) {
+				setIcon(errorIcon);
+				setToolTipText(ERRORTOOLTIPTEXT);
+				return true;
+//				setIcon(warningIcon);
+//				setToolTipText(WARNINGTOOLTIPTEXT);
+//				return false;
+			}
+		} catch (NullPointerException e) {
+		} catch (ClassCastException e) {
+		}
+		return false;
 	}
 
 	/**
