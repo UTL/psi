@@ -345,7 +345,7 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	 * @return
 	 */
 	protected boolean isCorrect() {
-		return isCorrectChilds(rootNode);
+		return isCorrect(rootNode);
 
 	}
 
@@ -362,7 +362,7 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 		if (!node.isCorrect) {
 			return false;
 		}
-		if (!((Componente)node.getUserObject()).isSimple()) {
+		if (node.isRoot() || !((Componente)node.getUserObject()).isSimple()) {
 			if (!isCorrectChilds(node)) {
 				return false;
 			}

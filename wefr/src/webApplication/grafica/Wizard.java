@@ -7,6 +7,7 @@ import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -475,7 +476,7 @@ public class Wizard extends JDialog implements ActionListener {
 	}
 
 	/*
-	 * TODO Verificare tutto quando c'è qui sottoTODOTODOTODOTODOTODOTODOTODO
+	 * TODO Verificare tutto quando c'ï¿½ qui sottoTODOTODOTODOTODOTODOTODOTODO
 	 * TODO
 	 */
 	/*
@@ -540,9 +541,12 @@ public class Wizard extends JDialog implements ActionListener {
 	 * setToolTipText("The file doesn't exist or is not readable");
 	 * btnDone_Image.setEnabled(false); } return false; }
 	 * 
-	 * private boolean isPathCorrect(String path){ File daControllare = new
-	 * File(path); if(daControllare.isFile() && daControllare.canRead()) return
-	 * true; return false; }
+	 private boolean isPathCorrect(String path){
+		 File daControllare = new
+			 File(path); if(daControllare.isFile() && daControllare.canRead())
+				 return true;
+			 return false;
+	 }
 	 * 
 	 * private synchronized void fireEvent(boolean onlyDispose) { MyEventClass
 	 * event = null; if (onlyDispose == CREATENEWCOMP) event = new
@@ -682,11 +686,10 @@ public class Wizard extends JDialog implements ActionListener {
 	 * button_doneComp.setEnabled(enable);
 	 * 
 	 * }
-	 * 
-	 * public static boolean nameExistsAll(String s){ return
-	 * MainWindow.nameExistsAll(s)|| s.equals(name.getText());
-	 * 
-	 * }
 	 */
+
+	public static boolean nameExistsAll(String s) {
+		return (MainWindow.albero.nameExists(s) || s.equals(name.getText())); 
+	}
 
 }

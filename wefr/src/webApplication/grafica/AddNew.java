@@ -1,5 +1,6 @@
 package webApplication.grafica;
 
+import java.awt.Component;
 import java.awt.Window;
 
 import javax.swing.JPanel;
@@ -8,9 +9,16 @@ import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 import javax.swing.JRadioButton;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -28,11 +36,11 @@ import java.awt.Font;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 
-public class AddNew extends AddComponent implements /*
-													 * DocumentListener,
-													 * KeyListener,
-													 */ActionListener {
+public class AddNew extends AddComponent implements DocumentListener,
+													 KeyListener,
+													 ActionListener {
 	// TODO creare codice per abilitare/disabilitare il pulsante di add
 
 	/**
@@ -41,8 +49,14 @@ public class AddNew extends AddComponent implements /*
 	private static final long serialVersionUID = 3236559861349447627L;
 
 	private static final String NAME = "Name:";
+	private static final String NAME_EMPTY = "It's mandatory to fill the name field";
+	private static final String NAME_EXISTING = "Another element with the same name alredy existing";
+	
 	private static final String NAMETOOLTIP = "Name of the new element";
 	private static final String CATEGORY = "Category:";
+	private static final String CATE_EMPTY = "It's mandatory to fill the category field";
+
+
 	private static final String DEFAULTCATEGORYVALUE = "Category0";
 
 	private static final String LINKPANELTITLE = " Link ";
@@ -50,11 +64,15 @@ public class AddNew extends AddComponent implements /*
 	private static final String LINK_PATH = "URL:";
 	private static final String DEFAULTLINKPATH = "http://";
 	private static final String LINK_PATH_TOOLTIP = "Enter the desired link";
+	private static final String URL = "URL of the link";
+	private static final String URL_EMPTY = "This field must be a valid url (ex www.myweb.com)";
+
 	private JLabel lblLink;
 	private static final String LINK_TEXT = "Link text:";
 	private static final String LINK_TEXT_TOOLTIP = "Enter the text for the link";
 
 	private static final String TEXTPANELTITLE = " Text ";
+	private static final String TEXT_EMPTY = "It's mandatory to fill the text field";
 	private JButton importTextButton;
 	private static final String LOAD_TEXT_BTN = "Import from file";
 	private static final String LOAD_TEXT_TOOLTIP = "Click to load text from an existing file";
@@ -62,6 +80,8 @@ public class AddNew extends AddComponent implements /*
 	private static final String IMAGEPANELTITLE = " Image ";
 	private JLabel lblPath;
 	private static final String IMAGE_PATH = "File path:";
+	private static final String PATH_ERROR = "The path is wrong, select an image using \"Browse\" button";
+	
 	private JButton importImageButton;
 	private static final String LOAD_IMAGE_BTN = "Browse";
 	private static final String LOAD_IMAGE_TOOLTIP = "Click to load image from a file";
@@ -108,7 +128,7 @@ public class AddNew extends AddComponent implements /*
 
 		buildRadioButtons();
 
-		// addDocumentListeners();
+		 addDocumentListeners();
 
 		// enabler(panel_text);
 		textField_name.setText(setDefaultName());
@@ -312,14 +332,17 @@ public class AddNew extends AddComponent implements /*
 			panelLinkEnabled(true);
 			panelTextEnabled(false);
 			panelImageEnabled(false);
+			updateAddBtn();
 		} else if (e.getActionCommand().equals(RBTN_TEXT_ACTION)) {
 			panelLinkEnabled(false);
 			panelTextEnabled(true);
 			panelImageEnabled(false);
+			updateAddBtn();
 		} else if (e.getActionCommand().equals(RBTN_IMAGE_ACTION)) {
 			panelLinkEnabled(false);
 			panelTextEnabled(false);
 			panelImageEnabled(true);
+			updateAddBtn();
 		} else if (e.getActionCommand().equals(LOAD_IMAGE_BTN)) {
 			JFileChooser fc = new JFileChooser(MainWindow.defImageDir);
 			ImagePreview imgPrev = new ImagePreview();
@@ -356,255 +379,264 @@ public class AddNew extends AddComponent implements /*
 		return "Element0";
 	}
 
-	/*
-	 * private void addDocumentListeners() {
-	 * textField_category.getDocument().addDocumentListener(this);
-	 * textField_linkText.getDocument().addDocumentListener(this);
-	 * textField_name.getDocument().addDocumentListener(this);
-	 * textField_url.getDocument().addDocumentListener(this);
-	 * textArea.getDocument().addDocumentListener(this);
-	 * 
-	 * textField_url.addKeyListener(this); }
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * /*private void enabler(JPanel toEnable){ enablerDisabler(panel_image,
-	 * false); enablerDisabler(panel_link, false); enablerDisabler(panel_text,
-	 * false); enablerDisabler(toEnable, true); }
-	 * 
-	 * /*private void enablerDisabler(JPanel toUpdate, boolean enable){
-	 * setBordi(toUpdate, enable); toUpdate.setEnabled(enable); Component[]
-	 * figli = toUpdate.getComponents(); int i; for(i=0; i < figli.length;i++) {
-	 * 
-	 * updateComponent(figli[i], enable);
-	 * 
-	 * 
-	 * }
-	 * 
-	 * }
-	 * 
-	 * /*private void updateComponent(Component figlio, boolean enable){
-	 * figlio.setEnabled(enable); if(figlio == scrollingArea){
-	 * updateComponent(textArea,enable);
-	 * 
-	 * //le tre righe qua sotto sono un workaround per un baco delle JScrollPane
-	 * scrollingArea.getHorizontalScrollBar().setEnabled(enable);
-	 * scrollingArea.getVerticalScrollBar().setEnabled(enable);
-	 * scrollingArea.getViewport().getView().setEnabled(enable);
-	 * manageTooltips(textArea, Utils.isBlank(textArea)); } if (figlio
-	 * instanceof javax.swing.JTextField || figlio instanceof
-	 * javax.swing.JTextArea){ if(enable){ if(figlio == textField_url)
-	 * redify((JTextComponent) figlio,Utils.isBlank((JTextComponent)
-	 * figlio)||errorUrl()); else redify((JTextComponent)
-	 * figlio,Utils.isBlank((JTextComponent) figlio)); figlio.setBackground(new
-	 * Color(255, 255, 255)); } else{ ((JTextComponent)figlio).setBorder(new
-	 * LineBorder(new Color(200, 200, 200), 1, true)); figlio.setBackground(new
-	 * Color(245, 245, 245));
-	 * 
-	 * } } }
-	 * 
-	 * private void setBordi(JPanel toDisable, boolean enable) { if(enable){
-	 * if(toDisable== panel_image) panel_image.setBorder(new TitledBorder(new
-	 * LineBorder(new Color(184, 207, 229), 1, true), " Image ",
-	 * TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-	 * else if (toDisable == panel_link) panel_link.setBorder(new
-	 * TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Link ",
-	 * TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-	 * else panel_text.setBorder(new TitledBorder(new LineBorder(new Color(184,
-	 * 207, 229), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP,
-	 * null, new Color(51, 51, 51)));
-	 * 
-	 * } else{ if(toDisable== panel_image) panel_image.setBorder(new
-	 * TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true),
-	 * " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153,
-	 * 153, 153))); else if (toDisable == panel_link) panel_link.setBorder(new
-	 * TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Link ",
-	 * TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
-	 * else panel_text.setBorder(new TitledBorder(new LineBorder(new Color(204,
-	 * 204, 204), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP,
-	 * null, new Color(153, 153, 153))); }
-	 * 
-	 * }
-	 * 
-	 * /*private void redify(JTextComponent toRed, boolean b){ if(b){
-	 * toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo
-	 * rosso
-	 * 
-	 * } else { toRed.setBorder(new LineBorder(new Color(184, 207, 229), 1,
-	 * true));//bordo normale
-	 * 
-	 * } manageTooltips(toRed, b);
-	 * 
-	 * }
-	 * 
-	 * /*private void manageTooltips(Component component, boolean b) { if
-	 * (component == textField_name){ if(b)
-	 * textField_name.setToolTipText(NAME_EMPTY); else if(nameExists())
-	 * textField_name.setToolTipText(NAME_EXISTING); else
-	 * textField_name.setToolTipText(NAME);
-	 * 
-	 * } else if(component == textField_category){ if(b)
-	 * textField_category.setToolTipText(CATE_EMPTY); else
-	 * textField_category.setToolTipText(CATE); } else if(component ==
-	 * textField_url){ if(b) textField_url.setToolTipText(URL_EMPTY); else
-	 * textField_url.setToolTipText(URL); } else if(component ==
-	 * textField_linkText ){ if(b)
-	 * textField_linkText.setToolTipText(TEXT_EMPTY); else
-	 * textField_linkText.setToolTipText(TEXT); } else if(component ==
-	 * textArea){ if(b) textArea.setToolTipText(TEXT_EMPTY); else
-	 * textArea.setToolTipText(TEXT); } else if(component ==
-	 * textField_imagePath){ if(b)
-	 * textField_imagePath.setToolTipText(TEXT_EMPTY); else
-	 * textField_imagePath.setToolTipText(TEXT); } }
-	 * 
-	 * private void changeEvent(DocumentEvent e) { if(e.getDocument()==
-	 * textField_url.getDocument())
-	 * redify(fromDocToJComp(e.getDocument()),Utils.
-	 * isBlank((fromDocToJComp(e.getDocument())))||errorUrl()); else
-	 * if(e.getDocument()==textField_imagePath.getDocument()){ checkPath(); }
-	 * else if(e.getDocument()==textField_name.getDocument()){
-	 * Utils.redify(textField_name,Utils.isBlank(textField_name)||nameExists());
-	 * manageTooltips(textField_name, Utils.isBlank(textField_name)); } else
-	 * redify
-	 * (fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument
-	 * ()))));
-	 * 
-	 * updateAddBtn(); }
-	 * 
-	 * private JTextComponent fromDocToJComp(Document doc){ if(doc==
-	 * textField_category.getDocument()) return textField_category; else
-	 * if(doc== textField_imagePath.getDocument()) return textField_imagePath;
-	 * else if(doc== textField_linkText.getDocument()) return
-	 * textField_linkText; else if(doc== textField_name.getDocument()) return
-	 * textField_name; else if(doc== textField_url.getDocument()) return
-	 * textField_url; else if (doc== textArea.getDocument()) return textArea;
-	 * return null; }
-	 * 
-	 * 
-	 * 
-	 * 
-	 * private boolean nameExists(){
-	 * return(Wizard.nameExistsAll(textField_name.getText())); }
-	 * 
-	 * private boolean erroriPresenti(){ boolean result;
-	 * result=Utils.isBlank(textField_name) || nameExists(); result= result ||
-	 * Utils.isBlank(textField_category); if (rdbtnImage.isSelected()) result=
-	 * result || Utils.isBlank(textField_imagePath) || fileError();
-	 * 
-	 * else if (rdbtnLink.isSelected()) result= result ||
-	 * Utils.isBlank(textField_linkText) || Utils.isBlank(textField_url) ||
-	 * errorUrl(); else result= result || Utils.isBlank(textArea); return
-	 * result;
-	 * 
-	 * }
-	 * 
-	 * private boolean errorUrl() { if(!IsMatch(textField_url.getText())&&
-	 * IsMatch("http://"+textField_url.getText())){
-	 * //textField_url.setText("http://"+textField_url.getText()); //String temp
-	 * = "http://"+textField_url.getText(); //textField_url.setText(temp); }
-	 * //System.out.println("Match errorurl"+IsMatch(textField_url.getText()));
-	 * return !(IsMatch(textField_url.getText()) ||
-	 * IsMatch("http://"+textField_url.getText())); }
-	 * 
-	 * private boolean fileError(){ return
-	 * !MainWindow.isPathCorrect(textField_imagePath.getText()); }
-	 * 
-	 * private ArrayList<MyEventClassListener> _listeners = new
-	 * ArrayList<MyEventClassListener>();
-	 * 
-	 * public void addEventListener(MyEventClassListener listener) {
-	 * _listeners.add(listener); }
-	 * 
-	 * private void checkPath(){ redify(textField_imagePath,
-	 * !MainWindow.isPathCorrect(textField_imagePath.getText())); }
-	 * 
-	 * private void readFile(){ /*try { //TODO escapare caratteri speciali
-	 * fcText.showDialog();
-	 * 
-	 * if (fcText.getFile() != null){ String letto =
-	 * Wizard.readFile(fcText.getFile()); if ( letto!= null && letto.length()>0)
-	 * textArea.setText(letto); } } catch (IOException e) { } }
-	 * 
-	 * protected ComponenteSemplice getNuovoComp(){ //TODO escapare i vari campi
-	 * 
-	 * ComponenteSemplice output = null; if (!erroriPresenti()){ if
-	 * (rdbtnImage.isSelected())
-	 * 
-	 * output = new Immagine(textField_name.getText(),
-	 * textField_category.getText(), 0, 0, textField_imagePath.getText());
-	 * 
-	 * else if (rdbtnLink.isSelected()) output = new
-	 * Link(textField_name.getText(), textField_category.getText(), 0,0,
-	 * textField_url.getText(), textField_linkText.getText()); else output= new
-	 * Testo(textField_name.getText(),
-	 * textField_category.getText(),0,0,textArea.getText()); } return output; }
-	 * 
-	 * private void setPath(){ /*fcImage.showDialog();
-	 * 
-	 * if (fcImage.getFilePath().length()>0)
-	 * textField_imagePath.setText(fcImage.getFilePath()); }
-	 * 
-	 * private void updateAddBtn(){ updateComponent(buttonAdd,
-	 * !erroriPresenti()); }
-	 * 
-	 * private synchronized void fireEvent(boolean onlyDispose) { MyEventClass
-	 * event = null; if (onlyDispose == CREATENEWCOMP) event = new
-	 * MyEventClass(this, getNuovoComp()); Iterator<MyEventClassListener> i =
-	 * _listeners.iterator(); while(i.hasNext()) { ((MyEventClassListener)
-	 * i.next()).handleMyEventClassEvent(event); } }
-	 * 
-	 * private boolean IsMatch(String s) { try {
-	 * 
-	 * Matcher matcher = valid_url.matcher(s); return matcher.matches(); } catch
-	 * (RuntimeException e) { return false; } }
-	 * 
-	 * private boolean allowedChar(char c){ if(allowedUrlChar.indexOf(c)==-1)
-	 * return false; return true; }
-	 * 
-	 * @Override public void changedUpdate(DocumentEvent arg0) {
-	 * changeEvent(arg0); }
-	 * 
-	 * @Override public void insertUpdate(DocumentEvent arg0) {
-	 * changeEvent(arg0);
-	 * 
-	 * }
-	 * 
-	 * @Override public void removeUpdate(DocumentEvent arg0) {
-	 * changeEvent(arg0);
-	 * 
-	 * }
-	 * 
-	 * @Override public void keyPressed(KeyEvent arg0) {
-	 * if(allowedChar(arg0.getKeyChar())) arg0.consume();
-	 * 
-	 * }
-	 * 
-	 * @Override public void keyReleased(KeyEvent arg0) {
-	 * if(allowedChar(arg0.getKeyChar())) arg0.consume(); }
-	 * 
-	 * @Override public void keyTyped(KeyEvent arg0) {
-	 * if(!allowedChar(arg0.getKeyChar())) arg0.consume(); }
-	 * 
-	 * @Override public void actionPerformed(ActionEvent e) { if
-	 * (e.getActionCommand()==LOAD_TEXT_BTN){
-	 * readFile();//MainWindow.fileChooser(MainWindow.TEXT), textArea);
-	 * updateAddBtn(); } else if(e.getActionCommand()==LOAD_IMAGE_BTN){
-	 * setPath(); updateAddBtn(); } else if (e.getActionCommand()==BACK){
-	 * fireEvent(ONLYDISPOSE); dispose(); } else
-	 * if(e.getActionCommand()==CREATE_EXIT){ fireEvent(CREATENEWCOMP);
-	 * dispose(); } else if(e.getActionCommand()==RDBTN_IMAGE){
-	 * enabler(panel_image); updateAddBtn(); } else
-	 * if(e.getActionCommand()==RDBTN_TEXT){ enabler(panel_text);
-	 * updateAddBtn(); } else if(e.getActionCommand()==RDBTN_LINK){
-	 * enabler(panel_link); updateAddBtn(); } }
-	 */
+	private void addDocumentListeners() {
+		textField_category.getDocument().addDocumentListener(this);
+		textField_linkText.getDocument().addDocumentListener(this);
+		textField_name.getDocument().addDocumentListener(this);
+		textField_url.getDocument().addDocumentListener(this);
+		textArea.getDocument().addDocumentListener(this);
 
-}
+		textField_url.addKeyListener(this);
+		}
+
+		private void updateComponent(Component figlio, boolean enable){
+		figlio.setEnabled(enable);
+		if(figlio == scrollingArea){
+		updateComponent(textArea,enable);
+
+		//le tre righe qua sotto sono un workaround per un baco delle JScrollPane
+		scrollingArea.getHorizontalScrollBar().setEnabled(enable);
+		scrollingArea.getVerticalScrollBar().setEnabled(enable);
+		scrollingArea.getViewport().getView().setEnabled(enable);
+		manageTooltips(textArea, Utils.isBlank(textArea));
+		}
+		if (figlio instanceof javax.swing.JTextField || figlio instanceof javax.swing.JTextArea){
+		if(enable){
+		if(figlio == textField_url)
+		redify((JTextComponent) figlio,Utils.isBlank((JTextComponent) figlio)||errorUrl());
+		else
+		redify((JTextComponent) figlio,Utils.isBlank((JTextComponent) figlio));
+		figlio.setBackground(new Color(255, 255, 255));
+		}
+		else{
+		((JTextComponent)figlio).setBorder(new LineBorder(new Color(200, 200, 200), 1, true));
+		figlio.setBackground(new Color(245, 245, 245));
+
+		}
+		}
+		}
+
+		private void setBordi(JPanel toDisable, boolean enable) {
+		if(enable){
+		if(toDisable== panel_image)
+		panel_image.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		else if (toDisable == panel_link)
+		panel_link.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		else
+		panel_text.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+
+		}
+		else{
+		if(toDisable== panel_image)
+		panel_image.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+		else if (toDisable == panel_link)
+		panel_link.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+		else
+		panel_text.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+		}
+
+		}
+
+		private void redify(JTextComponent toRed, boolean b){
+		if(b){
+		toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo rosso
+
+		}
+		else {
+		toRed.setBorder(new LineBorder(new Color(184, 207, 229), 1, true));//bordo normale
+
+		}
+		manageTooltips(toRed, b);
+
+		}
+
+		private void manageTooltips(Component component, boolean b) {
+		if (component == textField_name){
+		if(b)
+		textField_name.setToolTipText(NAME_EMPTY);
+		else if(nameExists())
+		textField_name.setToolTipText(NAME_EXISTING);
+		else
+		textField_name.setToolTipText(NAME);
+
+		}
+		else if(component == textField_category){
+		if(b)
+		textField_category.setToolTipText(CATE_EMPTY);
+		else
+		textField_category.setToolTipText(CATEGORY);
+		}
+		else if(component == textField_url){
+		if(b)
+		textField_url.setToolTipText(URL_EMPTY);
+		else
+		textField_url.setToolTipText(URL);
+		}
+		else if(component == textField_linkText ){
+		if(b)
+		textField_linkText.setToolTipText(TEXT_EMPTY);
+		else
+		textField_linkText.setToolTipText(TEXT);
+		}
+		else if(component == textArea){
+		if(b)
+		textArea.setToolTipText(TEXT_EMPTY);
+		else
+		textArea.setToolTipText(TEXT);
+		}
+		else if(component == textField_imagePath){
+		if(b)
+		textField_imagePath.setToolTipText(TEXT_EMPTY);
+		else
+		textField_imagePath.setToolTipText(TEXT);
+		}
+		}
+
+		private void changeEvent(DocumentEvent e) {
+			if(e.getDocument()== textField_url.getDocument())
+				redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument())))||errorUrl());
+			else if(e.getDocument()==textField_imagePath.getDocument()){
+				checkPath();
+			}
+			else if(e.getDocument()==textField_name.getDocument()){
+				Utils.redify(textField_name,Utils.isBlank(textField_name)||nameExists());
+				manageTooltips(textField_name, Utils.isBlank(textField_name));
+			}
+			else
+				redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument()))));
+
+			updateAddBtn();
+		}
+
+		private JTextComponent fromDocToJComp(Document doc){
+			if(doc== textField_category.getDocument())
+				return textField_category;
+			else if(doc== textField_imagePath.getDocument())
+				return textField_imagePath;
+			else if(doc== textField_linkText.getDocument())
+				return textField_linkText;
+			else if(doc== textField_name.getDocument())
+				return textField_name;
+			else if(doc== textField_url.getDocument())
+				return textField_url;
+			else if (doc== textArea.getDocument())
+				return textArea;
+			return null;
+		}
+
+
+
+
+		private boolean nameExists(){
+			if (this.getOwner() instanceof Wizard)
+				return(((Wizard) this.getOwner()).nameExistsAll(textField_name.getText()));
+			else
+				return MainWindow.albero.nameExists(textField_name.getText());
+		}
+
+		private boolean erroriPresenti(){
+			boolean result;
+			result=Utils.isBlank(textField_name) || nameExists();
+			result= result || Utils.isBlank(textField_category);
+			if (rdbtnImage.isSelected())
+				result= result || Utils.isBlank(textField_imagePath) || fileError();
+
+			else if
+			(rdbtnLink.isSelected())
+				result= result || Utils.isBlank(textField_linkText) || Utils.isBlank(textField_url) || errorUrl();
+			else
+				result= result || Utils.isBlank(textArea);
+			return result;
+
+		}
+
+		private boolean errorUrl() {
+			if(!IsMatch(textField_url.getText())&& IsMatch("http://"+textField_url.getText())){
+				//textField_url.setText("http://"+textField_url.getText());
+				//String temp = "http://"+textField_url.getText();
+				//textField_url.setText(temp);
+			}
+			//System.out.println("Match errorurl"+IsMatch(textField_url.getText()));
+			return !(IsMatch(textField_url.getText()) || IsMatch("http://"+textField_url.getText()));
+		}
+
+		private boolean fileError(){
+			return !MainWindow.isPathCorrect(textField_imagePath.getText());
+		}
+
+		private void checkPath(){
+			redify(textField_imagePath, !MainWindow.isPathCorrect(textField_imagePath.getText()));
+		}
+
+		private void readFile(){
+			try {
+				//TODO escapare caratteri speciali
+				fcText.showDialog();
+
+				if (fcText.getFile() != null){
+					String letto = Wizard.readFile(fcText.getFile());
+					if ( letto!= null && letto.length()>0)
+						textArea.setText(letto);
+				}
+			} catch (IOException e) {
+			}
+		}
+
+		private void updateAddBtn(){
+			updateComponent(buttonAdd, !erroriPresenti());
+		}
+
+		private boolean IsMatch(String s) {
+			try {
+
+				Matcher matcher = valid_url.matcher(s);
+				return matcher.matches();
+			} catch (RuntimeException e) {
+				return false;
+			}
+		}
+
+		private boolean allowedChar(char c){
+			if(allowedUrlChar.indexOf(c)==-1)
+				return false;
+			return true;
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent arg0) {
+			changeEvent(arg0);
+		}
+
+		@Override
+		public void insertUpdate(DocumentEvent arg0) {
+			changeEvent(arg0);
+
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent arg0) {
+			changeEvent(arg0);
+
+		}
+
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+			if(allowedChar(arg0.getKeyChar()))
+				arg0.consume();
+
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+			if(allowedChar(arg0.getKeyChar()))
+				arg0.consume();
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+			if(!allowedChar(arg0.getKeyChar()))
+				arg0.consume();
+		}
+
+
+		}

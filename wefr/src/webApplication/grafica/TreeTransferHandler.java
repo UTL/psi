@@ -83,18 +83,18 @@ public class TreeTransferHandler extends TransferHandler implements
 	 * {@inheritDoc}
 	 */
 	public boolean canImport(TransferSupport support) {
-		// controlli per verificare se il drop è valid
-		if (support.isDrop()) {// se è una drop verifico direttamente
+		// controlli per verificare se il drop ï¿½ valid
+		if (support.isDrop()) {// se ï¿½ una drop verifico direttamente
 			support.setShowDropLocation(true);// indica visivamente dove sta avvenendo l'operazione di drop
-			// 1. se il data flavor non è supportato allora ritorna false
+			// 1. se il data flavor non ï¿½ supportato allora ritorna false
 			if ((!support.isDataFlavorSupported(nodesFlavor)) && (!support.isDataFlavorSupported(componenteFlavor))) {
 				return false;
 			}
-			// 2a. se la DropLocation è la stessa della DragLocation ritorna
+			// 2a. se la DropLocation ï¿½ la stessa della DragLocation ritorna
 			// false
 			// 2b. se la DropLocation e la DragLocation sono entrambi elementi
 			// composti
-			// 2c. se la DragLocation è la root
+			// 2c. se la DragLocation ï¿½ la root
 			JTree.DropLocation dl = (JTree.DropLocation) support.getDropLocation();
 			JTree tree = (JTree) support.getComponent();
 			TreePath path = dl.getPath();
@@ -111,11 +111,11 @@ public class TreeTransferHandler extends TransferHandler implements
 					return false;
 				}
 			}
-			// 3. se la DropLocation è un componente che non permette figli
+			// 3. se la DropLocation ï¿½ un componente che non permette figli
 			if (!node.getAllowsChildren()) {
 				return false;
 			}
-		} else {// se è un copia/taglia dalla clipboard devo estrarre i dati
+		} else {// se ï¿½ un copia/taglia dalla clipboard devo estrarre i dati
 				// prima
 			Transferable trans = clipboard.getContents(null);
 			if ((trans == null) || (!trans.isDataFlavorSupported(nodesFlavor)) && (!trans.isDataFlavorSupported(componenteFlavor))) {
@@ -130,7 +130,7 @@ public class TreeTransferHandler extends TransferHandler implements
 	 * {@inheritDoc}
 	 */
 	protected Transferable createTransferable(JComponent c) {
-		// NOTA: i dati li salvo in un campo locale per facilità di accesso, ma
+		// NOTA: i dati li salvo in un campo locale per facilitï¿½ di accesso, ma
 		// potrei estrarli dal transferable ogni volta che servono
 		JTree tree = (JTree) c;
 		TreePath path = tree.getSelectionPath();
@@ -154,7 +154,7 @@ public class TreeTransferHandler extends TransferHandler implements
 			toRemove.add(node); // aggiungo il nodo originale agli elementi da eliminare
 			Componente compCopy = copy(comp);
 			compCopies.add(compCopy);
-			// se il nodo corrente può avere dei figli devo copiare anche quelli
+			// se il nodo corrente puï¿½ avere dei figli devo copiare anche quelli
 			if (node.getAllowsChildren()) {
 				for (int i = 0; i < node.getChildCount(); i++) {
 					DisabledNode childNode = (DisabledNode) node.getChildAt(i);
@@ -304,18 +304,18 @@ public class TreeTransferHandler extends TransferHandler implements
 			} else {
 				node = (DisabledNode) (tree.getModel()).getRoot();
 			}
-			// Se il nodo da spostare è composto, l'unico parent concesso è la
-			// root e come posizione sarà il successivo al target corrente
+			// Se il nodo da spostare ï¿½ composto, l'unico parent concesso ï¿½ la
+			// root e come posizione sarï¿½ il successivo al target corrente
 			if (!compsToCopy[0].isSimple()) {
 				parent = (DisabledNode) tree.getModel().getRoot();
 				index = parent.getChildCount();
-			} else { // se non è composto allora è un nodo semplice
+			} else { // se non ï¿½ composto allora ï¿½ un nodo semplice
 				if (!node.getAllowsChildren()) {
 					// se il target non permette figli, il parent del target corrente va bene
 					parent = (DisabledNode) node.getParent();
 					index = parent.getChildCount();
 				} else {
-					// se il target corrente consente figli allora il target va bene e sarà messo in coda
+					// se il target corrente consente figli allora il target va bene e sarï¿½ messo in coda
 					parent = node;
 					index = node.getChildCount();
 				}
@@ -430,7 +430,12 @@ public class TreeTransferHandler extends TransferHandler implements
 		clipboard.setContents(null, null);
 		clipboard.addFlavorListener(MainWindow.eventDispatcher);
 		MainWindow.pasteState(false);
+		TreePath path = MainWindow.albero.getTree().getSelectionPath();
+		if (path == null) {
+			path = (new TreePath(nodesToRemove[0].getPath()));
+		}
 		((DefaultTreeModel) MainWindow.albero.getTree().getModel()).reload();
+		MainWindow.albero.getTree().setSelectionPath(path);
 	}
 
 	/**

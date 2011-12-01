@@ -97,7 +97,13 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			}
 		} else {
 			setIcon(homeIcon);
+			if(node.getChildCount()==0) {
+				node.isCorrect = false;
+				MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
+				return this;
+			}
 			setToolTipText(null);// fa in modo che il tooltip sparica spostandosi da un nodo con errore/warning
+			
 		}
 		node.isCorrect = true;
 		MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
@@ -122,9 +128,9 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 				setIcon(errorIcon);
 				setToolTipText(ERRORTOOLTIPTEXT);
 				return true;
-//				setIcon(warningIcon);
-//				setToolTipText(WARNINGTOOLTIPTEXT);
-//				return false;
+				//				setIcon(warningIcon);
+				//				setToolTipText(WARNINGTOOLTIPTEXT);
+				//				return false;
 			}
 		} catch (NullPointerException e) {
 		} catch (ClassCastException e) {
