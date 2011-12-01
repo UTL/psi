@@ -37,11 +37,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddNew extends AddComponent implements DocumentListener,
-													 KeyListener,
-													 ActionListener {
+KeyListener,
+ActionListener {
 	// TODO creare codice per abilitare/disabilitare il pulsante di add
+
+	private static final Color COLOR_PANEL_DISABLED = new Color(204, 204, 204);
+
+	private static final Color COLOR_PANEL_ACTIVE = new Color(184, 207, 229);
 
 	/**
 	 * 
@@ -51,7 +56,7 @@ public class AddNew extends AddComponent implements DocumentListener,
 	private static final String NAME = "Name:";
 	private static final String NAME_EMPTY = "It's mandatory to fill the name field";
 	private static final String NAME_EXISTING = "Another element with the same name alredy existing";
-	
+
 	private static final String NAMETOOLTIP = "Name of the new element";
 	private static final String CATEGORY = "Category:";
 	private static final String CATE_EMPTY = "It's mandatory to fill the category field";
@@ -81,7 +86,7 @@ public class AddNew extends AddComponent implements DocumentListener,
 	private JLabel lblPath;
 	private static final String IMAGE_PATH = "File path:";
 	private static final String PATH_ERROR = "The path is wrong, select an image using \"Browse\" button";
-	
+
 	private JButton importImageButton;
 	private static final String LOAD_IMAGE_BTN = "Browse";
 	private static final String LOAD_IMAGE_TOOLTIP = "Click to load image from a file";
@@ -112,6 +117,10 @@ public class AddNew extends AddComponent implements DocumentListener,
 	private JTextField textField_url;
 	private JTextField textField_imagePath;
 
+	private static final String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+	private Pattern valid_url = Pattern.compile(regex);
+	private static final String allowedUrlChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYWZZ0123456789+&@#/%?=~_|!:,.;";
+
 	/**
 	 * Create the frame.
 	 */
@@ -128,7 +137,7 @@ public class AddNew extends AddComponent implements DocumentListener,
 
 		buildRadioButtons();
 
-		 addDocumentListeners();
+		addDocumentListeners();
 
 		// enabler(panel_text);
 		textField_name.setText(setDefaultName());
@@ -167,7 +176,7 @@ public class AddNew extends AddComponent implements DocumentListener,
 
 	private void buildPanelText() {
 		panel_text = new JPanel();
-		panel_text.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), TEXTPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		panel_text.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), TEXTPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		panel_text.setLayout(null);
 		panel_text.setBounds(92, 72, 426, 183);
 		basePane.add(panel_text);
@@ -182,7 +191,7 @@ public class AddNew extends AddComponent implements DocumentListener,
 
 		textArea = new JTextArea();
 		scrollingArea = new JScrollPane(textArea);
-		scrollingArea.setBorder(new LineBorder(new Color(204, 204, 204), 1, true));
+		scrollingArea.setBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true));
 		scrollingArea.setBounds(12, 20, 402, 120);
 		panel_text.add(scrollingArea);
 		panelTextEnabled(true);
@@ -190,7 +199,7 @@ public class AddNew extends AddComponent implements DocumentListener,
 
 	private void buildPanelImage() {
 		panel_image = new JPanel();
-		panel_image.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), IMAGEPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		panel_image.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), IMAGEPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		panel_image.setLayout(null);
 		panel_image.setBounds(92, 267, 426, 88);
 		basePane.add(panel_image);
@@ -217,7 +226,7 @@ public class AddNew extends AddComponent implements DocumentListener,
 
 	private void buildPanelLink() {
 		panel_link = new JPanel();
-		panel_link.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), LINKPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		panel_link.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), LINKPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		panel_link.setLayout(null);
 		panel_link.setBounds(92, 367, 426, 84);
 		basePane.add(panel_link);
@@ -289,9 +298,14 @@ public class AddNew extends AddComponent implements DocumentListener,
 	private void panelLinkEnabled(boolean state) {
 		panel_link.setEnabled(state);
 		if (state) {
-			panel_link.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), LINKPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		} else
-			panel_link.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), LINKPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+			panel_link.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), LINKPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+			redify(textField_url, Utils.isBlank(textField_url));
+			redify(textField_linkText, Utils.isBlank(textField_linkText));
+		} else{
+			panel_link.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), LINKPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+			redify(textField_url, state);
+			redify(textField_linkText, state);
+		}
 		lblUrl.setEnabled(state);
 		textField_url.setEnabled(state);
 		lblLink.setEnabled(state);
@@ -303,9 +317,12 @@ public class AddNew extends AddComponent implements DocumentListener,
 	private void panelTextEnabled(boolean state) {
 		panel_text.setEnabled(state);
 		if (state) {
-			panel_text.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), TEXTPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		} else
-			panel_text.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), TEXTPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+			panel_text.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), TEXTPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+			redify(textArea, Utils.isBlank(textArea));
+		} else{
+			panel_text.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), TEXTPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+			redify(textArea, state);
+		}
 		importTextButton.setEnabled(state);
 		textArea.setEnabled(state);
 		basePane.revalidate();
@@ -315,9 +332,13 @@ public class AddNew extends AddComponent implements DocumentListener,
 	private void panelImageEnabled(boolean state) {
 		panel_image.setEnabled(state);
 		if (state) {
-			panel_image.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), IMAGEPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		} else
-			panel_image.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), IMAGEPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+			panel_image.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), IMAGEPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+			redify(textField_imagePath,Utils.isBlank(textField_imagePath) || fileError());
+		} else{
+			panel_image.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), IMAGEPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+			redify(textField_imagePath,state);
+
+		}
 		lblPath.setEnabled(state);
 		textField_imagePath.setEnabled(state);
 		importImageButton.setEnabled(state);
@@ -387,256 +408,243 @@ public class AddNew extends AddComponent implements DocumentListener,
 		textArea.getDocument().addDocumentListener(this);
 
 		textField_url.addKeyListener(this);
-		}
+	}
 
-		private void updateComponent(Component figlio, boolean enable){
+	private void updateComponent(Component figlio, boolean enable){
 		figlio.setEnabled(enable);
 		if(figlio == scrollingArea){
-		updateComponent(textArea,enable);
+			updateComponent(textArea,enable);
 
-		//le tre righe qua sotto sono un workaround per un baco delle JScrollPane
-		scrollingArea.getHorizontalScrollBar().setEnabled(enable);
-		scrollingArea.getVerticalScrollBar().setEnabled(enable);
-		scrollingArea.getViewport().getView().setEnabled(enable);
-		manageTooltips(textArea, Utils.isBlank(textArea));
+			//le tre righe qua sotto sono un workaround per un baco delle JScrollPane
+			scrollingArea.getHorizontalScrollBar().setEnabled(enable);
+			scrollingArea.getVerticalScrollBar().setEnabled(enable);
+			scrollingArea.getViewport().getView().setEnabled(enable);
+			manageTooltips(textArea, Utils.isBlank(textArea));
 		}
 		if (figlio instanceof javax.swing.JTextField || figlio instanceof javax.swing.JTextArea){
+			if(enable){
+				if(figlio == textField_url)
+					redify((JTextComponent) figlio,Utils.isBlank((JTextComponent) figlio)||errorUrl());
+				else
+					redify((JTextComponent) figlio,Utils.isBlank((JTextComponent) figlio));
+				figlio.setBackground(new Color(255, 255, 255));
+			}
+			else{
+				((JTextComponent)figlio).setBorder(new LineBorder(new Color(200, 200, 200), 1, true));
+				figlio.setBackground(new Color(245, 245, 245));
+
+			}
+		}
+	}
+
+	private void setBordi(JPanel toDisable, boolean enable) {
 		if(enable){
-		if(figlio == textField_url)
-		redify((JTextComponent) figlio,Utils.isBlank((JTextComponent) figlio)||errorUrl());
-		else
-		redify((JTextComponent) figlio,Utils.isBlank((JTextComponent) figlio));
-		figlio.setBackground(new Color(255, 255, 255));
+			if(toDisable== panel_image)
+				panel_image.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+			else if (toDisable == panel_link)
+				panel_link.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+			else
+				panel_text.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+
 		}
 		else{
-		((JTextComponent)figlio).setBorder(new LineBorder(new Color(200, 200, 200), 1, true));
-		figlio.setBackground(new Color(245, 245, 245));
-
-		}
-		}
-		}
-
-		private void setBordi(JPanel toDisable, boolean enable) {
-		if(enable){
-		if(toDisable== panel_image)
-		panel_image.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		else if (toDisable == panel_link)
-		panel_link.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		else
-		panel_text.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-
-		}
-		else{
-		if(toDisable== panel_image)
-		panel_image.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
-		else if (toDisable == panel_link)
-		panel_link.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
-		else
-		panel_text.setBorder(new TitledBorder(new LineBorder(new Color(204, 204, 204), 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+			if(toDisable== panel_image)
+				panel_image.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+			else if (toDisable == panel_link)
+				panel_link.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
+			else
+				panel_text.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
 		}
 
-		}
+	}
 
-		private void redify(JTextComponent toRed, boolean b){
+	private void redify(JTextComponent toRed, boolean b){
 		if(b){
-		toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo rosso
+			toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo rosso
 
 		}
 		else {
-		toRed.setBorder(new LineBorder(new Color(184, 207, 229), 1, true));//bordo normale
+			toRed.setBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true));//bordo normale
 
 		}
 		manageTooltips(toRed, b);
 
-		}
+	}
 
-		private void manageTooltips(Component component, boolean b) {
+	private void manageTooltips(Component component, boolean b) {
 		if (component == textField_name){
-		if(b)
-		textField_name.setToolTipText(NAME_EMPTY);
-		else if(nameExists())
-		textField_name.setToolTipText(NAME_EXISTING);
-		else
-		textField_name.setToolTipText(NAME);
+			if(b)
+				textField_name.setToolTipText(NAME_EMPTY);
+			else if(nameExists())
+				textField_name.setToolTipText(NAME_EXISTING);
+			else
+				textField_name.setToolTipText(NAME);
 
 		}
 		else if(component == textField_category){
-		if(b)
-		textField_category.setToolTipText(CATE_EMPTY);
-		else
-		textField_category.setToolTipText(CATEGORY);
+			if(b)
+				textField_category.setToolTipText(CATE_EMPTY);
+			else
+				textField_category.setToolTipText(CATEGORY);
 		}
 		else if(component == textField_url){
-		if(b)
-		textField_url.setToolTipText(URL_EMPTY);
-		else
-		textField_url.setToolTipText(URL);
+			if(b)
+				textField_url.setToolTipText(URL_EMPTY);
+			else
+				textField_url.setToolTipText(URL);
 		}
 		else if(component == textField_linkText ){
-		if(b)
-		textField_linkText.setToolTipText(TEXT_EMPTY);
-		else
-		textField_linkText.setToolTipText(TEXT);
+			if(b)
+				textField_linkText.setToolTipText(TEXT_EMPTY);
+			else
+				textField_linkText.setToolTipText(TEXT);
 		}
 		else if(component == textArea){
-		if(b)
-		textArea.setToolTipText(TEXT_EMPTY);
-		else
-		textArea.setToolTipText(TEXT);
+			if(b)
+				textArea.setToolTipText(TEXT_EMPTY);
+			else
+				textArea.setToolTipText(TEXT);
 		}
 		else if(component == textField_imagePath){
-		if(b)
-		textField_imagePath.setToolTipText(TEXT_EMPTY);
+			if(b)
+				textField_imagePath.setToolTipText(TEXT_EMPTY);
+			else
+				textField_imagePath.setToolTipText(TEXT);
+		}
+	}
+
+	private void changeEvent(DocumentEvent e) {
+		if(e.getDocument()== textField_url.getDocument())
+			redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument())))||errorUrl());
+		else if(e.getDocument()==textField_imagePath.getDocument()){
+			checkPath();
+		}
+		else if(e.getDocument()==textField_name.getDocument()){
+			Utils.redify(textField_name,Utils.isBlank(textField_name)||nameExists());
+			manageTooltips(textField_name, Utils.isBlank(textField_name));
+		}
 		else
-		textField_imagePath.setToolTipText(TEXT);
+			redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument()))));
+
+		updateAddBtn();
+	}
+
+	private JTextComponent fromDocToJComp(Document doc){
+		if(doc== textField_category.getDocument())
+			return textField_category;
+		else if(doc== textField_imagePath.getDocument())
+			return textField_imagePath;
+		else if(doc== textField_linkText.getDocument())
+			return textField_linkText;
+		else if(doc== textField_name.getDocument())
+			return textField_name;
+		else if(doc== textField_url.getDocument())
+			return textField_url;
+		else if (doc== textArea.getDocument())
+			return textArea;
+		return null;
+	}
+
+
+
+
+	private boolean nameExists(){
+		if (this.getOwner() instanceof Wizard)
+			return(((Wizard) this.getOwner()).nameExistsAll(textField_name.getText()));
+		else
+			return MainWindow.albero.nameExists(textField_name.getText());
+	}
+
+	private boolean erroriPresenti(){
+		boolean result;
+		result=Utils.isBlank(textField_name) || nameExists();
+		result= result || Utils.isBlank(textField_category);
+		if (rdbtnImage.isSelected())
+			result= result || Utils.isBlank(textField_imagePath) || fileError();
+
+		else if
+		(rdbtnLink.isSelected())
+			result= result || Utils.isBlank(textField_linkText) || Utils.isBlank(textField_url) || errorUrl();
+		else
+			result= result || Utils.isBlank(textArea);
+		return result;
+
+	}
+
+	private boolean errorUrl() {
+		if(!IsMatch(textField_url.getText())&& IsMatch("http://"+textField_url.getText())){
+			//textField_url.setText("http://"+textField_url.getText());
+			//String temp = "http://"+textField_url.getText();
+			//textField_url.setText(temp);
 		}
+		//System.out.println("Match errorurl"+IsMatch(textField_url.getText()));
+		return !(IsMatch(textField_url.getText()) || IsMatch("http://"+textField_url.getText()));
+	}
+
+	private boolean fileError(){
+		return !MainWindow.isPathCorrect(textField_imagePath.getText());
+	}
+
+	private void checkPath(){
+		redify(textField_imagePath, !MainWindow.isPathCorrect(textField_imagePath.getText()));
+	}
+
+
+	private void updateAddBtn(){
+		updateComponent(buttonAdd, !erroriPresenti());
+	}
+
+	private boolean IsMatch(String s) {
+		try {
+
+			Matcher matcher = valid_url.matcher(s);
+			return matcher.matches();
+		} catch (RuntimeException e) {
+			return false;
 		}
+	}
 
-		private void changeEvent(DocumentEvent e) {
-			if(e.getDocument()== textField_url.getDocument())
-				redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument())))||errorUrl());
-			else if(e.getDocument()==textField_imagePath.getDocument()){
-				checkPath();
-			}
-			else if(e.getDocument()==textField_name.getDocument()){
-				Utils.redify(textField_name,Utils.isBlank(textField_name)||nameExists());
-				manageTooltips(textField_name, Utils.isBlank(textField_name));
-			}
-			else
-				redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument()))));
+	private boolean allowedChar(char c){
+		if(allowedUrlChar.indexOf(c)==-1)
+			return false;
+		return true;
+	}
 
-			updateAddBtn();
-		}
+	@Override
+	public void changedUpdate(DocumentEvent arg0) {
+		changeEvent(arg0);
+	}
 
-		private JTextComponent fromDocToJComp(Document doc){
-			if(doc== textField_category.getDocument())
-				return textField_category;
-			else if(doc== textField_imagePath.getDocument())
-				return textField_imagePath;
-			else if(doc== textField_linkText.getDocument())
-				return textField_linkText;
-			else if(doc== textField_name.getDocument())
-				return textField_name;
-			else if(doc== textField_url.getDocument())
-				return textField_url;
-			else if (doc== textArea.getDocument())
-				return textArea;
-			return null;
-		}
+	@Override
+	public void insertUpdate(DocumentEvent arg0) {
+		changeEvent(arg0);
 
+	}
 
+	@Override
+	public void removeUpdate(DocumentEvent arg0) {
+		changeEvent(arg0);
 
+	}
 
-		private boolean nameExists(){
-			if (this.getOwner() instanceof Wizard)
-				return(((Wizard) this.getOwner()).nameExistsAll(textField_name.getText()));
-			else
-				return MainWindow.albero.nameExists(textField_name.getText());
-		}
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		if(allowedChar(arg0.getKeyChar()))
+			arg0.consume();
 
-		private boolean erroriPresenti(){
-			boolean result;
-			result=Utils.isBlank(textField_name) || nameExists();
-			result= result || Utils.isBlank(textField_category);
-			if (rdbtnImage.isSelected())
-				result= result || Utils.isBlank(textField_imagePath) || fileError();
+	}
 
-			else if
-			(rdbtnLink.isSelected())
-				result= result || Utils.isBlank(textField_linkText) || Utils.isBlank(textField_url) || errorUrl();
-			else
-				result= result || Utils.isBlank(textArea);
-			return result;
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		if(allowedChar(arg0.getKeyChar()))
+			arg0.consume();
+	}
 
-		}
-
-		private boolean errorUrl() {
-			if(!IsMatch(textField_url.getText())&& IsMatch("http://"+textField_url.getText())){
-				//textField_url.setText("http://"+textField_url.getText());
-				//String temp = "http://"+textField_url.getText();
-				//textField_url.setText(temp);
-			}
-			//System.out.println("Match errorurl"+IsMatch(textField_url.getText()));
-			return !(IsMatch(textField_url.getText()) || IsMatch("http://"+textField_url.getText()));
-		}
-
-		private boolean fileError(){
-			return !MainWindow.isPathCorrect(textField_imagePath.getText());
-		}
-
-		private void checkPath(){
-			redify(textField_imagePath, !MainWindow.isPathCorrect(textField_imagePath.getText()));
-		}
-
-		private void readFile(){
-			try {
-				//TODO escapare caratteri speciali
-				fcText.showDialog();
-
-				if (fcText.getFile() != null){
-					String letto = Wizard.readFile(fcText.getFile());
-					if ( letto!= null && letto.length()>0)
-						textArea.setText(letto);
-				}
-			} catch (IOException e) {
-			}
-		}
-
-		private void updateAddBtn(){
-			updateComponent(buttonAdd, !erroriPresenti());
-		}
-
-		private boolean IsMatch(String s) {
-			try {
-
-				Matcher matcher = valid_url.matcher(s);
-				return matcher.matches();
-			} catch (RuntimeException e) {
-				return false;
-			}
-		}
-
-		private boolean allowedChar(char c){
-			if(allowedUrlChar.indexOf(c)==-1)
-				return false;
-			return true;
-		}
-
-		@Override
-		public void changedUpdate(DocumentEvent arg0) {
-			changeEvent(arg0);
-		}
-
-		@Override
-		public void insertUpdate(DocumentEvent arg0) {
-			changeEvent(arg0);
-
-		}
-
-		@Override
-		public void removeUpdate(DocumentEvent arg0) {
-			changeEvent(arg0);
-
-		}
-
-		@Override
-		public void keyPressed(KeyEvent arg0) {
-			if(allowedChar(arg0.getKeyChar()))
-				arg0.consume();
-
-		}
-
-		@Override
-		public void keyReleased(KeyEvent arg0) {
-			if(allowedChar(arg0.getKeyChar()))
-				arg0.consume();
-		}
-
-		@Override
-		public void keyTyped(KeyEvent arg0) {
-			if(!allowedChar(arg0.getKeyChar()))
-				arg0.consume();
-		}
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		if(!allowedChar(arg0.getKeyChar()))
+			arg0.consume();
+	}
 
 
 		}
