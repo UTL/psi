@@ -121,7 +121,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			System.out.println("Focus: "+focus.getClass().getCanonicalName());
 			Action a = focus.getActionMap().get(e.getActionCommand());
 			if (a != null) {
-				a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
+				a.actionPerformed(new ActionEvent(focus, ActionEvent.ACTION_PERFORMED, null));
 			}
 		} else {
 			// Se sto cercando di compiere un'altra azione lasciando un taglia
@@ -187,7 +187,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				// forzo il focus sull'albero per attivare il transferhandler dell'albero
 				Action a = focus.getActionMap().get(e.getActionCommand());
 				if (a != null) {
-					a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
+					a.actionPerformed(new ActionEvent(focus, ActionEvent.ACTION_PERFORMED, null));
 				}
 				MainWindow.pasteState(true);
 			} else if (e.getActionCommand().equals((String) TransferHandler.getCutAction().getValue(Action.NAME))) {
@@ -197,7 +197,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				// forzo il focus sull'albero per attivare il transferhandler dell'albero
 				Action a = focus.getActionMap().get(e.getActionCommand());
 				if (a != null) {
-					a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
+					a.actionPerformed(new ActionEvent(focus, ActionEvent.ACTION_PERFORMED, null));
 				}
 				MainWindow.pasteState(true);
 			} else if (e.getActionCommand().equals(TreePanel.AddAction.ADDCOMMAND)) {
@@ -325,6 +325,12 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		// gestisco l'attivazione di Undo e Redo
 		MainWindow.undoState(undoManager.canUndo());
 		MainWindow.redoState(undoManager.canRedo());
+		
+		if (focus != null) {
+			focus.requestFocusInWindow();
+		} else {
+			MainWindow.albero.getTree().requestFocusInWindow();
+		}
 		
 		MainWindow.albero.revalidate();
 	}
@@ -474,15 +480,13 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 
 	@Override
 	public void focusGained(FocusEvent e) {
-		//TODO rivedere le condizioni!!!
 		if ((e.getComponent() instanceof JTree) || (((e.getOppositeComponent() instanceof JTree) && (!(e.getComponent() instanceof JTextComponent))))) {
-			System.out.println("Sono qui");
 			focus = MainWindow.albero.getTree();
 			MainWindow.pasteState(((TreeTransferHandler)MainWindow.albero.getTree().getTransferHandler()).getClipboard().getContents(null)!=null);
-		} else if ((e.getComponent() instanceof JTextComponent) || ((e.getOppositeComponent() instanceof JTextComponent) && (!(e.getComponent() instanceof JTree)))) {
-			System.out.println("Sono nell'else");
+		} else if (e.getComponent() instanceof JTextComponent) {
+			focus = (JComponent) e.getComponent();
+		} else if ((e.getOppositeComponent() instanceof JTextComponent) && (!(e.getComponent() instanceof JTree))) {
 			focus = (JComponent) e.getOppositeComponent();
-			System.out.println("focus nel focusgained: "+focus);
 			MainWindow.pasteState(Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null)!=null);
 		}
 	}

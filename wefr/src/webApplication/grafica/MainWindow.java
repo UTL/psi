@@ -549,7 +549,7 @@ public class MainWindow extends JFrame {/*
 			btnCopy.setBounds(195, 4, 30, 30);
 			btnCopy.setActionCommand((String) TransferHandler.getCopyAction().getValue(Action.NAME));
 			btnCopy.addActionListener(eventDispatcher);
-			btnCopy.addFocusListener(eventDispatcher);
+//			btnCopy.addFocusListener(eventDispatcher);
 			add(btnCopy);
 
 			enabledIcon = new ImageIcon(BASEPATH + ENCUTICON);
