@@ -106,15 +106,10 @@ public class ImagePreview extends JPanel implements PropertyChangeListener,
 				return;
 			else
 				name = selection.getAbsolutePath();
-			if ((name != null) && name.toLowerCase().endsWith(".jpg")
-					|| name.toLowerCase().endsWith(".jpeg")
-					|| name.toLowerCase().endsWith(".gif")
-					|| name.toLowerCase().endsWith(".png")) {
-				icon = new ImageIcon(name);
-				image = icon.getImage();
-				scaleImage();
-				repaint();
-			}
+			icon = new ImageIcon(name);
+			image = icon.getImage();
+			scaleImage();
+			repaint();
 		}
 	}
 
@@ -123,10 +118,7 @@ public class ImagePreview extends JPanel implements PropertyChangeListener,
 	 */
 	public void insertUpdate(DocumentEvent e) {
 		try {
-			this.propertyChange(new PropertyChangeEvent(e.getDocument(),
-					JFileChooser.SELECTED_FILE_CHANGED_PROPERTY, 0, new File(e
-							.getDocument().getText(0,
-									e.getDocument().getLength()))));
+			this.propertyChange(new PropertyChangeEvent(e.getDocument(), JFileChooser.SELECTED_FILE_CHANGED_PROPERTY, 0, new File(e.getDocument().getText(0, e.getDocument().getLength()))));
 		} catch (BadLocationException e1) {
 		}
 	}

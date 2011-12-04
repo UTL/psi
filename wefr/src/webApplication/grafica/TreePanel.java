@@ -31,6 +31,9 @@ import javax.swing.undo.UndoableEditSupport;
 import webApplication.business.Componente;
 import webApplication.business.ComponenteMolteplice;
 import webApplication.business.ComponenteSemplice;
+import webApplication.business.Immagine;
+import webApplication.business.Link;
+import webApplication.business.Testo;
 
 /**
  * Il pannello contenente l'albero
@@ -342,7 +345,8 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	}
 	
 	/**
-	 * @return
+	 * Verifica se l'albero contiene nodi corretti
+	 * @return	True se l'albero non contiene nodi con errori, False altrimenti
 	 */
 	protected boolean isCorrect() {
 		return isCorrect(rootNode);
@@ -369,12 +373,11 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 		}
 		return true;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	public void treeWillCollapse(TreeExpansionEvent e)
-			throws ExpandVetoException {
+	public void treeWillCollapse(TreeExpansionEvent e) throws ExpandVetoException {
 		// Faccio in modo che la root non sia collassabile
 		if (e.getPath().getPathCount() == 1) {
 			// Il path � un "array" contenente gli elementi a partire dalla
@@ -776,6 +779,14 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 				comp.setEnfasi((Integer) getValue(NEWVALUE));
 			} else if (field == VISIBILITY) {
 				comp.setVisibilita((Integer) getValue(NEWVALUE));
+			} else if (field == IMAGE) {
+				((Immagine) comp).setPath((String) getValue(NEWVALUE));
+			} else if (field == TEXT) {
+				((Testo) comp).setTesto((String) getValue(NEWVALUE));
+			} else if (field == URLPATH) {
+				((Link) comp).setUri((String) getValue(NEWVALUE));
+			} else if (field == URLTEXT) {
+				((Link) comp).setTesto((String) getValue(NEWVALUE));
 			}
 			UndoableChangeField edit = new UndoableChangeField(tree, parentIndex, parent.getIndex(node), (String) getValue(FIELD), (Object) getValue(OLDVALUE), (Object) getValue(NEWVALUE));
 			undoSupport.postEdit(edit);

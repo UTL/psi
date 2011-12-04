@@ -1,5 +1,8 @@
 package webApplication.grafica;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
@@ -18,8 +21,13 @@ public class PannelloLink extends PannelloGeneric {
 	private static final String BASEURLPATH = "http://";
 	protected JTextField urlText;
 
-	private static final String PATHTOOLTIP = "Enter the link of the site you want to be connected to";
-	private static final String TEXTTOOLTIP = "Enter the text you want to be displayed for this link";
+	protected static final String PATHTOOLTIP = "Enter the link of the site you want to be connected to";
+	protected static final String ERRORPATHTOOLTIP = "Link blank or not valid";
+	protected static final String TEXTTOOLTIP = "Enter the text you want to be displayed for this link";
+	protected static final String ERRORTEXTTOOLTIP = "Text blank or not valid";
+	
+	private static final String URL_REGEX = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+	private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
 
 	/**
 	 * Crea il pannello ed i relativi campi
@@ -29,12 +37,10 @@ public class PannelloLink extends PannelloGeneric {
 		
 		JLabel lblLinkTarget = new JLabel("URL:");
 		lblLinkTarget.setBounds(110, 60, 26, 14);
-		// lblLinkTarget.setBounds(135, 109, 26, 14);
 		add(lblLinkTarget);
 
 		urlPath = new JTextField(BASEURLPATH);
 		urlPath.setToolTipText(PATHTOOLTIP);
-		// TODO aggiungere il document listener
 		urlPath.setBounds(lblLinkTarget.getX() + 46, lblLinkTarget.getY() - 3, 174, 22);
 		add(urlPath);
 
@@ -62,6 +68,15 @@ public class PannelloLink extends PannelloGeneric {
 
 	protected String getText() {
 		return urlText.getText();
+	}
+	
+	protected boolean isPathCorrect() {
+		Matcher urlMatcher = URL_PATTERN.matcher(urlPath.getText());
+		return !Utils.redify(urlPath, !urlMatcher.matches());
+	}
+	
+	protected boolean isTextCorrect() {
+		return !Utils.redify(urlText, urlText.getText().isEmpty());
 	}
 
 }

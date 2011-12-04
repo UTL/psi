@@ -7,7 +7,11 @@ import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.FlavorListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Vector;
@@ -17,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JTree;
 import javax.swing.TransferHandler;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -31,8 +36,6 @@ import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
 import webApplication.grafica.TreePanel.AddAction;
-//import webApplication.grafica.TreePanel.ChangeFieldAction;
-//import webApplication.grafica.TreePanel.ChangePriorityAction;
 import webApplication.grafica.TreePanel.ChangeFieldAction;
 import webApplication.grafica.TreePanel.ChangePriorityAction;
 import webApplication.grafica.TreePanel.MoveAction;
@@ -48,7 +51,7 @@ import webApplication.grafica.TreePanel.UndoAction;
  * @author Andrea
  * 
  */
-public class EventDispatcher implements ActionListener, PropertyChangeListener, DocumentListener, TreeSelectionListener, FlavorListener, KeyEventDispatcher {
+public class EventDispatcher implements ActionListener, PropertyChangeListener, DocumentListener, TreeSelectionListener, FlavorListener, KeyEventDispatcher, WindowListener, FocusListener {
 
 	private static final String CLEARALL = "This will delete the current work.\n Do you wish to continue?";
 	private static final String DELETEMESSAGE = "You are going to delete ";
@@ -59,18 +62,9 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 	private static boolean haveCutted = false;
 
 	private TreePanel panel;
-
-	// private NewAction newOrCloseAction;
-	// private AddAction addAction;
-//	 private RemoveAction removeAction;
-	// private MoveAction moveAction;
-	// private ChangePriorityAction changePriorityAction;
-	// private ChangeFieldAction changeFieldAction;
 	private UndoAction undoAction;
 	private RedoAction redoAction;
-
 	private UndoManager undoManager;
-
 	private JComponent focusOwner;
 
 	/**
@@ -82,16 +76,17 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		redoAction = panel.new RedoAction();
 		undoManager = panel.getUndoManager();
 		// NOTA: non ho bisogno di gestire le azioni di copia/incolla/paste dato
-		// che il TransferHandler le gestisce gi� autonomamente
+		// che il TransferHandler le gestisce autonomamente
 
 		// mi metto in ascolto per capire quando abilitare il bottone di paste
 		((TreeTransferHandler) panel.getTree().getTransferHandler()).getClipboard().addFlavorListener(this);
 
 		// mi metto in ascolto sugli eventi relativi all'albero
 		panel.getTree().addTreeSelectionListener(this);
-
+		
 		// per gestire gli eventi della tastiera->shortcut
 		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		((MainWindow)panel.getTopLevelAncestor()).addWindowListener(this);
 		manager.addKeyEventDispatcher(this);
 		manager.addPropertyChangeListener("permanentFocusOwner", this);
 	}
@@ -117,7 +112,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		if (e.getActionCommand().equals((String) TransferHandler.getPasteAction().getValue(Action.NAME))) {
 			// gestisco il comando incolla
 			haveCutted = false;
-			focusOwner = MainWindow.albero.getTree();
+//			focusOwner = MainWindow.albero.getTree();
 			// forzo il focus sull'albero per attivare il transferhandler dell'albero
 			Action a = focusOwner.getActionMap().get(e.getActionCommand());
 			if (a != null) {
@@ -182,12 +177,14 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				redoAction.actionPerformed(e);
 			} else if (e.getActionCommand().equals((String) TransferHandler.getCopyAction().getValue(Action.NAME))) {
 				// gestisco il comando copia
-				focusOwner = MainWindow.albero.getTree();
+//				focusOwner = MainWindow.albero.getTree();
 				// forzo il focus sull'albero per attivare il transferhandler dell'albero
 				Action a = focusOwner.getActionMap().get(e.getActionCommand());
+				System.out.println("Action command: "+e.getActionCommand());
 				if (a != null) {
 					a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
 				}
+				MainWindow.pasteState(true);
 			} else if (e.getActionCommand().equals((String) TransferHandler.getCutAction().getValue(Action.NAME))) {
 				// gestisco il comando taglia
 				haveCutted = true;
@@ -197,6 +194,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				if (a != null) {
 					a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
 				}
+				MainWindow.pasteState(true);
 			} else if (e.getActionCommand().equals(TreePanel.AddAction.ADDCOMMAND)) {
 				if (e.getSource() instanceof JMenuItem) {
 					// NOTA: JMenuItem ha come TopLevelAncestor null cambio la
@@ -224,13 +222,11 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				String message = DELETEMESSAGE + name + CONFIRMMESSAGE;
 				int choice = JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (choice == JOptionPane.YES_OPTION) {
-//				if (choice == 0) {
 					if (nodeToRemove.getChildCount() != 0) {
 						message = name + NOTEMPTYMESSAGE;
 						// se il nodo e complesso e non vuoto, chiedo conferma di eliminazione di tutti gli elementi interni
 						choice = JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 						if (choice == JOptionPane.NO_OPTION) {
-//						if (choice == 1) {
 							return;
 						}
 					}
@@ -275,7 +271,6 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				PannelloComp pc = (PannelloComp) ((JButton) e.getSource()).getParent();
 				int choice = JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), DELETEMESSAGE+"the selected nodes."+CONFIRMMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (choice == JOptionPane.YES_OPTION) {
-//				if (choice == 0) {
 					int[] indici = pc.list_components.getSelectedIndices();
 					//aggiorno la lista del pannello
 					for (int i = indici.length - 1; i >= 0; i--) {
@@ -319,7 +314,6 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				XMLGenerator generator = new XMLGenerator((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor());
 				Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
 				generator.generateXML();
-				//TODO catch di eventuali errori in conversione
 			}
 		}
 
@@ -328,7 +322,6 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		MainWindow.redoState(undoManager.canRedo());
 		
 		MainWindow.albero.revalidate();
-//		MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
 	}
 
 	/**
@@ -378,7 +371,8 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			changeFieldAction.putValue(TreePanel.ChangeFieldAction.OLDVALUE, ((Link)selectedNode.getUserObject()).getTesto());
 			changeFieldAction.putValue(TreePanel.ChangeFieldAction.NEWVALUE, (MainWindow.properties.pannelloLink.getText()));
 			changeFieldAction.actionPerformed(new ActionEvent(MainWindow.properties.pannelloLink.urlText, ActionEvent.ACTION_PERFORMED,""));
-		}	
+		}
+		MainWindow.albero.getTree().repaint();
 	}
 
 	/**
@@ -396,7 +390,8 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		// gestisco i bottoni di cut copy e delete
 		if (!(e.getPath().getLastPathComponent() == null) && !((DisabledNode) e.getPath().getLastPathComponent()).isRoot()) {
 			// elemento selezionato diverso dalla root
-			MainWindow.properties.showProperties((Componente) ((DisabledNode) e.getPath().getLastPathComponent()).getUserObject());
+			MainWindow.properties.showProperties((DisabledNode) e.getPath().getLastPathComponent());
+//			MainWindow.properties.showProperties((Componente) ((DisabledNode) e.getPath().getLastPathComponent()).getUserObject());
 			MainWindow.copyState(true);
 			MainWindow.cutState(true);
 			MainWindow.removeState(true);
@@ -427,6 +422,63 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			((TreeTransferHandler)MainWindow.albero.getTree().getTransferHandler()).cancelCut();
 		}
 		return false;
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// non utile
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void windowClosing(WindowEvent e) {
+		int choice = 0;
+		if (!MainWindow.albero.isEmpty()) {
+			choice = JOptionPane.showConfirmDialog(((MainWindow) e.getWindow()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		}
+		if (choice == JOptionPane.YES_OPTION) {
+			((MainWindow) e.getWindow()).exitProject();
+		}
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// non utile
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// non utile
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// non utile
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// non utile
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// non utile
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		if ((e.getOppositeComponent() instanceof JButton) || (e.getOppositeComponent() instanceof JTree)) {
+			focusOwner = MainWindow.albero.getTree();
+		} else {
+			focusOwner = (JComponent) e.getOppositeComponent();
+		}
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		//non mi serve
 	}
 
 }

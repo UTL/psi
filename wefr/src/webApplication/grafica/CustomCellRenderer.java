@@ -1,7 +1,10 @@
 package webApplication.grafica;
 
 import java.awt.Component;
+import java.io.File;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
@@ -36,7 +39,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	private ImageIcon compositeIcon;
 	private ImageIcon alternativeIcon;
 	private ImageIcon errorIcon;
-	private ImageIcon warningIcon;
+//	private ImageIcon warningIcon;
 
 	private static String BASEPATH = "icon/";
 	private static String HOMEICON = "Home.png";
@@ -46,10 +49,13 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	private static String ALTERNATIVEICONNAME = "Alternativa.png";
 	private static String COMPOSITEICONNAME = "Composto.png";
 	private static String ERRORICONNAME = "error.png";
-	private static String WARNINGICONNAME = "warning.png";
+//	private static String WARNINGICONNAME = "warning.png";
 
 	private static String ERRORTOOLTIPTEXT = "The choosen component name is already taken";
-	private static String WARNINGTOOLTIPTEXT = "The element contains al least one element. Consider adding more internal components";
+//	private static String WARNINGTOOLTIPTEXT = "The element contains al least one element. Consider adding more internal components";
+	
+	private static final String URL_REGEX = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+	private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
 
 	/**
 	 * Il costruttore del renderer per l'albero
@@ -62,7 +68,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		compositeIcon = createImageIcon(BASEPATH + COMPOSITEICONNAME);
 		alternativeIcon = createImageIcon(BASEPATH + ALTERNATIVEICONNAME);
 		errorIcon = createImageIcon(BASEPATH + ERRORICONNAME);
-		warningIcon = createImageIcon(BASEPATH + WARNINGICONNAME);
+//		warningIcon = createImageIcon(BASEPATH + WARNINGICONNAME);
 	}
 
 	/**
@@ -72,8 +78,16 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		DisabledNode node = (DisabledNode) value;
 		if (node != tree.getModel().getRoot()) {
+			
+//			if (node.isCorrect == false) {
+//				setIcon(errorIcon);
+//				setToolTipText(ERRORTOOLTIPTEXT);
+//				return this;
+//			}
+			
 			if (hasError(tree, node)) {
 				node.isCorrect = false;
+				MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
 				return this;
 			}
 			Componente comp = (Componente) node.getUserObject();
@@ -116,22 +130,47 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			// Recupero il path degli elementi con quel nome
 			Vector<TreePath> elPath = panel.getPathForName((((Componente) node.getUserObject()).getNome()));
 			if (elPath.size() != 1) {
-				// Se ho un solo elemento con quel nome, l'elemento � "node" quindi non lo considero
+				// Un solo elemento con quel nome 
 				if (elPath.contains(new TreePath(node.getPath()))) {
-					// Se il path di node � tra quelli con nome non
+					// Se il path di node contiene tra quelli con nome non
 					// consentito setto l'icona di errore e setto il tooltip
 					setIcon(errorIcon);
 					setToolTipText(ERRORTOOLTIPTEXT);
 					return true;
 				}
+			} else if (((Componente)node.getUserObject()).getNome().isEmpty()) {
+				setIcon(errorIcon);
+				setToolTipText(ERRORTOOLTIPTEXT);
+				return true;
+			} if (((Componente)node.getUserObject()).getCategoria().isEmpty()) {
+				setIcon(errorIcon);
+				setToolTipText(ERRORTOOLTIPTEXT);
+				return true;
 			} else if ((!((Componente) node.getUserObject()).isSimple()) && (((ComponenteMolteplice) node.getUserObject()).getOpzioni().size() < 1)) {
 				setIcon(errorIcon);
 				setToolTipText(ERRORTOOLTIPTEXT);
 				return true;
-				//				setIcon(warningIcon);
-				//				setToolTipText(WARNINGTOOLTIPTEXT);
-				//				return false;
+			} else if (((Componente)node.getUserObject()).getType().equals(Immagine.IMAGETYPE)) {
+				File file = new File(((Immagine)node.getUserObject()).getPath());
+				if (!file.exists()) {
+					setIcon(errorIcon);
+					setToolTipText(ERRORTOOLTIPTEXT);
+					return true;
+				}
+			} else if (((Componente)node.getUserObject()).getType().equals(Testo.TEXTTYPE)) {
+				if (((Testo)node.getUserObject()).getTesto().isEmpty()) {
+					setIcon(errorIcon);
+					setToolTipText(ERRORTOOLTIPTEXT);
+					return true;
+				}
+			} else if (((Componente)node.getUserObject()).getType().equals(Link.LINKTYPE)) {
+				if ((((Link)node.getUserObject()).getTesto().isEmpty()) || (!isPathCorrect(((Link)node.getUserObject()).getUri()))) {
+					setIcon(errorIcon);
+					setToolTipText(ERRORTOOLTIPTEXT);
+					return true;
+				}
 			}
+			//TODO controllare link url
 		} catch (NullPointerException e) {
 		} catch (ClassCastException e) {
 		}
@@ -147,6 +186,11 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	 */
 	private static ImageIcon createImageIcon(String path) {
 		return new ImageIcon(path);
+	}
+	
+	private static boolean isPathCorrect(String path) {
+		Matcher urlMatcher = URL_PATTERN.matcher(path);
+		return urlMatcher.matches();
 	}
 
 }

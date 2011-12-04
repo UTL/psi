@@ -30,7 +30,8 @@ public class PannelloImage extends PannelloGeneric implements ActionListener {
 	private static final String BTNLOADIMAGE = "Load an image";
 	private static final String BTNTOOLTIP = "Click here to select the file of the desired image";
 	private static final String LOAD_IMAGE = "Load image";
-	private static final String IMAGEPATHTOOLTIP = "Path of the image file";
+	protected static final String IMAGEPATHTOOLTIP = "Path of the image file";
+	protected static final String IMAGEPATHERRORTOOLTIP = "The path is wrong";
 
 	private static final int labelWidth = 94;
 	private static final int labelHeight = 14;
@@ -87,6 +88,10 @@ public class PannelloImage extends PannelloGeneric implements ActionListener {
 	 */
 	protected String getPath() {
 		return imagepath.getText();
+	}
+	
+	protected boolean isCorrect() {
+		return !Utils.redify(imagepath, !MainWindow.isPathCorrect(imagepath.getText()));
 	}
 
 	/**

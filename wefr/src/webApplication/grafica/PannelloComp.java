@@ -4,12 +4,15 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+
+import java.awt.Color;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -197,6 +200,27 @@ public class PannelloComp extends PannelloGeneric implements ListSelectionListen
 			}
 		}
 		model.removeElementAt(i);
+	}
+	
+	protected boolean redify() {
+		if (isEmpty()) {
+			scrollPane.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));// bordo rosso
+			return true;
+		} else {
+			scrollPane.setBorder(new LineBorder(new Color(184, 207, 229), 1, true));// bordo normale
+			return false;
+		}
+	}
+	
+	protected boolean isEmpty() {
+		if (list_components.getModel().getSize() == 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	protected boolean isCorrect() {
+		return !redify();
 	}
 
 	/**

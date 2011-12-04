@@ -28,7 +28,8 @@ public class PannelloText extends PannelloGeneric implements ActionListener {
 	private static final String IMPORTTEXT = "Import from file";
 	private static final String BTNTOOLTIP = "Click here to select a file from which load text";
 	private static final String LOAD_TEXT = "Load text";
-	private static final String TEXTTOOLTIP = "The text that will be displayed";
+	protected static final String TEXTTOOLTIP = "The text that will be displayed";
+	protected static final String ERRORTEXTTOOLTIP = "Text cannot be empty";
 
 	private static final int labelHeight = 14;
 	private static final int labelWidth = 94;
@@ -80,6 +81,10 @@ public class PannelloText extends PannelloGeneric implements ActionListener {
 	 */
 	protected String getText() {
 		return textArea.getText();
+	}
+	
+	protected boolean isCorrect() {
+		return !Utils.redify(textArea, textArea.getText().isEmpty());
 	}
 
 	/**

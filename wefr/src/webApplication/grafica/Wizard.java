@@ -7,7 +7,6 @@ import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -22,6 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
@@ -30,7 +34,7 @@ import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
 
-public class Wizard extends JDialog implements ActionListener {
+public class Wizard extends JDialog implements ActionListener, DocumentListener, ListDataListener {
 
 	/**
 	 * 
@@ -88,7 +92,8 @@ public class Wizard extends JDialog implements ActionListener {
 			ComponenteComposto.COMPOSTOTYPE };
 
 	/**
-	 * Create the frame.
+	 * Crea il frame
+	 * @param owner	Il frame che ha richiesto la creazione del wizard
 	 */
 	public Wizard(JFrame owner) {
 		super(owner, ModalityType.APPLICATION_MODAL);
@@ -109,9 +114,15 @@ public class Wizard extends JDialog implements ActionListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP,
-				JTabbedPane.WRAP_TAB_LAYOUT);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
 		tabbedPane.setBounds(0, 0, 471, 374);
+		//Nasconde i tab: siamo sicuri di non volerli? fanno "Scena"
+		tabbedPane.setUI(new BasicTabbedPaneUI() {
+			@Override
+			protected int calculateTabAreaHeight(int tabPlacement, int horizRunCount, int maxTabHeight) {
+				return 0;
+			}
+		});
 		contentPane.add(tabbedPane);
 
 		// Primo Tabbed Panel
@@ -125,10 +136,12 @@ public class Wizard extends JDialog implements ActionListener {
 		lblName.setBounds(125, 109, 46, 14);
 		firstStep.add(lblName);
 
-		name = new JTextField(setDefaultName());
+		createButtonsBar(firstStep, 1);
+		
+		name = new JTextField();
 		name.setBounds(181, 106, 174, 22);
-		// name.setText(setDefaultName());
-		// TODO aggiungere il document listener
+		name.getDocument().addDocumentListener(this);
+		name.setText(setDefaultName());
 		firstStep.add(name);
 
 		JLabel lblType = new JLabel("Type:");
@@ -138,8 +151,6 @@ public class Wizard extends JDialog implements ActionListener {
 		choice_type = new JComboBox(tipi);
 		choice_type.setBounds(181, 165, 174, 20);
 		firstStep.add(choice_type);
-
-		createButtonsBar(firstStep, 1);
 
 		// Secondo Tabbed Panel
 		JPanel secondStep = new JPanel();
@@ -153,11 +164,13 @@ public class Wizard extends JDialog implements ActionListener {
 		lblCategoryIdentifier.setBounds(56, 94, 108, 14);
 		secondStep.add(lblCategoryIdentifier);
 
-		category = new JTextField("Category0");
+		createButtonsBar(secondStep, 2);
+		
+		category = new JTextField();
 		category.setBounds(181, 92, 174, 22);
+		category.getDocument().addDocumentListener(this);
 		category.setText("Category0");
 		secondStep.add(category);
-		// TODO aggiungere il document listener
 
 		JLabel lblImportance = new JLabel("Necessity:");
 		lblImportance.setBounds(105, 193, 108, 14);
@@ -177,8 +190,6 @@ public class Wizard extends JDialog implements ActionListener {
 		choice_emphasis.setSelectedIndex(1);
 		secondStep.add(choice_emphasis);
 
-		createButtonsBar(secondStep, 2);
-
 		// Terzo Tabbed Panel
 		JPanel thirdStep = new JPanel();
 		thirdStep.setLayout(null);
@@ -195,6 +206,11 @@ public class Wizard extends JDialog implements ActionListener {
 		return defaultName;
 	}
 
+	/**
+	 * Crea il pannello che gestisce la visualizzazione degli step del wizard
+	 * @param panel			Il pannello in cui inserirlo
+	 * @param currentStep	Lo step del wizard cui fa riferimento
+	 */
 	private void createBreadCumb(JPanel panel, int currentStep) {
 		JLabel lblStep = new JLabel("Step: ");
 		lblStep.setBounds(26, 21, 46, 14);
@@ -260,8 +276,14 @@ public class Wizard extends JDialog implements ActionListener {
 		panel.add(separator);
 	}
 
+	/**
+	 * Crea la barra dei bottoni Back, Next, Cancel
+	 * @param panel			Il pannello in cui inserirla
+	 * @param currentStep	Lo step del wizard cui fa riferimento
+	 */
 	private void createButtonsBar(JPanel panel, int currentStep) {
 		JPanel buttonsPanel = new JPanel();
+		buttonsPanel = new JPanel();
 		buttonsPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		buttonsPanel.setLayout(null);
 		buttonsPanel.setBounds(10, 263, 446, 49);
@@ -287,6 +309,7 @@ public class Wizard extends JDialog implements ActionListener {
 		btnDone = new JButton(DONETEXT);
 		btnDone.setActionCommand(DONEACTION);
 		btnDone.setFont(new Font(btnDone.getFont().getName(), Font.BOLD, btnDone.getFont().getSize() + 2));
+		btnDone.setEnabled(false);
 		btnDone.addActionListener(this);
 		btnDone.setBounds(350, 11, 86, 27);
 
@@ -305,6 +328,9 @@ public class Wizard extends JDialog implements ActionListener {
 		}
 	}
 
+	/**
+	 * Costruisce il pannello relativo ad un elemento Testo
+	 */
 	private void buildTextPanel() {
 		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
 		thirdPanel.removeAll();
@@ -317,11 +343,16 @@ public class Wizard extends JDialog implements ActionListener {
 			pannelloText = new PannelloText();
 		}
 		pannelloText.setLocation(25, 61);
+		pannelloText.textArea.getDocument().addDocumentListener(this);
+		pannelloText.isCorrect();
 		thirdPanel.add(pannelloText);
 
 		createButtonsBar(thirdPanel, 3);
 	}
 
+	/**
+	 * Costruisce il pannello relativo ad un elemento Immagine
+	 */
 	private void buildImagePanel() {
 		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
 		thirdPanel.removeAll();
@@ -334,11 +365,17 @@ public class Wizard extends JDialog implements ActionListener {
 			pannelloImage = new PannelloImage();
 		}
 		pannelloImage.setLocation(25, 61);
+		pannelloImage.imagepath.getDocument().addDocumentListener(this);
+		pannelloImage.isCorrect();
 		thirdPanel.add(pannelloImage);
 
 		createButtonsBar(thirdPanel, 3);
+		((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled(pannelloImage.isCorrect());
 	}
 
+	/**
+	 * Costruisce il pannello relativo ad un elemento Link
+	 */
 	private void buildLinkPanel() {
 		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
 		thirdPanel.removeAll();
@@ -349,11 +386,18 @@ public class Wizard extends JDialog implements ActionListener {
 			pannelloLink = new PannelloLink();
 		}
 		pannelloLink.setLocation(25, 61);
+		pannelloLink.urlPath.getDocument().addDocumentListener(this);
+		pannelloLink.urlText.getDocument().addDocumentListener(this);
+		pannelloLink.isPathCorrect();
+		pannelloLink.isTextCorrect();
 		thirdPanel.add(pannelloLink);
 
 		createButtonsBar(thirdPanel, 3);
 	}
 
+	/**
+	 * Costruisce il pannello relativo ad un elemento Alternative
+	 */
 	private void buildAlternativePanel() {
 		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
 		thirdPanel.removeAll();
@@ -365,11 +409,16 @@ public class Wizard extends JDialog implements ActionListener {
 		if (pannelloAlt == null)
 			pannelloAlt = new PannelloAlt(true);
 		pannelloAlt.setLocation(25, 61);
+		pannelloAlt.list_components.getModel().addListDataListener(this);
+		pannelloAlt.isCorrect();
 		thirdPanel.add(pannelloAlt);
 
 		createButtonsBar(thirdPanel, 3);
 	}
 
+	/**
+	 * Costruisce il pannello relativo ad un elemento Composite
+	 */
 	private void buildCompositePanel() {
 		JPanel thirdPanel = (JPanel) tabbedPane.getComponent(2);
 		thirdPanel.removeAll();
@@ -381,8 +430,9 @@ public class Wizard extends JDialog implements ActionListener {
 		if (pannelloComp == null)
 			pannelloComp = new PannelloComp(true);
 		pannelloComp.setLocation(25, 61);
+		pannelloComp.list_components.getModel().addListDataListener(this);
 		thirdPanel.add(pannelloComp);
-
+		
 		createButtonsBar(thirdPanel, 3);
 	}
 
@@ -391,6 +441,10 @@ public class Wizard extends JDialog implements ActionListener {
 		return returnValue;
 	}
 
+	/**
+	 * Costruisce il nuovo componente
+	 * @return Il nuovo componente
+	 */
 	protected Componente buildNewComponent() {
 		if (choice_type.getSelectedItem().equals(Testo.TEXTTYPE)) {
 			Testo newTesto = new Testo(name.getText(), category.getText(), choice_visibility.getSelectedIndex(), choice_emphasis.getSelectedIndex(), pannelloText.getText());
@@ -415,6 +469,10 @@ public class Wizard extends JDialog implements ActionListener {
 		return null;
 	}
 
+	/**
+	 * Ritorna un vettore contenente gli indici dei nodi dell'albero principale da spostare nel nuovo nodo
+	 * @return Il vettore degli indici nell'albero principale
+	 */
 	protected Vector<Integer> getOriginalIndexes() {
 		if (choice_type.getSelectedItem().equals(ComponenteAlternative.ALTERNATIVETYPE)) {
 			return pannelloAlt.getOriginalIndexes();
@@ -424,6 +482,10 @@ public class Wizard extends JDialog implements ActionListener {
 		return null;
 	}
 
+	/**
+	 * Ritorna un vettore contenente gli indici, relativi al nodo in creazione, di quelli da spostare dell'albero principale
+	 * @return	Il vettore degli indici nel nuovo nodo
+	 */
 	protected Vector<Integer> getNewIndexes() {
 		if (choice_type.getSelectedItem().equals(ComponenteAlternative.ALTERNATIVETYPE)) {
 			return pannelloAlt.getNewIndexes();
@@ -432,9 +494,42 @@ public class Wizard extends JDialog implements ActionListener {
 		}
 		return null;
 	}
+	
+	/**
+	 * Aggiorna lo stato dei bottoni e dei componenti verificando la presenza di errori
+	 * @param e	L'evento che ha scatenato la verifica
+	 */
+	private void updateComponent(DocumentEvent e) {
+		if ((tabbedPane.getSelectedIndex()==0)) {
+			Utils.redify(name, Utils.isBlank(name)||(MainWindow.albero.nameExists(name.getText())));
+			((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled((!Utils.isBlank(name)&&(!MainWindow.albero.nameExists(name.getText()))));
+		} else if((tabbedPane.getSelectedIndex()==1)) {
+			Utils.redify(category, Utils.isBlank(category));
+			((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled(!Utils.isBlank(category));
+		} else if(tabbedPane.getSelectedIndex()==2) {
+			if (choice_type.getSelectedIndex()==0) {
+				((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled(pannelloText.isCorrect());
+			} else if (choice_type.getSelectedIndex()==1) {
+				((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled(pannelloImage.isCorrect());
+			} else if (choice_type.getSelectedIndex()==2) {
+				((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled((pannelloLink.isPathCorrect() && (pannelloLink.isTextCorrect())));
+			}
+		}
 
-	// FIXME Disabilitare i tab non correnti o disabilitare solo quelli non
-	// ancora affrontati?
+	}
+
+	/**
+	 * Verifica se la stringa corrente rappresenta il nome di un nodo nell'albero o dell'elemento corrente
+	 * @param s	Il nome da verificare
+	 * @return	True se il nome esiste, False altrimenti
+	 */
+	public boolean nameExistsAll(String s) {
+		return (MainWindow.albero.nameExists(s) || s.equals(name.getText())); 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(BACKACTION)) {
 			// gestisco il bottone Back
@@ -467,229 +562,66 @@ public class Wizard extends JDialog implements ActionListener {
 			returnValue = true;
 			dispose();
 		}
-
 		if (!((tabbedPane.getSelectedIndex()) == 0)) {
 			setTitle(BASETITLE + " - " + name.getText() + " ["+ choice_type.getSelectedItem() + "]");
 		} else {
 			setTitle(BASETITLE);
 		}
 	}
+	
+//	private void manageTooltips(Component component, boolean b) { if
+//		(component == textField_imagepath){ if(b)
+//			textField_imagepath.setToolTipText(AddNew.URL_EMPTY); else
+//				textField_imagepath.setToolTipText(AddNew.URL); } else if (component ==
+//				name){ if(b) name.setToolTipText(AddNew.NAME_EMPTY); else
+//					name.setToolTipText(AddNew.NAME); if
+//					(MainWindow.nameExistsAll(name.getText()))
+//						name.setToolTipText(AddNew.NAME_EXISTING); } }
 
-	/*
-	 * TODO Verificare tutto quando c'� qui sottoTODOTODOTODOTODOTODOTODOTODO
-	 * TODO
+	/**
+	 * {@inheritDoc}
 	 */
-	/*
-	 * protected ComponenteComposto buildComposite() { cmp = new
-	 * ComponenteComposto(name.getText(), category.getText(),
-	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex());
-	 * return cmp; }
-	 * 
-	 * protected ComponenteAlternative buildAlternative() { alt = new
-	 * ComponenteAlternative(name.getText(), category.getText(),
-	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex());
-	 * return alt; }
-	 * 
-	 * private void chooseFile(int chooserValue, JFileChooser fc, JTextField
-	 * target){ //TODO settare le cartelle di default if (chooserValue ==
-	 * JFileChooser.APPROVE_OPTION) {
-	 * target.setText(fc.getSelectedFile().getAbsolutePath()); }
-	 * 
-	 * }
-	 * 
-	 * private void chooseFile(int chooserValue, JFileChooser fc, JTextArea
-	 * target) throws IOException{ //TODO settare le cartelle di default if
-	 * (chooserValue == JFileChooser.APPROVE_OPTION) { File file =
-	 * fc.getSelectedFile(); String letta = readFile(file);
-	 * target.setText(letta);
-	 * 
-	 * }
-	 * 
-	 * }
-	 * 
-	 * public static String readFile (File file) throws IOException{ //FIXME se
-	 * si prova a leggere il file /dev/zero va in loop infinito (la console
-	 * continua a leggere e scrollare...) String letto = ""; FileReader reader =
-	 * new FileReader(file); while(true) { int x = reader.read(); // read
-	 * restituisce un intero che vale -1 se il file è finito if (x == -1)
-	 * break; char c = (char) x; letto = letto+c; System.out.println( letto+c);
-	 * } return letto; }
-	 * 
-	 * private ArrayList<MyEventClassListener> _listeners = new
-	 * ArrayList<MyEventClassListener>();
-	 * 
-	 * public synchronized void addEventListener(MyEventClassListener listener)
-	 * { _listeners.add(listener); } public synchronized void
-	 * removeEventListener(MyEventClassListener listener) {
-	 * _listeners.remove(listener); }
-	 * 
-	 * private synchronized void fireEvent() { MyEventClass event = new
-	 * MyEventClass(this); Iterator<MyEventClassListener> i =
-	 * _listeners.iterator(); while(i.hasNext()) { ((MyEventClassListener)
-	 * i.next()).handleMyEventClassEvent(event); } }
-	 * 
-	 * private void updateImagePath() {
-	 * 
-	 * if(focusedImg!= null) focusedImg.setPath(textField_imagepath.getText());
-	 * checkImagePath(); }
-	 * 
-	 * private boolean checkImagePath() {
-	 * if(isPathCorrect(textField_imagepath.getText())){
-	 * textField_imagepath.setToolTipText("Path of the image file");
-	 * btnDone_Image.setEnabled(true); return true; } else {
-	 * textField_imagepath.
-	 * setToolTipText("The file doesn't exist or is not readable");
-	 * btnDone_Image.setEnabled(false); } return false; }
-	 * 
-	 private boolean isPathCorrect(String path){
-		 File daControllare = new
-			 File(path); if(daControllare.isFile() && daControllare.canRead())
-				 return true;
-			 return false;
-	 }
-	 * 
-	 * private synchronized void fireEvent(boolean onlyDispose) { MyEventClass
-	 * event = null; if (onlyDispose == CREATENEWCOMP) event = new
-	 * MyEventClass(this, buildNewComp()); Iterator<MyEventClassListener> i =
-	 * _listeners.iterator(); while(i.hasNext()) { ((MyEventClassListener)
-	 * i.next()).handleMyEventClassEvent(event); } }
-	 * 
-	 * protected Componente buildNewComp() { System.out.println("builder");
-	 * if(choice_type.getSelectedItem()==Testo.TEXTTYPE) return new
-	 * Testo(name.getText(), category.getText(),
-	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex(),
-	 * text.getText()); else
-	 * if(choice_type.getSelectedItem()==Immagine.IMAGETYPE) return new
-	 * Immagine(name.getText(), category.getText(),
-	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex(),
-	 * textField_imagepath.getText()); else
-	 * if(choice_type.getSelectedItem()==Link.LINKTYPE) return new
-	 * Link(name.getText(), category.getText(),
-	 * choice_enphasy.getSelectedIndex(), choice_enphasy.getSelectedIndex(),
-	 * textField_url.getText(), textField_url.getText()); else
-	 * if(choice_type.getSelectedItem()==ComponenteAlternative.ALTERNATIVETYPE){
-	 * 
-	 * return alt; } else {
-	 * 
-	 * return cmp; } }
-	 * 
-	 * private void manageTooltips(Component component, boolean b) { if
-	 * (component == textField_imagepath){ if(b)
-	 * textField_imagepath.setToolTipText(AddNew.URL_EMPTY); else
-	 * textField_imagepath.setToolTipText(AddNew.URL); } else if (component ==
-	 * name){ if(b) name.setToolTipText(AddNew.NAME_EMPTY); else
-	 * name.setToolTipText(AddNew.NAME); if
-	 * (MainWindow.nameExistsAll(name.getText()))
-	 * name.setToolTipText(AddNew.NAME_EXISTING); } }
-	 * 
-	 * @Override public void changedUpdate(DocumentEvent e) {
-	 * updateComponent(e);
-	 * 
-	 * }
-	 * 
-	 * @Override public void insertUpdate(DocumentEvent e) { updateComponent(e);
-	 * 
-	 * }
-	 * 
-	 * @Override public void removeUpdate(DocumentEvent e) { updateComponent(e);
-	 * 
-	 * }
-	 * 
-	 * private void updateComponent(DocumentEvent e) {
-	 * if(textField_imagepath.getDocument()==e.getDocument()){ imageUpdate(); }
-	 * else if(name.getDocument()==e.getDocument() ){
-	 * Utils.redify(name,Utils.isBlank
-	 * (name)||MainWindow.nameExistsAll(name.getText())); manageTooltips(name,
-	 * Utils.isBlank(name)); button_next_s1.setEnabled(!Utils.isBlank(name) &&
-	 * !MainWindow.nameExistsAll(name.getText()));
-	 * 
-	 * } else if(text.getDocument()==e.getDocument()){
-	 * Utils.redify(text,Utils.isBlank(text));
-	 * btnDone_text.setEnabled(!Utils.isBlank(text));
-	 * 
-	 * } else if(category.getDocument()==e.getDocument()){
-	 * Utils.redify(category,Utils.isBlank(category));
-	 * button_next_s2.setEnabled(!Utils.isBlank(category)); }
-	 * 
-	 * }
-	 * 
-	 * 
-	 * 
-	 * private void imageUpdate() { updateImagePath();
-	 * Utils.redify(textField_imagepath,Utils.isBlank(textField_imagepath));
-	 * manageTooltips(textField_imagepath, Utils.isBlank(textField_imagepath));
-	 * }
-	 * 
-	 * public void oldActionPerformed(ActionEvent e) { if
-	 * (e.getActionCommand().equals(NEXT1)){ tabbedPane.setSelectedIndex(1); }
-	 * 
-	 * else if (e.getActionCommand().equals(EXIT)){ fireEvent(); dispose(); }
-	 * 
-	 * else if (e.getActionCommand().equals(NEXT2)){ nextAction(); }
-	 * 
-	 * else if (e.getActionCommand().equals(BACK)){
-	 * tabbedPane.setSelectedIndex(0); }
-	 * 
-	 * else if (e.getActionCommand().equals(DONE)){ //testo composite
-	 * alternative
-	 * 
-	 * createAndDispose(); } else if (e.getActionCommand().equals(BACK2)){
-	 * tabbedPane.setSelectedIndex(1); } else if
-	 * (e.getActionCommand().equals(LOAD_TEXT)){ loadTextAction(); } else if
-	 * (e.getActionCommand().equals(DONE_LINK)){ //lnk= new Link(name.getText(),
-	 * category.getText(), impo.getSelectedIndex(),
-	 * emph.getSelectedIndex(),textField_url.getText(),
-	 * textField_linktext.getText()); createAndDispose(); }
-	 * 
-	 * else if (e.getActionCommand().equals(DONE_IMG)){ //img = new
-	 * Immagine(name.getText(), category.getText(),
-	 * impo.getSelectedIndex(),emph.getSelectedIndex(),
-	 * textField_imagepath.getText()); createAndDispose(); } else
-	 * if(e.getActionCommand().equals(LOAD_IMG)){ /*fcImage.showDialog();
-	 * fcImage.setJTFPath(textField_imagepath); btnDone_Image.setEnabled(true);
-	 * }
-	 * 
-	 * 
-	 * }
-	 * 
-	 * private void createAndDispose() { fireEvent(CREATENEWCOMP); dispose(); }
-	 * 
-	 * protected void loadTextAction() { try { //TODO escapare caratteri
-	 * speciali fcText.showDialog();
-	 * 
-	 * if (fcText.getFile() != null){ String letto =
-	 * Wizard.readFile(fcText.getFile()); if ( letto!= null && letto.length()>0)
-	 * text.setText(letto); } } catch (IOException e1) { } }
-	 * 
-	 * protected void nextAction() { if
-	 * (choice_type.getSelectedItem().equals(tipi[0]))
-	 * tabbedPane.setSelectedIndex(2); else if
-	 * (choice_type.getSelectedItem().equals(tipi[2]))
-	 * tabbedPane.setSelectedIndex(3); else if
-	 * (choice_type.getSelectedItem().equals(tipi[1]))
-	 * tabbedPane.setSelectedIndex(4); else if
-	 * (choice_type.getSelectedItem().equals(tipi[4])){ // composite
-	 * 
-	 * panel_comp.setComponent(buildComposite());
-	 * tabbedPane.setSelectedIndex(5); } else if
-	 * (choice_type.getSelectedItem().equals(tipi[3])){ //alternative
-	 * panel_alt.setComponent(buildAlternative());
-	 * tabbedPane.setSelectedIndex(6); }
-	 * 
-	 * }
-	 * 
-	 * void manageDoneButton(boolean enable){ if
-	 * (choice_type.getSelectedItem().equals(tipi[3]))
-	 * button_doneAlt.setEnabled(enable);
-	 * 
-	 * else if (choice_type.getSelectedItem().equals(tipi[4]))
-	 * button_doneComp.setEnabled(enable);
-	 * 
-	 * }
-	 */
+	public void changedUpdate(DocumentEvent e) {
+		updateComponent(e);
+	}
 
-	public static boolean nameExistsAll(String s) {
-		return (MainWindow.albero.nameExists(s) || s.equals(name.getText())); 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void insertUpdate(DocumentEvent e) {
+		updateComponent(e);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeUpdate(DocumentEvent e) {
+		updateComponent(e);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void intervalAdded(ListDataEvent e) {
+		contentsChanged(e);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void intervalRemoved(ListDataEvent e) {
+		contentsChanged(e);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void contentsChanged(ListDataEvent e) {
+		if (choice_type.getSelectedIndex() == 3) {
+			((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled(pannelloAlt.isCorrect());
+		} else if (choice_type.getSelectedIndex() == 4) {
+			((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled(pannelloComp.isCorrect());
+		}
 	}
 
 }

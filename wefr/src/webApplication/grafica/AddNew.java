@@ -17,7 +17,6 @@ import javax.swing.text.JTextComponent;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -43,7 +42,6 @@ import java.util.regex.Pattern;
 public class AddNew extends AddComponent implements DocumentListener,
 KeyListener,
 ActionListener {
-	// TODO creare codice per abilitare/disabilitare il pulsante di add
 
 	private static final Color COLOR_PANEL_DISABLED = new Color(204, 204, 204);
 
@@ -71,7 +69,7 @@ ActionListener {
 	private static final String DEFAULTLINKPATH = "http://";
 	private static final String LINK_PATH_TOOLTIP = "Enter the desired link";
 	private static final String URL = "URL of the link";
-	private static final String URL_EMPTY = "This field must be a valid url (ex www.myweb.com)";
+	private static final String URL_EMPTY = "This field must be a valid url (ex http://www.myweb.com)";
 
 	private JLabel lblLink;
 	private static final String LINK_TEXT = "Link text:";
@@ -84,9 +82,9 @@ ActionListener {
 	private static final String LOAD_TEXT_TOOLTIP = "Click to load text from an existing file";
 
 	private static final String IMAGEPANELTITLE = " Image ";
+	private static final String IMAGE_EMPTY = "It's mandatory to enter a valid path";
 	private JLabel lblPath;
 	private static final String IMAGE_PATH = "File path:";
-	private static final String PATH_ERROR = "The path is wrong, select an image using \"Browse\" button";
 
 	private JButton importImageButton;
 	private static final String LOAD_IMAGE_BTN = "Browse";
@@ -212,7 +210,6 @@ ActionListener {
 		textField_imagePath = new JTextField();
 		textField_imagePath.setColumns(10);
 		textField_imagePath.setBounds(12, 51, 301, 19);
-		// TODO aggiungere document listener
 		panel_image.add(textField_imagePath);
 
 		importImageButton = new JButton(LOAD_IMAGE_BTN);
@@ -286,7 +283,6 @@ ActionListener {
 	}
 
 	protected ComponenteSemplice getComponente() {
-		// TODO aggiungere gestione errori
 		if (rdbtnImage.isSelected()) {
 			return new Immagine(textField_name.getText(), textField_category.getText(), DEFAULTEMPIMP, DEFAULTEMPIMP, textField_imagePath.getText());
 		} else if (rdbtnLink.isSelected()) {
@@ -300,7 +296,7 @@ ActionListener {
 		panel_link.setEnabled(state);
 		if (state) {
 			panel_link.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), LINKPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-			redify(textField_url, Utils.isBlank(textField_url));
+			redify(textField_url, Utils.isBlank(textField_url)|| errorUrl());
 			redify(textField_linkText, Utils.isBlank(textField_linkText));
 		} else{
 			panel_link.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), LINKPANELTITLE, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
@@ -378,7 +374,6 @@ ActionListener {
 			}
 		} else if (e.getActionCommand().equals(LOAD_TEXT_BTN)) {
 			JFileChooser fc = new JFileChooser(MainWindow.defTextDir);
-			// TODO definire il filtro dei file?
 			int choice = fc.showOpenDialog(this);
 			if (choice == JFileChooser.APPROVE_OPTION) {
 				String letto = "";
@@ -406,8 +401,8 @@ ActionListener {
 		textField_linkText.getDocument().addDocumentListener(this);
 		textField_name.getDocument().addDocumentListener(this);
 		textField_url.getDocument().addDocumentListener(this);
+		textField_imagePath.getDocument().addDocumentListener(this);
 		textArea.getDocument().addDocumentListener(this);
-
 		textField_url.addKeyListener(this);
 	}
 
@@ -415,7 +410,6 @@ ActionListener {
 		figlio.setEnabled(enable);
 		if(figlio == scrollingArea){
 			updateComponent(textArea,enable);
-
 			//le tre righe qua sotto sono un workaround per un baco delle JScrollPane
 			scrollingArea.getHorizontalScrollBar().setEnabled(enable);
 			scrollingArea.getVerticalScrollBar().setEnabled(enable);
@@ -438,35 +432,12 @@ ActionListener {
 		}
 	}
 
-	private void setBordi(JPanel toDisable, boolean enable) {
-		if(enable){
-			if(toDisable== panel_image)
-				panel_image.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-			else if (toDisable == panel_link)
-				panel_link.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-			else
-				panel_text.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-
-		}
-		else{
-			if(toDisable== panel_image)
-				panel_image.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), " Image ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
-			else if (toDisable == panel_link)
-				panel_link.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), " Link ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
-			else
-				panel_text.setBorder(new TitledBorder(new LineBorder(COLOR_PANEL_DISABLED, 1, true), " Text ", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 153)));
-		}
-
-	}
-
 	private void redify(JTextComponent toRed, boolean b){
 		if(b){
 			toRed.setBorder(new LineBorder(new Color(255, 0, 0), 1, true));//bordo rosso
-
 		}
 		else {
 			toRed.setBorder(new LineBorder(COLOR_PANEL_ACTIVE, 1, true));//bordo normale
-
 		}
 		manageTooltips(toRed, b);
 
@@ -480,7 +451,6 @@ ActionListener {
 				textField_name.setToolTipText(NAME_EXISTING);
 			else
 				textField_name.setToolTipText(NAME);
-
 		}
 		else if(component == textField_category){
 			if(b)
@@ -508,7 +478,7 @@ ActionListener {
 		}
 		else if(component == textField_imagePath){
 			if(b)
-				textField_imagePath.setToolTipText(TEXT_EMPTY);
+				textField_imagePath.setToolTipText(IMAGE_EMPTY);
 			else
 				textField_imagePath.setToolTipText(TEXT);
 		}
@@ -526,7 +496,6 @@ ActionListener {
 		}
 		else
 			redify(fromDocToJComp(e.getDocument()),Utils.isBlank((fromDocToJComp(e.getDocument()))));
-
 		updateAddBtn();
 	}
 
@@ -546,9 +515,6 @@ ActionListener {
 		return null;
 	}
 
-
-
-
 	private boolean nameExists(){
 		if (this.getOwner() instanceof Wizard)
 			return(((Wizard) this.getOwner()).nameExistsAll(textField_name.getText()));
@@ -558,13 +524,11 @@ ActionListener {
 
 	private boolean erroriPresenti(){
 		boolean result;
-		result=Utils.isBlank(textField_name) || nameExists();
+		result = Utils.isBlank(textField_name) || nameExists();
 		result= result || Utils.isBlank(textField_category);
 		if (rdbtnImage.isSelected())
 			result= result || Utils.isBlank(textField_imagePath) || fileError();
-
-		else if
-		(rdbtnLink.isSelected())
+		else if (rdbtnLink.isSelected())
 			result= result || Utils.isBlank(textField_linkText) || Utils.isBlank(textField_url) || errorUrl();
 		else
 			result= result || Utils.isBlank(textArea);
@@ -573,13 +537,7 @@ ActionListener {
 	}
 
 	private boolean errorUrl() {
-		if(!IsMatch(textField_url.getText())&& IsMatch("http://"+textField_url.getText())){
-			//textField_url.setText("http://"+textField_url.getText());
-			//String temp = "http://"+textField_url.getText();
-			//textField_url.setText(temp);
-		}
-		//System.out.println("Match errorurl"+IsMatch(textField_url.getText()));
-		return !(IsMatch(textField_url.getText()) || IsMatch("http://"+textField_url.getText()));
+		return !(IsMatch(textField_url.getText()));
 	}
 
 	private boolean fileError(){
@@ -597,7 +555,6 @@ ActionListener {
 
 	private boolean IsMatch(String s) {
 		try {
-
 			Matcher matcher = valid_url.matcher(s);
 			return matcher.matches();
 		} catch (RuntimeException e) {

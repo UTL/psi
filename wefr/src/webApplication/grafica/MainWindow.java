@@ -35,6 +35,10 @@ import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
@@ -47,12 +51,10 @@ import webApplication.grafica.TreePanel;
 
 import javax.swing.BoxLayout;
 
-public class MainWindow extends JFrame /*
+public class MainWindow extends JFrame {/*
 										 * implements WindowListener,
 										 * ActionListener, DocumentListener
-										 */{
-
-	// TODO sistemare la posizione dei file chooser?
+										 */
 
 	/**
 	 * 
@@ -126,6 +128,8 @@ public class MainWindow extends JFrame /*
 	private static final String ADDICON = "add.png";
 	private static final String ENREMOVEICON = "remove.png";
 	private static final String DISREMOVEICON = "disremove.png";
+	private static final String ENGENERATEXML = "genXML.png";
+	private static final String DISGENERATEXML = "disgenXML.png";
 
 	// COMBOBOX
 	protected static final String[] necessity = { "Necessary", "Indifferent",
@@ -136,56 +140,9 @@ public class MainWindow extends JFrame /*
 	// GESTORE EVENTI
 	protected static EventDispatcher eventDispatcher;
 
-	// **********************************************************************************************************
-	// TODO controllare da qui in poi
-	/*
-	 * protected static final String OPENCOMMAND = "Open"; protected static
-	 * final String SAVECOMMAND = "Save"; protected static final String
-	 * EXITCOMMAND = "Exit"; private static final String GENWEBSITECOMMAND =
-	 * "genwebsite";
-	 */
-
-	// TODO da usare per il defaultName
 	protected static int count = 0;
 
-	/*
-	 * private static JTextArea editorPane_text; private static JTextField
-	 * textField_imagepath; private static JPanel content_panel;
-	 * 
-	 * private static JPanel empty_select ; private static JPanel
-	 * panel_composite; private static PannelloAlt pannello_alterplus; private
-	 * static PannelloGeneric pannello_comp;
-	 * 
-	 * protected static Options frameOptions = new Options();
-	 * 
-	 * private CustomFCSave fcSave = new CustomFCSave(frameOptions, this);
-	 * private CustomFCLoad fcLoad = new CustomFCLoad(frameOptions, this);
-	 * private CustomFCImage fcImage=new CustomFCImage(frameOptions, this);
-	 * private static Componente focused;
-	 * 
-	 * private static Testo focusedTxt; private static Immagine focusedImg;
-	 * private static Link focusedLnk; private static final String URL_REGEX =
-	 * "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
-	 * ; private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
-	 * 
-	 * private static JTextField textField_linktext; private static JTextField
-	 * textField_url;
-	 * 
-	 * private static final String PANEL_TXT="panel_text"; private static final
-	 * String PANEL_IMG="panel_image"; private static final String
-	 * PANEL_LNK="panel_link"; public static final String
-	 * PANEL_ALT="panel_alternative"; private static final String
-	 * PANEL_CMP="panel_composite";
-	 * 
-	 * public static final int MOVE_UP = -1; public static final int MOVE_DOWN =
-	 * +1;
-	 * 
-	 * protected static GenericProperties genProperties;
-	 * 
-	 * 
-	 * 
-	 * public MainWindowData data = new MainWindowData();
-	 */
+	protected ButtonsBar buttonsBar;
 
 	/**
 	 * Launch the application.
@@ -214,9 +171,7 @@ public class MainWindow extends JFrame /*
 
 		setTitle(JFRAMETITLE + defaultTitle + initProjNum);
 		initProjNum++;
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);// TODO da rivedere
-															// per consentire
-															// salvataggio
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 728, 502);
 		setResizable(false);
 
@@ -232,86 +187,20 @@ public class MainWindow extends JFrame /*
 		contentPane.setLayout(null);
 
 		initPanelTree();
-		eventDispatcher = new EventDispatcher();// NOTA: eventDispatcher da
-												// costruttore ascolta eventi
-												// modifica selezione
-												// dell'albero
+		eventDispatcher = new EventDispatcher();
+		
 		
 		// setta la barra del menu
-		setJMenuBar(new MenuPanel()); // aggiungo la menubar
+		setJMenuBar(new MenuPanel());
 
 		// genera la barra dei bottoni
-		contentPane.add(new ButtonsBar());
+		buttonsBar = new ButtonsBar();
+		contentPane.add(buttonsBar);
 
 		properties = new PropertiesPanel();
 		contentPane.add(properties);
 		
 		MainWindow.albero.getTree().setCellRenderer(new CustomCellRenderer());
-
-		// TODO controllare da qui in poi
-		/*
-		 * properties = new JPanel(); presentation_panel = new JPanel();
-		 * id_panel = new JPanel();
-		 * 
-		 * initPropertiesPanels(properties, presentation_panel,id_panel );
-		 * //Crea i JPanel vuoti
-		 * 
-		 * empty_properties = new JPanel(); empty_properties.setBorder(new
-		 * TitledBorder(null, " Properties ", TitledBorder.LEADING,
-		 * TitledBorder.TOP, null, null)); empty_properties.setBounds(249, 49,
-		 * 466, 392); empty_properties.setBorder(new TitledBorder(new
-		 * LineBorder(new Color(204, 204, 204), 1, true), " Properties ",
-		 * TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153,
-		 * 153)));
-		 * 
-		 * 
-		 * empty_select = new JPanel(); setEmptyProperties();
-		 * empty_properties.setLayout(null);
-		 * 
-		 * 
-		 * empty_select.setBorder(new TitledBorder(new LineBorder(new Color(204,
-		 * 204, 204), 0, true), "Select an element to show properties",
-		 * TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153,
-		 * 153)));
-		 * 
-		 * //panel_1.setBorder(new TitledBorder(null,
-		 * "Select an element to show properties", TitledBorder.LEADING,
-		 * TitledBorder.TOP, null, null)); empty_select.setLayout(null);
-		 * empty_select.setBounds(89, 102, 299, 65);
-		 * 
-		 * empty_properties.add(empty_select); showProperties();
-		 * 
-		 * 
-		 * 
-		 * //contentPane.add(properties);
-		 * 
-		 * genProperties= new GenericProperties(presentation_panel, id_panel);
-		 * //Popola i JPanel dall'inner class
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * initContentPanel(properties);
-		 * 
-		 * initPanelImage();
-		 * 
-		 * //initPanelComposite();
-		 * 
-		 * //initPanelAlternative();
-		 * 
-		 * initPanelPanelLink();
-		 * 
-		 * 
-		 * initPanelText();
-		 * 
-		 * //initPanelTree();
-		 * 
-		 * 
-		 * 
-		 * // TODO rimuovere invocazione a testing concluso //popolaOggetti();
-		 */
-
 	}
 
 	private void initPanelTree() {
@@ -378,26 +267,33 @@ public class MainWindow extends JFrame /*
 
 	/**
 	 * Attiva/Disattiva la funzionalita di Delete
-	 * 
-	 * @param state
-	 *            Lo stato della funzione
+	 * @param state	Lo stato della funzione
 	 */
 	protected static void removeState(boolean state) {
 		btnDel.setEnabled(state);
 		mntmDel.setEnabled(state);
 	}
 
+	/**
+	 * Crea un nuovo progetto
+	 */
 	protected void newProject() {
 		properties.showProperties(null);
 		setTitle(JFRAMETITLE + defaultTitle + initProjNum);
 		initProjNum++;
 	}
 
+	/**
+	 * Chiude la finestra
+	 */
 	protected void exitProject() {
 		dispose();
 		System.exit(0);
 	}
 
+	/**
+	 * Salva il progetto
+	 */
 	protected void saveProject() {
 		JFileChooser fc = new JFileChooser(defSLDir);
 		fc.addChoosableFileFilter(new EUDFileFilter());
@@ -423,6 +319,9 @@ public class MainWindow extends JFrame /*
 		}
 	}
 
+	/**
+	 * Carica un progetto esistente
+	 */
 	protected void loadProject() {
 		JFileChooser fc = new JFileChooser(defSLDir);
 		fc.addChoosableFileFilter(new EUDFileFilter());
@@ -431,6 +330,7 @@ public class MainWindow extends JFrame /*
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			try {
 				ObjectInputStream inStream = new ObjectInputStream(new FileInputStream(fc.getSelectedFile()));
+				@SuppressWarnings({ "unused", "unchecked" })
 				Vector<Componente> temp = (Vector<Componente>) inStream.readObject();
 				setTitle(JFRAMETITLE + fc.getSelectedFile().getName().substring(0, fc.getSelectedFile().getName().lastIndexOf(".")));
 				initProjNum = 1;
@@ -444,104 +344,13 @@ public class MainWindow extends JFrame /*
 			}
 		}
 	}
-
-	/*
-	 * @Override public void windowActivated(WindowEvent arg0) {
-	 * 
-	 * }
-	 * 
-	 * @Override public void windowClosed(WindowEvent arg0) {
-	 * 
-	 * }
-	 * 
-	 * @Override public void windowClosing(WindowEvent arg0) { setEnabled(true);
-	 * setFocusable(true); }
-	 * 
-	 * @Override public void windowDeactivated(WindowEvent arg0) {
-	 * 
-	 * }
-	 * 
-	 * @Override public void windowDeiconified(WindowEvent arg0) {
-	 * 
-	 * }
-	 * 
-	 * @Override public void windowIconified(WindowEvent arg0) {
-	 * 
-	 * }
-	 * 
-	 * @Override public void windowOpened(WindowEvent arg0) {
-	 * 
-	 * }
-	 * 
-	 * @Override public void actionPerformed(ActionEvent e) { if
-	 * (e.getActionCommand()==GENWEBSITECOMMAND){
-	 * XmlGenerator.generateXML(albero.getComponenti()); }
-	 * 
-	 * }
-	 * 
-	 * @Override public void changedUpdate(DocumentEvent e) { changeEvent(e);
-	 * 
-	 * }
-	 * 
-	 * 
-	 * @Override public void insertUpdate(DocumentEvent e) { changeEvent(e);
-	 * 
-	 * }
-	 * 
-	 * @Override public void removeUpdate(DocumentEvent e) { changeEvent(e);
-	 * 
-	 * }
-	 * 
-	 * private void changeEvent(DocumentEvent e) { if(e.getDocument()==
-	 * textField_imagepath.getDocument()){ Utils.redify(textField_imagepath,
-	 * !isPathCorrect(textField_imagepath.getText())); if(focusedImg!= null)
-	 * focusedImg.setPath(textField_imagepath.getText());
-	 * if(!isPathCorrect(textField_imagepath.getText()))
-	 * textField_imagepath.setToolTipText(AddNew.PATH); else
-	 * textField_imagepath.setToolTipText(AddNew.PATH_ERROR); } else
-	 * if(e.getDocument()== textField_linktext.getDocument()){
-	 * Utils.checkAndRedify(textField_linktext); if(focusedLnk!= null)
-	 * focusedLnk.setTesto(textField_linktext.getText());
-	 * if(Utils.isBlank(textField_linktext))
-	 * textField_linktext.setToolTipText(AddNew.TEXT_EMPTY); else
-	 * textField_linktext.setToolTipText(AddNew.TEXT);
-	 * 
-	 * } else if(e.getDocument()== editorPane_text.getDocument()){
-	 * Utils.checkAndRedify(editorPane_text); updateTextContent();
-	 * if(Utils.isBlank(editorPane_text))
-	 * editorPane_text.setToolTipText(AddNew.TEXT_EMPTY); else
-	 * editorPane_text.setToolTipText(AddNew.TEXT); } else
-	 * if(e.getDocument()==textField_url.getDocument()){
-	 * Utils.redify(textField_url, !isUrlCorrect(textField_url.getText()));
-	 * updateLinkUrl(); if(!isUrlCorrect(textField_url.getText()))
-	 * textField_url.setToolTipText(AddNew.URL_EMPTY); else
-	 * textField_url.setToolTipText(AddNew.URL); } }
-	 * 
-	 * private void updateLinkUrl(){ if(focusedLnk!= null)
-	 * focusedLnk.setUri(textField_url.getText()); checkLinkUrl(); }
-	 * 
-	 * private boolean checkLinkUrl(){
-	 * if(isUrlCorrect(textField_url.getText())){
-	 * 
-	 * textField_url.setToolTipText("URL of the link"); return true; } else {
-	 * 
-	 * textField_url.setToolTipText("The URL is not correct"); } return false; }
-	 * 
-	 * private static boolean nameExists(String input) { for (int i=0;
-	 * i<albero.getComponenti().size(); i++){ //scorro tutti gli elementi tranne
-	 * quello selezionato if
-	 * (input.equals(albero.getComponenti().get(i).getNome()) &&
-	 * albero.getComponenti().get(i) != (Componente)(((DefaultMutableTreeNode)
-	 * albero.getTree().getLastSelectedPathComponent()).getUserObject())) return
-	 * true; } return false;
-	 * 
-	 * }
-	 * 
-	 * public static boolean nameExistsAll(String input) { for (int i=0;
-	 * i<albero.getComponenti().size(); i++){ //scorro tutti gli elementi if
-	 * (input.equals(albero.getComponenti().get(i).getNome())) return true; }
-	 * return false; }
-	 */
+	
+	public static boolean isPathCorrect(String path){
+		File daControllare = new File(path);
+		if(daControllare.isFile() && daControllare.canRead())
+			return true;
+		return false;
+	}
 
 	protected static class MenuPanel extends JMenuBar {
 
@@ -737,6 +546,7 @@ public class MainWindow extends JFrame /*
 			btnCopy.setBounds(195, 4, 30, 30);
 			btnCopy.setActionCommand((String) TransferHandler.getCopyAction().getValue(Action.NAME));
 			btnCopy.addActionListener(eventDispatcher);
+			btnCopy.addFocusListener(eventDispatcher);
 			add(btnCopy);
 
 			enabledIcon = new ImageIcon(BASEPATH + ENCUTICON);
@@ -748,6 +558,7 @@ public class MainWindow extends JFrame /*
 			btnCut.setToolTipText("Cut");
 			btnCut.setBounds(228, 4, 30, 30);
 			btnCut.addActionListener(eventDispatcher);
+			btnCut.addFocusListener(eventDispatcher);
 			add(btnCut);
 
 			enabledIcon = new ImageIcon(BASEPATH + ENPASTEICON);
@@ -759,6 +570,7 @@ public class MainWindow extends JFrame /*
 			btnPaste.setToolTipText("Paste");
 			btnPaste.setBounds(261, 4, 30, 30);
 			btnPaste.addActionListener(eventDispatcher);
+			btnPaste.addFocusListener(eventDispatcher);
 			add(btnPaste);
 
 			enabledIcon = new ImageIcon(BASEPATH + ADDICON);
@@ -780,11 +592,14 @@ public class MainWindow extends JFrame /*
 			btnDel.addActionListener(eventDispatcher);
 			add(btnDel);
 			
-			enabledIcon = new ImageIcon(BASEPATH + ENREMOVEICON);//TODO cambiare le icone ed il testo!!!
+			enabledIcon = new ImageIcon(BASEPATH + ENREMOVEICON);
 			disabledIcon = new ImageIcon(BASEPATH + DISREMOVEICON);
 			btnGenXML = new JButton("Testo di prova", enabledIcon);
+			enabledIcon = new ImageIcon(BASEPATH + ENGENERATEXML);
+			disabledIcon = new ImageIcon(BASEPATH + DISGENERATEXML);
+			btnGenXML = new JButton(GENERATEXMLCOMMAND, enabledIcon);
 			btnGenXML.setDisabledIcon(disabledIcon);
-			btnGenXML.setEnabled(false);//TODO disabilitare di default!
+			btnGenXML.setEnabled(false);
 			btnGenXML.setActionCommand(GENERATEXMLCOMMAND);
 			btnGenXML.setToolTipText("Export to XML");
 			btnGenXML.setBounds(401, 4, 187, 30);
@@ -794,7 +609,7 @@ public class MainWindow extends JFrame /*
 
 	}
 
-	protected static class PropertiesPanel extends JPanel {
+	protected static class PropertiesPanel extends JPanel implements DocumentListener, ListDataListener {
 
 		/**
 		 * 
@@ -888,6 +703,7 @@ public class MainWindow extends JFrame /*
 			textField_Name = new JTextField();
 			textField_Name.setToolTipText(NAMETOOLTIP);
 			textField_Name.setBounds(67, 40, 120, 19);
+			textField_Name.getDocument().addDocumentListener(this);
 			id_panel.add(textField_Name);
 
 			JLabel lblType = new JLabel(TYPE);
@@ -948,18 +764,26 @@ public class MainWindow extends JFrame /*
 
 			pannelloText = new PannelloText();
 			pannelloText.setBounds(12, 20, pannelloText.getWidth(), pannelloText.getHeight());
+			pannelloText.textArea.getDocument().addDocumentListener(this);
 			pannelloImage = new PannelloImage();
 			pannelloImage.setBounds(12, 20, pannelloImage.getWidth(), pannelloImage.getHeight());
+			pannelloImage.imagepath.getDocument().addDocumentListener(this);
 			pannelloLink = new PannelloLink();
 			pannelloLink.setBounds(12, 20, pannelloLink.getWidth(), pannelloLink.getHeight());
+			pannelloLink.urlPath.getDocument().addDocumentListener(this);
+			pannelloLink.urlText.getDocument().addDocumentListener(this);
 			pannelloComp = new PannelloComp(false);
 			pannelloComp.setBounds(12, 20, pannelloComp.getWidth(), pannelloComp.getHeight());
+			pannelloComp.list_components.getModel().addListDataListener(this);
 			pannelloAlt = new PannelloAlt(false);
 			pannelloAlt.setBounds(12, 20, pannelloAlt.getWidth(), pannelloAlt.getHeight());
+			pannelloAlt.list_components.getModel().addListDataListener(this);
 		}
 
-		protected void showProperties(Componente comp) {
-			if (comp == null) {
+		protected void showProperties(DisabledNode node) {
+//		protected void showProperties(Componente comp) {
+			if (node == null) {
+//			if (comp == null) {
 				setToolTipText(EMPTYSELECTIONTOOLTIP);
 				remove(element_properties_panel);
 				add(empty_panel);
@@ -968,19 +792,24 @@ public class MainWindow extends JFrame /*
 			} else {
 				setToolTipText(null);
 				remove(empty_panel);
-				updateProperties(comp);
+				updateProperties(node);
+//				updateProperties(comp);
 				add(element_properties_panel);
 				revalidate();
 				repaint();
 			}
 		}
 
-		private void updateProperties(Componente comp) {
+		private void updateProperties(DisabledNode node) {
+			Componente comp = (Componente) node.getUserObject();
+//		private void updateProperties(Componente comp) {
 			// rimuovo i listener per non scatenare eventi di modifica dei campi
 			removeListeners();
 			
 			textField_Name.setText(comp.getNome());
+			Utils.redify(textField_Name, Utils.isBlank(textField_Name)||(albero.getPathForName(textField_Name.getText())).size()>1);
 			textField_Category.setText(comp.getCategoria());
+			Utils.redify(textField_Category, Utils.isBlank(textField_Category));
 			textField_Type.setText(comp.getType());
 			comboBox_Emphasis.setSelectedIndex(comp.getEnfasi());
 			comboBox_Visibility.setSelectedIndex(comp.getVisibilita());
@@ -988,15 +817,33 @@ public class MainWindow extends JFrame /*
 				pannelloText.setText(((Testo) comp).getTesto());
 				content_panel.removeAll();
 				content_panel.add(pannelloText);
+				Utils.redify(pannelloText.textArea, !pannelloText.isCorrect());
+				if(!pannelloText.isCorrect()) {
+					pannelloText.textArea.setToolTipText(PannelloText.ERRORTEXTTOOLTIP);
+				} else {
+					pannelloText.textArea.setToolTipText(PannelloText.TEXTTOOLTIP);
+				}
 			} else if (comp.getType().equals(Immagine.IMAGETYPE)) {
 				pannelloImage.setPath(((Immagine) comp).getPath());
 				content_panel.removeAll();
 				content_panel.add(pannelloImage);
+				Utils.redify(pannelloImage.imagepath, !pannelloImage.isCorrect());
+				if(!pannelloImage.isCorrect()) {
+					pannelloImage.imagepath.setToolTipText(PannelloImage.IMAGEPATHERRORTOOLTIP);
+				} else {
+					pannelloImage.imagepath.setToolTipText(PannelloImage.IMAGEPATHTOOLTIP);
+				}
 			} else if (comp.getType().equals(Link.LINKTYPE)) {
 				pannelloLink.setPath(((Link) comp).getUri());
 				pannelloLink.setText(((Link) comp).getTesto());
 				content_panel.removeAll();
 				content_panel.add(pannelloLink);
+				Utils.redify(pannelloLink.urlText, !pannelloLink.isTextCorrect());
+				if (!pannelloLink.isTextCorrect()) {
+					pannelloLink.urlText.setToolTipText(PannelloLink.ERRORTEXTTOOLTIP);
+				} else {
+					pannelloLink.urlText.setToolTipText(PannelloLink.TEXTTOOLTIP);
+				}
 			} else if (comp.getType().equals(ComponenteComposto.COMPOSTOTYPE)) {
 				content_panel.removeAll();
 				pannelloComp.setOpzioni(((ComponenteComposto) comp).getOpzioni());
@@ -1018,13 +865,19 @@ public class MainWindow extends JFrame /*
 		 */
 		protected void addListeners() {
 			textField_Name.getDocument().addDocumentListener(eventDispatcher);
+			textField_Name.getDocument().addDocumentListener(this);
 			textField_Category.getDocument().addDocumentListener(eventDispatcher);
+			textField_Category.getDocument().addDocumentListener(this);
 			comboBox_Emphasis.addActionListener(eventDispatcher);
 			comboBox_Visibility.addActionListener(eventDispatcher);
 			pannelloText.textArea.getDocument().addDocumentListener(eventDispatcher);
+			pannelloText.textArea.getDocument().addDocumentListener(this);
 			pannelloImage.imagepath.getDocument().addDocumentListener(eventDispatcher);
+			pannelloImage.imagepath.getDocument().addDocumentListener(this);
 			pannelloLink.urlPath.getDocument().addDocumentListener(eventDispatcher);
 			pannelloLink.urlText.getDocument().addDocumentListener(eventDispatcher);
+			pannelloLink.urlPath.getDocument().addDocumentListener(this);
+			pannelloLink.urlText.getDocument().addDocumentListener(this);
 		}
 
 		/**
@@ -1032,15 +885,103 @@ public class MainWindow extends JFrame /*
 		 */
 		protected void removeListeners() {
 			textField_Name.getDocument().removeDocumentListener(eventDispatcher);
+			textField_Name.getDocument().removeDocumentListener(this);
 			textField_Category.getDocument().removeDocumentListener(eventDispatcher);
+			textField_Category.getDocument().removeDocumentListener(this);
 			comboBox_Emphasis.removeActionListener(eventDispatcher);
 			comboBox_Visibility.removeActionListener(eventDispatcher);
 			pannelloText.textArea.getDocument().removeDocumentListener(eventDispatcher);
+			pannelloText.textArea.getDocument().removeDocumentListener(this);
 			pannelloImage.imagepath.getDocument().removeDocumentListener(eventDispatcher);
+			pannelloImage.imagepath.getDocument().removeDocumentListener(this);
 			pannelloLink.urlPath.getDocument().removeDocumentListener(eventDispatcher);
 			pannelloLink.urlText.getDocument().removeDocumentListener(eventDispatcher);
+			pannelloLink.urlPath.getDocument().removeDocumentListener(this);
+			pannelloLink.urlText.getDocument().removeDocumentListener(this);
+		}
+		
+		private void changeEvent(DocumentEvent e) {
+			if (e.getDocument() == textField_Name.getDocument()) {
+				Utils.redify(textField_Name, (Utils.isBlank(textField_Name)));
+			} else if (e.getDocument() == textField_Category.getDocument()) {
+				Utils.redify(textField_Category, (Utils.isBlank(textField_Category)));
+			} else if (e.getDocument() == pannelloImage.imagepath.getDocument()) {
+				Utils.redify(pannelloImage.imagepath, !pannelloImage.isCorrect());
+				if(!pannelloImage.isCorrect()) {
+					pannelloImage.imagepath.setToolTipText(PannelloImage.IMAGEPATHERRORTOOLTIP);
+				} else {
+					pannelloImage.imagepath.setToolTipText(PannelloImage.IMAGEPATHTOOLTIP);
+				}
+			} else if (e.getDocument() == pannelloText.textArea.getDocument()) {
+				Utils.redify(pannelloText.textArea, !pannelloText.isCorrect());
+				if(!pannelloText.isCorrect()) {
+					pannelloText.textArea.setToolTipText(PannelloText.ERRORTEXTTOOLTIP);
+				} else {
+					pannelloText.textArea.setToolTipText(PannelloText.TEXTTOOLTIP);
+				}
+			} else if (e.getDocument() == pannelloLink.urlPath.getDocument()) {
+				Utils.redify(pannelloLink.urlPath, !pannelloLink.isPathCorrect());
+				if (!pannelloLink.isPathCorrect()) {
+					pannelloLink.urlPath.setToolTipText(PannelloLink.ERRORPATHTOOLTIP);
+				} else {
+					pannelloLink.urlPath.setToolTipText(PannelloLink.PATHTOOLTIP);
+				}
+			} else if (e.getDocument() == pannelloLink.urlText.getDocument()) {
+				Utils.redify(pannelloLink.urlText, !pannelloLink.isTextCorrect());
+				if (!pannelloLink.isTextCorrect()) {
+					pannelloLink.urlText.setToolTipText(PannelloLink.ERRORTEXTTOOLTIP);
+				} else {
+					pannelloLink.urlText.setToolTipText(PannelloLink.TEXTTOOLTIP);
+				}
+			}
+		}
+		
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			changeEvent(e);
+
 		}
 
+
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			changeEvent(e);
+
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			changeEvent(e);
+
+		}
+
+		@Override
+		public void intervalAdded(ListDataEvent e) {
+			contentsChanged(e);
+		}
+
+		@Override
+		public void intervalRemoved(ListDataEvent e) {
+			contentsChanged(e);
+		}
+
+		@Override
+		public void contentsChanged(ListDataEvent e) {
+			DisabledNode node = ((DisabledNode)albero.getTree().getSelectionPath().getLastPathComponent());
+			if (((Componente)((DisabledNode)albero.getTree().getSelectionPath().getLastPathComponent()).getUserObject()).getType().equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+				if (!pannelloAlt.isCorrect()) {
+					node.isCorrect = false;
+				} else {
+					node.isCorrect = true;
+				}
+			} else {
+				if (!pannelloComp.isCorrect()) {
+					node.isCorrect = false;
+				} else {
+					node.isCorrect = true;
+				}
+			}
+		}
 	}
 
 }
