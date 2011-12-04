@@ -3,6 +3,7 @@ package webApplication.grafica;
 import java.awt.Cursor;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.Toolkit;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.FlavorListener;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 
 import javax.swing.JMenuItem;
@@ -66,6 +68,8 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 	private RedoAction redoAction;
 	private UndoManager undoManager;
 	private JComponent focusOwner;
+	
+	private JComponent focus;
 
 	/**
 	 * Il costruttore generale
@@ -114,7 +118,8 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			haveCutted = false;
 //			focusOwner = MainWindow.albero.getTree();
 			// forzo il focus sull'albero per attivare il transferhandler dell'albero
-			Action a = focusOwner.getActionMap().get(e.getActionCommand());
+			System.out.println("Focus: "+focus.getClass().getCanonicalName());
+			Action a = focus.getActionMap().get(e.getActionCommand());
 			if (a != null) {
 				a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
 			}
@@ -178,9 +183,9 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			} else if (e.getActionCommand().equals((String) TransferHandler.getCopyAction().getValue(Action.NAME))) {
 				// gestisco il comando copia
 //				focusOwner = MainWindow.albero.getTree();
+				System.out.println("Focus: "+focus.getClass().getCanonicalName());
 				// forzo il focus sull'albero per attivare il transferhandler dell'albero
-				Action a = focusOwner.getActionMap().get(e.getActionCommand());
-				System.out.println("Action command: "+e.getActionCommand());
+				Action a = focus.getActionMap().get(e.getActionCommand());
 				if (a != null) {
 					a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
 				}
@@ -188,9 +193,9 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			} else if (e.getActionCommand().equals((String) TransferHandler.getCutAction().getValue(Action.NAME))) {
 				// gestisco il comando taglia
 				haveCutted = true;
-				focusOwner = MainWindow.albero.getTree();
+				System.out.println("Focus: "+focus.getClass().getCanonicalName());
 				// forzo il focus sull'albero per attivare il transferhandler dell'albero
-				Action a = focusOwner.getActionMap().get(e.getActionCommand());
+				Action a = focus.getActionMap().get(e.getActionCommand());
 				if (a != null) {
 					a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
 				}
@@ -469,10 +474,16 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 
 	@Override
 	public void focusGained(FocusEvent e) {
-		if ((e.getOppositeComponent() instanceof JButton) || (e.getOppositeComponent() instanceof JTree)) {
-			focusOwner = MainWindow.albero.getTree();
-		} else {
-			focusOwner = (JComponent) e.getOppositeComponent();
+		//TODO rivedere le condizioni!!!
+		if ((e.getComponent() instanceof JTree) || (((e.getOppositeComponent() instanceof JTree) && (!(e.getComponent() instanceof JTextComponent))))) {
+			System.out.println("Sono qui");
+			focus = MainWindow.albero.getTree();
+			MainWindow.pasteState(((TreeTransferHandler)MainWindow.albero.getTree().getTransferHandler()).getClipboard().getContents(null)!=null);
+		} else if ((e.getComponent() instanceof JTextComponent) || ((e.getOppositeComponent() instanceof JTextComponent) && (!(e.getComponent() instanceof JTree)))) {
+			System.out.println("Sono nell'else");
+			focus = (JComponent) e.getOppositeComponent();
+			System.out.println("focus nel focusgained: "+focus);
+			MainWindow.pasteState(Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null)!=null);
 		}
 	}
 

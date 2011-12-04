@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -189,6 +191,7 @@ public class MainWindow extends JFrame {/*
 		initPanelTree();
 		eventDispatcher = new EventDispatcher();
 		
+		albero.getTree().addFocusListener(eventDispatcher);
 		
 		// setta la barra del menu
 		setJMenuBar(new MenuPanel());
@@ -558,7 +561,6 @@ public class MainWindow extends JFrame {/*
 			btnCut.setToolTipText("Cut");
 			btnCut.setBounds(228, 4, 30, 30);
 			btnCut.addActionListener(eventDispatcher);
-			btnCut.addFocusListener(eventDispatcher);
 			add(btnCut);
 
 			enabledIcon = new ImageIcon(BASEPATH + ENPASTEICON);
@@ -570,7 +572,6 @@ public class MainWindow extends JFrame {/*
 			btnPaste.setToolTipText("Paste");
 			btnPaste.setBounds(261, 4, 30, 30);
 			btnPaste.addActionListener(eventDispatcher);
-			btnPaste.addFocusListener(eventDispatcher);
 			add(btnPaste);
 
 			enabledIcon = new ImageIcon(BASEPATH + ADDICON);
@@ -704,6 +705,7 @@ public class MainWindow extends JFrame {/*
 			textField_Name.setToolTipText(NAMETOOLTIP);
 			textField_Name.setBounds(67, 40, 120, 19);
 			textField_Name.getDocument().addDocumentListener(this);
+			textField_Name.addFocusListener(eventDispatcher);
 			id_panel.add(textField_Name);
 
 			JLabel lblType = new JLabel(TYPE);
@@ -732,6 +734,7 @@ public class MainWindow extends JFrame {/*
 			textField_Category = new JTextField();
 			textField_Category.setToolTipText(CATEGORYTOOLTIP);
 			textField_Category.setBounds(107, 19, 112, 24);
+			textField_Category.addFocusListener(eventDispatcher);
 			presentation_panel.add(textField_Category);
 
 			JLabel lblEmphasize = new JLabel(EMPHASIS);
@@ -765,13 +768,17 @@ public class MainWindow extends JFrame {/*
 			pannelloText = new PannelloText();
 			pannelloText.setBounds(12, 20, pannelloText.getWidth(), pannelloText.getHeight());
 			pannelloText.textArea.getDocument().addDocumentListener(this);
+			pannelloText.textArea.addFocusListener(eventDispatcher);
 			pannelloImage = new PannelloImage();
 			pannelloImage.setBounds(12, 20, pannelloImage.getWidth(), pannelloImage.getHeight());
 			pannelloImage.imagepath.getDocument().addDocumentListener(this);
+			pannelloImage.imagepath.addFocusListener(eventDispatcher);
 			pannelloLink = new PannelloLink();
 			pannelloLink.setBounds(12, 20, pannelloLink.getWidth(), pannelloLink.getHeight());
 			pannelloLink.urlPath.getDocument().addDocumentListener(this);
 			pannelloLink.urlText.getDocument().addDocumentListener(this);
+			pannelloLink.urlPath.addFocusListener(eventDispatcher);
+			pannelloLink.urlText.addFocusListener(eventDispatcher);
 			pannelloComp = new PannelloComp(false);
 			pannelloComp.setBounds(12, 20, pannelloComp.getWidth(), pannelloComp.getHeight());
 			pannelloComp.list_components.getModel().addListDataListener(this);
@@ -983,5 +990,5 @@ public class MainWindow extends JFrame {/*
 			}
 		}
 	}
-
+	
 }
