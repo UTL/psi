@@ -321,7 +321,11 @@ public class MainWindow extends JFrame {/*
 				ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(path));
 				outStream.writeObject(albero.getComponenti());
 				outStream.close();
-				setTitle(JFRAMETITLE + file.getName().substring(0, file.getName().lastIndexOf(".")));
+				if (file.getName().lastIndexOf(".")==-1) {
+					setTitle(JFRAMETITLE + file.getName().substring(0, file.getName().length()));
+				} else {
+					setTitle(JFRAMETITLE + file.getName().substring(0, file.getName().lastIndexOf(".")));
+				}				
 				initProjNum = 1;
 			} catch (FileNotFoundException e) {
 				JOptionPane.showMessageDialog(null, "File " + file.getName() + " cannot be saved in selected directory", "Error saving data", JOptionPane.ERROR_MESSAGE);
