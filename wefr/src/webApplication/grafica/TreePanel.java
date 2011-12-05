@@ -339,7 +339,7 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	 */
 	protected void setComponenti(Vector<Componente> comps) {
 		for (int i = 0; i < comps.size(); i++) {
-			addNode(null, new DisabledNode((Componente) comps.get(i)));
+			addNode(rootNode, new DisabledNode((Componente) comps.get(i)));
 		}
 		tree.expandPath(new TreePath(rootNode.getPath()));
 	}

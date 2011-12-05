@@ -320,6 +320,9 @@ public class MainWindow extends JFrame {/*
 			try {
 				ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(path));
 				outStream.writeObject(albero.getComponenti());
+				outStream.writeObject(defImageDir);
+				outStream.writeObject(defTextDir);
+				outStream.writeObject(defSLDir);
 				outStream.close();
 				if (file.getName().lastIndexOf(".")==-1) {
 					setTitle(JFRAMETITLE + file.getName().substring(0, file.getName().length()));
@@ -346,11 +349,27 @@ public class MainWindow extends JFrame {/*
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			try {
 				ObjectInputStream inStream = new ObjectInputStream(new FileInputStream(fc.getSelectedFile()));
-				@SuppressWarnings({ "unused", "unchecked" })
+				@SuppressWarnings({"unchecked" })
 				Vector<Componente> temp = (Vector<Componente>) inStream.readObject();
 				setTitle(JFRAMETITLE + fc.getSelectedFile().getName().substring(0, fc.getSelectedFile().getName().lastIndexOf(".")));
 				initProjNum = 1;
 				//TODO caricare gli elementi del file
+//				ObjectInputStream aStream = null;
+
+//				albero.getComponenti();
+//				aStream = new ObjectInputStream(new FileInputStream(fcLoad.getFile()));
+				
+				//Soluzione per questo warning
+				//http://stackoverflow.com/questions/509076/how-do-i-address-unchecked-cast-warnings
+//				Vector <Componente> temp = (Vector <Componente>) aStream.readObject();
+				albero.clear();
+				albero.setComponenti(temp);
+				defImageDir = (String) inStream.readObject();
+				defTextDir = (String) inStream.readObject();
+				defSLDir = (String) inStream.readObject();
+				
+				inStream.close();
+				properties.showProperties(null);
 			} catch (FileNotFoundException e) {
 				JOptionPane.showMessageDialog(this, "File " + fc.getSelectedFile().getName() + " not found", "Unexpected error", JOptionPane.ERROR_MESSAGE);
 			} catch (IOException e) {

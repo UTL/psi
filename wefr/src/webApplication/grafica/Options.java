@@ -101,6 +101,7 @@ public class Options extends JDialog implements ActionListener {
 
 	private void buildFieldImage() {
 		textField_defImgDir = new JTextField(MainWindow.defImageDir);
+		textField_defImgDir.setEditable(false);
 		textField_defImgDir.setToolTipText(PATH_IMAGE);
 		textField_defImgDir.setBounds(15, 45, 292, 22);
 		panel_dirs.add(textField_defImgDir);
@@ -115,6 +116,7 @@ public class Options extends JDialog implements ActionListener {
 
 	private void buildFieldText() {
 		textField_defTxtDir = new JTextField(MainWindow.defTextDir);
+		textField_defTxtDir.setEditable(false);
 		textField_defTxtDir.setToolTipText(PATH_TEXT);
 		textField_defTxtDir.setBounds(15, 110, 292, 22);
 		panel_dirs.add(textField_defTxtDir);
@@ -127,6 +129,7 @@ public class Options extends JDialog implements ActionListener {
 
 	private void buildFieldSaveLoad() {
 		textField_defSaveLoadDir = new JTextField(MainWindow.defSLDir);
+		textField_defSaveLoadDir.setEditable(false);
 		textField_defSaveLoadDir.setToolTipText(PATH_LOSA);
 		textField_defSaveLoadDir.setBounds(15, 178, 292, 22);
 		panel_dirs.add(textField_defSaveLoadDir);

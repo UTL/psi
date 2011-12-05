@@ -148,6 +148,9 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 //				if (choice == 0) {
 					NewAction newOrCloseAction = panel.new NewAction();
 					newOrCloseAction.actionPerformed(e);
+					MainWindow.defImageDir = MainWindow.DEFAULTVALUE;
+					MainWindow.defTextDir = MainWindow.DEFAULTVALUE;
+					MainWindow.defImageDir = MainWindow.DEFAULTVALUE;
 				}
 			} else if (e.getActionCommand().equals(MainWindow.OPENCOMMAND)) {
 				if (e.getSource() instanceof JMenuItem) {
