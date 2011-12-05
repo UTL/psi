@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -142,6 +140,7 @@ public class MainWindow extends JFrame {/*
 	// GESTORE EVENTI
 	protected static EventDispatcher eventDispatcher;
 
+	private static final String BASEELEMENTNAME = "Element";
 	protected static int count = 0;
 
 	protected ButtonsBar buttonsBar;
@@ -353,6 +352,15 @@ public class MainWindow extends JFrame {/*
 		if(daControllare.isFile() && daControllare.canRead())
 			return true;
 		return false;
+	}
+	
+	protected static String setDefaultName() {
+		String defaultName;
+		do {
+			 defaultName = BASEELEMENTNAME + count;
+			count++;
+		} while (MainWindow.albero.nameExists(defaultName));
+		return defaultName;
 	}
 
 	protected static class MenuPanel extends JMenuBar {

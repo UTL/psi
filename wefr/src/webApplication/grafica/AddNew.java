@@ -139,7 +139,7 @@ ActionListener {
 		addDocumentListeners();
 
 		// enabler(panel_text);
-		textField_name.setText(setDefaultName());
+		textField_name.setText(MainWindow.setDefaultName());
 
 		/*
 		 * //redify(textField_name,Utils.isBlank(textField_name));

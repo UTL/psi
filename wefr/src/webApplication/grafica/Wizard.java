@@ -141,7 +141,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		name = new JTextField();
 		name.setBounds(181, 106, 174, 22);
 		name.getDocument().addDocumentListener(this);
-		name.setText(setDefaultName());
+		name.setText(MainWindow.setDefaultName());
 		firstStep.add(name);
 
 		JLabel lblType = new JLabel("Type:");
@@ -195,15 +195,6 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		thirdStep.setLayout(null);
 		tabbedPane.addTab(THIRDSTEPTITLE, null, thirdStep, THIRDSTEPTOOLTIP);
 		tabbedPane.setEnabledAt(2, false);
-	}
-
-	// TODO spostare nel MainWindow
-	protected String setDefaultName() {
-		// FIXME Non ancora funzionante: count deve essere messo in MainWindow e
-		// devo incrementarlo solo quando creo un elemento con il nome di
-		// default
-		String defaultName = BASEELEMENTNAME + count;
-		return defaultName;
 	}
 
 	/**
