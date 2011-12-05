@@ -116,7 +116,10 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		if (e.getActionCommand().equals((String) TransferHandler.getPasteAction().getValue(Action.NAME))) {
 			// gestisco il comando incolla
 			haveCutted = false;
-//			focusOwner = MainWindow.albero.getTree();
+			if (!(focus instanceof JTree)) {
+				((TreeTransferHandler) panel.getTree().getTransferHandler()).cancelCut();
+			}
+			//			focusOwner = MainWindow.albero.getTree();
 			// forzo il focus sull'albero per attivare il transferhandler dell'albero
 			System.out.println("Focus: "+focus.getClass().getCanonicalName());
 			Action a = focus.getActionMap().get(e.getActionCommand());
@@ -448,7 +451,9 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 	public void windowClosing(WindowEvent e) {
 		int choice = 0;
 		if (!MainWindow.albero.isEmpty()) {
-			choice = JOptionPane.showConfirmDialog(((MainWindow) e.getWindow()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			//choice = JOptionPane.showConfirmDialog(((MainWindow) e.getWindow()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			//new String[] {"Yes", "No"}, "No")
+			JOptionPane.showOptionDialog(((MainWindow) e.getWindow()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
 		}
 		if (choice == JOptionPane.YES_OPTION) {
 			((MainWindow) e.getWindow()).exitProject();
@@ -487,6 +492,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			MainWindow.pasteState(((TreeTransferHandler)MainWindow.albero.getTree().getTransferHandler()).getClipboard().getContents(null)!=null);
 		} else if (e.getComponent() instanceof JTextComponent) {
 			focus = (JComponent) e.getComponent();
+			MainWindow.pasteState(Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null)!=null);
 		} else if ((e.getOppositeComponent() instanceof JTextComponent) && (!(e.getComponent() instanceof JTree))) {
 			focus = (JComponent) e.getOppositeComponent();
 			MainWindow.pasteState(Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null)!=null);

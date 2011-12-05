@@ -38,7 +38,13 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	private ImageIcon linkIcon;
 	private ImageIcon compositeIcon;
 	private ImageIcon alternativeIcon;
-	private ImageIcon errorIcon;
+	//private ImageIcon errorIcon;
+	//private ImageIcon homeErrIcon;
+	private ImageIcon textErrIcon;
+	private ImageIcon imageErrIcon;
+	private ImageIcon linkErrIcon;
+	private ImageIcon compositeErrIcon;
+	private ImageIcon alternativeErrIcon;
 //	private ImageIcon warningIcon;
 
 	private static String BASEPATH = "icon/";
@@ -48,7 +54,12 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	private static String LINKICONNAME = "Link.png";
 	private static String ALTERNATIVEICONNAME = "Alternativa.png";
 	private static String COMPOSITEICONNAME = "Composto.png";
-	private static String ERRORICONNAME = "error.png";
+	private static String TEXTERRICONNAME = "TestoErr.png";
+	private static String IMAGEERRICONNAME = "ImmagineErr.png";
+	private static String LINKERRICONNAME = "LinkErr.png";
+	private static String ALTERNATIVEERRICONNAME = "AlternativaErr.png";
+	private static String COMPOSITEERRICONNAME = "CompostoErr.png";
+	//private static String ERRORICONNAME = "error.png";
 //	private static String WARNINGICONNAME = "warning.png";
 
 	private static String ERRORTOOLTIPTEXT = "The choosen component name is already taken";
@@ -67,7 +78,13 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		linkIcon = createImageIcon(BASEPATH + LINKICONNAME);
 		compositeIcon = createImageIcon(BASEPATH + COMPOSITEICONNAME);
 		alternativeIcon = createImageIcon(BASEPATH + ALTERNATIVEICONNAME);
-		errorIcon = createImageIcon(BASEPATH + ERRORICONNAME);
+		//errorIcon = createImageIcon(BASEPATH + ERRORICONNAME);
+		textErrIcon = createImageIcon(BASEPATH + TEXTERRICONNAME);
+		imageErrIcon = createImageIcon(BASEPATH + IMAGEERRICONNAME);
+		linkErrIcon = createImageIcon(BASEPATH + LINKERRICONNAME);
+		compositeErrIcon = createImageIcon(BASEPATH + COMPOSITEERRICONNAME);
+		alternativeErrIcon = createImageIcon(BASEPATH + ALTERNATIVEERRICONNAME);
+		//errorErrIcon = createImageIcon(BASEPATH + ERRORICONNAME);
 //		warningIcon = createImageIcon(BASEPATH + WARNINGICONNAME);
 	}
 
@@ -126,6 +143,8 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 
 	protected boolean hasError(JTree tree, DisabledNode node) {
 		try {
+			Componente comp = (Componente) node.getUserObject();
+			String objType = comp.getType();
 			TreePanel panel = (TreePanel) (((tree.getParent()).getParent()).getParent());
 			// Recupero il path degli elementi con quel nome
 			Vector<TreePath> elPath = panel.getPathForName((((Componente) node.getUserObject()).getNome()));
@@ -134,38 +153,118 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 				if (elPath.contains(new TreePath(node.getPath()))) {
 					// Se il path di node contiene tra quelli con nome non
 					// consentito setto l'icona di errore e setto il tooltip
-					setIcon(errorIcon);
+					
+					// Java SE6 non supporta lo switch con String solo da Java SE 7
+					
+					if (objType.equals(Testo.TEXTTYPE)) {
+						setIcon(textErrIcon);
+					} else if (objType.equals(Immagine.IMAGETYPE)) {
+						setIcon(imageErrIcon);
+					} else if (objType.equals(Link.LINKTYPE)) {
+						setIcon(linkErrIcon);
+					} else if (objType.equals(ComponenteComposto.COMPOSTOTYPE)) {
+						setIcon(compositeErrIcon);
+					} else if (objType.equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+						setIcon(alternativeErrIcon);
+					}
+					//setIcon(errorIcon);
 					setToolTipText(ERRORTOOLTIPTEXT);
 					return true;
 				}
 			} else if (((Componente)node.getUserObject()).getNome().isEmpty()) {
-				setIcon(errorIcon);
+				if (objType.equals(Testo.TEXTTYPE)) {
+					setIcon(textErrIcon);
+				} else if (objType.equals(Immagine.IMAGETYPE)) {
+					setIcon(imageErrIcon);
+				} else if (objType.equals(Link.LINKTYPE)) {
+					setIcon(linkErrIcon);
+				} else if (objType.equals(ComponenteComposto.COMPOSTOTYPE)) {
+					setIcon(compositeErrIcon);
+				} else if (objType.equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+					setIcon(alternativeErrIcon);
+				}
+
 				setToolTipText(ERRORTOOLTIPTEXT);
 				return true;
 			} if (((Componente)node.getUserObject()).getCategoria().isEmpty()) {
-				setIcon(errorIcon);
+				if (objType.equals(Testo.TEXTTYPE)) {
+					setIcon(textErrIcon);
+				} else if (objType.equals(Immagine.IMAGETYPE)) {
+					setIcon(imageErrIcon);
+				} else if (objType.equals(Link.LINKTYPE)) {
+					setIcon(linkErrIcon);
+				} else if (objType.equals(ComponenteComposto.COMPOSTOTYPE)) {
+					setIcon(compositeErrIcon);
+				} else if (objType.equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+					setIcon(alternativeErrIcon);
+				}
+
 				setToolTipText(ERRORTOOLTIPTEXT);
 				return true;
 			} else if ((!((Componente) node.getUserObject()).isSimple()) && (((ComponenteMolteplice) node.getUserObject()).getOpzioni().size() < 1)) {
-				setIcon(errorIcon);
+				if (objType.equals(Testo.TEXTTYPE)) {
+					setIcon(textErrIcon);
+				} else if (objType.equals(Immagine.IMAGETYPE)) {
+					setIcon(imageErrIcon);
+				} else if (objType.equals(Link.LINKTYPE)) {
+					setIcon(linkErrIcon);
+				} else if (objType.equals(ComponenteComposto.COMPOSTOTYPE)) {
+					setIcon(compositeErrIcon);
+				} else if (objType.equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+					setIcon(alternativeErrIcon);
+				}
+
 				setToolTipText(ERRORTOOLTIPTEXT);
 				return true;
 			} else if (((Componente)node.getUserObject()).getType().equals(Immagine.IMAGETYPE)) {
 				File file = new File(((Immagine)node.getUserObject()).getPath());
 				if (!file.exists()) {
-					setIcon(errorIcon);
+					if (objType.equals(Testo.TEXTTYPE)) {
+						setIcon(textErrIcon);
+					} else if (objType.equals(Immagine.IMAGETYPE)) {
+						setIcon(imageErrIcon);
+					} else if (objType.equals(Link.LINKTYPE)) {
+						setIcon(linkErrIcon);
+					} else if (objType.equals(ComponenteComposto.COMPOSTOTYPE)) {
+						setIcon(compositeErrIcon);
+					} else if (objType.equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+						setIcon(alternativeErrIcon);
+					}
+
 					setToolTipText(ERRORTOOLTIPTEXT);
 					return true;
 				}
 			} else if (((Componente)node.getUserObject()).getType().equals(Testo.TEXTTYPE)) {
 				if (((Testo)node.getUserObject()).getTesto().isEmpty()) {
-					setIcon(errorIcon);
+					if (objType.equals(Testo.TEXTTYPE)) {
+						setIcon(textErrIcon);
+					} else if (objType.equals(Immagine.IMAGETYPE)) {
+						setIcon(imageErrIcon);
+					} else if (objType.equals(Link.LINKTYPE)) {
+						setIcon(linkErrIcon);
+					} else if (objType.equals(ComponenteComposto.COMPOSTOTYPE)) {
+						setIcon(compositeErrIcon);
+					} else if (objType.equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+						setIcon(alternativeErrIcon);
+					}
+
 					setToolTipText(ERRORTOOLTIPTEXT);
 					return true;
 				}
 			} else if (((Componente)node.getUserObject()).getType().equals(Link.LINKTYPE)) {
 				if ((((Link)node.getUserObject()).getTesto().isEmpty()) || (!isPathCorrect(((Link)node.getUserObject()).getUri()))) {
-					setIcon(errorIcon);
+					if (objType.equals(Testo.TEXTTYPE)) {
+						setIcon(textErrIcon);
+					} else if (objType.equals(Immagine.IMAGETYPE)) {
+						setIcon(imageErrIcon);
+					} else if (objType.equals(Link.LINKTYPE)) {
+						setIcon(linkErrIcon);
+					} else if (objType.equals(ComponenteComposto.COMPOSTOTYPE)) {
+						setIcon(compositeErrIcon);
+					} else if (objType.equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+						setIcon(alternativeErrIcon);
+					}
+
 					setToolTipText(ERRORTOOLTIPTEXT);
 					return true;
 				}
@@ -176,6 +275,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		}
 		return false;
 	}
+
 
 	/**
 	 * Carica l'immagine partendo dal suo path

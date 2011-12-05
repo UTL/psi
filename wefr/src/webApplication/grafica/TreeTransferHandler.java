@@ -231,7 +231,8 @@ public class TreeTransferHandler extends TransferHandler implements
 			for (int i = 0; i <nodesToRemove.length ; i++) {
 				nodesToRemove[i].setEnabled(false);
 			}
-			model.reload();
+			tree.repaint();
+			//model.reload();
 		} else if ((action == COPY)) {
 			System.out.println("CCP - Copia");
 			isCopy = true;
@@ -434,8 +435,8 @@ public class TreeTransferHandler extends TransferHandler implements
 		if (path == null) {
 			path = (new TreePath(nodesToRemove[0].getPath()));
 		}
-		((DefaultTreeModel) MainWindow.albero.getTree().getModel()).reload();
-		MainWindow.albero.getTree().setSelectionPath(path);
+		//((DefaultTreeModel) MainWindow.albero.getTree().getModel()).reload();
+		//MainWindow.albero.getTree().setSelectionPath(path);
 	}
 
 	/**
