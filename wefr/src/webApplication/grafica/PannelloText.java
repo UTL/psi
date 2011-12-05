@@ -36,7 +36,7 @@ public class PannelloText extends PannelloGeneric implements ActionListener {
 	private static final int textAreaHeight = 130;
 	private static final int textAreaWidth = 420;
 	private static final int btnHeight = 27;
-	private static final int btnWidth = 130;
+	private static final int btnWidth = 145;
 
 	protected JTextArea textArea;
 

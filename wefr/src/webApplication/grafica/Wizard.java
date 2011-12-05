@@ -30,6 +30,7 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
 import webApplication.business.ComponenteComposto;
+import webApplication.business.ComponenteSemplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
@@ -299,7 +300,9 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 		btnDone = new JButton(DONETEXT);
 		btnDone.setActionCommand(DONEACTION);
-		btnDone.setFont(new Font(btnDone.getFont().getName(), Font.BOLD, btnDone.getFont().getSize() + 2));
+		//btnDone.setFont(new Font(btnDone.getFont().getName(), Font.BOLD, btnDone.getFont().getSize() + 2));
+		btnDone.setFont(new Font("Arial Black", Font.PLAIN, btnDone.getFont().getSize()+1 ));
+
 		btnDone.setEnabled(false);
 		btnDone.addActionListener(this);
 		btnDone.setBounds(350, 11, 86, 27);
@@ -515,7 +518,18 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 	 * @return	True se il nome esiste, False altrimenti
 	 */
 	public boolean nameExistsAll(String s) {
-		return (MainWindow.albero.nameExists(s) || s.equals(name.getText())); 
+		Vector<ComponenteSemplice> listOggetti = new Vector<ComponenteSemplice>();
+		if (choice_type.getSelectedItem().equals(ComponenteAlternative.ALTERNATIVETYPE)) {
+			listOggetti = pannelloAlt.getOpzioni();
+		} else if (choice_type.getSelectedItem().equals(ComponenteComposto.COMPOSTOTYPE)) {
+			listOggetti = pannelloComp.getOpzioni();
+		}
+		boolean b = false;
+		for (int i = 0;i < listOggetti.size(); i++)
+			{
+				b |= s.equals(listOggetti.get(i).getNome());
+			}
+		return (MainWindow.albero.nameExists(s) || s.equals(name.getText()) || b); 
 	}
 
 	/**

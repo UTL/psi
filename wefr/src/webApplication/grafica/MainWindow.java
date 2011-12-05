@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -114,7 +115,7 @@ public class MainWindow extends JFrame {/*
 	protected static final String OPENCOMMAND = "Open";
 	protected static final String SAVECOMMAND = "Save";
 	protected static final String EXITCOMMAND = "Exit";
-	protected static final String GENERATEXMLCOMMAND="GenerateXML";
+	protected static final String GENERATEXMLCOMMAND="Generate Website";
 
 	// ICONE:
 	protected static final String BASEPATH = "icon/";
@@ -619,9 +620,10 @@ public class MainWindow extends JFrame {/*
 			btnGenXML.setDisabledIcon(disabledIcon);
 			btnGenXML.setEnabled(false);
 			btnGenXML.setActionCommand(GENERATEXMLCOMMAND);
-			btnGenXML.setToolTipText("Export to XML");
-			btnGenXML.setBounds(401, 4, 187, 30);
+			btnGenXML.setToolTipText("Create the new Web page");
+			btnGenXML.setBounds(501, 4, 187, 30);
 			btnGenXML.addActionListener(eventDispatcher);
+			btnGenXML.setFont(new Font("Arial Black", Font.PLAIN, btnGenXML.getFont().getSize()+1 ));
 			add(btnGenXML);
 		}
 

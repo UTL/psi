@@ -47,7 +47,7 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 	 */
 	private static final long serialVersionUID = -8834919285623008305L;
 
-	private static final String ROOT = "Home";
+	private static final String ROOT = "";
 	private static final int LIMITUNDO = 100;
 
 	private DisabledNode rootNode;

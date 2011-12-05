@@ -24,8 +24,8 @@ public class Options extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = -4742226718972158722L;
 
-	private static final String FRAMETITLE = "Options";
-	private static final String PANELTITLE = " Root directories for...";
+	private static final String FRAMETITLE = "Preferences";
+	private static final String PANELTITLE = " Default directories for: ";
 
 	private static final String BROWSE = "Browse";
 	private static final String DONE = "Save";
@@ -176,7 +176,9 @@ public class Options extends JDialog implements ActionListener {
 	}
 
 	private void boldify(JButton button) {
-		Font newButtonFont = new Font(button.getFont().getName(), Font.BOLD, button.getFont().getSize() + 2);
+		//btnDone.setFont(new Font("Arial Black", Font.PLAIN, btnDone.getFont().getSize()+1 ));
+
+		Font newButtonFont = new Font("Arial Black", Font.PLAIN, button.getFont().getSize() + 1);
 		button.setFont(newButtonFont);
 	}
 
