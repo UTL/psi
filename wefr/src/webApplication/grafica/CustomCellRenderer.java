@@ -124,7 +124,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		return this;
 	}
 
-	private boolean hasError(JTree tree, DisabledNode node) {
+	protected boolean hasError(JTree tree, DisabledNode node) {
 		try {
 			TreePanel panel = (TreePanel) (((tree.getParent()).getParent()).getParent());
 			// Recupero il path degli elementi con quel nome

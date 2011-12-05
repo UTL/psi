@@ -332,6 +332,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			MainWindow.albero.getTree().requestFocusInWindow();
 		}
 		
+		MainWindow.statusBar.repaint();
 		MainWindow.albero.revalidate();
 	}
 
@@ -383,6 +384,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			changeFieldAction.putValue(TreePanel.ChangeFieldAction.NEWVALUE, (MainWindow.properties.pannelloLink.getText()));
 			changeFieldAction.actionPerformed(new ActionEvent(MainWindow.properties.pannelloLink.urlText, ActionEvent.ACTION_PERFORMED,""));
 		}
+		MainWindow.statusBar.repaint();
 		MainWindow.albero.getTree().repaint();
 	}
 

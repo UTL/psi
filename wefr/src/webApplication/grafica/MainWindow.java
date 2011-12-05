@@ -1,11 +1,16 @@
 package webApplication.grafica;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -76,6 +81,7 @@ public class MainWindow extends JFrame {/*
 	private static JPanel contentPane;
 	protected static TreePanel albero;
 	protected static PropertiesPanel properties;
+	protected static StatusBar statusBar;
 
 	// MENU ITEM
 	private static JMenuItem mntmNew;
@@ -173,7 +179,7 @@ public class MainWindow extends JFrame {/*
 		setTitle(JFRAMETITLE + defaultTitle + initProjNum);
 		initProjNum++;
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 728, 502);
+		setBounds(100, 100, 728, 523);
 		setResizable(false);
 
 		// centro la finestra
@@ -201,6 +207,9 @@ public class MainWindow extends JFrame {/*
 
 		properties = new PropertiesPanel();
 		contentPane.add(properties);
+		
+		statusBar = new StatusBar();
+		contentPane.add(statusBar);
 		
 		MainWindow.albero.getTree().setCellRenderer(new CustomCellRenderer());
 	}
@@ -997,6 +1006,36 @@ public class MainWindow extends JFrame {/*
 				}
 			}
 		}
+	}
+	
+	protected static class StatusBar extends JPanel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4038960744094640548L;
+		
+		private Shape circle;
+		
+		protected StatusBar() {
+			super();
+			setBounds(0,452,722,20);
+			setBorder(new LineBorder(Color.GRAY));
+			circle = new Ellipse2D.Float(getWidth()-25f,2.5f,15,15);
+		}
+		
+		public void paint(Graphics g) {
+			super.paint(g);
+			Graphics2D ga = (Graphics2D) g;
+			ga.draw(circle);
+			if (albero.isCorrect()) {
+				ga.setPaint(Color.GREEN);
+			} else {
+				ga.setPaint(Color.RED);
+			}
+			ga.fill(circle);
+		}
+		
 	}
 	
 }
