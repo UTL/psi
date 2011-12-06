@@ -231,7 +231,7 @@ public class MainWindow extends JFrame {/*
 			statusBar = statusBarG;
 			contentPane.add(statusBar);
 		}
-		contentPane.repaint();
+		statusBar.repaint();
 	}
 
 	private void initPanelTree() {

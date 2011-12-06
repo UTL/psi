@@ -425,6 +425,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 			pannelloComp = new PannelloComp(true);
 		pannelloComp.setLocation(25, 61);
 		pannelloComp.list_components.getModel().addListDataListener(this);
+		pannelloComp.isCorrect();
 		thirdPanel.add(pannelloComp);
 		
 		createButtonsBar(thirdPanel, 3);

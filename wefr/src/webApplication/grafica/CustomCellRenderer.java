@@ -105,8 +105,9 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			
 			if (hasError(tree, node)) {
 				node.isCorrect = false;
-				MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
-//				MainWindow.setStatusBar(MainWindow.albero.isCorrect());
+				boolean b = MainWindow.albero.isCorrect();
+				MainWindow.btnGenXML.setEnabled(b);
+				MainWindow.setStatusBar(b);
 
 				return this;
 			}
@@ -133,8 +134,9 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			setIcon(homeIcon);
 			if(node.getChildCount()==0) {
 				node.isCorrect = false;
-				MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
-//				MainWindow.setStatusBar(MainWindow.albero.isCorrect());
+				boolean b = MainWindow.albero.isCorrect();
+				MainWindow.btnGenXML.setEnabled(b);
+				MainWindow.setStatusBar(b);
 						
 				return this;
 			}
@@ -142,8 +144,9 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			
 		}
 		node.isCorrect = true;
-		MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
-		//MainWindow.setStatusBar(MainWindow.albero.isCorrect());
+		boolean b = MainWindow.albero.isCorrect();
+		MainWindow.btnGenXML.setEnabled(b);
+		MainWindow.setStatusBar(b);
 
 		return this;
 	}
