@@ -210,8 +210,8 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 		JPanel stepOneIndicator = new JPanel();
 		if (currentStep == 1) {
-			stepOneIndicator.setBackground(Color.GREEN);
-			stepOneIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, Color.GREEN, null));
+			stepOneIndicator.setBackground(new Color(139,139,139));
+			stepOneIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(139,139,139), null));
 		} else {
 			stepOneIndicator.setBackground(SystemColor.control);
 			stepOneIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
@@ -228,8 +228,8 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 		JPanel stepTwoIndicator = new JPanel();
 		if (currentStep == 2) {
-			stepTwoIndicator.setBackground(Color.GREEN);
-			stepTwoIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, Color.GREEN, null));
+			stepTwoIndicator.setBackground(new Color(139,139,139));
+			stepTwoIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(139,139,139), null));
 		} else {
 			stepTwoIndicator.setBackground(SystemColor.control);
 			stepTwoIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
@@ -246,8 +246,8 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 		JPanel stepThreeIndicator = new JPanel();
 		if (currentStep == 3) {
-			stepThreeIndicator.setBackground(Color.GREEN);
-			stepThreeIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, Color.GREEN, null));
+			stepThreeIndicator.setBackground(new Color(139,139,139));
+			stepThreeIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(139,139,139), null));
 		} else {
 			stepThreeIndicator.setBackground(SystemColor.control);
 			stepThreeIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
