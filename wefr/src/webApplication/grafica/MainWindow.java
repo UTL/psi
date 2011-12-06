@@ -332,11 +332,17 @@ public class MainWindow extends JFrame {/*
 		int choice = fc.showSaveDialog(null);
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
+			int choice1 = JOptionPane.showOptionDialog(btnCopy.getTopLevelAncestor(), "This file already exists!\nDo you want to override it?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
+			//					showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), DELETEMESSAGE+"the selected nodes."+CONFIRMMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			if (choice1 == JOptionPane.NO_OPTION)
+				return;
+			System.out.println("Il file esiste ? "+ file.exists());
 			String path = file.getPath();
 			if (!file.getName().endsWith(EUDFileFilter.EXTENSION)) {
 				path = path + "." + EUDFileFilter.EXTENSION;
 			}
 			try {
+				
 				ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(path));
 				outStream.writeObject(albero.getComponenti());
 				outStream.writeObject(defImageDir);
