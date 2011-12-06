@@ -660,9 +660,11 @@ public class MainWindow extends JFrame {/*
 		private static final long serialVersionUID = -2712196620314697384L;
 
 		private static final String TITLE = " Properties ";
-		private static final String EMPTYSELECTION = "Select an element to show its properties";
+		private static final String EMPTYSELECTION = "Select an element \nto show its properties";
 		private static final String EMPTYSELECTIONTOOLTIP = "Select an element from the left panel or create e new one to show its properties here";
+		private static final String NOELEMENT = "Create a new element \nto show properties panel";
 
+		
 		private JPanel empty_panel;
 		private JPanel element_properties_panel;
 		private JPanel id_panel;
@@ -715,7 +717,11 @@ public class MainWindow extends JFrame {/*
 		private void initEmptyPanel() {
 			empty_panel = new JPanel();
 			empty_panel.setBounds(113, 181, 240, 30);
-			JLabel emptyAdvice = new JLabel(EMPTYSELECTION);
+			JLabel emptyAdvice = null;
+			if(albero.isEmpty())
+				emptyAdvice = new JLabel(NOELEMENT);
+			else
+				emptyAdvice = new JLabel(EMPTYSELECTION);
 			emptyAdvice.setEnabled(false);
 			empty_panel.add(emptyAdvice);
 		}

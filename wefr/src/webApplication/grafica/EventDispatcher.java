@@ -142,7 +142,9 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				int choice = 0;
 				if (((DisabledNode) MainWindow.albero.getTree().getModel().getRoot()).getChildCount() != 0) {
 					// se l'albero non e vuoto chiedo conferma prima di resettare tutto
-					choice = JOptionPane.showConfirmDialog(((JButton)e.getSource()).getTopLevelAncestor(), CLEARALL, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					choice = JOptionPane.showOptionDialog(((JButton)e.getSource()).getTopLevelAncestor(), CLEARALL, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
+
+//					choice = JOptionPane.showConfirmDialog(((JButton)e.getSource()).getTopLevelAncestor(), CLEARALL, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				}
 				if (choice == JOptionPane.YES_OPTION) {
 //				if (choice == 0) {
@@ -176,7 +178,8 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				}
 				int choice = 0;
 				if (!MainWindow.albero.isEmpty()) {
-					choice = JOptionPane.showConfirmDialog(((MainWindow) ((JButton) e.getSource()).getTopLevelAncestor()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					choice = JOptionPane.showOptionDialog(((MainWindow) ((JButton) e.getSource()).getTopLevelAncestor()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
+//							JOptionPane.showConfirmDialog(((MainWindow) ((JButton) e.getSource()).getTopLevelAncestor()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				}
 				if (choice == JOptionPane.YES_OPTION) {
 //				if (choice == 0) {
@@ -231,12 +234,14 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				String name = nodeToRemove.toString();
 				// chiede conferma per l'eliminazione del nodo
 				String message = DELETEMESSAGE + name + CONFIRMMESSAGE;
-				int choice = JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				int choice = JOptionPane.showOptionDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
+//						JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (choice == JOptionPane.YES_OPTION) {
 					if (nodeToRemove.getChildCount() != 0) {
 						message = name + NOTEMPTYMESSAGE;
 						// se il nodo e complesso e non vuoto, chiedo conferma di eliminazione di tutti gli elementi interni
-						choice = JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+						choice = JOptionPane.showOptionDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
+//								JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 						if (choice == JOptionPane.NO_OPTION) {
 							return;
 						}
@@ -280,7 +285,8 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				}
 			} else if (e.getActionCommand().equals(PannelloComp.DELETEACTION)) {
 				PannelloComp pc = (PannelloComp) ((JButton) e.getSource()).getParent();
-				int choice = JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), DELETEMESSAGE+"the selected nodes."+CONFIRMMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				int choice = JOptionPane.showOptionDialog(((JButton) e.getSource()).getTopLevelAncestor(), DELETEMESSAGE+"the selected nodes."+CONFIRMMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
+//						showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), DELETEMESSAGE+"the selected nodes."+CONFIRMMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (choice == JOptionPane.YES_OPTION) {
 					int[] indici = pc.list_components.getSelectedIndices();
 					//aggiorno la lista del pannello
