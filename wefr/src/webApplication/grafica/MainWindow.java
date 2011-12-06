@@ -82,7 +82,10 @@ public class MainWindow extends JFrame {/*
 	private static JPanel contentPane;
 	protected static TreePanel albero;
 	protected static PropertiesPanel properties;
-	public static StatusBar statusBar;
+	protected static StatusBar statusBar;
+	protected static StatusBarGreen statusBarG ;
+	protected static StatusBarRed statusBarR;
+	
 
 	// MENU ITEM
 	private static JMenuItem mntmNew;
@@ -173,7 +176,7 @@ public class MainWindow extends JFrame {/*
 	 * Create the frame.
 	 */
 	public MainWindow() {
-
+		
 		defSLDir = DEFAULTVALUE;
 		defTextDir = DEFAULTVALUE;
 		defImageDir = DEFAULTVALUE;
@@ -210,7 +213,9 @@ public class MainWindow extends JFrame {/*
 		properties = new PropertiesPanel();
 		contentPane.add(properties);
 		
-		statusBar = new StatusBarRed();
+		statusBarG= new StatusBarGreen();
+		statusBarR = new StatusBarRed();
+		statusBar = statusBarR;
 		contentPane.add(statusBar);
 		
 		MainWindow.albero.getTree().setCellRenderer(new CustomCellRenderer());
@@ -219,11 +224,11 @@ public class MainWindow extends JFrame {/*
 	public static void setStatusBar(boolean isRed){
 		contentPane.remove(statusBar);
 		if(!isRed){
-			statusBar = ((MainWindow)contentPane.getTopLevelAncestor()).new StatusBarRed();
+			statusBar = statusBarR;
 			contentPane.add(statusBar);
 		}
 		else{
-			statusBar = ((MainWindow)contentPane.getTopLevelAncestor()).new StatusBarGreen();
+			statusBar = statusBarG;
 			contentPane.add(statusBar);
 		}
 		contentPane.repaint();
@@ -1054,7 +1059,7 @@ public class MainWindow extends JFrame {/*
 		}
 	}
 	
-	protected class StatusBar extends JPanel{
+	public class StatusBar extends JPanel{
 		protected Shape circle;
 		/**
 		 * 

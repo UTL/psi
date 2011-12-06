@@ -106,7 +106,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			if (hasError(tree, node)) {
 				node.isCorrect = false;
 				MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
-				MainWindow.setStatusBar(MainWindow.albero.isCorrect());
+//				MainWindow.setStatusBar(MainWindow.albero.isCorrect());
 
 				return this;
 			}
@@ -134,9 +134,8 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			if(node.getChildCount()==0) {
 				node.isCorrect = false;
 				MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
-				MainWindow.setStatusBar(MainWindow.albero.isCorrect());
-				
-				
+//				MainWindow.setStatusBar(MainWindow.albero.isCorrect());
+						
 				return this;
 			}
 			setToolTipText(null);// fa in modo che il tooltip sparica spostandosi da un nodo con errore/warning
@@ -144,7 +143,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		}
 		node.isCorrect = true;
 		MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
-		MainWindow.setStatusBar(MainWindow.albero.isCorrect());
+		//MainWindow.setStatusBar(MainWindow.albero.isCorrect());
 
 		return this;
 	}

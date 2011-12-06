@@ -157,9 +157,9 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 			parent = node;
 			ComponenteMolteplice comps = (ComponenteMolteplice) node.getUserObject();
 			for (int i = 0; i < comps.getOpzioni().size(); i++) {
-				DisabledNode nodo = new DisabledNode((ComponenteSemplice) comps.getOpzione(i));
-				model.insertNodeInto(nodo, parent, i);
-				nodo.setAllowsChildren(false);
+				DisabledNode newNode = new DisabledNode((ComponenteSemplice) comps.getOpzione(i));
+				model.insertNodeInto(newNode, parent, i);
+				newNode.setAllowsChildren(false);
 			}
 		} else {
 			node.setAllowsChildren(false);
@@ -667,13 +667,11 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 						newParentIndex = newParentIndex - 1;
 					}
 				}
-			}
-			else if (((Integer) getValue(OLDPARENTINDEX)) == ((Integer) getValue(NEWPARENTINDEX))) {
+			} else if (((Integer) getValue(OLDPARENTINDEX)) == ((Integer) getValue(NEWPARENTINDEX))) {
 				if (((Integer) getValue(OLDINDEX)) < ((Integer) getValue(NEWINDEX))) {
 					newIndex = newIndex - 1;
 				}
 			}
-
 			UndoableEdit edit = new UndoableMoveNode(tree, (Integer) getValue(OLDPARENTINDEX), newParentIndex, (Integer) getValue(OLDINDEX), newIndex);
 			undoSupport.postEdit(edit);
 		}
