@@ -18,6 +18,7 @@ import webApplication.business.ComponenteMolteplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
+import webApplication.grafica.MainWindow.StatusBarGreen;
 
 /**
  * Il renderer dei nodi limitatamente per le icone a seconda del tipo di
@@ -105,6 +106,8 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			if (hasError(tree, node)) {
 				node.isCorrect = false;
 				MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
+				MainWindow.setStatusBar(MainWindow.albero.isCorrect());
+
 				return this;
 			}
 			Componente comp = (Componente) node.getUserObject();
@@ -131,6 +134,9 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			if(node.getChildCount()==0) {
 				node.isCorrect = false;
 				MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
+				MainWindow.setStatusBar(MainWindow.albero.isCorrect());
+				
+				
 				return this;
 			}
 			setToolTipText(null);// fa in modo che il tooltip sparica spostandosi da un nodo con errore/warning
@@ -138,6 +144,8 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		}
 		node.isCorrect = true;
 		MainWindow.btnGenXML.setEnabled(MainWindow.albero.isCorrect());
+		MainWindow.setStatusBar(MainWindow.albero.isCorrect());
+
 		return this;
 	}
 

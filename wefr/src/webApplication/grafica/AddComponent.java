@@ -112,7 +112,10 @@ public abstract class AddComponent extends JDialog implements ActionListener {
 		buttonAdd = new JButton(ADD);
 		buttonAdd.setActionCommand(ADD);
 		buttonAdd.addActionListener(this);
-		buttonAdd.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+		
+
+		buttonAdd.setFont(new Font("Arial Black", Font.PLAIN, buttonAdd.getFont().getSize()+1 ));
+//		setFont(new Font(Font.DIALOG, Font.BOLD, 12));
 		buttonAdd.setBounds(433, 468, 82, 27);
 		// buttonAdd.setEnabled(false); FIXME da disabilitare una volta
 		// completato il listener

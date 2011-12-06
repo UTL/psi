@@ -384,6 +384,7 @@ public class TreeTransferHandler extends TransferHandler implements
 		// Cambio il valore di isCopy perche eventuali ulteriori paste, anche se
 		// l'origine era cut ora sono tutte copy
 		isCopy = true;
+		MainWindow.properties.showProperties((DisabledNode)MainWindow.albero.getTree().getSelectionPath().getLastPathComponent());
 		System.out.println("Terminata importazione");
 		return true;
 	}

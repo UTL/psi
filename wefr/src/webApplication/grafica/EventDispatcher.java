@@ -125,6 +125,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			Action a = focus.getActionMap().get(e.getActionCommand());
 			if (a != null) {
 				a.actionPerformed(new ActionEvent(focus, ActionEvent.ACTION_PERFORMED, null));
+			
 			}
 		} else {
 			// Se sto cercando di compiere un'altra azione lasciando un taglia

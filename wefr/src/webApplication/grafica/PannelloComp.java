@@ -126,10 +126,14 @@ public class PannelloComp extends PannelloGeneric implements ListSelectionListen
 	}
 
 	protected void setOpzioni(Vector<ComponenteSemplice> opzioni) {
-		model.removeAllElements();
-		for (int i = 0; i < opzioni.size(); i++) {
-			model.add(i, opzioni.get(i));
+		try{
+			model.clear();
+			for (int i = 0; i < opzioni.size(); i++) {
+				model.add(i, opzioni.get(i));
+			}
+		
 		}
+		catch(NullPointerException e){}
 	}
 
 	protected Vector<ComponenteSemplice> getOpzioni() {
@@ -199,7 +203,9 @@ public class PannelloComp extends PannelloGeneric implements ListSelectionListen
 				}
 			}
 		}
-		model.removeElementAt(i);
+		if(i<model.size())
+			model.removeElementAt(i);
+		manageDelBtn();
 	}
 	
 	protected boolean redify() {
@@ -227,6 +233,10 @@ public class PannelloComp extends PannelloGeneric implements ListSelectionListen
 	 * {@inheritDoc}
 	 */
 	public void valueChanged(ListSelectionEvent e) {
+		manageDelBtn();
+	}
+
+	private void manageDelBtn() {
 		if (list_components.isSelectionEmpty()) {
 			delete.setEnabled(false);
 		} else {
