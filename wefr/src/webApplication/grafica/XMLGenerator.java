@@ -55,10 +55,12 @@ public class XMLGenerator {
 			marshaller.get();
 		} catch (InterruptedException e) {
 			System.out.println("Classe causa interrupt: "+e.getMessage());
+			return -7;
 		} catch (ExecutionException e) {
 			System.out.println("Classe: "+e.getCause().getClass());
 			if (e.getCause().getClass().equals(SAXParseException.class)) {
 				System.out.println("Errore del parser");
+				return -6;
 			} else if (e.getCause().getClass().equals(MarshalException.class)) {
 				System.out.println("Errore di validazione");
 				return -4;
