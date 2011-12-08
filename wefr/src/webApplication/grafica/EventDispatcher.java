@@ -335,7 +335,19 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			} else if (e.getActionCommand().equals(MainWindow.GENERATEXMLCOMMAND)) {
 				XMLGenerator generator = new XMLGenerator((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor());
 				Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-				generator.generateXML();
+				int returnValue = generator.generateXML();
+				switch(returnValue) {
+				case(0):
+					JOptionPane.showMessageDialog((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor(), "Site generated successfully!","Completed",JOptionPane.INFORMATION_MESSAGE);
+					break;
+				case(-2):
+				case(-4):
+					JOptionPane.showMessageDialog((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor(), "An error is occurred during the transformation process. Check your work and try again.","Error transforming",JOptionPane.ERROR_MESSAGE);
+				break;
+				case(-3):
+				case(-5):
+					JOptionPane.showMessageDialog((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor(), "An error is occured while writing the file. Check permission and try again.", "Error writing", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 
