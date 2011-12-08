@@ -640,7 +640,9 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 			DisabledNode node = (DisabledNode) oldParent.getChildAt((Integer) getValue(OLDINDEX));
 			ComponenteSemplice comp = (ComponenteSemplice) (node).getUserObject();
 			parentComp.aggiungiOpzione(comp, (Integer)getValue(NEWINDEX));
-			model.insertNodeInto(new DisabledNode(comp), newParent, newParent.getChildCount());
+			DisabledNode newNode = new DisabledNode(comp);
+			newNode.setAllowsChildren(false);
+			model.insertNodeInto(newNode, newParent, newParent.getChildCount());
 			model.removeNodeFromParent(node);
 			// richiamo la creazione dell'undo apposito
 			actionPerformed(new ActionEvent(new Object(), ActionEvent.ACTION_PERFORMED, ""));
