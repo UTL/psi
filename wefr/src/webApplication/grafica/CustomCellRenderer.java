@@ -18,7 +18,6 @@ import webApplication.business.ComponenteMolteplice;
 import webApplication.business.Immagine;
 import webApplication.business.Link;
 import webApplication.business.Testo;
-import webApplication.grafica.MainWindow.StatusBarGreen;
 
 /**
  * Il renderer dei nodi limitatamente per le icone a seconda del tipo di
@@ -39,14 +38,11 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	private ImageIcon linkIcon;
 	private ImageIcon compositeIcon;
 	private ImageIcon alternativeIcon;
-	//private ImageIcon errorIcon;
-	//private ImageIcon homeErrIcon;
 	private ImageIcon textErrIcon;
 	private ImageIcon imageErrIcon;
 	private ImageIcon linkErrIcon;
 	private ImageIcon compositeErrIcon;
 	private ImageIcon alternativeErrIcon;
-//	private ImageIcon warningIcon;
 
 	private static String BASEPATH = "icon/";
 	private static String HOMEICON = "Home.png";
@@ -60,8 +56,6 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	private static String LINKERRICONNAME = "LinkErr.png";
 	private static String ALTERNATIVEERRICONNAME = "AlternativaErr.png";
 	private static String COMPOSITEERRICONNAME = "CompostoErr.png";
-	//private static String ERRORICONNAME = "error.png";
-//	private static String WARNINGICONNAME = "warning.png";
 
 	private static String ERRORTOOLTIPTEXT = "The choosen component name is already taken";
 //	private static String WARNINGTOOLTIPTEXT = "The element contains al least one element. Consider adding more internal components";
@@ -79,14 +73,11 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		linkIcon = createImageIcon(BASEPATH + LINKICONNAME);
 		compositeIcon = createImageIcon(BASEPATH + COMPOSITEICONNAME);
 		alternativeIcon = createImageIcon(BASEPATH + ALTERNATIVEICONNAME);
-		//errorIcon = createImageIcon(BASEPATH + ERRORICONNAME);
 		textErrIcon = createImageIcon(BASEPATH + TEXTERRICONNAME);
 		imageErrIcon = createImageIcon(BASEPATH + IMAGEERRICONNAME);
 		linkErrIcon = createImageIcon(BASEPATH + LINKERRICONNAME);
 		compositeErrIcon = createImageIcon(BASEPATH + COMPOSITEERRICONNAME);
 		alternativeErrIcon = createImageIcon(BASEPATH + ALTERNATIVEERRICONNAME);
-		//errorErrIcon = createImageIcon(BASEPATH + ERRORICONNAME);
-//		warningIcon = createImageIcon(BASEPATH + WARNINGICONNAME);
 	}
 
 	/**
@@ -96,13 +87,6 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		DisabledNode node = (DisabledNode) value;
 		if (node != tree.getModel().getRoot()) {
-			
-//			if (node.isCorrect == false) {
-//				setIcon(errorIcon);
-//				setToolTipText(ERRORTOOLTIPTEXT);
-//				return this;
-//			}
-			
 			if (hasError(tree, node)) {
 				node.isCorrect = false;
 				boolean b = MainWindow.albero.isCorrect();
@@ -279,7 +263,6 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 					return true;
 				}
 			}
-			//TODO controllare link url
 		} catch (NullPointerException e) {
 		} catch (ClassCastException e) {
 		}
@@ -295,7 +278,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 	 * @return L'immagine caricata
 	 */
 	private static ImageIcon createImageIcon(String path) {
-		return new ImageIcon(path);
+		return new ImageIcon(CustomCellRenderer.class.getClassLoader().getResource(path));
 	}
 	
 	private static boolean isPathCorrect(String path) {

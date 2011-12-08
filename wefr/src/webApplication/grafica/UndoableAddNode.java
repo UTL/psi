@@ -67,8 +67,7 @@ public class UndoableAddNode extends AbstractUndoableEdit {
 		if (parentIndex == -1) {
 			parent = (DisabledNode) model.getRoot();
 		} else {
-			DisabledNode root = (DisabledNode) model
-					.getRoot();
+			DisabledNode root = (DisabledNode) model.getRoot();
 			parent = (DisabledNode) root.getChildAt(parentIndex);
 		}
 		node = (DisabledNode) parent.getChildAt(index);
@@ -102,7 +101,6 @@ public class UndoableAddNode extends AbstractUndoableEdit {
 			parent = (DisabledNode) root.getChildAt(parentIndex);
 		}
 		if (movingNodes != null) {
-			System.out.println("Sono dentro");
 			Object[] valori = movingNodes.values().toArray();
 			Arrays.sort(valori);
 			for (int i = movingNodes.size() - 1; i >= 0; i--) {
