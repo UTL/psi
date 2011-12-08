@@ -42,6 +42,7 @@ public class XMLGenerator {
 	 */
 	protected int generateXML() {
 		File file = new File(FILENAME);
+		System.out.println(file.getAbsolutePath());
 		if (file.exists()) {
 			int choice = JOptionPane.showConfirmDialog(owner, FILEEXISTINGMESSAGE, JOPTIONPANETITLE, JOptionPane.YES_NO_OPTION);
 			if (choice == JOptionPane.NO_OPTION) {
