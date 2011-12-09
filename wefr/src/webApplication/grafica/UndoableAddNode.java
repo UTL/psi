@@ -116,8 +116,12 @@ public class UndoableAddNode extends AbstractUndoableEdit {
 		if (!(nodeComp.isSimple())) {
 			ComponenteMolteplice moltCompNode = (ComponenteMolteplice) nodeComp;
 			for (int i = 0; i < moltCompNode.getOpzioni().size(); i++) {
-				model.insertNodeInto(new DisabledNode(moltCompNode.getOpzione(i)), node, i);
+				DisabledNode newNode = new DisabledNode(moltCompNode.getOpzione(i));
+				model.insertNodeInto(newNode, node, i);
+				newNode.setAllowsChildren(false);
 			}
+		} else {
+			node.setAllowsChildren(false);
 		}
 		tree.setSelectionPath(new TreePath(node.getPath()));
 		tree.expandPath(new TreePath(node.getPath()));
