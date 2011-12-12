@@ -65,8 +65,12 @@ public class UndoableRemoveNode extends AbstractUndoableEdit {
 		if (!((Componente) node.getUserObject()).isSimple()) {
 			ComponenteMolteplice parentNodeComp = (ComponenteMolteplice) node.getUserObject();
 			for (int i = 0; i < parentNodeComp.getOpzioni().size(); i++) {
-				model.insertNodeInto(new DisabledNode(parentNodeComp.getOpzione(i)), node, i);
+				DisabledNode newNode = new DisabledNode(parentNodeComp.getOpzione(i));
+				model.insertNodeInto(newNode, node, i);
+				newNode.setAllowsChildren(false);
 			}
+		} else {
+			node.setAllowsChildren(false);
 		}
 		tree.setSelectionPath(new TreePath(node.getPath()));
 		tree.expandPath(new TreePath(node.getPath()));

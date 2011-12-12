@@ -42,6 +42,7 @@ public class XMLGenerator {
 	 */
 	protected int generateXML() {
 		File file = new File(FILENAME);
+		System.out.println(file.getAbsolutePath());
 		if (file.exists()) {
 			int choice = JOptionPane.showConfirmDialog(owner, FILEEXISTINGMESSAGE, JOPTIONPANETITLE, JOptionPane.YES_NO_OPTION);
 			if (choice == JOptionPane.NO_OPTION) {
@@ -54,10 +55,12 @@ public class XMLGenerator {
 			marshaller.get();
 		} catch (InterruptedException e) {
 			System.out.println("Classe causa interrupt: "+e.getMessage());
+			return -7;
 		} catch (ExecutionException e) {
 			System.out.println("Classe: "+e.getCause().getClass());
 			if (e.getCause().getClass().equals(SAXParseException.class)) {
 				System.out.println("Errore del parser");
+				return -6;
 			} else if (e.getCause().getClass().equals(MarshalException.class)) {
 				System.out.println("Errore di validazione");
 				return -4;

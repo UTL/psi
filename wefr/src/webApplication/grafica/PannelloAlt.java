@@ -49,8 +49,9 @@ public class PannelloAlt extends PannelloComp implements ListSelectionListener {
 	public PannelloAlt(boolean isWizard) {
 		super(isWizard);
 
-		Icon enabledIcon = new ImageIcon(MainWindow.BASEPATH + UPICON);
-		Icon disabledIcon = new ImageIcon(MainWindow.BASEPATH + DISUPICON);
+		
+		Icon enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(MainWindow.BASEPATH + UPICON));
+		Icon disabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(MainWindow.BASEPATH + DISUPICON));
 		bottUp = new JButton(enabledIcon);
 		bottUp.setDisabledIcon(disabledIcon);
 		bottUp.setActionCommand(UPCOMMAND);
@@ -64,8 +65,8 @@ public class PannelloAlt extends PannelloComp implements ListSelectionListener {
 		}
 		add(bottUp);
 
-		enabledIcon = new ImageIcon(MainWindow.BASEPATH + DOWNICON);
-		disabledIcon = new ImageIcon(MainWindow.BASEPATH + DISDOWNICON);
+		enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(MainWindow.BASEPATH + DOWNICON));
+		disabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(MainWindow.BASEPATH + DISDOWNICON));
 		bottDown = new JButton(enabledIcon);
 		bottDown.setDisabledIcon(disabledIcon);
 		bottDown.setActionCommand(DOWNCOMMAND);

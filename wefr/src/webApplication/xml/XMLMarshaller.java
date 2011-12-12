@@ -50,7 +50,6 @@ public class XMLMarshaller extends SwingWorker<Void, Void> {
 		List<Object> list = root.getECIOrCINode();
 		//leggere l'albero e creare gli elementi appositi
 		DisabledNode rootNode = (DisabledNode) tree.getModel().getRoot();
-		System.out.println("child count: "+rootNode.getChildCount());
 		for (int i=0; i<rootNode.getChildCount(); i++) {
 			Componente componente = (Componente)((DisabledNode) rootNode.getChildAt(i)).getUserObject(); 
 			Object element = createElement(componente);
@@ -58,7 +57,7 @@ public class XMLMarshaller extends SwingWorker<Void, Void> {
 		}
 		Marshaller marshaller = content.createMarshaller();
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = schemaFactory.newSchema(new File(SCHEMABASEPATH+SCHEMANAME));
+		Schema schema = schemaFactory.newSchema(this.getClass().getClassLoader().getResource(SCHEMABASEPATH+SCHEMANAME));
 		marshaller.setSchema(schema);
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		FileOutputStream output = new FileOutputStream(file);

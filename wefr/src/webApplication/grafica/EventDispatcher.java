@@ -119,9 +119,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			if (!(focus instanceof JTree)) {
 				((TreeTransferHandler) panel.getTree().getTransferHandler()).cancelCut();
 			}
-			//			focusOwner = MainWindow.albero.getTree();
 			// forzo il focus sull'albero per attivare il transferhandler dell'albero
-			System.out.println("Focus: "+focus.getClass().getCanonicalName());
 			Action a = focus.getActionMap().get(e.getActionCommand());
 			if (a != null) {
 				a.actionPerformed(new ActionEvent(focus, ActionEvent.ACTION_PERFORMED, null));
@@ -143,14 +141,9 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				int choice = 0;
 				if (((DisabledNode) MainWindow.albero.getTree().getModel().getRoot()).getChildCount() != 0) {
 					// se l'albero non e vuoto chiedo conferma prima di resettare tutto
-					//choice = JOptionPane.showOptionDialog(((JButton)e.getSource()).getTopLevelAncestor(), CLEARALL, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
-
 					choice = JOptionPane.showConfirmDialog(((JButton)e.getSource()).getTopLevelAncestor(), CLEARALL, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				}
-				System.out.println("scelta: "+ choice +"\n YES: "+ JOptionPane.YES_OPTION+", NO: "+ JOptionPane.YES_OPTION);
-
 				if (choice == JOptionPane.YES_OPTION) {
-//				if (choice == 0) {
 					NewAction newOrCloseAction = panel.new NewAction();
 					newOrCloseAction.actionPerformed(e);
 					MainWindow.defImageDir = MainWindow.DEFAULTVALUE;
@@ -181,11 +174,9 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				}
 				int choice = 0;
 				if (!MainWindow.albero.isEmpty()) {
-//					choice = JOptionPane.showOptionDialog(((MainWindow) ((JButton) e.getSource()).getTopLevelAncestor()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
-					choice = 		JOptionPane.showConfirmDialog(((MainWindow) ((JButton) e.getSource()).getTopLevelAncestor()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					choice = JOptionPane.showConfirmDialog(((MainWindow) ((JButton) e.getSource()).getTopLevelAncestor()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				}
 				if (choice == JOptionPane.YES_OPTION) {
-//				if (choice == 0) {
 					((MainWindow) ((JButton) e.getSource()).getTopLevelAncestor()).exitProject();
 				}
 			} else if (e.getActionCommand().equals(TreePanel.UndoAction.UNDOCOMMAND)) {
@@ -194,9 +185,6 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				redoAction.actionPerformed(e);
 			} else if (e.getActionCommand().equals((String) TransferHandler.getCopyAction().getValue(Action.NAME))) {
 				// gestisco il comando copia
-//				focusOwner = MainWindow.albero.getTree();
-				System.out.println("Focus: "+focus.getClass().getCanonicalName());
-				// forzo il focus sull'albero per attivare il transferhandler dell'albero
 				Action a = focus.getActionMap().get(e.getActionCommand());
 				if (a != null) {
 					a.actionPerformed(new ActionEvent(focus, ActionEvent.ACTION_PERFORMED, null));
@@ -205,8 +193,6 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			} else if (e.getActionCommand().equals((String) TransferHandler.getCutAction().getValue(Action.NAME))) {
 				// gestisco il comando taglia
 				haveCutted = true;
-				System.out.println("Focus: "+focus.getClass().getCanonicalName());
-				// forzo il focus sull'albero per attivare il transferhandler dell'albero
 				Action a = focus.getActionMap().get(e.getActionCommand());
 				if (a != null) {
 					a.actionPerformed(new ActionEvent(focus, ActionEvent.ACTION_PERFORMED, null));
@@ -237,16 +223,13 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				String name = nodeToRemove.toString();
 				// chiede conferma per l'eliminazione del nodo
 				String message = DELETEMESSAGE + name + CONFIRMMESSAGE;
-//				int choice = JOptionPane.showOptionDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
-				int choice = 		JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-				System.out.println("scelta: "+ choice +"\n YES: "+ JOptionPane.YES_OPTION+", NO: "+ JOptionPane.YES_OPTION);
+				int choice = JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 				if (choice == JOptionPane.YES_OPTION) {
 					if (nodeToRemove.getChildCount() != 0) {
 						message = name + NOTEMPTYMESSAGE;
 						// se il nodo e complesso e non vuoto, chiedo conferma di eliminazione di tutti gli elementi interni
-//						choice = JOptionPane.showOptionDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
-						choice =		JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+						choice = JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), message, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 						if (choice == JOptionPane.NO_OPTION) {
 							return;
 						}
@@ -261,7 +244,6 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				if (an.showDialog()) {
 					// aggiorno la lista visualizzata
 					pc.addNewComponent(an.getComponente());
-
 					// aggiungo il nodo all'albero
 					AddAction addAction = panel.new AddAction();
 					addAction.putValue(TreePanel.AddAction.COMPONENTE, an.getComponente());
@@ -290,7 +272,6 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 				}
 			} else if (e.getActionCommand().equals(PannelloComp.DELETEACTION)) {
 				PannelloComp pc = (PannelloComp) ((JButton) e.getSource()).getParent();
-	//			 JOptionPane.showOptionDialog(((JButton) e.getSource()).getTopLevelAncestor(), DELETEMESSAGE+"the selected nodes."+CONFIRMMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
 				int choice = JOptionPane.showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), DELETEMESSAGE+"the selected nodes."+CONFIRMMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);				System.out.println("scelta: "+ choice +"\n YES: "+ JOptionPane.YES_OPTION+", NO: "+ JOptionPane.YES_OPTION);
 				if (choice == JOptionPane.YES_OPTION) {
 					int[] indici = pc.list_components.getSelectedIndices();
@@ -335,7 +316,23 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 			} else if (e.getActionCommand().equals(MainWindow.GENERATEXMLCOMMAND)) {
 				XMLGenerator generator = new XMLGenerator((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor());
 				Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-				generator.generateXML();
+				int returnValue = generator.generateXML();
+				switch(returnValue) {
+				case(0):
+					JOptionPane.showMessageDialog((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor(), "Site generated successfully!","Completed",JOptionPane.INFORMATION_MESSAGE);
+					break;
+				case(-6):
+				case(-2):
+				case(-4):
+					JOptionPane.showMessageDialog((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor(), "An error is occurred during the transformation process. Check your work and try again.","Error transforming",JOptionPane.ERROR_MESSAGE);
+					break;
+				case(-3):
+				case(-5):
+					JOptionPane.showMessageDialog((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor(), "An error is occured while writing the file. Check permission and try again.", "Error writing", JOptionPane.ERROR_MESSAGE);
+					break;
+				case(-7):
+					JOptionPane.showMessageDialog((MainWindow)((JComponent)e.getSource()).getTopLevelAncestor(), "Operation interrupted","Warning!", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		}
 
@@ -466,11 +463,7 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		int choice = 0;
 		if (!MainWindow.albero.isEmpty()) {
 			choice = JOptionPane.showConfirmDialog(((MainWindow) e.getWindow()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			//new String[] {"Yes", "No"}, "No")
-			//JOptionPane.showOptionDialog(((MainWindow) e.getWindow()), CLOSEMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
 		}
-		System.out.println("scelta: "+ choice +"\n YES: "+ JOptionPane.YES_OPTION+", NO: "+ JOptionPane.YES_OPTION);
-
 		if (choice == JOptionPane.YES_OPTION) {
 			((MainWindow) e.getWindow()).exitProject();
 		}

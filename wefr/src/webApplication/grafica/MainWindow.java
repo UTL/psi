@@ -1,7 +1,6 @@
 package webApplication.grafica;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -332,11 +331,11 @@ public class MainWindow extends JFrame {/*
 		int choice = fc.showSaveDialog(null);
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
-			int choice1 = JOptionPane.showOptionDialog(btnCopy.getTopLevelAncestor(), "This file already exists!\nDo you want to override it?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,  null, new String[] {"Yes", "No"}, "No");
-			//					showConfirmDialog(((JButton) e.getSource()).getTopLevelAncestor(), DELETEMESSAGE+"the selected nodes."+CONFIRMMESSAGE, "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			if (choice1 == JOptionPane.NO_OPTION)
-				return;
-			System.out.println("Il file esiste ? "+ file.exists());
+			if (file.exists()) {
+				choice = JOptionPane.showConfirmDialog(btnCopy.getTopLevelAncestor(), "This file already exists!\nDo you want to override it?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (choice == JOptionPane.NO_OPTION)
+					return;
+			}
 			String path = file.getPath();
 			if (!file.getName().endsWith(EUDFileFilter.EXTENSION)) {
 				path = path + "." + EUDFileFilter.EXTENSION;
@@ -378,21 +377,11 @@ public class MainWindow extends JFrame {/*
 				Vector<Componente> temp = (Vector<Componente>) inStream.readObject();
 				setTitle(JFRAMETITLE + fc.getSelectedFile().getName().substring(0, fc.getSelectedFile().getName().lastIndexOf(".")));
 				initProjNum = 1;
-				//TODO caricare gli elementi del file
-//				ObjectInputStream aStream = null;
-
-//				albero.getComponenti();
-//				aStream = new ObjectInputStream(new FileInputStream(fcLoad.getFile()));
-				
-				//Soluzione per questo warning
-				//http://stackoverflow.com/questions/509076/how-do-i-address-unchecked-cast-warnings
-//				Vector <Componente> temp = (Vector <Componente>) aStream.readObject();
 				albero.clear();
 				albero.setComponenti(temp);
 				defImageDir = (String) inStream.readObject();
 				defTextDir = (String) inStream.readObject();
 				defSLDir = (String) inStream.readObject();
-				
 				inStream.close();
 				albero.getUndoManager().discardAllEdits();
 				properties.showProperties(null);
@@ -560,8 +549,9 @@ public class MainWindow extends JFrame {/*
 			setBounds(5, 0, 710, 37);
 			setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			setLayout(null);
-
-			Icon enabledIcon = new ImageIcon(BASEPATH + NEWICON);
+			
+			
+			Icon enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+NEWICON));
 			btnNew = new JButton(enabledIcon);
 			btnNew.setActionCommand(TreePanel.NewAction.NEWCOMMAND);
 			btnNew.setToolTipText("New");
@@ -569,7 +559,7 @@ public class MainWindow extends JFrame {/*
 			add(btnNew);
 			btnNew.addActionListener(eventDispatcher);
 
-			enabledIcon = new ImageIcon(BASEPATH + OPENICON);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+OPENICON));
 			btnOpen = new JButton(enabledIcon);
 			btnOpen.setActionCommand(OPENCOMMAND);
 			btnOpen.setToolTipText("Open");
@@ -577,7 +567,7 @@ public class MainWindow extends JFrame {/*
 			add(btnOpen);
 			btnOpen.addActionListener(eventDispatcher);
 
-			enabledIcon = new ImageIcon(BASEPATH + SAVEICON);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+SAVEICON));
 			btnSave = new JButton(enabledIcon);
 			btnSave.setActionCommand(SAVECOMMAND);
 			btnSave.setToolTipText("Save");
@@ -585,8 +575,8 @@ public class MainWindow extends JFrame {/*
 			add(btnSave);
 			btnSave.addActionListener(eventDispatcher);
 
-			enabledIcon = new ImageIcon(BASEPATH + ENUNDOICON);
-			Icon disabledIcon = new ImageIcon(BASEPATH + DISUNDOICON);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+ENUNDOICON));
+			Icon disabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+DISUNDOICON));
 			btnUndo = new JButton(enabledIcon);
 			btnUndo.setDisabledIcon(disabledIcon);
 			btnUndo.setActionCommand(TreePanel.UndoAction.UNDOCOMMAND);
@@ -596,8 +586,8 @@ public class MainWindow extends JFrame {/*
 			btnUndo.addActionListener(eventDispatcher);
 			add(btnUndo);
 
-			enabledIcon = new ImageIcon(BASEPATH + ENREDOICON);
-			disabledIcon = new ImageIcon(BASEPATH + DISREDOICON);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+ENREDOICON));
+			disabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+DISREDOICON));
 			btnRedo = new JButton(enabledIcon);
 			btnRedo.setDisabledIcon(disabledIcon);
 			btnRedo.setActionCommand(TreePanel.RedoAction.REDOCOMMAND);
@@ -607,8 +597,8 @@ public class MainWindow extends JFrame {/*
 			btnRedo.addActionListener(eventDispatcher);
 			add(btnRedo);
 
-			enabledIcon = new ImageIcon(BASEPATH + ENCOPYICON);
-			disabledIcon = new ImageIcon(BASEPATH + DISCOPYICON);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+ENCOPYICON));
+			disabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+DISCOPYICON));
 			btnCopy = new JButton(enabledIcon);
 			btnCopy.setDisabledIcon(disabledIcon);
 			btnCopy.setEnabled(false);
@@ -619,8 +609,8 @@ public class MainWindow extends JFrame {/*
 //			btnCopy.addFocusListener(eventDispatcher);
 			add(btnCopy);
 
-			enabledIcon = new ImageIcon(BASEPATH + ENCUTICON);
-			disabledIcon = new ImageIcon(BASEPATH + DISCUTICON);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+ENCUTICON));
+			disabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+DISCUTICON));
 			btnCut = new JButton(enabledIcon);
 			btnCut.setDisabledIcon(disabledIcon);
 			btnCut.setActionCommand((String) TransferHandler.getCutAction().getValue(Action.NAME));
@@ -630,8 +620,8 @@ public class MainWindow extends JFrame {/*
 			btnCut.addActionListener(eventDispatcher);
 			add(btnCut);
 
-			enabledIcon = new ImageIcon(BASEPATH + ENPASTEICON);
-			disabledIcon = new ImageIcon(BASEPATH + DISPASTEICON);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+ENPASTEICON));
+			disabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+DISPASTEICON));
 			btnPaste = new JButton(enabledIcon);
 			btnPaste.setDisabledIcon(disabledIcon);
 			btnPaste.setActionCommand((String) TransferHandler.getPasteAction().getValue(Action.NAME));
@@ -641,7 +631,7 @@ public class MainWindow extends JFrame {/*
 			btnPaste.addActionListener(eventDispatcher);
 			add(btnPaste);
 
-			enabledIcon = new ImageIcon(BASEPATH + ADDICON);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+ADDICON));
 			btnAdd = new JButton(enabledIcon);
 			btnAdd.setActionCommand(TreePanel.AddAction.ADDCOMMAND);
 			btnAdd.addActionListener(eventDispatcher);
@@ -649,8 +639,8 @@ public class MainWindow extends JFrame {/*
 			btnAdd.setBounds(313, 4, 30, 30);
 			add(btnAdd);
 
-			enabledIcon = new ImageIcon(BASEPATH + ENREMOVEICON);
-			disabledIcon = new ImageIcon(BASEPATH + DISREMOVEICON);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+ENREMOVEICON));
+			disabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+DISREMOVEICON));
 			btnDel = new JButton(enabledIcon);
 			btnDel.setDisabledIcon(disabledIcon);
 			btnDel.setEnabled(false);
@@ -660,11 +650,8 @@ public class MainWindow extends JFrame {/*
 			btnDel.addActionListener(eventDispatcher);
 			add(btnDel);
 			
-			enabledIcon = new ImageIcon(BASEPATH + ENREMOVEICON);
-			disabledIcon = new ImageIcon(BASEPATH + DISREMOVEICON);
-			btnGenXML = new JButton("Testo di prova", enabledIcon);
-			enabledIcon = new ImageIcon(BASEPATH + ENGENERATEXML);
-			disabledIcon = new ImageIcon(BASEPATH + DISGENERATEXML);
+			enabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+ENGENERATEXML));
+			disabledIcon = new ImageIcon(this.getClass().getClassLoader().getResource(BASEPATH+DISGENERATEXML));
 			btnGenXML = new JButton(GENERATEXMLCOMMAND, enabledIcon);
 			btnGenXML.setDisabledIcon(disabledIcon);
 			btnGenXML.setEnabled(false);

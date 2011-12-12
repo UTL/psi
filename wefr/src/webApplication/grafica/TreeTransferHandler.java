@@ -1,6 +1,7 @@
 package webApplication.grafica;
 
 import java.util.List;
+import java.util.Vector;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
@@ -44,6 +45,7 @@ public class TreeTransferHandler extends TransferHandler implements
 	private DataFlavor nodesFlavor;
 	private DataFlavor[] flavors = new DataFlavor[4];
 	private DisabledNode[] nodesToRemove;
+	private DisabledNode selection;
 	private Componente[] compsToCopy;
 	private int cont = 1;
 	private Clipboard clipboard;
@@ -210,6 +212,8 @@ public class TreeTransferHandler extends TransferHandler implements
 			System.out.println("Drop - Copia");
 			copyAction.actionPerformed(new ActionEvent(this, COPY, "CopyAction"));
 		}
+		MainWindow.albero.getTree().setSelectionPath(new TreePath(selection.getPath()));
+		MainWindow.properties.showProperties(selection);
 		System.out.println("Terminata esportazione");
 	}
 
@@ -226,7 +230,7 @@ public class TreeTransferHandler extends TransferHandler implements
 			System.out.println("CCP - Taglia");
 			isCopy = false;
 			JTree tree = (JTree) c;
-			DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+//			DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 			// Rimuovo gli elementi indicati per la rimozione
 			for (int i = 0; i <nodesToRemove.length ; i++) {
 				nodesToRemove[i].setEnabled(false);
@@ -263,30 +267,18 @@ public class TreeTransferHandler extends TransferHandler implements
 		if (support.isDrop()) {
 			System.out.println("Operazione di drop");
 			if (support.getDropAction() == COPY) {
-				for (int i = 0; i < compsToCopy.length; i++) {
-					compsToCopy[i] = renameComponente(compsToCopy[i]);
-				}
+				renameComponenti();
 			}
 			// Recupero la location per il drop
 			JTree.DropLocation dl = (JTree.DropLocation) support.getDropLocation();
 			int childIndex = dl.getChildIndex();
 			TreePath dest = dl.getPath();
 			parent = (DisabledNode) dest.getLastPathComponent();
-//			if (parent.isRoot()) {
-//				copyAction.putValue(TreePanel.CopyAction.PARENTINDEX, -1);
-//				moveAction.putValue(TreePanel.MoveAction.NEWPARENTINDEX, -1);
-//			} else {
-//				int parentIndex = parent.getParent().getIndex(parent);
-//				copyAction.putValue(TreePanel.CopyAction.PARENTINDEX, parentIndex);
-//				moveAction.putValue(TreePanel.MoveAction.NEWPARENTINDEX, parentIndex);
-//			}
 			// Configure for drop mode.
 			index = childIndex; // DropMode.INSERT
 			if (childIndex == -1) { // DropMode.ON
 				index = parent.getChildCount();
 			}
-//			copyAction.putValue(TreePanel.CopyAction.INDEX, index);
-//			moveAction.putValue(TreePanel.MoveAction.NEWINDEX, index);
 		} else {
 			System.out.println("Operazione di paste");
 			//In questo caso i dati li recupero dalla clipboard
@@ -323,9 +315,7 @@ public class TreeTransferHandler extends TransferHandler implements
 			}
 
 			if (isCopy) {
-				for (int i = 0; i < compsToCopy.length; i++) {
-					compsToCopy[i] = renameComponente(compsToCopy[i]);
-				}
+				renameComponenti();
 			}
 
 		}
@@ -342,12 +332,17 @@ public class TreeTransferHandler extends TransferHandler implements
 		copyAction.putValue(TreePanel.CopyAction.INDEX, index);
 		moveAction.putValue(TreePanel.MoveAction.NEWINDEX, index);
 
+		selection = null;
 		// Inserisco i dati
 		for (int i = 0; i < compsToCopy.length; i++) {
 			DisabledNode nodeToInsert = new DisabledNode(compsToCopy[i]);
+			if (i==0) {
+				selection = nodeToInsert;
+			}
 			if (compsToCopy[i].isSimple()) {
 				nodeToInsert.setAllowsChildren(false);
 			}
+			//FIXME DEVO AGGIORNARE ANCHE I NOMI DENTRO LA LISTA!
 			model.insertNodeInto(nodeToInsert, parent, index++);
 			if (i == 0) {
 				// NOTA: fatta una verifica anche sul tipo dato per sicurezza
@@ -380,6 +375,8 @@ public class TreeTransferHandler extends TransferHandler implements
 				}
 				moveAction.actionPerformed(new ActionEvent(this, MOVE, "MoveAction"));
 			}
+			MainWindow.albero.getTree().setSelectionPath(new TreePath(selection.getPath()));
+			MainWindow.properties.showProperties(selection);
 		}
 		// Cambio il valore di isCopy perche eventuali ulteriori paste, anche se
 		// l'origine era cut ora sono tutte copy
@@ -387,7 +384,6 @@ public class TreeTransferHandler extends TransferHandler implements
 			tree.expandPath(new TreePath(parent.getPath()));
 		}
 		isCopy = true;
-		MainWindow.properties.showProperties((DisabledNode)MainWindow.albero.getTree().getSelectionPath().getLastPathComponent());
 		System.out.println("Terminata importazione");
 		return true;
 	}
@@ -399,12 +395,25 @@ public class TreeTransferHandler extends TransferHandler implements
 		return getClass().getName();
 	}
 
+	
+	private void renameComponenti() {
+		for (int i = 0; i < compsToCopy.length; i++) {
+			compsToCopy[i] = renameComponente(compsToCopy[i]);
+		}
+		if (compsToCopy.length != 1) {
+			Vector<ComponenteSemplice> nuoveOpzioni = new Vector<ComponenteSemplice>();
+			for (int i=1; i<compsToCopy.length;i++) {
+				nuoveOpzioni.add((ComponenteSemplice) compsToCopy[i]);
+			}
+			((ComponenteMolteplice)compsToCopy[0]).setOpzioni(nuoveOpzioni);
+		}
+	}
+	
 	/**
 	 * Modifica il campo Nome dell'oggetto Componente
 	 * 
-	 * @param comp
-	 *            Il componente il cui nome deve essere modificato
-	 * @return Il nuovo componente con il nome modificato
+	 * @param comp	Il componente il cui nome deve essere modificato
+	 * @return		Il nuovo componente con il nome modificato
 	 */
 	private Componente renameComponente(Componente comp) {
 		System.out.println("Inizio a rinominare...");
@@ -439,8 +448,7 @@ public class TreeTransferHandler extends TransferHandler implements
 		if (path == null) {
 			path = (new TreePath(nodesToRemove[0].getPath()));
 		}
-		//((DefaultTreeModel) MainWindow.albero.getTree().getModel()).reload();
-		//MainWindow.albero.getTree().setSelectionPath(path);
+		MainWindow.albero.getTree().repaint();
 	}
 
 	/**

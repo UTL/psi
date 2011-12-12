@@ -2,6 +2,7 @@ package webApplication.grafica;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 
@@ -68,6 +69,10 @@ public class UndoableMoveNode extends AbstractUndoableEdit {
 			((ComponenteMolteplice)oldParent.getUserObject()).aggiungiOpzione((ComponenteSemplice) node.getUserObject(), oldIndex);
 		}
 		model.insertNodeInto(node, oldParent, oldIndex);
+		MainWindow.albero.getTree().setSelectionPath(new TreePath(node.getPath()));
+		if (node.getAllowsChildren()) {
+			MainWindow.albero.getTree().expandPath(new TreePath(node.getPath()));
+		}
 	}
 
 	/**
@@ -97,7 +102,10 @@ public class UndoableMoveNode extends AbstractUndoableEdit {
 			parentComp.aggiungiOpzione((ComponenteSemplice) node.getUserObject(), newIndex);
 		} 
 		model.insertNodeInto(node, parent, newIndex);
-		model.reload();
+		MainWindow.albero.getTree().setSelectionPath(new TreePath(node.getPath()));
+		if (node.getAllowsChildren()) {
+			MainWindow.albero.getTree().expandPath(new TreePath(node.getPath()));
+		}
 	}
 
 	/**
