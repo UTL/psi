@@ -160,10 +160,13 @@ public class TreePanel extends JPanel implements TreeWillExpandListener {
 				DisabledNode newNode = new DisabledNode((ComponenteSemplice) comps.getOpzione(i));
 				model.insertNodeInto(newNode, parent, i);
 				newNode.setAllowsChildren(false);
+				System.out.println("\tnodo.issimple "+ ((Componente) newNode.getUserObject()).isSimple() + "\nnodo.getallow "+ newNode.getAllowsChildren());
+
 			}
 		} else {
 			node.setAllowsChildren(false);
 		}
+		System.out.println("nodo.issimple "+ ((Componente) node.getUserObject()).isSimple() + "\nnodo.getallow "+ node.getAllowsChildren());
 	}
 
 	/**

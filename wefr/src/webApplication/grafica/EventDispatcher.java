@@ -55,11 +55,11 @@ import webApplication.grafica.TreePanel.UndoAction;
  */
 public class EventDispatcher implements ActionListener, PropertyChangeListener, DocumentListener, TreeSelectionListener, FlavorListener, KeyEventDispatcher, WindowListener, FocusListener {
 
-	private static final String CLEARALL = "This will delete the current work.\n Do you wish to continue?";
+	private static final String CLEARALL = "This will delete the current work.\n Do you want to continue?";
 	private static final String DELETEMESSAGE = "You are going to delete ";
 	private static final String CONFIRMMESSAGE = "\n Do you want to continue?";
 	private static final String NOTEMPTYMESSAGE = " is not empty.\n Deleting this element will delete all the elements inside.\n Do you want to continue?";
-	private static final String CLOSEMESSAGE = "Any unsaved changes made to the current work will be lost.\n Do you really want to close the current work";
+	private static final String CLOSEMESSAGE = "Any unsaved changes made to the current work will be lost.\n Do you really want to close? the current work";
 
 	private static boolean haveCutted = false;
 
