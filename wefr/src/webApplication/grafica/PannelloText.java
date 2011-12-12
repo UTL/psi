@@ -1,5 +1,6 @@
 package webApplication.grafica;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -11,6 +12,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import webApplication.business.Testo;
+import webApplication.grafica.TreePanel.ChangeFieldAction;
 
 /**
  * Il pannello per la visualizzazione del contenuto di un elemento di tipo Testo
@@ -25,11 +29,12 @@ public class PannelloText extends PannelloGeneric implements ActionListener {
 	private static final long serialVersionUID = 8158020877021306738L;
 
 	private static final String LABELTEXT = "Enter text:";
+	private static final String ERRORLABELTEXT = "Empty value";
 	private static final String IMPORTTEXT = "Import from file";
 	private static final String BTNTOOLTIP = "Click here to select a file from which load text";
 	private static final String LOAD_TEXT = "Load text";
-	protected static final String TEXTTOOLTIP = "The text that will be displayed";
-	protected static final String ERRORTEXTTOOLTIP = "Text cannot be empty";
+	private static final String TEXTTOOLTIP = "The text that will be displayed";
+	private static final String ERRORTEXTTOOLTIP = "Text cannot be empty";
 
 	private static final int labelHeight = 14;
 	private static final int labelWidth = 94;
@@ -38,6 +43,7 @@ public class PannelloText extends PannelloGeneric implements ActionListener {
 	private static final int btnHeight = 27;
 	private static final int btnWidth = 145;
 
+	private JLabel errorLabel;
 	protected JTextArea textArea;
 
 	/**
@@ -49,6 +55,12 @@ public class PannelloText extends PannelloGeneric implements ActionListener {
 		JLabel lblEnterText = new JLabel(LABELTEXT);
 		lblEnterText.setBounds(0, 6, labelWidth, labelHeight);
 		add(lblEnterText);
+		
+		errorLabel = new JLabel(ERRORLABELTEXT);
+		errorLabel.setBounds(350, 6, 150, 20);
+		errorLabel.setForeground(Color.RED);
+		errorLabel.setVisible(true);
+		add(errorLabel);
 
 		textArea = new JTextArea();
 		textArea.setToolTipText(TEXTTOOLTIP);
@@ -84,7 +96,14 @@ public class PannelloText extends PannelloGeneric implements ActionListener {
 	}
 	
 	protected boolean isCorrect() {
-		return !Utils.redify(textArea, textArea.getText().isEmpty());
+		boolean correct = !Utils.redify(textArea, Utils.isBlank(textArea));
+		errorLabel.setVisible(Utils.redify(textArea, Utils.isBlank(textArea)));
+		if (correct) {
+			textArea.setToolTipText(TEXTTOOLTIP);
+		} else {
+			textArea.setToolTipText(ERRORTEXTTOOLTIP);
+		}
+		return correct;
 	}
 
 	/**
@@ -105,9 +124,18 @@ public class PannelloText extends PannelloGeneric implements ActionListener {
 					while (scanReader.hasNextLine()) {
 						letto = letto + scanReader.nextLine() + eol;
 					}
+					MainWindow.properties.removeListeners();
 					textArea.setText(letto);
+					if (!(this.getTopLevelAncestor() instanceof Wizard)) {
+						ChangeFieldAction changeFieldAction = MainWindow.albero.new ChangeFieldAction();
+						changeFieldAction.putValue(TreePanel.ChangeFieldAction.FIELD, TreePanel.ChangeFieldAction.TEXT);
+						changeFieldAction.putValue(TreePanel.ChangeFieldAction.OLDVALUE, ((Testo)((DisabledNode)MainWindow.albero.getTree().getLastSelectedPathComponent()).getUserObject()).getTesto());
+						changeFieldAction.putValue(TreePanel.ChangeFieldAction.NEWVALUE, (MainWindow.properties.pannelloText.getText()));
+						changeFieldAction.actionPerformed(new ActionEvent(MainWindow.properties.pannelloText.textArea, ActionEvent.ACTION_PERFORMED,""));
+					}
+					MainWindow.properties.addListeners();
 				} catch (FileNotFoundException e1) {
-					// TODO mettere l'errore
+					// non serve
 				}
 			}
 		}

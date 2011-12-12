@@ -674,11 +674,12 @@ public class MainWindow extends JFrame {/*
 
 		private static final String TITLE = " Properties ";
 		private static final String EMPTYSELECTION = "Select an element \nto show its properties";
-		private static final String EMPTYSELECTIONTOOLTIP = "Select an element from the left panel or create e new one to show its properties here";
-		private static final String NOELEMENT = "Create a new element \nto show properties panel";
+		protected static final String EMPTYSELECTIONTOOLTIP = "Select an element to show its properties here";
+		protected static final String NOELEMENT = "Create a new element to show properties panel";
 
+		protected JLabel emptyAdvice;
 		
-		private JPanel empty_panel;
+		protected JPanel empty_panel;
 		private JPanel element_properties_panel;
 		private JPanel id_panel;
 		private JPanel presentation_panel;
@@ -694,16 +695,23 @@ public class MainWindow extends JFrame {/*
 		private static final String CONTENTPANELTITLE = " Content ";
 
 		private static final String NAME = "Name:";
-		private static final String NAMETOOLTIP = "The name of the element";
+		protected static final String NAMETOOLTIP = "The name of the element";
+		private static final String NAMERROR = "Empty/duplicate value";
+		private static final String NAMERRORTOOLTIP = "Name cannot have empty or duplicate value";
 		private static final String CATEGORY = "Category:";
-		private static final String CATEGORYTOOLTIP = "The category at which the element belongs";
+		private static final String CATEGORYERROR = "Empty value";
+		protected static final String CATEGORYTOOLTIP = "The category at which the element belongs. (I.E. Title, Portrait, etc. )";
+		protected static final String CATEGORYERRORTOOLTIP = "The category cannot be empty";
 		private static final String TYPE = "Type:";
-		private static final String TYPETOOLTIP = "The type of the element";
+		protected static final String TYPETOOLTIP = "The type of the element";
 		private static final String IMPORTANCE = "Necessity:";
-		private static final String IMPORTANCETOOLTIP = "How much this element is necessary";
+		protected static final String IMPORTANCETOOLTIP = "How much this element is necessary";
 		private static final String EMPHASIS = "Emphasizes:";
-		private static final String EMPHASISTOOLTIP = "How much emphasis has the element";
+		protected static final String EMPHASISTOOLTIP = "How much emphasis has the element";
 
+		private JLabel nameErrorLabel;
+		private JLabel categoryErrorLabel;
+		
 		protected JTextField textField_Name;
 		protected JTextField textField_Type;
 		protected JTextField textField_Category;
@@ -729,12 +737,8 @@ public class MainWindow extends JFrame {/*
 
 		private void initEmptyPanel() {
 			empty_panel = new JPanel();
-			empty_panel.setBounds(113, 181, 240, 30);
-			JLabel emptyAdvice = null;
-			if(albero.isEmpty())
-				emptyAdvice = new JLabel(NOELEMENT);
-			else
-				emptyAdvice = new JLabel(EMPTYSELECTION);
+			empty_panel.setBounds(5, 196, 456, 196);
+			emptyAdvice = new JLabel(NOELEMENT);
 			emptyAdvice.setEnabled(false);
 			empty_panel.add(emptyAdvice);
 		}
@@ -768,6 +772,12 @@ public class MainWindow extends JFrame {/*
 			textField_Name.getDocument().addDocumentListener(this);
 			textField_Name.addFocusListener(eventDispatcher);
 			id_panel.add(textField_Name);
+			
+			nameErrorLabel = new JLabel(NAMERROR);
+			nameErrorLabel.setForeground(Color.RED);
+			nameErrorLabel.setBounds(67, 23, 200, 19);
+			nameErrorLabel.setVisible(false);
+			id_panel.add(nameErrorLabel);
 
 			JLabel lblType = new JLabel(TYPE);
 			lblType.setBounds(12, 71, 51, 15);
@@ -794,10 +804,16 @@ public class MainWindow extends JFrame {/*
 
 			textField_Category = new JTextField();
 			textField_Category.setToolTipText(CATEGORYTOOLTIP);
-			textField_Category.setBounds(107, 19, 112, 24);
+			textField_Category.setBounds(107, 19, 112, 19);
 			textField_Category.addFocusListener(eventDispatcher);
 			presentation_panel.add(textField_Category);
 
+			categoryErrorLabel = new JLabel(CATEGORYERROR);
+			categoryErrorLabel.setForeground(Color.RED);
+			categoryErrorLabel.setBounds(107, 3, 200, 19);
+			categoryErrorLabel.setVisible(false);
+			presentation_panel.add(categoryErrorLabel);
+			
 			JLabel lblEmphasize = new JLabel(EMPHASIS);
 			lblEmphasize.setBounds(15, 54, 81, 19);
 			presentation_panel.add(lblEmphasize);
@@ -849,9 +865,7 @@ public class MainWindow extends JFrame {/*
 		}
 
 		protected void showProperties(DisabledNode node) {
-//		protected void showProperties(Componente comp) {
 			if (node == null) {
-//			if (comp == null) {
 				setToolTipText(EMPTYSELECTIONTOOLTIP);
 				remove(element_properties_panel);
 				add(empty_panel);
@@ -861,7 +875,6 @@ public class MainWindow extends JFrame {/*
 				setToolTipText(null);
 				remove(empty_panel);
 				updateProperties(node);
-//				updateProperties(comp);
 				add(element_properties_panel);
 				revalidate();
 				repaint();
@@ -870,14 +883,27 @@ public class MainWindow extends JFrame {/*
 
 		private void updateProperties(DisabledNode node) {
 			Componente comp = (Componente) node.getUserObject();
-//		private void updateProperties(Componente comp) {
 			// rimuovo i listener per non scatenare eventi di modifica dei campi
 			removeListeners();
 			
+			boolean correct;
 			textField_Name.setText(comp.getNome());
-			Utils.redify(textField_Name, Utils.isBlank(textField_Name)||(albero.getPathForName(textField_Name.getText())).size()>1);
+			correct = !Utils.redify(textField_Name, Utils.isBlank(textField_Name)||(albero.getPathForName(textField_Name.getText())).size()>1);
+			nameErrorLabel.setVisible(!correct);
+			if (correct) {
+				textField_Name.setToolTipText(NAMETOOLTIP);
+			} else {
+				textField_Name.setToolTipText(NAMERRORTOOLTIP);
+			}
 			textField_Category.setText(comp.getCategoria());
 			Utils.redify(textField_Category, Utils.isBlank(textField_Category));
+			correct = !Utils.redify(textField_Category, Utils.isBlank(textField_Category));;
+			categoryErrorLabel.setVisible(!correct);
+			if (correct) {
+				textField_Category.setToolTipText(CATEGORYTOOLTIP);
+			} else {
+				textField_Category.setToolTipText(CATEGORYERRORTOOLTIP);
+			}
 			textField_Type.setText(comp.getType());
 			comboBox_Emphasis.setSelectedIndex(comp.getEnfasi());
 			comboBox_Visibility.setSelectedIndex(comp.getVisibilita());
@@ -886,32 +912,17 @@ public class MainWindow extends JFrame {/*
 				content_panel.removeAll();
 				content_panel.add(pannelloText);
 				Utils.redify(pannelloText.textArea, !pannelloText.isCorrect());
-				if(!pannelloText.isCorrect()) {
-					pannelloText.textArea.setToolTipText(PannelloText.ERRORTEXTTOOLTIP);
-				} else {
-					pannelloText.textArea.setToolTipText(PannelloText.TEXTTOOLTIP);
-				}
 			} else if (comp.getType().equals(Immagine.IMAGETYPE)) {
 				pannelloImage.setPath(((Immagine) comp).getPath());
 				content_panel.removeAll();
 				content_panel.add(pannelloImage);
 				Utils.redify(pannelloImage.imagepath, !pannelloImage.isCorrect());
-				if(!pannelloImage.isCorrect()) {
-					pannelloImage.imagepath.setToolTipText(PannelloImage.IMAGEPATHERRORTOOLTIP);
-				} else {
-					pannelloImage.imagepath.setToolTipText(PannelloImage.IMAGEPATHTOOLTIP);
-				}
 			} else if (comp.getType().equals(Link.LINKTYPE)) {
 				pannelloLink.setPath(((Link) comp).getUri());
 				pannelloLink.setText(((Link) comp).getTesto());
 				content_panel.removeAll();
 				content_panel.add(pannelloLink);
 				Utils.redify(pannelloLink.urlText, !pannelloLink.isTextCorrect());
-				if (!pannelloLink.isTextCorrect()) {
-					pannelloLink.urlText.setToolTipText(PannelloLink.ERRORTEXTTOOLTIP);
-				} else {
-					pannelloLink.urlText.setToolTipText(PannelloLink.TEXTTOOLTIP);
-				}
 			} else if (comp.getType().equals(ComponenteComposto.COMPOSTOTYPE)) {
 				content_panel.removeAll();
 				pannelloComp.setOpzioni(((ComponenteComposto) comp).getOpzioni());
@@ -969,10 +980,23 @@ public class MainWindow extends JFrame {/*
 		}
 		
 		private void changeEvent(DocumentEvent e) {
+			boolean correct;
 			if (e.getDocument() == textField_Name.getDocument()) {
-				Utils.redify(textField_Name, (Utils.isBlank(textField_Name)));
+				correct = !Utils.redify(textField_Name, (Utils.isBlank(textField_Name)));
+				nameErrorLabel.setVisible(Utils.redify(textField_Name, (Utils.isBlank(textField_Name))));
+				if (correct) {
+					textField_Name.setToolTipText(NAMETOOLTIP);
+				} else {
+					textField_Name.setToolTipText(NAMERRORTOOLTIP);
+				}
 			} else if (e.getDocument() == textField_Category.getDocument()) {
-				Utils.redify(textField_Category, (Utils.isBlank(textField_Category)));
+				correct = !Utils.redify(textField_Category, (Utils.isBlank(textField_Category)));
+				categoryErrorLabel.setVisible(Utils.redify(textField_Category, (Utils.isBlank(textField_Category))));
+				if (correct) {
+					textField_Category.setToolTipText(CATEGORYTOOLTIP);
+				} else {
+					textField_Category.setToolTipText(CATEGORYERRORTOOLTIP);
+				}
 			} else if (e.getDocument() == pannelloImage.imagepath.getDocument()) {
 				Utils.redify(pannelloImage.imagepath, !pannelloImage.isCorrect());
 				if(!pannelloImage.isCorrect()) {
@@ -982,11 +1006,6 @@ public class MainWindow extends JFrame {/*
 				}
 			} else if (e.getDocument() == pannelloText.textArea.getDocument()) {
 				Utils.redify(pannelloText.textArea, !pannelloText.isCorrect());
-				if(!pannelloText.isCorrect()) {
-					pannelloText.textArea.setToolTipText(PannelloText.ERRORTEXTTOOLTIP);
-				} else {
-					pannelloText.textArea.setToolTipText(PannelloText.TEXTTOOLTIP);
-				}
 			} else if (e.getDocument() == pannelloLink.urlPath.getDocument()) {
 				Utils.redify(pannelloLink.urlPath, !pannelloLink.isPathCorrect());
 				if (!pannelloLink.isPathCorrect()) {

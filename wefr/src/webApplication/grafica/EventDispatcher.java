@@ -21,6 +21,7 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
@@ -345,6 +346,11 @@ public class EventDispatcher implements ActionListener, PropertyChangeListener, 
 		} else {
 			MainWindow.albero.getTree().requestFocusInWindow();
 		}
+		
+		if (MainWindow.albero.isEmpty())
+			MainWindow.properties.emptyAdvice.setText(MainWindow.PropertiesPanel.NOELEMENT);
+		else
+			MainWindow.properties.emptyAdvice.setText(MainWindow.PropertiesPanel.EMPTYSELECTIONTOOLTIP);
 		
 		MainWindow.statusBar.repaint();
 		MainWindow.albero.revalidate();

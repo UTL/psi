@@ -10,6 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import webApplication.business.Immagine;
+import webApplication.grafica.TreePanel.ChangeFieldAction;
+
 /**
  * Il pannello per la visualizzazione del contenuto di un elemento di tipo
  * Immagine
@@ -25,6 +28,7 @@ public class PannelloImage extends PannelloGeneric implements ActionListener {
 
 	private ImagePreview image;
 	protected JTextField imagepath;
+	private JLabel errorLabel;
 
 	private static final String LABELIMAGE = "Image path:";
 	private static final String BTNLOADIMAGE = "Load an image";
@@ -32,6 +36,7 @@ public class PannelloImage extends PannelloGeneric implements ActionListener {
 	private static final String LOAD_IMAGE = "Load image";
 	protected static final String IMAGEPATHTOOLTIP = "Path of the image file";
 	protected static final String IMAGEPATHERRORTOOLTIP = "The path is wrong";
+	private static final String ERRORLABELTEXT = "Path incorrect";
 
 	private static final int labelWidth = 94;
 	private static final int labelHeight = 14;
@@ -58,10 +63,15 @@ public class PannelloImage extends PannelloGeneric implements ActionListener {
 
 		imagepath = new JTextField();
 		imagepath.setToolTipText(IMAGEPATHTOOLTIP);
-		imagepath.setBounds(lblFilePath.getX(), lblFilePath.getY() + 30, 174, 22);
+		imagepath.setBounds(lblFilePath.getX(), lblFilePath.getY() + 20, 174, 22);
 		imagepath.getDocument().addDocumentListener(image);
-		// TODO aggiungere gestione degli errori?
 		add(imagepath);
+		
+		errorLabel = new JLabel(ERRORLABELTEXT);
+		errorLabel.setBounds(imagepath.getX(), imagepath.getY()+imagepath.getHeight()-3, 150, 20);
+		errorLabel.setForeground(Color.RED);
+		errorLabel.setVisible(true);
+		add(errorLabel);
 
 		JButton btnImportImage = new JButton(BTNLOADIMAGE);
 		btnImportImage.setActionCommand(LOAD_IMAGE);
@@ -91,7 +101,14 @@ public class PannelloImage extends PannelloGeneric implements ActionListener {
 	}
 	
 	protected boolean isCorrect() {
-		return !Utils.redify(imagepath, !MainWindow.isPathCorrect(imagepath.getText()));
+		boolean correct = !Utils.redify(imagepath, !MainWindow.isPathCorrect(imagepath.getText()));
+		errorLabel.setVisible(Utils.redify(imagepath, !MainWindow.isPathCorrect(imagepath.getText())));
+		if (correct) {
+			imagepath.setToolTipText(IMAGEPATHTOOLTIP);
+		} else {
+			imagepath.setToolTipText(IMAGEPATHERRORTOOLTIP);
+		}
+		return correct;
 	}
 
 	/**
@@ -107,7 +124,16 @@ public class PannelloImage extends PannelloGeneric implements ActionListener {
 			fc.setAcceptAllFileFilterUsed(false);
 			int choice = fc.showOpenDialog(this);
 			if (choice == JFileChooser.APPROVE_OPTION) {
+				MainWindow.properties.removeListeners();
 				imagepath.setText(fc.getSelectedFile().getPath());
+				if (!(this.getTopLevelAncestor() instanceof Wizard)) {
+					ChangeFieldAction changeFieldAction = MainWindow.albero.new ChangeFieldAction();
+					changeFieldAction.putValue(TreePanel.ChangeFieldAction.FIELD, TreePanel.ChangeFieldAction.IMAGE);
+					changeFieldAction.putValue(TreePanel.ChangeFieldAction.OLDVALUE, ((Immagine)((DisabledNode)MainWindow.albero.getTree().getLastSelectedPathComponent()).getUserObject()).getPath());
+					changeFieldAction.putValue(TreePanel.ChangeFieldAction.NEWVALUE, (MainWindow.properties.pannelloImage.getPath()));
+					changeFieldAction.actionPerformed(new ActionEvent(MainWindow.properties.pannelloImage.imagepath, ActionEvent.ACTION_PERFORMED,""));
+				}
+				MainWindow.properties.addListeners();
 			}
 		}
 	}

@@ -54,6 +54,9 @@ public class PannelloComp extends PannelloGeneric implements ListSelectionListen
 	protected static final String ADDEXISTACTION = "Add existing";
 	private static final String ADDNEW = "Add new";
 	protected static final String ADDNEWACTION = "Add new";
+	private static final String ERROREMPTY = "Elements list empty";
+	
+	private JLabel errorEmpty;
 
 	private static final int LBLHEIGHT = 14;
 	private static final int LBLWIDTH = 100;
@@ -84,6 +87,12 @@ public class PannelloComp extends PannelloGeneric implements ListSelectionListen
 		JLabel lblElementList = new JLabel(ELEMENTLIST);
 		lblElementList.setBounds(0, 0, LBLWIDTH, LBLHEIGHT);
 		add(lblElementList);
+		
+		errorEmpty = new JLabel(ERROREMPTY);
+		errorEmpty.setBounds(308, 0, 180, 20);
+		errorEmpty.setForeground(Color.RED);
+		errorEmpty.setVisible(true);
+		add(errorEmpty);
 
 		scrollPane = new JScrollPane(list_components);
 		scrollPane.setBounds(lblElementList.getX(), lblElementList.getY() + 20, SCROLLWIDTH, SCROLLHEIGHT);
@@ -226,7 +235,14 @@ public class PannelloComp extends PannelloGeneric implements ListSelectionListen
 	}
 	
 	protected boolean isCorrect() {
-		return !redify();
+		boolean correct = !redify();
+		errorEmpty.setVisible(redify());
+		if (correct) {
+//			scrollPane.setToolTipText(null);
+		} else {
+			scrollPane.setToolTipText(ERROREMPTY);
+		}
+		return correct;
 	}
 
 	/**

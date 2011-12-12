@@ -25,7 +25,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
@@ -44,15 +43,17 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 	protected boolean returnValue = false;
 
-	private static final String BASEELEMENTNAME = "Element";
-	private static int count = 0;// TODO spostare nel MainWindow
-
 	private static final String BASETITLE = "Create new element";
+	
+	private static final String NAMERRORLABEL = "Name cannot be empty or duplicate";
+	private static final String CATEGORYERRORLABEL = "Category cannot be empty";
 
 	private static JPanel contentPane;
 	private static JTabbedPane tabbedPane;
 	protected static JTextField name;
+	private static JLabel nameErrorLabel;
 	private static JTextField category;
+	private static JLabel categoryErrorLabel;
 	private static JComboBox choice_type;
 	private static JComboBox choice_emphasis;
 	private static JComboBox choice_visibility;
@@ -69,7 +70,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 	private static JButton btnDone;
 
 	// TAB TITLE & ICON & TOOLTIP
-	private static final String FIRSTSTEPTITLE = "1. Identification";
+	private static final String FIRSTSTEPTITLE = "1. ID";
 	private static final String FIRSTSTEPTOOLTIP = "Specify the name and type of the element";
 
 	private static final String SECONDSTEPTITLE = "2. Presentation";
@@ -117,13 +118,6 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
 		tabbedPane.setBounds(0, 0, 471, 374);
-		//Nasconde i tab: siamo sicuri di non volerli? fanno "Scena"
-		tabbedPane.setUI(new BasicTabbedPaneUI() {
-			@Override
-			protected int calculateTabAreaHeight(int tabPlacement, int horizRunCount, int maxTabHeight) {
-				return 0;
-			}
-		});
 		contentPane.add(tabbedPane);
 
 		// Primo Tabbed Panel
@@ -139,17 +133,24 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 		createButtonsBar(firstStep, 1);
 		
-		name = new JTextField();
+		name = new JTextField(MainWindow.setDefaultName());
 		name.setBounds(181, 106, 174, 22);
 		name.getDocument().addDocumentListener(this);
-		name.setText(MainWindow.setDefaultName());
+		name.setToolTipText(MainWindow.PropertiesPanel.NAMETOOLTIP);
 		firstStep.add(name);
+		
+		nameErrorLabel = new JLabel(NAMERRORLABEL);
+		nameErrorLabel.setForeground(Color.RED);
+		nameErrorLabel.setBounds(181, 125, 220, 22);
+		nameErrorLabel.setVisible(false);
+		firstStep.add(nameErrorLabel);
 
 		JLabel lblType = new JLabel("Type:");
 		lblType.setBounds(130, 168, 46, 14);
 		firstStep.add(lblType);
 
 		choice_type = new JComboBox(tipi);
+		choice_type.setToolTipText(MainWindow.PropertiesPanel.TYPETOOLTIP);
 		choice_type.setBounds(181, 165, 174, 20);
 		firstStep.add(choice_type);
 
@@ -170,8 +171,15 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		category = new JTextField();
 		category.setBounds(181, 92, 174, 22);
 		category.getDocument().addDocumentListener(this);
-		category.setText("Category0");
+		category.setText("Site component");
+		category.setToolTipText(MainWindow.PropertiesPanel.CATEGORYTOOLTIP);
 		secondStep.add(category);
+		
+		categoryErrorLabel = new JLabel(CATEGORYERRORLABEL);
+		categoryErrorLabel.setForeground(Color.RED);
+		categoryErrorLabel.setBounds(181, 111, 220, 22);
+		categoryErrorLabel.setVisible(false);
+		secondStep.add(categoryErrorLabel);
 
 		JLabel lblImportance = new JLabel("Necessity:");
 		lblImportance.setBounds(105, 193, 108, 14);
@@ -180,6 +188,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		choice_visibility = new JComboBox(MainWindow.necessity);
 		choice_visibility.setBounds(180, 192, 174, 20);
 		choice_visibility.setSelectedIndex(1);
+		choice_visibility.setToolTipText(MainWindow.PropertiesPanel.IMPORTANCETOOLTIP);
 		secondStep.add(choice_visibility);
 
 		JLabel lblEnphasize = new JLabel("Emphasizes:");
@@ -189,6 +198,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		choice_emphasis = new JComboBox(MainWindow.emphasis);
 		choice_emphasis.setBounds(180, 143, 174, 20);// 192
 		choice_emphasis.setSelectedIndex(1);
+		choice_emphasis.setToolTipText(MainWindow.PropertiesPanel.EMPHASISTOOLTIP);
 		secondStep.add(choice_emphasis);
 
 		// Terzo Tabbed Panel
@@ -303,7 +313,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		//btnDone.setFont(new Font(btnDone.getFont().getName(), Font.BOLD, btnDone.getFont().getSize() + 2));
 		btnDone.setFont(new Font("Arial Black", Font.PLAIN, btnDone.getFont().getSize()+1 ));
 
-		btnDone.setEnabled(false);
+//		btnDone.setEnabled(false);
 		btnDone.addActionListener(this);
 		btnDone.setBounds(350, 11, 86, 27);
 
@@ -338,10 +348,10 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		}
 		pannelloText.setLocation(25, 61);
 		pannelloText.textArea.getDocument().addDocumentListener(this);
-		pannelloText.isCorrect();
 		thirdPanel.add(pannelloText);
 
 		createButtonsBar(thirdPanel, 3);
+		btnDone.setEnabled(pannelloText.isCorrect());
 	}
 
 	/**
@@ -360,11 +370,10 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		}
 		pannelloImage.setLocation(25, 61);
 		pannelloImage.imagepath.getDocument().addDocumentListener(this);
-		pannelloImage.isCorrect();
 		thirdPanel.add(pannelloImage);
 
 		createButtonsBar(thirdPanel, 3);
-		((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled(pannelloImage.isCorrect());
+		btnDone.setEnabled(pannelloImage.isCorrect());
 	}
 
 	/**
@@ -387,6 +396,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		thirdPanel.add(pannelloLink);
 
 		createButtonsBar(thirdPanel, 3);
+		btnDone.setEnabled(pannelloLink.isPathCorrect() && pannelloLink.isTextCorrect());
 	}
 
 	/**
@@ -408,6 +418,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		thirdPanel.add(pannelloAlt);
 
 		createButtonsBar(thirdPanel, 3);
+		btnDone.setEnabled(pannelloAlt.isCorrect());
 	}
 
 	/**
@@ -429,6 +440,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		thirdPanel.add(pannelloComp);
 		
 		createButtonsBar(thirdPanel, 3);
+		btnDone.setEnabled(pannelloComp.isCorrect());
 	}
 
 	protected boolean showDialog() {
@@ -497,9 +509,11 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 	private void updateComponent(DocumentEvent e) {
 		if ((tabbedPane.getSelectedIndex()==0)) {
 			Utils.redify(name, Utils.isBlank(name)||(MainWindow.albero.nameExists(name.getText())));
+			nameErrorLabel.setVisible(Utils.redify(name, Utils.isBlank(name)||(MainWindow.albero.nameExists(name.getText()))));
 			((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled((!Utils.isBlank(name)&&(!MainWindow.albero.nameExists(name.getText()))));
 		} else if((tabbedPane.getSelectedIndex()==1)) {
 			Utils.redify(category, Utils.isBlank(category));
+			categoryErrorLabel.setVisible(Utils.redify(category, Utils.isBlank(category)));
 			((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled(!Utils.isBlank(category));
 		} else if(tabbedPane.getSelectedIndex()==2) {
 			if (choice_type.getSelectedIndex()==0) {
@@ -507,7 +521,7 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 			} else if (choice_type.getSelectedIndex()==1) {
 				((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled(pannelloImage.isCorrect());
 			} else if (choice_type.getSelectedIndex()==2) {
-				((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled((pannelloLink.isPathCorrect() && (pannelloLink.isTextCorrect())));
+				((JButton)((JPanel)((JPanel)tabbedPane.getSelectedComponent()).getComponent(6)).getComponent(1)).setEnabled((pannelloLink.isPathCorrect() & (pannelloLink.isTextCorrect())));
 			}
 		}
 
@@ -574,15 +588,6 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 			setTitle(BASETITLE);
 		}
 	}
-	
-//	private void manageTooltips(Component component, boolean b) { if
-//		(component == textField_imagepath){ if(b)
-//			textField_imagepath.setToolTipText(AddNew.URL_EMPTY); else
-//				textField_imagepath.setToolTipText(AddNew.URL); } else if (component ==
-//				name){ if(b) name.setToolTipText(AddNew.NAME_EMPTY); else
-//					name.setToolTipText(AddNew.NAME); if
-//					(MainWindow.nameExistsAll(name.getText()))
-//						name.setToolTipText(AddNew.NAME_EXISTING); } }
 
 	/**
 	 * {@inheritDoc}
