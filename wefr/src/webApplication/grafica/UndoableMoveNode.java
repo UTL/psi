@@ -82,19 +82,13 @@ public class UndoableMoveNode extends AbstractUndoableEdit {
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 		DisabledNode root = (DisabledNode) model.getRoot();
 		DisabledNode parent = root;
-		System.out.println("Old parent index: "+oldParentIndex);
-		System.out.println("OldIndex: "+oldIndex);
 		if (oldParentIndex != -1) {
 			parent = (DisabledNode) root.getChildAt(oldParentIndex);
-			System.out.println("old parent: "+parent);
 			((ComponenteMolteplice)parent.getUserObject()).cancellaOpzione(oldIndex);
 		}
 		DisabledNode node = (DisabledNode) parent.getChildAt(oldIndex);
-		System.out.println("node: "+node);
 		model.removeNodeFromParent(node);
 
-		System.out.println("New parent index: "+newParentIndex);
-		System.out.println("New index: "+newIndex);
 		parent = root;
 		if (newParentIndex != -1) {
 			parent = (DisabledNode) root.getChildAt(newParentIndex);

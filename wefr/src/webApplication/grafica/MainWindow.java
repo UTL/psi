@@ -74,7 +74,7 @@ public class MainWindow extends JFrame {/*
 
 	// FRAME TITLE
 	private static final String JFRAMETITLE = "EUD-MAMBA - ";
-	private static String defaultTitle = "Nuovo progetto ";
+	private static String defaultTitle = "New  project ";
 	private static int initProjNum = 1;
 
 	// PANELS
@@ -673,9 +673,8 @@ public class MainWindow extends JFrame {/*
 		private static final long serialVersionUID = -2712196620314697384L;
 
 		private static final String TITLE = " Properties ";
-		private static final String EMPTYSELECTION = "Select an element \nto show its properties";
 		protected static final String EMPTYSELECTIONTOOLTIP = "Select an element to show its properties here";
-		protected static final String NOELEMENT = "Create a new element to show properties panel";
+		protected static final String NOELEMENT = "Create a new element to show its properties here";
 
 		protected JLabel emptyAdvice;
 		
