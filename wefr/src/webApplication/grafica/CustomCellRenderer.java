@@ -87,6 +87,11 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		DisabledNode node = (DisabledNode) value;
 		if (node != tree.getModel().getRoot()) {
+			if (((Componente)node.getUserObject()).isSimple()) {
+				node.setAllowsChildren(false);
+			} else {
+				node.setAllowsChildren(true);
+			}
 			if (hasError(tree, node)) {
 				node.isCorrect = false;
 				boolean b = MainWindow.albero.isCorrect();
