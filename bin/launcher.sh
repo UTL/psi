@@ -1,0 +1,1 @@
+java -Duser.language="English" -jar eudmamba.jar
