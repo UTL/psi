@@ -981,8 +981,8 @@ public class MainWindow extends JFrame {/*
 		private void changeEvent(DocumentEvent e) {
 			boolean correct;
 			if (e.getDocument() == textField_Name.getDocument()) {
-				correct = !Utils.redify(textField_Name, (Utils.isBlank(textField_Name)));
-				nameErrorLabel.setVisible(Utils.redify(textField_Name, (Utils.isBlank(textField_Name))));
+				correct = !Utils.redify(textField_Name, Utils.isBlank(textField_Name)||(albero.getPathForName(textField_Name.getText())).size()>0);
+				nameErrorLabel.setVisible(Utils.redify(textField_Name, Utils.isBlank(textField_Name)||(albero.getPathForName(textField_Name.getText())).size()>0));
 				if (correct) {
 					textField_Name.setToolTipText(NAMETOOLTIP);
 				} else {
