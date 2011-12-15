@@ -56,7 +56,7 @@ import webApplication.grafica.TreePanel.UndoAction;
  */
 public class EventDispatcher implements ActionListener, PropertyChangeListener, DocumentListener, TreeSelectionListener, FlavorListener, KeyEventDispatcher, WindowListener, FocusListener {
 
-	private static final String CLEARALL = "This will delete the current work.\n Do you want to continue?";
+	private static final String CLEARALL = "Any unsaved changes made to the current work will be lost.\n Do you want to continue?";
 	private static final String DELETEMESSAGE = "You are going to delete ";
 	private static final String CONFIRMMESSAGE = "\n Do you want to continue?";
 	private static final String NOTEMPTYMESSAGE = " is not empty.\n Deleting this element will delete all the elements inside.\n Do you want to continue?";
