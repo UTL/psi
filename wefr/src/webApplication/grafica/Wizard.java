@@ -1,8 +1,10 @@
 package webApplication.grafica;
 
+import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.MenuItem;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -19,12 +21,15 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import webApplication.business.Componente;
 import webApplication.business.ComponenteAlternative;
@@ -78,6 +83,9 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 	private static final String THIRDSTEPTITLE = "3. Content";
 	private static final String THIRDSTEPTOOLTIP = "Specify what the element represents";
+	
+	private static Color selectionColor;
+	private static Color selectionBorder;
 
 	// BUTTONS
 	private static final String NEXTTEXT = "Next";
@@ -99,10 +107,14 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 	 */
 	public Wizard(JFrame owner) {
 		super(owner, ModalityType.APPLICATION_MODAL);
+		
+		selectionColor = UIManager.getColor("Tree.selectionBackground");
+		selectionBorder = UIManager.getColor("Tree.selectionBorderColor");
+		
 		setResizable(false);
 		setTitle(BASETITLE);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 477, 374);
+		setBounds(100, 100, 477, 350);
 
 		// centro la finestra
 		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -117,6 +129,17 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		contentPane.setLayout(null);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+		
+		//nasconde i tab
+		tabbedPane.setUI(new BasicTabbedPaneUI() {
+			@Override
+			protected int calculateTabAreaHeight(int tabPlacement, int horizRunCount, int maxTabHeight) {
+				return 0;
+			}
+		});
+		
+		
+		
 		tabbedPane.setBounds(0, 0, 471, 374);
 		contentPane.add(tabbedPane);
 
@@ -220,8 +243,10 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 		JPanel stepOneIndicator = new JPanel();
 		if (currentStep == 1) {
-			stepOneIndicator.setBackground(new Color(139,139,139));
-			stepOneIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(139,139,139), null));
+			stepOneIndicator.setBackground(selectionColor);
+			stepOneIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, selectionBorder, null));
+//			stepOneIndicator.setBackground(new Color(139,139,139));
+//			stepOneIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(139,139,139), null));
 		} else {
 			stepOneIndicator.setBackground(SystemColor.control);
 			stepOneIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
@@ -238,8 +263,10 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 		JPanel stepTwoIndicator = new JPanel();
 		if (currentStep == 2) {
-			stepTwoIndicator.setBackground(new Color(139,139,139));
-			stepTwoIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(139,139,139), null));
+			stepTwoIndicator.setBackground(selectionColor);
+			stepTwoIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, selectionBorder, null));
+//			stepTwoIndicator.setBackground(new Color(139,139,139));
+//			stepTwoIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(139,139,139), null));
 		} else {
 			stepTwoIndicator.setBackground(SystemColor.control);
 			stepTwoIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
@@ -256,8 +283,10 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 
 		JPanel stepThreeIndicator = new JPanel();
 		if (currentStep == 3) {
-			stepThreeIndicator.setBackground(new Color(139,139,139));
-			stepThreeIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(139,139,139), null));
+			stepThreeIndicator.setBackground(selectionColor);
+			stepThreeIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, selectionBorder, null));
+//			stepThreeIndicator.setBackground(new Color(139,139,139));
+//			stepThreeIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(139,139,139), null));
 		} else {
 			stepThreeIndicator.setBackground(SystemColor.control);
 			stepThreeIndicator.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
@@ -313,7 +342,6 @@ public class Wizard extends JDialog implements ActionListener, DocumentListener,
 		//btnDone.setFont(new Font(btnDone.getFont().getName(), Font.BOLD, btnDone.getFont().getSize() + 2));
 		btnDone.setFont(new Font("Arial Black", Font.PLAIN, btnDone.getFont().getSize()+1 ));
 
-//		btnDone.setEnabled(false);
 		btnDone.addActionListener(this);
 		btnDone.setBounds(350, 11, 86, 27);
 

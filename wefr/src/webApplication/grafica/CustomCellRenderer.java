@@ -170,7 +170,8 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 					setToolTipText(ERRORTOOLTIPTEXT);
 					return true;
 				}
-			} else if (((Componente)node.getUserObject()).getNome().isEmpty()) {
+			} else if (Utils.isTextBlank(((Componente)node.getUserObject()).getNome())) {
+//			} else if (((Componente)node.getUserObject()).getNome().isEmpty()) {
 				if (objType.equals(Testo.TEXTTYPE)) {
 					setIcon(textErrIcon);
 				} else if (objType.equals(Immagine.IMAGETYPE)) {
@@ -185,7 +186,8 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 
 				setToolTipText(ERRORTOOLTIPTEXT);
 				return true;
-			} if (((Componente)node.getUserObject()).getCategoria().isEmpty()) {
+			} if (Utils.isTextBlank(((Componente)node.getUserObject()).getCategoria())) {
+//			} if (((Componente)node.getUserObject()).getCategoria().isEmpty()) {
 				if (objType.equals(Testo.TEXTTYPE)) {
 					setIcon(textErrIcon);
 				} else if (objType.equals(Immagine.IMAGETYPE)) {

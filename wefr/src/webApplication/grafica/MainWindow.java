@@ -736,7 +736,7 @@ public class MainWindow extends JFrame {/*
 
 		private void initEmptyPanel() {
 			empty_panel = new JPanel();
-			empty_panel.setBounds(5, 196, 456, 196);
+			empty_panel.setBounds(5, 196, 456, 100);
 			emptyAdvice = new JLabel(NOELEMENT);
 			emptyAdvice.setEnabled(false);
 			empty_panel.add(emptyAdvice);
