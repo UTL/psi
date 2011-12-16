@@ -96,7 +96,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 				node.isCorrect = false;
 				boolean b = MainWindow.albero.isCorrect();
 				MainWindow.btnGenXML.setEnabled(b);
-				MainWindow.setStatusBar(b);
+				MainWindow.statusBar.repaint();
 
 				return this;
 			}
@@ -116,7 +116,6 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 			}
 			setToolTipText(null);// fa in modo che il tooltip sparica spostandosi da un nodo con errore/warning
 			if (!node.getEnabled()) {
-				System.out.println("Nodo disabilitato");
 				setEnabled(false);
 			}
 		} else {
@@ -125,8 +124,6 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 				node.isCorrect = false;
 				boolean b = MainWindow.albero.isCorrect();
 				MainWindow.btnGenXML.setEnabled(b);
-				MainWindow.setStatusBar(b);
-						
 				return this;
 			}
 			setToolTipText(null);// fa in modo che il tooltip sparica spostandosi da un nodo con errore/warning
@@ -135,7 +132,7 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
 		node.isCorrect = true;
 		boolean b = MainWindow.albero.isCorrect();
 		MainWindow.btnGenXML.setEnabled(b);
-		MainWindow.setStatusBar(b);
+		MainWindow.statusBar.repaint();
 
 		return this;
 	}

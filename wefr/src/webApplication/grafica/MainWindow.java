@@ -82,8 +82,8 @@ public class MainWindow extends JFrame {/*
 	protected static TreePanel albero;
 	protected static PropertiesPanel properties;
 	protected static StatusBar statusBar;
-	protected static StatusBarGreen statusBarG ;
-	protected static StatusBarRed statusBarR;
+//	protected static StatusBarGreen statusBarG ;
+//	protected static StatusBarRed statusBarR;
 	
 
 	// MENU ITEM
@@ -212,26 +212,24 @@ public class MainWindow extends JFrame {/*
 		properties = new PropertiesPanel();
 		contentPane.add(properties);
 		
-		statusBarG= new StatusBarGreen();
-		statusBarR = new StatusBarRed();
-		statusBar = statusBarR;
+		statusBar= new StatusBar();
 		contentPane.add(statusBar);
 		
 		MainWindow.albero.getTree().setCellRenderer(new CustomCellRenderer());
 	}
 	
-	public static void setStatusBar(boolean isRed){
-		contentPane.remove(statusBar);
-		if(!isRed){
-			statusBar = statusBarR;
-			contentPane.add(statusBar);
-		}
-		else{
-			statusBar = statusBarG;
-			contentPane.add(statusBar);
-		}
-		statusBar.repaint();
-	}
+//	public static void setStatusBar(boolean isRed){
+//		contentPane.remove(statusBar);
+//		if(!isRed){
+//			statusBar = statusBarR;
+//			contentPane.add(statusBar);
+//		}
+//		else{
+//			statusBar = statusBarG;
+//			contentPane.add(statusBar);
+//		}
+//		statusBar.repaint();
+//	}
 
 	private void initPanelTree() {
 		albero = new TreePanel();
@@ -1076,59 +1074,72 @@ public class MainWindow extends JFrame {/*
 		 * 
 		 */
 		private static final long serialVersionUID = -4038960744094640548L;
+		
 		protected StatusBar(){
 			setBounds(0,452,722,20);
 			setBorder(new LineBorder(Color.GRAY));
 			circle = new Ellipse2D.Float(getWidth()-25f,2.5f,15,15);
 		}
 		
-	}
-	
-	public class StatusBarGreen extends StatusBar {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -4038960744094640548L;
-	
-		public StatusBarGreen() {
-			super();		
-		}
-		
 		public void paint(Graphics g) {
 			super.paint(g);
 			Graphics2D ga = (Graphics2D) g;
 			ga.draw(circle);
-
+			if (albero.isCorrect()) {
 				ga.setPaint(Color.GREEN);
-			
-			ga.fill(circle);
-		}
-		
-	}
-	
-	public class StatusBarRed extends StatusBar {
-		
-
-		private static final long serialVersionUID = 7845994861633856091L;
-
-		/**
-		 * 
-		 */
-	
-		public StatusBarRed() {
-			super();		
-		}
-		
-		public void paint(Graphics g) {
-			super.paint(g);
-			Graphics2D ga = (Graphics2D) g;
-			ga.draw(circle);
-
+			} else {
 				ga.setPaint(Color.RED);
-			
+			}
 			ga.fill(circle);
 		}
 		
 	}
+	
+//	public class StatusBarGreen extends StatusBar {
+//		/**
+//		 * 
+//		 */
+//		private static final long serialVersionUID = -4038960744094640548L;
+//	
+//		public StatusBarGreen() {
+//			super();		
+//		}
+//		
+//		public void paint(Graphics g) {
+//			super.paint(g);
+//			Graphics2D ga = (Graphics2D) g;
+//			ga.draw(circle);
+//
+//				ga.setPaint(Color.GREEN);
+//			
+//			ga.fill(circle);
+//		}
+//		
+//	}
+//	
+//	public class StatusBarRed extends StatusBar {
+//		
+//
+//		private static final long serialVersionUID = 7845994861633856091L;
+//
+//		/**
+//		 * 
+//		 */
+//	
+//		public StatusBarRed() {
+//			super();		
+//		}
+//		
+//		public void paint(Graphics g) {
+//			super.paint(g);
+//			Graphics2D ga = (Graphics2D) g;
+//			ga.draw(circle);
+//
+//				ga.setPaint(Color.RED);
+//			
+//			ga.fill(circle);
+//		}
+//		
+//	}
 	
 }
